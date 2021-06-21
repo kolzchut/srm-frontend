@@ -33,11 +33,12 @@ jobs:
           git config --global user.name "srm-devops CI" &&\
           git config --global user.email "srm-devops-ci@localhost" &&\
           cd srm-devops &&\
-          if [ "${TAG_NAME}" == "" ]; then
-            VALUES_AUTO_UPDATED_FILE="helm/${CHART_NAME}/values.auto-updated.yaml"
-            IMAGE="ghcr.io/whiletrue-industries/${IMAGE_NAME}:${GITHUB_SHA}"
-          else
-            VALUES_AUTO_UPDATED_FILE="helm/${CHART_NAME}/values.auto-updated.production.yaml"
+          VALUES_AUTO_UPDATED_FILE="helm/${CHART_NAME}/values.auto-updated.yaml" &&\
+          IMAGE="ghcr.io/whiletrue-industries/${IMAGE_NAME}:${GITHUB_SHA}" &&\
+          if [ "${TAG_NAME}" != "" ]; then
+            VALUES_AUTO_UPDATED_FILE="helm/${CHART_NAME}/values.auto-updated.production.yaml" &&\
+            docker tag "${IMAGE}" "ghcr.io/whiletrue-industries/${IMAGE_NAME}:${TAG_NAME}-${GITHUB_SHA}" &&\
+            docker push "ghcr.io/whiletrue-industries/${IMAGE_NAME}:${TAG_NAME}-${GITHUB_SHA}" &&\
             IMAGE="ghcr.io/whiletrue-industries/${IMAGE_NAME}:${TAG_NAME}-${GITHUB_SHA}"
           fi &&\
           bin/update_yaml.py '{"'"${CHART_NAME}"'":{"image":"'"${IMAGE}"'"}}' "${VALUES_AUTO_UPDATED_FILE}" &&\
