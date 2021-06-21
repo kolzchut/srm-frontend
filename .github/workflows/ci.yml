@@ -12,6 +12,11 @@ jobs:
         IMAGE_NAME: srm-frontend
         CHART_NAME: site
       run: |
+        if [[ "${GITHUB_REF}" =~ ^refs/tags/.* ]]; then
+          TAG_NAME="${GITHUB_REF/refs\/tags\//}"
+        else
+          TAG_NAME=""
+        fi
         BUILD_ARGS=""
         if docker pull "ghcr.io/whiletrue-industries/${IMAGE_NAME}:latest"; then
           BUILD_ARGS="--cache-from ghcr.io/whiletrue-industries/${IMAGE_NAME}:latest"
@@ -20,9 +25,7 @@ jobs:
         echo "${GITHUB_TOKEN}" | docker login https://ghcr.io -u whiletrue-industries --password-stdin &&\
         docker tag api "ghcr.io/whiletrue-industries/${IMAGE_NAME}:${GITHUB_SHA}" &&\
         docker push "ghcr.io/whiletrue-industries/${IMAGE_NAME}:${GITHUB_SHA}" &&\
-        if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
-          docker tag api "ghcr.io/whiletrue-industries/${IMAGE_NAME}:latest" &&\
-          docker push "ghcr.io/whiletrue-industries/${IMAGE_NAME}:latest" &&\
+        if [ "${GITHUB_REF}" == "refs/heads/main" ] || [ "${TAG_NAME}" != "" ]; then
           echo "${SRM_DEVOPS_DEPLOY_KEY}" > srm_devops_deploy_key &&\
           chmod 400 srm_devops_deploy_key &&\
           export GIT_SSH_COMMAND="ssh -i $(pwd)/srm_devops_deploy_key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" &&\
@@ -30,8 +33,19 @@ jobs:
           git config --global user.name "srm-devops CI" &&\
           git config --global user.email "srm-devops-ci@localhost" &&\
           cd srm-devops &&\
-          bin/update_yaml.py '{"'"${CHART_NAME}"'":{"image":"'"ghcr.io/whiletrue-industries/${IMAGE_NAME}:${GITHUB_SHA}"'"}}' "helm/${CHART_NAME}/values.auto-updated.yaml" &&\
-          git add "helm/${CHART_NAME}/values.auto-updated.yaml" &&\
-          git commit -m "update ${CHART_NAME} helm chart auto updated values image" &&\
+          if [ "${TAG_NAME}" == "" ]; then
+            VALUES_AUTO_UPDATED_FILE="helm/${CHART_NAME}/values.auto-updated.yaml"
+            IMAGE="ghcr.io/whiletrue-industries/${IMAGE_NAME}:${GITHUB_SHA}"
+          else
+            VALUES_AUTO_UPDATED_FILE="helm/${CHART_NAME}/values.auto-updated.production.yaml"
+            IMAGE="ghcr.io/whiletrue-industries/${IMAGE_NAME}:${TAG_NAME}-${GITHUB_SHA}"
+          fi &&\
+          bin/update_yaml.py '{"'"${CHART_NAME}"'":{"image":"'"${IMAGE}"'"}}' "${VALUES_AUTO_UPDATED_FILE}" &&\
+          git add "${VALUES_AUTO_UPDATED_FILE}" &&\
+          git commit -m "update image: ${VALUES_AUTO_UPDATED_FILE}" &&\
           git push origin main
+        fi &&\
+        if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
+          docker tag api "ghcr.io/whiletrue-industries/${IMAGE_NAME}:latest" &&\
+          docker push "ghcr.io/whiletrue-industries/${IMAGE_NAME}:latest"
         fi
