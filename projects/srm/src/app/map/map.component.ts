@@ -31,7 +31,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.mapEl && this.mapEl.nativeElement) {
+    if (this.mapEl && this.mapEl.nativeElement && this.mapboxService.init) {
       this.map = new mapboxgl.Map({
         container: this.mapEl.nativeElement,
         style: this.STYLE,
