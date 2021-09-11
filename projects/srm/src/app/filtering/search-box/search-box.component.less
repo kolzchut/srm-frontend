@@ -1,0 +1,34 @@
+@import '../../../common.less';
+
+:host {
+    width: 100%;
+    .wrapper {
+        width: 100%;
+        height: 56px;
+        padding: 8px;
+        padding-bottom: 0;
+        background: @color-white;
+        border: 1px solid @color-gray-5;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+
+        > app-menu-button {
+            flex: 0 0 auto;
+            margin: 0 12px;
+        }
+        > input {
+            flex: 1 1 auto;
+            border: none;
+            .font-rag-sans;
+            font-size: 16px;
+            line-height: 21px;
+        }
+        > app-image-button {
+            flex: 0 0 auto;
+            margin: 0 12px;
+            width: 24px;
+            height: 24px;
+        }
+    }
+}

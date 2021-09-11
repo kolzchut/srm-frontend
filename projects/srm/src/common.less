@@ -1,0 +1,43 @@
+// Colors
+@color-white: #ffffff;
+@color-gray-1: #333333;
+@color-gray-5: #E0E0E0;
+@color-gray-6: #F2F2F2;
+@color-gray-7: #FBFAF9;
+
+// Effects
+
+
+// Typography
+.font-rag-sans {
+    font-family: 'RAG Sans';
+    font-style: normal;
+}
+
+// Dimensions
+@filter-bar-height: 48px;
+
+// Utils
+.background-image {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.button-image {
+    border: none;
+    background: none;
+    margin: 0;
+    padding: 0;
+}
+
+.no-scrollbars {
+    /*FireFox*/
+    scrollbar-width: none;
+    /*IE10+*/
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    &::-webkit-scrollbar {
+    /*Chrome, Safari, Edge*/
+        display: none;
+    }
+}

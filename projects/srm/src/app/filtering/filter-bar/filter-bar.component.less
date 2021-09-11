@@ -1,0 +1,27 @@
+@import '../../../common.less';
+
+:host {
+    display: block;
+    height: @filter-bar-height;
+    width: 100%;
+
+    .wrapper {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        flex-flow: row;
+        align-items: stretch;
+        padding: 8px;
+
+        overflow-x: scroll;
+        .no-scrollbars;
+
+        pointer-events: none;
+
+        &.materialized {
+            background: @color-gray-7;
+            box-shadow: inset 0px 1px 0px @color-gray-6;
+            pointer-events: all;
+        }
+    }
+}

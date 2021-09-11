@@ -1,0 +1,43 @@
+@import '../../common.less';
+
+:host {
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    > .content {
+        pointer-events: all;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: ~'calc(100% - 100px)';
+        left: 0;
+        background-color: @color-white;
+        border-radius: 8px 8px 0px 0px;
+        transition: top 250ms ease-in-out;
+        &.state-full {
+            top: 0;
+        }
+        &.state-peek {
+            top: ~'calc(100% - 64px)';
+        }
+        &.state-card {
+            top: ~'calc(100% - 100px)';
+        }
+        &.state-hidden {
+            top: 100%;
+        }
+
+        .handle {
+            padding-top: 4px;
+            padding-bottom: 24px;
+            app-image-button {
+                width: 20px;
+                height: 4px;
+            }
+        }
+    }
+}

@@ -1,0 +1,11 @@
+<div class='content'
+    [class.state-peek]="state === 'peek'"
+    [class.state-card]="state === 'card'"
+    [class.state-hidden]="state === 'hidden'"
+    [class.state-full]="state === 'full'"
+>
+    <div class='handle'>
+        <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
+    </div>
+    <ng-content></ng-content>
+</div>

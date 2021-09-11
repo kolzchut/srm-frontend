@@ -1,0 +1,43 @@
+@import '../../common.less';
+
+:host {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: stretch;
+    position: relative;
+
+    .header {
+        position: relative;
+        flex: 0 0 auto;
+        width: 100%;
+        z-index: 2;
+        margin-bottom: -@filter-bar-height;
+    }
+
+    .content {
+        flex: 1 1 auto;
+        width: 100%;
+        height: 100%;
+        position: relative;
+
+        app-map, app-drawer {
+            position: absolute;
+            right: 0;
+            width: 100%;
+        }
+
+        app-map {
+            z-index: 0;
+            height: 100%;
+            top: 0;
+        }
+
+        app-drawer {
+            z-index: 1;
+            height: calc(100% ~'-' @filter-bar-height);
+            top: @filter-bar-height;
+        }
+    }
+}

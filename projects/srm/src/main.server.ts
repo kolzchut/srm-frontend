@@ -6,6 +6,7 @@
  * available, such as `@angular/elements`.
  */
 import '@angular/platform-server/init';
+import '@angular/localize/init';
 
 import { enableProdMode } from '@angular/core';
 
