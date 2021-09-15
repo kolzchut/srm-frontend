@@ -1,0 +1,34 @@
+@import '../../../common.less';
+
+.header {
+    padding: 0 16px;
+}
+
+.content {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    gap: 16px;
+    padding: 0 28px;
+    margin-top: 28px;
+
+    .description, .details {
+        .font-rag-sans;
+        font-weight: normal;
+        color: @color-gray-1;
+        font-size: 16px;
+    }
+
+    .details {
+        font-weight: 300;
+    }
+}
+
+.buttons {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    gap: 10px;
+    padding: 0px 20px;
+    margin-top: 20px;
+}

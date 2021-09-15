@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-drawer',
@@ -7,7 +7,9 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class DrawerComponent implements OnInit {
 
-  @Input() state = 'peek';
+  @Input() state = 'card';
+  @Output() handle = new EventEmitter<string>();
+
   constructor() { }
 
   ngOnInit(): void {

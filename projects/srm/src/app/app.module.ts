@@ -12,6 +12,15 @@ import { FilterBarComponent } from './filtering/filter-bar/filter-bar.component'
 import { MenuButtonComponent } from './filtering/menu-button/menu-button.component';
 import { ImageButtonComponent } from './common/image-button/image-button.component';
 import { FilterButtonComponent } from './filtering/filter-bar/filter-button/filter-button.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ServiceListComponent } from './drawer/service-list/service-list.component';
+import { ServiceCardComponent } from './drawer/service-card/service-card.component';
+import { ChipComponent } from './common/chip/chip.component';
+import { SingleServiceComponent } from './drawer/single-service/single-service.component';
+import { CardWhatComponent } from './common/card-what/card-what.component';
+import { CardWhereComponent } from './common/card-where/card-where.component';
+import { CardTagsComponent } from './common/card-tags/card-tags.component';
+import { CardButtonComponent } from './common/card-button/card-button.component';
 
 @NgModule({
   declarations: [
@@ -24,10 +33,19 @@ import { FilterButtonComponent } from './filtering/filter-bar/filter-button/filt
     FilterBarComponent,
     MenuButtonComponent,
     ImageButtonComponent,
-    FilterButtonComponent
+    FilterButtonComponent,
+    ServiceListComponent,
+    ServiceCardComponent,
+    ChipComponent,
+    SingleServiceComponent,
+    CardWhatComponent,
+    CardWhereComponent,
+    CardTagsComponent,
+    CardButtonComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    HttpClientModule,
     AppRoutingModule
   ],
   providers: [],

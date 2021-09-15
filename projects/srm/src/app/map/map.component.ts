@@ -4,6 +4,7 @@ import { MapboxService } from '../mapbox.service';
 import * as mapboxgl from 'mapbox-gl';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { StateService } from '../state.service';
 
 @Component({
   selector: 'app-map',
@@ -19,11 +20,11 @@ export class MapComponent implements OnInit, AfterViewInit {
   map: mapboxgl.Map | null = null;
   moveEvents = new Subject<mapboxgl.LngLatBounds>();
   
-  constructor(private mapboxService: MapboxService) {
+  constructor(private mapboxService: MapboxService, private state: StateService) {
     this.moveEvents.pipe(
       debounceTime(1000),
     ).subscribe(bounds => {
-      console.log('BOUNDS', bounds)
+      state.bounds = bounds;
     })
   }
 

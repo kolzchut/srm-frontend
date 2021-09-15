@@ -1,0 +1,19 @@
+<div class='header'>
+    <app-card-what [item]='item' [big]='true'></app-card-what>
+    <app-card-where [item]='item'></app-card-where>
+</div>
+<div class='actions'></div>
+<div class='content'>
+    <div class='description' *ngIf='item.description'>{{item.description}}</div>
+    <app-card-tags [item]='item'></app-card-tags>    
+</div>
+<div class='buttons'>
+    <app-card-button kind='link' *ngFor='let url of (item.urls || [])' [display]='url.title' [action]='url.link' [arrow]='true'></app-card-button>
+    <app-card-button kind='phone' *ngIf='item.phone_number' [display]='item.phone_number' [action]='"tel:" + item.phone_number'></app-card-button>
+    <app-card-button kind='address' *ngIf='item.address' [display]='item.address' [action]='geoLink()'></app-card-button>
+    <app-card-button kind='free' *ngIf='item.payment === false' display-i18n display='השירות ניתן בחינם'></app-card-button>
+    <app-card-button kind='payment' *ngIf='item.payment === true' display-i18n display='השירות דורש השתתפות עצמית'></app-card-button>    
+</div>
+<div class='content'>
+    <div class='details' *ngIf='item.details'>{{item.details}}</div>
+</div>

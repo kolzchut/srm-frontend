@@ -3,5 +3,8 @@
 </div>
 <div class='content'>
     <app-map></app-map>
-    <app-drawer></app-drawer>
+    <app-drawer [state]='drawerState' (handle)='handleEvent($event)'>
+        <app-service-list *ngIf='!selectedItem' (selected)='selectItem($event)'></app-service-list>
+        <app-single-service *ngIf='selectedItem' [item]='selectedItem'></app-single-service>
+    </app-drawer>
 </div>

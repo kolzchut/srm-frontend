@@ -1,0 +1,70 @@
+@import '../../../common.less';
+
+button {
+    height: 48px;
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    background: @color-white;
+    border: 1px solid @color-gray-6;
+    border-radius: 4px;
+    gap: 12px;
+
+    &.action {
+        cursor: pointer;
+    }
+
+    .icon {
+        width: 24px;
+        height: 24px;
+        .background-image;
+    }
+
+    .arrow {
+        width: 24px;
+        height: 24px;
+        margin-right: auto;
+        .background-image;
+        background-image: url('../../../assets/img/icon-arrow-right.svg');
+    }
+
+    .label {
+        .font-rag-sans;
+        font-weight: normal;
+        font-size: 16px;
+        color: @color-gray-1;
+    }
+
+    &.kind-link {
+        .icon {
+            background-image: url('../../../assets/img/icon-globe.svg');
+        }
+    }
+
+    &.kind-address {
+        .icon {
+            background-image: url('../../../assets/img/icon-location.svg');
+        }
+    }
+
+    &.kind-phone {
+        .icon {
+            background-image: url('../../../assets/img/icon-call.svg');
+        }
+    }
+
+    &.kind-free {
+        background: @color-blue-7;
+        .icon {
+            background-image: url('../../../assets/img/icon-circle-information.svg');
+        }
+    }
+
+    &.kind-payment {
+        background: @color-yellow-7;
+        .icon {
+            background-image: url('../../../assets/img/icon-warning.svg');
+        }
+    }
+}

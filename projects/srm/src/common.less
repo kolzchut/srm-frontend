@@ -1,9 +1,14 @@
 // Colors
 @color-white: #ffffff;
 @color-gray-1: #333333;
+@color-gray-3: #828282;
 @color-gray-5: #E0E0E0;
 @color-gray-6: #F2F2F2;
 @color-gray-7: #FBFAF9;
+
+@color-blue-7: #EFF5FD; // TODO: Ask Mushon for true name
+
+@color-yellow-7: #FDF9ED; // TODO: Ask Mushon for true name
 
 // Effects
 
@@ -29,6 +34,15 @@
     background: none;
     margin: 0;
     padding: 0;
+}
+
+.tag-list {
+    width: 100%;
+    overflow-x: scroll;
+    .no-scrollbars;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 4px;
 }
 
 .no-scrollbars {

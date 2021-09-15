@@ -2,10 +2,13 @@
     [class.state-peek]="state === 'peek'"
     [class.state-card]="state === 'card'"
     [class.state-hidden]="state === 'hidden'"
+    [class.state-most]="state === 'most'"
     [class.state-full]="state === 'full'"
 >
-    <div class='handle'>
+    <div class='handle' (click)='handle.emit("click")'>
         <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
     </div>
-    <ng-content></ng-content>
+    <div class='scrollable'>
+        <ng-content></ng-content>
+    </div>
 </div>

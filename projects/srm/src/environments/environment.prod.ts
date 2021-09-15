@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  servicesURL: null,
+  servicesMock: null,
 };
