@@ -34,6 +34,22 @@ export class MainComponent implements OnInit {
       } else {
         this.drawerState = 'peek';
       }
+    } else if (event === 'up') {
+      if (this.drawerState === 'peek') {
+        this.drawerState = 'card';
+      } else if (this.drawerState === 'card') {
+        this.drawerState = 'most';
+      } else if (this.drawerState === 'most') {
+        this.drawerState = 'full';
+      }
+    } else if (event === 'down') {
+      if (this.drawerState === 'full') {
+        this.drawerState = 'most';
+      } else if (this.drawerState === 'most') {
+        this.drawerState = 'card';
+      } else if (this.drawerState === 'card') {
+        this.drawerState = 'peek';
+      }
     }
   }
 
