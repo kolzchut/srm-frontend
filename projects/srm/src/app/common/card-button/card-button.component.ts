@@ -7,9 +7,9 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class CardButtonComponent implements OnInit {
 
-  @Input() kind: string | null = null;
-  @Input() display: string | null = null;
-  @Input() action: string | null = null;
+  @Input() kind: string;
+  @Input() display: string;
+  @Input() action: string;
   @Input() arrow = false;
   
   constructor() { }

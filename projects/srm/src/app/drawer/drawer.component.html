@@ -5,7 +5,7 @@
     [class.state-most]="state === 'most'"
     [class.state-full]="state === 'full'"
 >
-    <div class='handle' (click)='handle.emit("click")'>
+    <div class='handle' (click)='handle.emit("click")' #handleEl>
         <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
     </div>
     <div class='scrollable'>
