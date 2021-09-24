@@ -1,14 +1,17 @@
 <div class='content' #handleEl 
-    [class.state-peek]="state === 'peek'"
-    [class.state-card]="state === 'card'"
-    [class.state-hidden]="state === 'hidden'"
-    [class.state-most]="state === 'most'"
-    [class.state-full]="state === 'full'"
+    [class.state-peek]="state === DrawerState.Peek"
+    [class.state-card]="state === DrawerState.Card"
+    [class.state-hidden]="state === DrawerState.Hidden"
+    [class.state-most]="state === DrawerState.Most"
+    [class.state-full]="state === DrawerState.Full"
 >
+    <div class='strip'>
+        <ng-content select='strip'></ng-content>
+    </div>
     <div class='handle' (click)='handle.emit("click")'>
         <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
     </div>
     <div class='scrollable' #scrollable>
-        <ng-content></ng-content>
+        <ng-content select='content'></ng-content>
     </div>
 </div>

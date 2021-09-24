@@ -13,7 +13,40 @@
         flex: 0 0 auto;
         width: 100%;
         z-index: 2;
-        margin-bottom: -@filter-bar-height;
+        overflow: visible;
+        height: 0;
+
+        app-filtering {
+            transition: opacity 0.3s ease-out;
+            transform: translateY(0);
+        }
+        .close-button {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+
+            background-color: @color-white;
+            background-image: url(../../assets/img/icon-close.svg);
+            .background-image;
+            background-size: 24px;
+
+            .card-shadow-base;
+            transition: opacity 0.3s ease-out;
+            opacity: 0;
+
+            cursor: pointer;
+        }
+        &.hidden {
+            app-filtering {
+                transform: translateY(-100%);
+            }
+            .close-button {
+                opacity: 1;
+            }
+        }
     }
 
     .content {

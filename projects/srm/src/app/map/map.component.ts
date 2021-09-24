@@ -15,9 +15,9 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   STYLE = 'mapbox://styles/srm-kolzchut/cksprr4sy0hbg18o5ct2ty2oc';
 
-  @ViewChild('map') mapEl: ElementRef | null = null;
+  @ViewChild('map') mapEl: ElementRef;
 
-  map: mapboxgl.Map | null = null;
+  map: mapboxgl.Map;
   moveEvents = new Subject<mapboxgl.LngLatBounds>();
   
   constructor(private mapboxService: MapboxService, private state: StateService) {
@@ -33,14 +33,19 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     if (this.mapEl && this.mapEl.nativeElement && this.mapboxService.init) {
-      this.map = new mapboxgl.Map({
-        container: this.mapEl.nativeElement,
-        style: this.STYLE,
-        minZoom: 3,
-      });
-      this.map.on('moveend', (event: DragEvent) => {
-        this.moveEvents.next(this.map?.getBounds());
-      });
+      try {
+        this.map = new mapboxgl.Map({
+          container: this.mapEl.nativeElement,
+          style: this.STYLE,
+          minZoom: 3,
+        });
+        this.map.on('moveend', (event: DragEvent) => {
+          this.moveEvents.next(this.map?.getBounds());
+        });
+        this.state.bounds = this.map.getBounds();
+      } catch {
+        console.log('FAILED TO LOAD')
+      }
     }
   }
 

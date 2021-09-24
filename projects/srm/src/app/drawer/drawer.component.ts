@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { DrawerState } from '../common/datatypes';
 
 @Component({
   selector: 'app-drawer',
@@ -9,11 +10,13 @@ import { first } from 'rxjs/operators';
 })
 export class DrawerComponent implements OnInit, AfterViewInit {
 
-  @Input() state = 'card';
+  @Input() state: DrawerState = DrawerState.Card;
   @Output() handle = new EventEmitter<string>();
   @ViewChild('handleEl') handleEl: ElementRef;
   @ViewChild('scrollable') scrollable: ElementRef;
 
+  DrawerState = DrawerState;
+  
   startY: number;
 
   constructor() { }

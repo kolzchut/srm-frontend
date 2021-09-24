@@ -21,6 +21,7 @@ import { CardWhatComponent } from './common/card-what/card-what.component';
 import { CardWhereComponent } from './common/card-where/card-where.component';
 import { CardTagsComponent } from './common/card-tags/card-tags.component';
 import { CardButtonComponent } from './common/card-button/card-button.component';
+import { SingleComponent } from './drawer/strip/single/single.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { CardButtonComponent } from './common/card-button/card-button.component'
     CardWhatComponent,
     CardWhereComponent,
     CardTagsComponent,
-    CardButtonComponent
+    CardButtonComponent,
+    SingleComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

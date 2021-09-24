@@ -1,10 +1,16 @@
-<div class='header'>
+<div class='header' [class.hidden]='headerState === HeaderState.Hidden'>
+    <div class='close-button' (click)='handleEvent("close")'></div>
     <app-filtering></app-filtering>
 </div>
 <div class='content'>
     <app-map></app-map>
     <app-drawer [state]='drawerState' (handle)='handleEvent($event)'>
-        <app-service-list *ngIf='!selectedItem' (selected)='selectItem($event)'></app-service-list>
-        <app-single-service *ngIf='selectedItem' [item]='selectedItem'></app-single-service>
+        <ng-container ngProjectAs='strip'>
+            <app-strip-single *ngIf='selectedItem && drawerState !== DrawerState.Most' [service]='selectedItem' (selected)='selectItem($event)'></app-strip-single>
+        </ng-container>
+        <ng-container ngProjectAs='content'>
+            <app-service-list *ngIf='itemState !== ItemState.Full' (selected)='selectItem($event)'></app-service-list>
+            <app-single-service *ngIf='itemState === ItemState.Full' [item]='selectedItem'></app-single-service>    
+        </ng-container>
     </app-drawer>
 </div>
