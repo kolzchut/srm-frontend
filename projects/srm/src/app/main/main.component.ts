@@ -21,34 +21,39 @@ export class MainComponent implements OnInit {
   }
 
   handleEvent(event: string) {
-    if (event === 'click') {
-      if (this.drawerState === 'peek') {
-        if (this.selectedItem) {
-          this.drawerState = 'most';
-        } else {
+    if (this.selectedItem) { // Item Mode
+      if (event === 'click') {
+        if (this.drawerState === 'most') {
+          this.selectedItem = null;
           this.drawerState = 'card';
         }
-      } else if (this.drawerState === 'most') {
-        this.drawerState = 'card';
+      } else if (event === 'down') {
         this.selectedItem = null;
-      } else {
-        this.drawerState = 'peek';
-      }
-    } else if (event === 'up') {
-      if (this.drawerState === 'peek') {
         this.drawerState = 'card';
-      } else if (this.drawerState === 'card') {
-        this.drawerState = 'most';
-      } else if (this.drawerState === 'most') {
-        this.drawerState = 'full';
       }
-    } else if (event === 'down') {
-      if (this.drawerState === 'full') {
-        this.drawerState = 'most';
-      } else if (this.drawerState === 'most') {
-        this.drawerState = 'card';
-      } else if (this.drawerState === 'card') {
-        this.drawerState = 'peek';
+    } else { // Result list Mode
+      if (event === 'click') {
+        if (this.drawerState === 'peek' || this.drawerState === 'most' || this.drawerState === 'full') {
+          this.drawerState = 'card';
+        } else if (this.drawerState === 'card') {
+          this.drawerState = 'peek';
+        }
+      } else if (event === 'up') {
+        if (this.drawerState === 'peek') {
+          this.drawerState = 'most';
+        } else if (this.drawerState === 'card') {
+          this.drawerState = 'most';
+        } else if (this.drawerState === 'most') {
+          this.drawerState = 'full';
+        }
+      } else if (event === 'down') {
+        if (this.drawerState === 'full') {
+          this.drawerState = 'card';
+        } else if (this.drawerState === 'most') {
+          this.drawerState = 'card';
+        } else if (this.drawerState === 'card') {
+          this.drawerState = 'peek';
+        }
       }
     }
   }

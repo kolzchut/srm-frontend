@@ -12,6 +12,7 @@ export class DrawerComponent implements OnInit, AfterViewInit {
   @Input() state = 'card';
   @Output() handle = new EventEmitter<string>();
   @ViewChild('handleEl') handleEl: ElementRef;
+  @ViewChild('scrollable') scrollable: ElementRef;
 
   startY: number;
 
@@ -55,12 +56,20 @@ export class DrawerComponent implements OnInit, AfterViewInit {
     else if (event instanceof TouchEvent) {
       endY = event.changedTouches[0].clientY;
     }
+    const scrollableEl: HTMLElement = this.scrollable.nativeElement;
+    const scrollableTop = scrollableEl.getBoundingClientRect().top;
+    const scrollableDiff = scrollableTop  + 48 - this.startY;
+
     const diff = endY - this.startY;
     if (diff > 100) {
-      this.handle.emit('down');
+      if (scrollableEl.scrollTop === 0 || scrollableDiff > 0) {
+        this.handle.emit('down');
+      }
     }
-    if (diff < 100) {
-      this.handle.emit('up');
+    if (diff < -100) {
+      if (scrollableEl.scrollHeight - scrollableEl.scrollTop - scrollableEl.clientHeight < 1 || scrollableDiff > 0) {
+        this.handle.emit('up');
+      }
     }
   }
 }
