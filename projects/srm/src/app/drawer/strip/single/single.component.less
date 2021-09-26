@@ -5,4 +5,18 @@
     justify-content: center;
     width: 100%;
     padding: 8px 16px;
+    animation-name: appear;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-duration: 300ms;
+    transform: translateY(100%);
+}
+
+@keyframes appear {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(0);
+    }    
 }

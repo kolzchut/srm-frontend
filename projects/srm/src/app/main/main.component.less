@@ -17,7 +17,7 @@
         height: 0;
 
         app-filtering {
-            transition: opacity 0.3s ease-out;
+            transition: transform 0.3s ease-out;
             transform: translateY(0);
         }
         .close-button {
@@ -69,8 +69,8 @@
 
         app-drawer {
             z-index: 1;
-            height: calc(100% ~'-' @filter-bar-height);
-            top: @filter-bar-height;
+            height: calc(100% ~'-' @header-height);
+            top: @header-height;
         }
     }
 }
