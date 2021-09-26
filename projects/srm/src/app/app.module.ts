@@ -22,6 +22,11 @@ import { CardWhereComponent } from './common/card-where/card-where.component';
 import { CardTagsComponent } from './common/card-tags/card-tags.component';
 import { CardButtonComponent } from './common/card-button/card-button.component';
 import { SingleComponent } from './drawer/strip/single/single.component';
+import { SearchAutocompleteComponent } from './filtering/search-autocomplete/search-autocomplete.component';
+import { FilteringConfigComponent } from './filtering/filtering-config/filtering-config.component';
+import { FormsModule } from '@angular/forms';
+import { AutocompleteSectionComponent } from './filtering/search-autocomplete/autocomplete-section/autocomplete-section.component';
+import { AutocompleteResultComponent } from './filtering/search-autocomplete/autocomplete-result/autocomplete-result.component';
 
 @NgModule({
   declarations: [
@@ -43,10 +48,15 @@ import { SingleComponent } from './drawer/strip/single/single.component';
     CardWhereComponent,
     CardTagsComponent,
     CardButtonComponent,
-    SingleComponent
+    SingleComponent,
+    SearchAutocompleteComponent,
+    FilteringConfigComponent,
+    AutocompleteSectionComponent,
+    AutocompleteResultComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    FormsModule,
     HttpClientModule,
     AppRoutingModule
   ],

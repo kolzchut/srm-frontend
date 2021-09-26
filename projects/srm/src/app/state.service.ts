@@ -18,4 +18,9 @@ export class StateService {
     this.state.next(this._state);
   }
 
+  set searchQuery(searchQuery: string) {
+    this._state.searchQuery = searchQuery;
+    this.state.next(this._state);
+  }
+
 }

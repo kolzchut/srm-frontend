@@ -1,3 +1,21 @@
+@import '../../common.less';
+
 :host {
     display: block;
+
+    &.active {
+        height: 100%;
+        display: flex;
+        flex-flow: column;
+        align-items: stretch;
+        justify-content: flex-start;
+    }
+
+    .content {
+        flex: 1 1 100%;
+        width: 100%;
+        background: @color-gray-7;
+        overflow-y: scroll;
+        .no-scrollbars;        
+    }
 }

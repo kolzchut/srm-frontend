@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-filter-button',
   templateUrl: './filter-button.component.html',
-  styleUrls: ['./filter-button.component.less']
+  styleUrls: ['./filter-button.component.less'],
+  host: {
+    '(click)': 'click.next($event)'
+  }
 })
 export class FilterButtonComponent implements OnInit {
+
+  @Output() click = new EventEmitter<Event>();
 
   constructor() { }
 
   ngOnInit(): void {
   }
-
+  
 }

@@ -11,6 +11,7 @@ export class MainComponent implements OnInit {
   drawerState: DrawerState = DrawerState.Peek;
   savedDrawerState: DrawerState;
   headerState: HeaderState = HeaderState.Visible;
+  headerActive = false;
   itemState: ItemState = ItemState.None;
   selectedItem = null;
 

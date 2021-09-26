@@ -1,0 +1,55 @@
+@import '../../../../common.less';
+
+:host {
+    > * {
+        .card-shadow-card;
+    }
+
+    .result {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 40px;
+        padding: 0 4px;
+        gap: 4px;
+
+        .count {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            background: @color-gray-6;
+
+            .font-rag-sans;
+            font-weight: bold;
+            font-size: 13px;
+            line-height: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: @color-gray-3;
+        }
+
+        .name {
+            .font-rag-sans;
+            font-weight: normal;
+            font-size: 20px;
+            color: @color-gray-1;
+        }
+
+        .arrow, .location {
+            width: 24px;
+            height: 24px;
+            .background-image;
+        }
+
+        .arrow {
+            margin-right: auto;
+            background-image: url(../../../../assets/img/icon-chevron-left.svg);
+        }
+        .location {
+            background-image: url(../../../../assets/img/icon-location.svg);
+            background-size: 16px;
+        }
+
+    }
+}

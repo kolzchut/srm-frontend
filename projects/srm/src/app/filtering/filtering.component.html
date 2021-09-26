@@ -1,2 +1,6 @@
-<app-search-box></app-search-box>
-<app-filter-bar></app-filter-bar>
+<app-search-box (activated)='active = $event'></app-search-box>
+<app-filter-bar [forceOpaque]='!!activeSection' (activated)='active = $event'></app-filter-bar>
+<div class='content'>
+    <app-search-autocomplete *ngIf='activeSection === "search"'></app-search-autocomplete>
+    <app-filtering-config *ngIf='activeSection === "filters"'></app-filtering-config>
+</div>

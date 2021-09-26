@@ -1,0 +1,11 @@
+<div class='container'>
+    <div class='header' *ngIf='visible'>
+        <div class='type'>{{typeName}}:</div>
+        <div class='more' *ngIf='more > 0'>עוד {{more}}</div>
+    </div>
+    <div class='results'>
+        <ng-container *ngFor='let result of (results | async)'>
+            <app-autocomplete-result [type]='type' [result]='result.source'></app-autocomplete-result>
+        </ng-container>    
+    </div>    
+</div>

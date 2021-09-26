@@ -1,8 +1,8 @@
-<div class='header' [class.hidden]='headerState === HeaderState.Hidden'>
+<div class='header' [class.hidden]='headerState === HeaderState.Hidden' [class.active]='headerState === HeaderState.Visible && headerActive'>
     <div class='close-button' (click)='handleEvent("close")'></div>
-    <app-filtering></app-filtering>
+    <app-filtering (activated)='headerActive = $event'></app-filtering>
 </div>
-<div class='content'>
+<div class='content' [class.hidden]='headerState === HeaderState.Visible && headerActive'>
     <app-map></app-map>
     <app-drawer [state]='drawerState' (handle)='handleEvent($event)'>
         <ng-container ngProjectAs='strip'>

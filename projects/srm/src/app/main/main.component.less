@@ -47,6 +47,9 @@
                 opacity: 1;
             }
         }
+        &.active {
+            height: 100%;
+        }
     }
 
     .content {
@@ -54,6 +57,11 @@
         width: 100%;
         height: 100%;
         position: relative;
+
+        &.hidden {
+            height: 0;
+            overflow: hidden;
+        }
 
         app-map, app-drawer {
             position: absolute;
