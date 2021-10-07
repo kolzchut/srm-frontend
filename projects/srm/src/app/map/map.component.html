@@ -1,1 +1,3 @@
-<div class='map' #map>
+<div class='map' #map></div>
+<img class='map-tooltip' *ngFor='let cc of ALL_CATEGORIES' [attr.id]='"tooltip-rc-" + cc.category' [src]='tooltipImg(cc.color)'>
+    

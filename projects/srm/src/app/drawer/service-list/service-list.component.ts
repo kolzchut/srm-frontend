@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ApiService } from '../../api.service';
+import { CategoryCountsResult } from '../../common/datatypes';
 
 @Component({
   selector: 'app-service-list',
@@ -17,12 +18,12 @@ export class ServiceListComponent implements OnInit {
     api.visibleServices.subscribe((services: any[]) => {
       this.services = services;
     });
-    api.visibleCounts.subscribe((counts: any[]) => {
+    api.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
       this.counts = counts.map(c => {
         return {
-          display: c.display,
+          category: c.category,
           count: c.count,
-          color: '#07B2EA'
+          color: c.color,
         };
       });
     });

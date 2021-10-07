@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { getResponseColor } from '../consts';
+import { Card } from '../datatypes';
 
 @Component({
   selector: 'app-card-what',
@@ -7,7 +9,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class CardWhatComponent implements OnInit {
 
-  @Input() item: any;
+  @Input() item: Card;
   @Input() big = false;
 
   constructor() { }
@@ -16,7 +18,7 @@ export class CardWhatComponent implements OnInit {
   }
 
   get categoryColor() {
-    return '#07B2EA';
+    return getResponseColor(this.item.responses[0].id);
   }
 
 }

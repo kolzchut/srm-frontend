@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Card } from '../datatypes';
 
 @Component({
   selector: 'app-card-where',
@@ -7,7 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class CardWhereComponent implements OnInit {
 
-  @Input() item: any;
+  @Input() item: Card;
   
   constructor() { }
 

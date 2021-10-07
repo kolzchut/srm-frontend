@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { from, ReplaySubject, Subject } from 'rxjs';
+import { forkJoin, from, Observable, ReplaySubject, Subject } from 'rxjs';
 import { debounceTime, distinct, distinctUntilChanged, map, mergeMap, switchMap } from 'rxjs/operators';
 import { StateService } from './state.service';
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { Card, CategoryCountsResult, QueryCardsResult } from './common/datatypes';
+import { CATEGORY_COLORS } from './common/consts';
 
 function makeKey(obj: any, keys: string[]) {
   const ret = [];
@@ -23,8 +25,8 @@ function keyComparer(keys: string[]) {
 })
 export class ApiService {
 
-  visibleServices = new ReplaySubject<any[]>(1);
-  visibleCounts = new ReplaySubject<any[]>(1);
+  visibleServices = new ReplaySubject<Card[]>(1);
+  visibleCounts = new ReplaySubject<CategoryCountsResult[]>(1);
   searchResults = new Subject<any[]>();
 
   constructor(private state: StateService, private http: HttpClient) {
@@ -37,11 +39,21 @@ export class ApiService {
       distinctUntilChanged(keyComparer(['bounds'])),
       switchMap((state) => {
         console.log('FETCHING SERVICES');
-        return this.getServices(state);
+        return forkJoin([this.getServices(state), this.countCategories(state)]);
       })
-    ).subscribe((services: any) => {
-      this.visibleServices.next(services.services);
-      this.visibleCounts.next(services.counts);
+    ).subscribe(([services, counts]: QueryCardsResult[]) => {
+      this.visibleServices.next(
+        services.search_results.map((x) => x.source)
+      );
+      this.visibleCounts.next(
+        CATEGORY_COLORS.map((cc) => {
+          return {
+            category: cc.category,
+            count: counts.search_counts[cc.category].total_overall,
+            color: cc.color
+          };
+        })
+      );
     });
     
     // Search Autocomplete
@@ -61,12 +73,33 @@ export class ApiService {
 
   }
 
-  getServices(state: any) {
-    if (environment.servicesURL && environment.servicesURL.length > 0) {
-      return this.http.get(environment.servicesURL);
-    } else {
-      return from([environment.servicesMock])
-    }
+  getServices(state: any): Observable<QueryCardsResult> {
+    const params = {size: 100};
+    return this.http.get(environment.servicesURL, {params}).pipe(
+      map((res: any) => {
+        const results = res as QueryCardsResult;
+        return results;
+      })
+    );
+  }
+
+  countCategories(state: any): Observable<QueryCardsResult> {
+    const config = CATEGORY_COLORS.map((cc) => {
+      return {
+        doc_types: ['cards'],
+        id: cc.category,
+        filters: {
+          response_categories: cc.category
+        }
+      };
+    });
+    const params = {config: JSON.stringify(config)};
+    return this.http.get(environment.countCategoriesURL, {params}).pipe(
+      map((res: any) => {
+        const results = res as QueryCardsResult;
+        return results;
+      })
+    );
   }
 
   searchQuery(state: any) {

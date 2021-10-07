@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { CategoryCountsResult } from '../datatypes';
 
 @Component({
   selector: 'app-chip',
@@ -7,7 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ChipComponent implements OnInit {
 
-  @Input() chip: any;
+  @Input() chip: CategoryCountsResult;
 
   constructor() { }
 

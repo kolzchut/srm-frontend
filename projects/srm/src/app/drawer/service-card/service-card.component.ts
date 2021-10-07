@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Card } from '../../common/datatypes';
 
 @Component({
   selector: 'app-service-card',
@@ -7,7 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class ServiceCardComponent implements OnInit {
 
-  @Input() item: any;
+  @Input() item: Card;
 
   constructor() { }
 

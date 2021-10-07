@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { getResponseColor } from '../consts';
+import { Card, CategoryCountsResult } from '../datatypes';
 
 @Component({
   selector: 'app-card-tags',
@@ -7,29 +9,28 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class CardTagsComponent implements OnInit {
 
-  @Input() item: any;
+  @Input() item: Card;
   
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  get chips() {
+  get chips(): CategoryCountsResult[] {
+    if (!this.item || !this.item.responses) {
+      return [];
+    }
     return [
-      {
-        display: 'סוג המענה',
-        color: this.categoryColor,
-      },
+      // {
+      //   display: 'סוג המענה',
+      //   color: getResponseColor(this.item.responses[0].id),
+      // },
       ...this.item.responses.map((r: any) => {
           return {
-            display: r.name
+            display: r.name,
+            color: getResponseColor(r.id),
           };
       })      
     ];
   }
-
-  get categoryColor() {
-    return '#07B2EA';
-  }
-
 }
