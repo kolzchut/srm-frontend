@@ -2,13 +2,18 @@ import { Injectable } from '@angular/core';
 import { LngLatBounds } from 'mapbox-gl';
 import { ReplaySubject } from 'rxjs';
 
+export type State = {
+  bounds?: LngLatBounds,
+  searchQuery?: string,
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class StateService {
 
-  _state: any = {};
-  state = new ReplaySubject<any>(1);
+  _state: State = {};
+  state = new ReplaySubject<State>(1);
 
   constructor() { }
 

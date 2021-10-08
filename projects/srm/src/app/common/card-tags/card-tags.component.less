@@ -1,5 +1,10 @@
 @import '../../../common.less';
 
 .tags {
-    .tag-list;
+    &.big {
+        .tag-list;
+    }
+    &:not(.big) {
+        .scrolled-tag-list;
+    }
 }

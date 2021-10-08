@@ -1,19 +1,28 @@
 <div class='header'>
-    <app-card-what [item]='item' [big]='true'></app-card-what>
-    <app-card-where [item]='item'></app-card-where>
+    <app-card-what [item]='card' [big]='true'></app-card-what>
+    <app-card-where [item]='card'></app-card-where>
 </div>
 <div class='actions'></div>
 <div class='content'>
-    <div class='description' *ngIf='item.description'>{{item.description}}</div>
-    <app-card-tags [item]='item'></app-card-tags>    
+    <div class='description' *ngIf='card.service_description'>{{card.service_description}}</div>
+    <app-card-tags [item]='card' [big]='true'></app-card-tags>    
 </div>
 <div class='buttons'>
-    <app-card-button kind='link' *ngFor='let url of (item.urls || [])' [display]='url.title' [action]='url.link' [arrow]='true'></app-card-button>
-    <app-card-button kind='phone' *ngIf='item.phone_number' [display]='item.phone_number' [action]='"tel:" + item.phone_number'></app-card-button>
-    <app-card-button kind='address' *ngIf='item.address' [display]='item.address' [action]='geoLink()'></app-card-button>
-    <app-card-button kind='free' *ngIf='item.payment === false' display-i18n display='השירות ניתן בחינם'></app-card-button>
-    <app-card-button kind='payment' *ngIf='item.payment === true' display-i18n display='השירות דורש השתתפות עצמית'></app-card-button>    
+    <app-card-button kind='link' *ngFor='let url of (card.urls || [])' [display]='url.title' [action]='url.link' [arrow]='true'></app-card-button>
+    <app-card-button kind='phone' *ngIf='card.branch_phone_numbers' [display]='card.branch_phone_numbers' [action]='"tel:" + card.branch_phone_numbers'></app-card-button>
+    <app-card-button kind='address' *ngIf='card.branch_address' [display]='card.branch_address' [action]='geoLink()'></app-card-button>
+    <ng-container *ngIf='card.service_payment_required === "no"'>
+        <app-card-button kind='free' *ngIf='!card.service_payment_details' display-i18n display='השירות ניתן בחינם'></app-card-button>
+        <app-card-button kind='free' *ngIf='card.service_payment_details' [display]='card.service_payment_details'></app-card-button>
+    </ng-container>
+    <ng-container *ngIf='card.service_payment_required === "yes"'>
+        <app-card-button kind='payment' *ngIf='!card.service_payment_details' display-i18n display='השירות דורש השתתפות עצמית'></app-card-button>
+        <app-card-button kind='payment' *ngIf='card.service_payment_details' [display]='card.service_payment_details'></app-card-button>
+    </ng-container>
 </div>
-<div class='content'>
-    <div class='details' *ngIf='item.details'>{{item.details}}</div>
+<div class='content' *ngIf='card.service_details'>
+    <div class='details'>{{card.service_details}}</div>
+</div>
+<div class='buttons'>
+    <app-card-button kind='fix' display-i18n display='מצאתי טעות בנתונים' action='https://www.kolzchut.org.il/he/%D7%9B%D7%9C-%D7%96%D7%9B%D7%95%D7%AA:%D7%A6%D7%A8%D7%95_%D7%A7%D7%A9%D7%A8' [arrow]='true'></app-card-button>
 </div>

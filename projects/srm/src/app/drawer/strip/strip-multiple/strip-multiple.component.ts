@@ -2,13 +2,13 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Card } from '../../../common/datatypes';
 
 @Component({
-  selector: 'app-strip-single',
-  templateUrl: './single.component.html',
-  styleUrls: ['./single.component.less']
+  selector: 'app-strip-multiple',
+  templateUrl: './strip-multiple.component.html',
+  styleUrls: ['./strip-multiple.component.less']
 })
-export class SingleComponent implements OnInit {
+export class StripMultipleComponent implements OnInit {
 
-  @Input() service: Card;
+  @Input() services: Card[];
   @Output() selected = new EventEmitter<Card>();
 
   constructor() { }

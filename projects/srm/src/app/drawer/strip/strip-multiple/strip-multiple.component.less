@@ -1,0 +1,19 @@
+@import '../../../../common.less';
+
+:host {
+    width: 100%;
+    .container {
+        width: 100%;
+        padding: 8px;
+        display: flex;
+        flex-flow: row;
+        gap: 4px;
+        background: @color-gray-2;
+        overflow-x: scroll;
+        .no-scrollbars;
+    
+        app-service-card {
+            width: 80%;
+        }
+    }
+}

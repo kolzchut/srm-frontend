@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DrawerState, HeaderState, ItemState } from '../common/datatypes';
+import { Card, DrawerState, HeaderState, ItemState } from '../common/datatypes';
 
 @Component({
   selector: 'app-main',
@@ -9,11 +9,13 @@ import { DrawerState, HeaderState, ItemState } from '../common/datatypes';
 export class MainComponent implements OnInit {
 
   drawerState: DrawerState = DrawerState.Peek;
-  savedDrawerState: DrawerState;
+  savedDrawerState: DrawerState | null = null;
   headerState: HeaderState = HeaderState.Visible;
   headerActive = false;
   itemState: ItemState = ItemState.None;
-  selectedItem = null;
+  selectedItem: Card | null = null;
+  selectedItems: Card[] | null = null;
+  savedSelectedItems: Card[] | null = null;
 
   DrawerState = DrawerState;
   ItemState = ItemState;
@@ -24,7 +26,21 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  selectItem(item: any) {
+  mapSelectedPoints(cards: Card[]) {
+    if (cards.length === 1) {
+      this.selectedItems = null;
+      this.selectItem(cards[0], true);
+    } else {
+      this.selectItems(cards);
+    }    
+  }
+
+  selectItems(items: Card[]) {
+    this.selectedItems = items;
+    this.drawerState = DrawerState.Peek;
+  }
+
+  selectItem(item: Card | null, preview: boolean = false) {
     if (item === null && this.selectedItem === null) {
       return;
     }
@@ -34,22 +50,36 @@ export class MainComponent implements OnInit {
     this.selectedItem = item;
     if (item) {
       if (this.itemState === ItemState.None) {
-        this.itemState = ItemState.Preview;
-        this.savedDrawerState = this.drawerState;  
-        this.drawerState = DrawerState.Peek;
+        this.savedDrawerState = this.drawerState;
+        this.savedSelectedItems = this.selectedItems;
+        this.selectedItems = null;
+        if (preview) {
+          this.itemState = ItemState.Preview;
+          this.drawerState = DrawerState.Peek;
+        } else {
+          this.itemState = ItemState.Full;
+          this.drawerState = DrawerState.Most;
+          this.headerState = HeaderState.Hidden;  
+        }
       } else {
         this.itemState = ItemState.Full;
         this.drawerState = DrawerState.Most;
         this.headerState = HeaderState.Hidden;
       }
     } else {
-      this.drawerState = this.savedDrawerState;
+      if (this.savedDrawerState) {
+        this.drawerState = this.savedDrawerState;
+      }
+      this.selectedItems = this.savedSelectedItems;
+      this.savedDrawerState = null;
+      this.savedSelectedItems = null;
       this.headerState = HeaderState.Visible;
       this.itemState = ItemState.None;
     }
   }
 
   handleEvent(event: string) {
+    console.log('EV', this.itemState, event, this.drawerState);
     if (this.itemState === ItemState.Preview) {
       if (event === 'click' || event === 'up' || event === 'close') {
         this.selectItem(null);

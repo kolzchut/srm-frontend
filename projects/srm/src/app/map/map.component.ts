@@ -18,7 +18,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   STYLE = 'mapbox://styles/srm-kolzchut/cksprr4sy0hbg18o5ct2ty2oc/draft';
 
-  @Output('point') points = new EventEmitter<Card[]>();
+  @Output('points') points = new EventEmitter<Card[]>();
   @ViewChild('map') mapEl: ElementRef;
 
   map: mapboxgl.Map;
@@ -60,6 +60,7 @@ export class MapComponent implements OnInit, AfterViewInit {
           minZoom: 3,
         });
         this.map.on('moveend', (event: DragEvent) => {
+          console.log('MOVED', this.map?.getBounds())
           this.moveEvents.next(this.map?.getBounds());
         });
         this.map.on('styleimagemissing', (e) => {

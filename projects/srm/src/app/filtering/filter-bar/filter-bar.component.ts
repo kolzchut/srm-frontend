@@ -10,12 +10,20 @@ export class FilterBarComponent implements OnInit {
   @Input() forceOpaque: boolean = false;
   @Output() activated = new EventEmitter<string | null>();
 
+  _active: boolean = false;
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
   set active(value: boolean) {
+    this._active = value;
+    console.log(value);
     this.activated.next(value ? 'filters': null);
+  }
+
+  get active(): boolean {
+    return this._active;
   }
 }

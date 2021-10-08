@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Card } from '../../common/datatypes';
 
 @Component({
   selector: 'app-single-service',
@@ -7,17 +8,19 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class SingleServiceComponent implements OnInit {
 
-  @Input() item: any = {};
+  @Input() item: Card | null = null;
+
+  card: Card;
 
   constructor() { }
 
   ngOnInit(): void {
+    if (this.item) {
+      this.card = this.item;
+    }
   }
 
   geoLink() {
-    if (this.item.address) {
-      return 'geo:' + this.item.address.split(' ').join('+');
-    }
-    return '';
+    return 'geo:' + this.card.branch_geometry.join(',');
   }
 }

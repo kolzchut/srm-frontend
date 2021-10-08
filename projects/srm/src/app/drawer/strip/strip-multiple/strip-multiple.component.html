@@ -1,0 +1,3 @@
+<div class='container'>
+    <app-service-card *ngFor='let service of services' [item]='service' (click)='selected.emit(service)'></app-service-card>
+</div>

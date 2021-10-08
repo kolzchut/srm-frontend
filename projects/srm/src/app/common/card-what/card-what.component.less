@@ -4,7 +4,6 @@
     display: flex;
     flex-flow: row;
     align-items: center;
-    height: 30px;
 
     .icon {
         width: 12px;
@@ -13,16 +12,27 @@
     }
     .service-name {
         .font-rag-sans;
-        .ellipsis;
         font-weight: normal;
         font-size: 20px;
         color: @color-gray-1;
         margin: 0px 4px;
     }
 
+    &:not(.big) {
+        height: 30px;
+        .service-name {
+            .ellipsis;
+        }
+    }
     &.big {
         span {
             font-size: 24px;
+            line-height: 24px;
         }
+        .icon {
+            width: 16px;
+            height: 16px;
+        }
+        margin-bottom: 4px;
     }
 }

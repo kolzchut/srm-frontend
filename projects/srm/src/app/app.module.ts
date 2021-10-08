@@ -27,6 +27,7 @@ import { FilteringConfigComponent } from './filtering/filtering-config/filtering
 import { FormsModule } from '@angular/forms';
 import { AutocompleteSectionComponent } from './filtering/search-autocomplete/autocomplete-section/autocomplete-section.component';
 import { AutocompleteResultComponent } from './filtering/search-autocomplete/autocomplete-result/autocomplete-result.component';
+import { StripMultipleComponent } from './drawer/strip/strip-multiple/strip-multiple.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { AutocompleteResultComponent } from './filtering/search-autocomplete/aut
     SearchAutocompleteComponent,
     FilteringConfigComponent,
     AutocompleteSectionComponent,
-    AutocompleteResultComponent
+    AutocompleteResultComponent,
+    StripMultipleComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

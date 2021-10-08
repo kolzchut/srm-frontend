@@ -5,12 +5,12 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
   templateUrl: './filter-button.component.html',
   styleUrls: ['./filter-button.component.less'],
   host: {
-    '(click)': 'click.next($event)'
+    '(click)': 'clicked.next($event)'
   }
 })
 export class FilterButtonComponent implements OnInit {
 
-  @Output() click = new EventEmitter<Event>();
+  @Output() clicked = new EventEmitter<Event>();
 
   constructor() { }
 

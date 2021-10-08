@@ -1,6 +1,7 @@
 // Colors
 @color-white: #ffffff;
 @color-gray-1: #333333;
+@color-gray-2: #4F4F4F;
 @color-gray-3: #828282;
 @color-gray-5: #E0E0E0;
 @color-gray-6: #F2F2F2;
@@ -45,11 +46,17 @@
 
 .tag-list {
     width: 100%;
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.scrolled-tag-list {
+    .tag-list;
+    flex-wrap: nowrap;
     overflow-x: scroll;
     .no-scrollbars;
-    display: flex;
-    flex-flow: row nowrap;
-    gap: 4px;
 }
 
 .no-scrollbars {

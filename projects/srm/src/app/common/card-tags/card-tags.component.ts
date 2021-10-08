@@ -10,6 +10,7 @@ import { Card, CategoryCountsResult } from '../datatypes';
 export class CardTagsComponent implements OnInit {
 
   @Input() item: Card;
+  @Input() big = false;
   
   constructor() { }
 
