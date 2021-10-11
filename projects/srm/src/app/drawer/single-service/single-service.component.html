@@ -8,7 +8,7 @@
     <app-card-tags [item]='card' [big]='true'></app-card-tags>    
 </div>
 <div class='buttons'>
-    <app-card-button kind='link' *ngFor='let url of (card.urls || [])' [display]='url.title' [action]='url.link' [arrow]='true'></app-card-button>
+    <app-card-button kind='link' *ngFor='let url of urls()' [display]='url.title' [action]='url.link' [arrow]='true'></app-card-button>
     <app-card-button kind='phone' *ngIf='card.branch_phone_numbers' [display]='card.branch_phone_numbers' [action]='"tel:" + card.branch_phone_numbers'></app-card-button>
     <app-card-button kind='address' *ngIf='card.branch_address' [display]='card.branch_address' [action]='geoLink()'></app-card-button>
     <ng-container *ngIf='card.service_payment_required === "no"'>

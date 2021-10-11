@@ -23,4 +23,14 @@ export class SingleServiceComponent implements OnInit {
   geoLink() {
     return 'geo:' + this.card.branch_geometry.join(',');
   }
+
+  urls() {
+    return this.card.service_urls?.split(',').map((url) => {
+      const parts = url.split('#');
+      return {
+          link: parts[0],
+          title: parts[1],
+      };
+    }) || [];
+  }
 }

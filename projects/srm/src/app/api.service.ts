@@ -91,7 +91,7 @@ export class ApiService {
   }
 
   getServices(state: State): Observable<QueryCardsResult> {
-    const params: any = {size: 100};
+    const params: any = {size: 10};
     const bounds = state.bounds;
     if (bounds) {
       const filter = {

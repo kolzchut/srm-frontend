@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import * as mapboxgl from 'mapbox-gl';
 import { Card, DrawerState, HeaderState, ItemState } from '../common/datatypes';
 
 @Component({
@@ -21,6 +22,8 @@ export class MainComponent implements OnInit {
   ItemState = ItemState;
   HeaderState = HeaderState;
 
+  map: mapboxgl.Map;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -38,6 +41,7 @@ export class MainComponent implements OnInit {
   selectItems(items: Card[]) {
     this.selectedItems = items;
     this.drawerState = DrawerState.Peek;
+    this.setLabelsFilter(items[0]);
   }
 
   selectItem(item: Card | null, preview: boolean = false) {
@@ -66,6 +70,7 @@ export class MainComponent implements OnInit {
         this.drawerState = DrawerState.Most;
         this.headerState = HeaderState.Hidden;
       }
+      this.setLabelsFilter(item);
     } else {
       if (this.savedDrawerState) {
         this.drawerState = this.savedDrawerState;
@@ -75,7 +80,16 @@ export class MainComponent implements OnInit {
       this.savedSelectedItems = null;
       this.headerState = HeaderState.Visible;
       this.itemState = ItemState.None;
+      this.setLabelsFilter(null);
     }
+  }
+
+  setLabelsFilter(item: Card | null) {
+    let record_id = 'nonexistent';
+    if (item) {
+      record_id = item.branch_geometry[0].toFixed(5) + ',' + item.branch_geometry[1].toFixed(5);
+    }
+    this.map.setFilter('labels-active', ['==', ['get', 'record_id'], record_id]);
   }
 
   handleEvent(event: string) {

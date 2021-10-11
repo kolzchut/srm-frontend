@@ -3,7 +3,7 @@
     <app-filtering (activated)='headerActive = $event'></app-filtering>
 </div>
 <div class='content' [class.hidden]='headerState === HeaderState.Visible && headerActive'>
-    <app-map (points)='mapSelectedPoints($event)'></app-map>
+    <app-map (points)='mapSelectedPoints($event)' (map)='map=$event'></app-map>
     <app-drawer [state]='drawerState' (handle)='handleEvent($event)'>
         <ng-container ngProjectAs='strip'>
             <app-strip-single *ngIf='selectedItem && drawerState !== DrawerState.Most' [service]='selectedItem' (selected)='selectItem($event)'></app-strip-single>

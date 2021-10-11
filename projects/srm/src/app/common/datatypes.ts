@@ -42,16 +42,6 @@ export class Card {
     response_categories: string[];
     situations: {id: string; name: string}[];
     responses: {id: string; name: string}[];
-
-    get urls(): {link: string, title: string}[] {
-        return this.service_urls.split(',').map((url) => {
-            const parts = url.split('#');
-            return {
-                link: parts[0],
-                title: parts[1],
-            };
-        }) || [];
-    }
 };
 
 export type Item = {

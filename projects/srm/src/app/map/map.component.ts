@@ -19,18 +19,21 @@ export class MapComponent implements OnInit, AfterViewInit {
   STYLE = 'mapbox://styles/srm-kolzchut/cksprr4sy0hbg18o5ct2ty2oc/draft';
 
   @Output('points') points = new EventEmitter<Card[]>();
+  @Output('map') newMap = new EventEmitter<mapboxgl.Map>();
   @ViewChild('map') mapEl: ElementRef;
 
   map: mapboxgl.Map;
   moveEvents = new Subject<mapboxgl.LngLatBounds>();
   
-  OFFSETS = [[[0.0, 0.0]],
-             [[0.0, -0.5], [0.0, 0.5]],
-             [[0.0, -0.577], [0.5, 0.289], [-0.5, 0.289]], 
-             [[0.0, -0.707], [0.707, -0.0], [0.0, 0.707], [-0.707, 0.0]], 
-             [[0.0, -0.851], [0.809, -0.263], [0.5, 0.688], [-0.5, 0.688], [-0.809, -0.263]],
-             [[0.0, -1.0], [0.866, -0.5], [0.866, 0.5], [0.0, 1.0], [-0.866, 0.5], [-0.866, -0.5]],
-             [[0.0, 0.0], [0.0, -1.0], [0.866, -0.5], [0.866, 0.5], [0.0, 1.0], [-0.866, 0.5], [-0.866, -0.5]]];
+  OFFSETS = [
+    [[0.0, 0.0]],
+    [[0.0, -0.5], [0.0, 0.5]],
+    [[0.0, -0.577], [0.5, 0.289], [-0.5, 0.289]], 
+    [[0.0, -0.707], [0.707, -0.0], [0.0, 0.707], [-0.707, 0.0]], 
+    // [[0.0, -0.851], [0.809, -0.263], [0.5, 0.688], [-0.5, 0.688], [-0.809, -0.263]],
+    // [[0.0, -1.0], [0.866, -0.5], [0.866, 0.5], [0.0, 1.0], [-0.866, 0.5], [-0.866, -0.5]],
+    // [[0.0, 0.0], [0.0, -1.0], [0.866, -0.5], [0.866, 0.5], [0.0, 1.0], [-0.866, 0.5], [-0.866, -0.5]]
+];
   ALL_CATEGORIES = ALL_CATEGORIES; 
 
   constructor(private mapboxService: MapboxService, private state: StateService, private sanitizer: DomSanitizer) {
@@ -88,22 +91,25 @@ export class MapComponent implements OnInit, AfterViewInit {
                   paint: Object.assign(layer.paint, {'circle-translate': modifiedOffset}),
                   filter: ['==', ['get', 'offset'], `${count}-${offsetIdx+1}`]
                 };
+                console.log('SS', newLayer.source, newLayer['source-layer']);
                 this.map.addLayer(newLayer, layerName);
               }
             }
             this.map.setLayoutProperty(layerName, 'visibility', 'none');
           }
-          this.map.getStyle().layers?.filter((l) => l.id === 'labels-active' || l.id.indexOf('points-stroke-on-') === 0).forEach((layer) => {
+          this.map.getStyle().layers?.filter((l) => l.id.indexOf('points-stroke-on-') === 0).forEach((layer) => {
             const layerName = layer.id;
             this.map.on('click', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
               if (e.features && e.features.length > 0) {
                 const props: any = e.features[0].properties;
+                console.log('SELECTED', props);
                 const records = JSON.parse(props.records) as Card[];
                 this.points.next(records);
               }
             });
           });
         });
+        this.newMap.next(this.map);
         this.state.bounds = this.map.getBounds();
       } catch {
         console.log('FAILED TO LOAD')
