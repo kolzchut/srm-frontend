@@ -19,7 +19,6 @@ export class FilterBarComponent implements OnInit {
 
   set active(value: boolean) {
     this._active = value;
-    console.log(value);
     this.activated.next(value ? 'filters': null);
   }
 

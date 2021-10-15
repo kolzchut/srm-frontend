@@ -5,9 +5,10 @@ import * as mapboxgl from 'mapbox-gl';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { StateService } from '../state.service';
-import { ALL_CATEGORIES } from '../common/consts';
+import { ALL_CATEGORIES, CATEGORY_COLORS } from '../common/consts';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Card } from '../common/datatypes';
+import { Point } from 'geojson';
 
 @Component({
   selector: 'app-map',
@@ -67,37 +68,93 @@ export class MapComponent implements OnInit, AfterViewInit {
           this.moveEvents.next(this.map?.getBounds());
         });
         this.map.on('styleimagemissing', (e) => {
-          const id = e.id;
-          const el = document.getElementById(id) as HTMLImageElement;
-          this.map.addImage(id, el);
+          const id: string = e.id;
+          this.map.addImage(id, this.createLabelBg(id) as HTMLImageElement);
         });
         this.map.on('load', () => {
-          for (const layerName of ['points-on', 'points-stroke-on']) {
-            const layer = this.map.getStyle().layers?.filter((l) => l.id === layerName)[0] as mapboxgl.CircleLayer;
-            for (const countList of this.OFFSETS) {
-              const count = countList.length;
-              for (const offsetIdx_ in countList) {
-                const offsetIdx = parseInt(offsetIdx_);
-                const offset = countList[offsetIdx];
-                const radius = 6;
-                const modifiedOffset = [offset[0] * radius, offset[1] * radius];
-                const offsetLayerName = `${layerName}-${count}-${offsetIdx+1}`;
-                const newLayer: any = {
-                  id: offsetLayerName, 
-                  type: layer.type,
-                  source: layer.source,
-                  'source-layer': layer['source-layer'],
-                  layout: layer.layout || {},
-                  paint: Object.assign(layer.paint, {'circle-translate': modifiedOffset}),
-                  filter: ['==', ['get', 'offset'], `${count}-${offsetIdx+1}`]
-                };
-                console.log('SS', newLayer.source, newLayer['source-layer']);
-                this.map.addLayer(newLayer, layerName);
+          // for (const layerName of ['points-on', 'points-stroke-on']) {
+          //   const layer = this.map.getStyle().layers?.filter((l) => l.id === layerName)[0] as mapboxgl.CircleLayer;
+          //   for (const countList of this.OFFSETS) {
+          //     const count = countList.length;
+          //     for (const offsetIdx_ in countList) {
+          //       const offsetIdx = parseInt(offsetIdx_);
+          //       const offset = countList[offsetIdx];
+          //       const radius = 6;
+          //       const modifiedOffset = [offset[0] * radius, offset[1] * radius];
+          //       const offsetLayerName = `${layerName}-${count}-${offsetIdx+1}`;
+          //       const newLayer: any = {
+          //         id: offsetLayerName, 
+          //         type: layer.type,
+          //         source: layer.source,
+          //         'source-layer': layer['source-layer'],
+          //         layout: layer.layout || {},
+          //         paint: Object.assign(layer.paint, {'circle-translate': modifiedOffset}),
+          //         filter: ['==', ['get', 'offset'], `${count}-${offsetIdx+1}`]
+          //       };
+          //       console.log('SS', newLayer.source, newLayer['source-layer']);
+          //       this.map.addLayer(newLayer, layerName);
+          //     }
+          //   }
+          //   this.map.setLayoutProperty(layerName, 'visibility', 'none');
+          // }
+          const clusterProperties: any = {};
+          CATEGORY_COLORS.forEach(cc => {
+            clusterProperties[cc.category] = ['+', ['case', ['==', ['get', 'response_category'], cc.category], 1, 0]];
+          });
+          clusterProperties.care = ['+', 1];
+          this.map.addSource('clustee', {
+            'type': 'geojson',
+            'data': '/assets/geo_data.json',
+            'cluster': true,
+            'clusterRadius': 50,
+            'clusterProperties': clusterProperties,
+            'maxzoom': 10,
+          });
+          this.map.addLayer({
+            'id': 'clustee_dummy',
+            'type': 'circle',
+            'source': 'clustee',
+            'filter': ['==', 'cluster', true],
+            'paint': {
+              'circle-color': '#000000',
+              'circle-opacity': 0,
+              'circle-radius': 12
+            },
+            // maxzoom: 10
+          });
+          const markers: any= {};
+          let markersOnScreen: any = {};
+          this.map.on('render', () => {
+            if (!this.map.isSourceLoaded('clustee')) return;
+            const newMarkers: any = {};
+            const features = this.map.querySourceFeatures('clustee');
+            // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
+            // and add it to the map if it's not there already
+            for (const feature of features) {
+              const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
+              const props: any = feature.properties;
+              if (!props.cluster) continue;
+              const id = props.cluster_id;
+              
+              let marker = markers[id];
+              if (!marker) {
+                const el = this.createDonutChart(props);
+                marker = markers[id] = new mapboxgl.Marker({
+                  element: el
+                }).setLngLat(coords);
+                console.log(id, marker, el, coords);
               }
+              newMarkers[id] = marker;
+              if (!markersOnScreen[id]) marker.addTo(this.map);
             }
-            this.map.setLayoutProperty(layerName, 'visibility', 'none');
-          }
-          this.map.getStyle().layers?.filter((l) => l.id.indexOf('points-stroke-on-') === 0).forEach((layer) => {
+            // for every marker we've added previously, remove those that are no longer visible
+            for (const id in markersOnScreen) {
+              if (!newMarkers[id]) markersOnScreen[id].remove();
+            }
+            markersOnScreen = newMarkers;            
+          });
+
+          this.map.getStyle().layers?.filter((l) => l.id.indexOf('points-stroke-on') === 0).forEach((layer) => {
             const layerName = layer.id;
             this.map.on('click', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
               if (e.features && e.features.length > 0) {
@@ -117,4 +174,76 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
+  createLabelBg(id: string): HTMLElement | null {
+    for (const cc of CATEGORY_COLORS) {
+      if (id === 'tooltip-rc-' + cc.category) {
+        const html = `<img class='map-tooltip' [src]='tooltipImg(${cc.color})'>`;
+        const el = document.createElement('div');
+        el.innerHTML = html;
+        return el.firstChild as HTMLElement;    
+      }
+    }
+    return null;
+  }
+
+  createDonutChart(props: any): HTMLElement {
+    const offsets = [];
+    const counts = CATEGORY_COLORS.map(cc => props[cc.category]);
+    const clusterColors = CATEGORY_COLORS.map(cc => cc.color);
+
+    let total = 0;
+    for (const count of counts) {
+      offsets.push(total);
+      total += count;
+    }
+    const fontSize = 16;
+    const r = 24;
+    const r0 = Math.round(r * 0.6);
+    const w = r * 2;
+     
+    let html = `<div>
+    <svg width="${w}" height="${w}" viewbox="0 0 ${w} ${w}" text-anchor="middle" style="font: ${fontSize}px sans-serif; display: block">`;
+     
+    for (let i = 0; i < counts.length; i++) {
+      if (counts[i]) {
+        html += this.donutSegment(
+          offsets[i] / total,
+          (offsets[i] + counts[i]) / total,
+          r,
+          r0,
+          clusterColors[i]
+        );  
+      }
+    }
+    html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />
+      <text dominant-baseline="central" x="${r}" y="${r}">
+      ${total.toLocaleString()}
+      </text>
+      </svg>
+      </div>`;
+     
+    const el = document.createElement('div');
+    el.innerHTML = html;
+    return el.firstChild as HTMLElement;
+  }
+
+  donutSegment(start: number, end: number, r: number, r0: number, color: string) {
+    if (end - start === 1) end -= 0.00001;
+    const a0 = 2 * Math.PI * (start - 0.25);
+    const a1 = 2 * Math.PI * (end - 0.25);
+    const x0 = Math.cos(a0),
+    y0 = Math.sin(a0);
+    const x1 = Math.cos(a1),
+    y1 = Math.sin(a1);
+    const largeArc = end - start > 0.5 ? 1 : 0;
+     
+    // draw an SVG path
+    return `<path d="M ${r + r0 * x0} ${r + r0 * y0} L ${r + r * x0} ${
+      r + r * y0
+      } A ${r} ${r} 0 ${largeArc} 1 ${r + r * x1} ${r + r * y1} L ${
+      r + r0 * x1
+      } ${r + r0 * y1} A ${r0} ${r0} 0 ${largeArc} 0 ${r + r0 * x0} ${
+      r + r0 * y0
+      }" fill="${color}" />`;
+  }
 }
