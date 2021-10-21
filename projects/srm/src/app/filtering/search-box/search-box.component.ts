@@ -1,4 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Subject } from 'rxjs';
+import { Response, Place, Card } from '../../common/datatypes';
+import { SearchService } from '../../search.service';
 import { StateService } from '../../state.service';
 
 @Component({
@@ -6,20 +9,28 @@ import { StateService } from '../../state.service';
   templateUrl: './search-box.component.html',
   styleUrls: ['./search-box.component.less']
 })
-export class SearchBoxComponent implements OnInit {
+export class SearchBoxComponent implements OnInit, OnChanges {
 
+  @Input() isActive: boolean;
   @Output() activated = new EventEmitter<string | null>();
 
   _active = false;
   _query = '';
 
-  constructor(private state: StateService) {
-    state.state.subscribe((state) => {
-      this._query = state.searchQuery || '';
-    })
+  constructor(private search: SearchService, private state: StateService) {
+    state.state.subscribe(state => {
+      this._query = state.searchBoxTitle || '';
+      console.log('NEW QUERY', JSON.stringify(this._query));
+    });
   }
 
   ngOnInit(): void {
+  }
+
+  ngOnChanges() {
+    if (this.isActive !== this.active) {
+      this.active = this.isActive;
+    }
   }
 
   set active(value: boolean) {
@@ -32,7 +43,8 @@ export class SearchBoxComponent implements OnInit {
   }
 
   set query(value: string) {
-    this.state.searchQuery = value;
+    this._query = value;
+    this.search.query.next(value);
   }
 
   get query() {

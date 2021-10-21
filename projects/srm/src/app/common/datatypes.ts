@@ -24,17 +24,17 @@ export class Card {
     service_details: string;
     service_payment_required: string;
     service_payment_details: string;
-    service_urls: string;
+    service_urls: {href: string, title: string}[];
     organization_id: string;
     organization_name: string;
     organization_description: string;
     organization_purpose: string;
     organization_kind: string;
-    organization_urls: string;
+    organization_urls: {href: string, title: string}[];
     branch_id: string;
     branch_name: string;
     branch_description: string;
-    branch_urls: string;
+    branch_urls: {href: string, title: string}[];
     branch_phone_numbers: string;
     branch_address: string;
     branch_geometry: [number, number];
@@ -44,28 +44,19 @@ export class Card {
     responses: {id: string; name: string}[];
 };
 
-export type Item = {
-    id: string,
-    name: string,
-    description: string,
-    details: string,
-    payment_required: string,
-    payment_details: string,
-    urls: string[],
-    phone_numbers: string[],
-    address: string,
-    geometry: [number, number],
-    categories: string[],
-    situations: {id: string, name: string}[],
-    responses: {id: string, name: string}[],
+export class Place {
+    name: string[];
+    bounds: [number, number, number, number];
+    place: string;  
+};
+
+export class Response {
+    id: string;
+    breadcrumbs?: string;
+    name: string;
 };
 
 export type Situation = {
-    id: string,
-    name: string,
-};
-
-export type Response = {
     id: string,
     name: string,
 };
@@ -81,14 +72,14 @@ export type Organization = {
     description: string,
     purpose: string,
     kind: string,
-    urls: string[],
+    urls: {href: string, title: string}[],
 };
 
 export type Branch = {
     id: string,
     name: string,
     description: string,
-    urls: string[],
+    urls: {href: string, title: string}[],
     phone_numbers: string[],
     address: string,
     geometry: [number, number],
@@ -101,7 +92,7 @@ export type Service = {
     details: string,
     payment_required: string,
     payment_details: string,
-    urls: string[],
+    urls: {href: string, title: string}[],
 };
 
 export type CardResponse = {
@@ -111,21 +102,21 @@ export type CardResponse = {
     details: string,
     payment_required: string,
     payment_details: string,
-    urls: string[],
+    urls: {href: string, title: string}[],
     phone_numbers: string[],
     address: string,
     geometry: [number, number],
     categories: string
 };
 
-export type QueryCardsResult = {
+export type SearchResult<T> = {
     search_counts: {
         [key: string]: {
             total_overall: number,
         },
     },
     search_results: {
-        source: Card
+        source: T
     }[]
 };
 
@@ -135,3 +126,7 @@ export type CategoryCountsResult = {
     count?: number,
     color: string,
 };
+
+export type QueryCardsResult = SearchResult<Card>;
+export type QueryPlacesResult = SearchResult<Place>;
+export type QueryResponsesResult = SearchResult<Response>;

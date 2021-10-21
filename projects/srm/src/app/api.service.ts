@@ -5,73 +5,16 @@ import { StateService, State } from './state.service';
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Card, CategoryCountsResult, QueryCardsResult } from './common/datatypes';
+import { Card, CategoryCountsResult, QueryCardsResult, QueryPlacesResult, QueryResponsesResult } from './common/datatypes';
 import { CATEGORY_COLORS } from './common/consts';
 import { LngLatBounds } from 'mapbox-gl';
-
-function makeKey(obj: any, keys: string[]) {
-  const ret = [];
-  for (const key of keys) {
-    ret.push(JSON.stringify(obj.hasOwnProperty(key)? obj[key] : null));
-  }
-  return ret.join(':');
-}
-
-function keyComparer(keys: string[]) {
-  return (x: Object, y: Object) => makeKey(x, keys) === makeKey(y, keys);
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  visibleServices = new ReplaySubject<Card[]>(1);
-  visibleCounts = new ReplaySubject<CategoryCountsResult[]>(1);
-  searchResults = new Subject<any[]>();
-
-  constructor(private state: StateService, private http: HttpClient) {
-    // Fetching services from the DB
-    state.state.pipe(
-      debounceTime(1000),
-      map((state) => {
-        return {bounds: state.bounds};
-      }),
-      distinctUntilChanged(keyComparer(['bounds'])),
-      switchMap((state: State) => {
-        console.log('FETCHING SERVICES');
-        return forkJoin([this.getServices(state), this.countCategories(state)]);
-      })
-    ).subscribe(([services, counts]: QueryCardsResult[]) => {
-      this.visibleServices.next(
-        services.search_results.map((x) => x.source)
-      );
-      this.visibleCounts.next(
-        CATEGORY_COLORS.map((cc) => {
-          return {
-            category: cc.category,
-            count: counts.search_counts[cc.category].total_overall,
-            color: cc.color
-          };
-        }).filter((x) => x.count > 0)
-      );
-    });
-    
-    // Search Autocomplete
-    state.state.pipe(
-      debounceTime(1000),
-      map((state) => {
-        return {searchQuery: state.searchQuery};
-      }),
-      distinctUntilChanged(keyComparer(['searchQuery'])),
-      switchMap((state) => {
-        console.log('FETCHING SEARCH QUERY');
-        return this.searchQuery(state);
-      })
-    ).subscribe((results: any) => {
-      this.searchResults.next(results.search_results || []);
-    });
-
+  constructor(private http: HttpClient) {
   }
 
   coord(value: number) {
@@ -90,12 +33,20 @@ export class ApiService {
     ];
   }
 
+  getItem(id: string): Observable<Card> {
+    return this.http.get(environment.itemURL + id).pipe(
+      map((res: any) => {
+        return res as Card;
+      })
+    );
+  }
+
   getServices(state: State): Observable<QueryCardsResult> {
     const params: any = {size: 10};
-    const bounds = state.bounds;
-    if (bounds) {
+    const bounds = state.geo;
+    if (bounds && bounds.length === 2) {
       const filter = {
-        branch_geometry__bounded: this.boundsFilter(bounds)
+        branch_geometry__bounded: this.boundsFilter(new LngLatBounds(bounds as [[number, number], [number, number]]))
       };
       params['filter'] = JSON.stringify(filter);
     }
@@ -109,8 +60,8 @@ export class ApiService {
 
   countCategories(state: State): Observable<QueryCardsResult> {
     const filters: any = {};
-    if (state.bounds) {
-      filters.branch_geometry__bounded = this.boundsFilter(state.bounds);
+    if (state.geo && state.geo.length === 2) {
+      filters.branch_geometry__bounded = this.boundsFilter(new LngLatBounds(state.geo as [[number, number], [number, number]]));
     }
     const config = CATEGORY_COLORS.map((cc) => {
       return {
@@ -128,12 +79,30 @@ export class ApiService {
     );
   }
 
-  searchQuery(state: any) {
-    if (environment.searchQueryURL && environment.searchQueryURL.length > 0) {
-      return this.http.get(environment.searchQueryURL);
+  query<T>(query: string, url: string): Observable<T> {
+    if (query && query.length > 0) {
+      const params = {q: query};
+      return this.http.get(url, {params}).pipe(
+        map((res: any) => {
+          const results = res as T;
+          return results;
+        })
+      );
     } else {
-      return from([environment.searchQueryMock])
+      return from([{} as T]);
     }
+  }
+
+  queryServices(query: string) {
+    return this.query<QueryCardsResult>(query, environment.servicesURL);
+  }
+
+  queryPlaces(query: any) {
+    return this.query<QueryPlacesResult>(query, environment.placesURL);
+  }
+
+  queryResponses(query: any) {
+    return this.query<QueryResponsesResult>(query, environment.responsesURL);
   }
 
 }

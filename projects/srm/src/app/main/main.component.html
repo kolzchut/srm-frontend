@@ -3,14 +3,14 @@
     <app-filtering (activated)='headerActive = $event'></app-filtering>
 </div>
 <div class='content' [class.hidden]='headerState === HeaderState.Visible && headerActive'>
-    <app-map (points)='mapSelectedPoints($event)' (map)='map=$event'></app-map>
+    <app-map (points)='mapSelectedPoints($event)' (map)='map=$event; loaded.next()'></app-map>
     <app-drawer [state]='drawerState' (handle)='handleEvent($event)'>
         <ng-container ngProjectAs='strip'>
-            <app-strip-single *ngIf='selectedItem && drawerState !== DrawerState.Most' [service]='selectedItem' (selected)='selectItem($event)'></app-strip-single>
-            <app-strip-multiple *ngIf='selectedItems && drawerState === DrawerState.Peek' [services]='selectedItems' (selected)='selectItem($event)'></app-strip-multiple>
+            <app-strip-single *ngIf='selectedItem && drawerState !== DrawerState.Most' [service]='selectedItem' (selected)='state.selectService($event)'></app-strip-single>
+            <app-strip-multiple *ngIf='selectedItems && drawerState === DrawerState.Peek' [services]='selectedItems' (selected)='state.selectService($event)'></app-strip-multiple>
         </ng-container>
         <ng-container ngProjectAs='content'>
-            <app-service-list *ngIf='itemState !== ItemState.Full' (selected)='selectItem($event)'></app-service-list>
+            <app-service-list *ngIf='itemState !== ItemState.Full' (selected)='state.selectService($event)'></app-service-list>
             <app-single-service *ngIf='itemState === ItemState.Full' [item]='selectedItem'></app-single-service>    
         </ng-container>
     </app-drawer>

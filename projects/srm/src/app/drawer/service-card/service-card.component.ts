@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Card } from '../../common/datatypes';
+import { HighlighterService } from '../../highlighter.service';
 
 @Component({
   selector: 'app-service-card',
@@ -9,9 +10,11 @@ import { Card } from '../../common/datatypes';
 export class ServiceCardComponent implements OnInit {
 
   @Input() item: Card;
+  @Input() highlight = false;
 
   constructor() { }
 
   ngOnInit(): void {
   }
+
 }

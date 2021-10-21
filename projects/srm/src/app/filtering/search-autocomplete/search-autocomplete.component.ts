@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-search-autocomplete',
@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./search-autocomplete.component.less']
 })
 export class SearchAutocompleteComponent implements OnInit {
+
+  @Output() selected = new EventEmitter();
 
   constructor() { }
 

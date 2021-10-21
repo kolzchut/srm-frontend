@@ -25,12 +25,10 @@ export class SingleServiceComponent implements OnInit {
   }
 
   urls() {
-    return this.card.service_urls?.split(',').map((url) => {
-      const parts = url.split('#');
-      return {
-          link: parts[0],
-          title: parts[1],
-      };
-    }) || [];
+    return [
+      ...(this.card.service_urls || []),
+      ...(this.card.organization_urls || []),
+      ...(this.card.branch_urls || []),
+    ];
   }
 }

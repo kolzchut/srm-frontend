@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { CategoryCountsResult } from '../../common/datatypes';
+import { SearchService } from '../../search.service';
 
 @Component({
   selector: 'app-service-list',
@@ -14,11 +15,11 @@ export class ServiceListComponent implements OnInit {
 
   @Output() selected = new EventEmitter<any>();
 
-  constructor(public api: ApiService) {
-    api.visibleServices.subscribe((services: any[]) => {
+  constructor(public search: SearchService) {
+    search.visibleServices.subscribe((services: any[]) => {
       this.services = services;
     });
-    api.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
+    search.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
       this.counts = counts.map(c => {
         return {
           category: c.category,

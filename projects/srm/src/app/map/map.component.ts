@@ -9,6 +9,7 @@ import { ALL_CATEGORIES, CATEGORY_COLORS } from '../common/consts';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Card } from '../common/datatypes';
 import { Point } from 'geojson';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-map',
@@ -24,8 +25,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   @ViewChild('map') mapEl: ElementRef;
 
   map: mapboxgl.Map;
-  moveEvents = new Subject<mapboxgl.LngLatBounds>();
+  moveEvents = new Subject<[number, number, number]>();
   
+  ZOOM_THRESHOLD = 10;
   OFFSETS = [
     [[0.0, 0.0]],
     [[0.0, -0.5], [0.0, 0.5]],
@@ -38,11 +40,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   ALL_CATEGORIES = ALL_CATEGORIES; 
 
   constructor(private mapboxService: MapboxService, private state: StateService, private sanitizer: DomSanitizer) {
-    this.moveEvents.pipe(
-      debounceTime(1000),
-    ).subscribe(bounds => {
-      state.bounds = bounds;
-    })
+    this.moveEvents.subscribe(centerZoom => {
+      state.updateCenterZoom(centerZoom, true);
+    });
   }
 
   ngOnInit(): void {
@@ -52,24 +52,44 @@ export class MapComponent implements OnInit, AfterViewInit {
     const svg = `<svg width="82" height="24" viewBox="0 0 82 24" fill="blue" xmlns="http://www.w3.org/2000/svg">
       <path d="M0 4C0 1.79086 1.79086 0 4 0H78C80.2091 0 82 1.79086 82 4V20C82 22.2091 80.2091 24 78 24H4C1.79086 24 0 22.2091 0 20V4Z" fill="${color}"/>
     </svg>`;
-    return this.sanitizer.bypassSecurityTrustUrl('data:image/svg+xml;base64,' + btoa(svg));
+    return 'data:image/svg+xml;base64,' + btoa(svg);
   }
 
   ngAfterViewInit() {
     if (this.mapEl && this.mapEl.nativeElement && this.mapboxService.init) {
       try {
-        this.map = new mapboxgl.Map({
+        const mapParams: any = {
           container: this.mapEl.nativeElement,
           style: this.STYLE,
           minZoom: 3,
-        });
-        this.map.on('moveend', (event: DragEvent) => {
-          console.log('MOVED', this.map?.getBounds())
-          this.moveEvents.next(this.map?.getBounds());
-        });
+        };
+        this.map = new mapboxgl.Map(mapParams);
+        this.state.geoChanges.pipe(
+          debounceTime(500),
+        ).subscribe(state => {
+          if (this.map) {
+            const geo = state.geo;
+            if (geo) {
+              if (geo.length === 3) {
+                console.log('CENTERING', geo);
+                this.map.flyTo({
+                  center: geo.slice(0, 2) as mapboxgl.LngLatLike,
+                  zoom: geo[2],
+                  padding: {top: 0, left: 0, right: 0, bottom: 500}
+                });
+              } else if (geo.length === 2) {
+                console.log('FITTING BOUNDS', geo);
+                this.map.fitBounds(geo as mapboxgl.LngLatBoundsLike, {}, {fromState: true});  
+              }
+            }
+          }
+        });    
         this.map.on('styleimagemissing', (e) => {
           const id: string = e.id;
-          this.map.addImage(id, this.createLabelBg(id) as HTMLImageElement);
+          const img: HTMLImageElement | null = this.createLabelBg(id);
+          if (img) {
+            img.onload = () => this.map.addImage(id, img);
+          }
         });
         this.map.on('load', () => {
           // for (const layerName of ['points-on', 'points-stroke-on']) {
@@ -104,11 +124,11 @@ export class MapComponent implements OnInit, AfterViewInit {
           clusterProperties.care = ['+', 1];
           this.map.addSource('clustee', {
             'type': 'geojson',
-            'data': '/assets/geo_data.json',
+            'data': environment.clusterDataURL,
             'cluster': true,
             'clusterRadius': 50,
             'clusterProperties': clusterProperties,
-            'maxzoom': 10,
+            'maxzoom': this.ZOOM_THRESHOLD,
           });
           this.map.addLayer({
             'id': 'clustee_dummy',
@@ -142,7 +162,6 @@ export class MapComponent implements OnInit, AfterViewInit {
                 marker = markers[id] = new mapboxgl.Marker({
                   element: el
                 }).setLngLat(coords);
-                console.log(id, marker, el, coords);
               }
               newMarkers[id] = marker;
               if (!markersOnScreen[id]) marker.addTo(this.map);
@@ -159,28 +178,34 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.map.on('click', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
               if (e.features && e.features.length > 0) {
                 const props: any = e.features[0].properties;
-                console.log('SELECTED', props);
+                // console.log('SELECTED', props);
                 const records = JSON.parse(props.records) as Card[];
                 this.points.next(records);
               }
             });
           });
+          this.newMap.next(this.map);
+          this.map.on('moveend', (event: DragEvent) => {
+            const fromState = (event as any).fromState;
+            console.log('MOVED', this.map?.getBounds(), fromState);
+            if (!fromState) {
+              this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
+            }
+          });  
         });
-        this.newMap.next(this.map);
-        this.state.bounds = this.map.getBounds();
-      } catch {
-        console.log('FAILED TO LOAD')
+        // this.state.bounds = this.map.getBounds();
+      } catch (e) {
+        console.log('FAILED TO LOAD', e)
       }
     }
   }
 
-  createLabelBg(id: string): HTMLElement | null {
-    for (const cc of CATEGORY_COLORS) {
+  createLabelBg(id: string): HTMLImageElement | null {
+    for (const cc of ALL_CATEGORIES) {
       if (id === 'tooltip-rc-' + cc.category) {
-        const html = `<img class='map-tooltip' [src]='tooltipImg(${cc.color})'>`;
-        const el = document.createElement('div');
-        el.innerHTML = html;
-        return el.firstChild as HTMLElement;    
+        const img = new Image(82, 24);
+        img.src = this.tooltipImg(cc.color);
+        return img;
       }
     }
     return null;

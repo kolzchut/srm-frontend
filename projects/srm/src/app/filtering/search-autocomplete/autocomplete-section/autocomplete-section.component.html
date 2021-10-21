@@ -1,11 +1,11 @@
 <div class='container'>
     <div class='header' *ngIf='visible'>
         <div class='type'>{{typeName}}:</div>
-        <div class='more' *ngIf='more > 0'>עוד {{more}}</div>
+        <div class='more' *ngIf='count > show'>עוד {{count - show}}</div>
     </div>
     <div class='results'>
-        <ng-container *ngFor='let result of (results | async)'>
-            <app-autocomplete-result [type]='type' [result]='result.source'></app-autocomplete-result>
+        <ng-container *ngFor='let result of results.slice(0, show)'>
+            <app-autocomplete-result [type]='type' [result]='result' (selected)='selected.emit()'></app-autocomplete-result>
         </ng-container>    
     </div>    
 </div>

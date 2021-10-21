@@ -1,8 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ApiService } from '../../../api.service';
-import { StateService } from '../../../state.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Observable } from 'rxjs';
+import { SearchResult } from '../../../common/datatypes';
+import { SearchService } from '../../../search.service';
 
 @Component({
   selector: 'app-autocomplete-section',
@@ -11,25 +10,38 @@ import { StateService } from '../../../state.service';
 })
 export class AutocompleteSectionComponent implements OnInit {
 
+  PREVIEW = 3;
+
   @Input() type: string;
   @Input() typeName: string;
+  @Output() selected = new EventEmitter();
 
   visible = false;
-  more = 3;
+  count = 0;
+  show = this.PREVIEW;
 
-  results: Observable<any[]>;
+  results: any[] = [];
 
-  constructor(api: ApiService) {
-    this.results = api.searchResults.pipe(
-      map((results: any[]) => {
-        const filtered = results.filter((result: any) => result.type === this.type);
-        this.visible = filtered.length > 0;
-        return filtered;
-      })
-    );
+  constructor(private search: SearchService) {
   }
 
   ngOnInit(): void {
+    const obs = {
+      response: this.search.responses,
+      place: this.search.places,
+      service: this.search.services,
+    }[this.type] as Observable<SearchResult<any>>;
+    obs.subscribe(res => {
+      if (res.search_results && res.search_results.length > 0) {
+        this.visible = true;
+        this.results = res.search_results.map((s) => s.source);
+        this.count = res.search_counts._current.total_overall;
+      } else {
+        this.results = [];
+        this.count = 0;
+        this.visible = false;
+      }
+    });
   }
 
 }

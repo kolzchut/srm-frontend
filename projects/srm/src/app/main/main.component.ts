@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
+import { ReplaySubject } from 'rxjs';
+import { distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { Card, DrawerState, HeaderState, ItemState } from '../common/datatypes';
+import { StateService } from '../state.service';
 
 @Component({
   selector: 'app-main',
@@ -23,8 +26,15 @@ export class MainComponent implements OnInit {
   HeaderState = HeaderState;
 
   map: mapboxgl.Map;
+  loaded = new ReplaySubject(1);
 
-  constructor() { }
+  constructor(public state: StateService) {
+    this.loaded.pipe(
+      switchMap(() => this.state.selectedService)
+    ).subscribe(({service, preview}) => {
+      this.selectItem(service, preview);
+    });
+  }
 
   ngOnInit(): void {
   }
@@ -32,7 +42,7 @@ export class MainComponent implements OnInit {
   mapSelectedPoints(cards: Card[]) {
     if (cards.length === 1) {
       this.selectedItems = null;
-      this.selectItem(cards[0], true);
+      this.state.selectService(cards[0], true);
     } else {
       this.selectItems(cards);
     }    
@@ -41,7 +51,6 @@ export class MainComponent implements OnInit {
   selectItems(items: Card[]) {
     this.selectedItems = items;
     this.drawerState = DrawerState.Peek;
-    this.setLabelsFilter(items[0]);
   }
 
   selectItem(item: Card | null, preview: boolean = false) {
@@ -70,7 +79,7 @@ export class MainComponent implements OnInit {
         this.drawerState = DrawerState.Most;
         this.headerState = HeaderState.Hidden;
       }
-      this.setLabelsFilter(item);
+      this.state.centerZoom = [...item.branch_geometry, 15];
     } else {
       if (this.savedDrawerState) {
         this.drawerState = this.savedDrawerState;
@@ -80,23 +89,25 @@ export class MainComponent implements OnInit {
       this.savedSelectedItems = null;
       this.headerState = HeaderState.Visible;
       this.itemState = ItemState.None;
-      this.setLabelsFilter(null);
     }
+    this.setLabelsFilter();
   }
 
-  setLabelsFilter(item: Card | null) {
+  setLabelsFilter() {
     let record_id = 'nonexistent';
-    if (item) {
-      record_id = item.branch_geometry[0].toFixed(5) + ',' + item.branch_geometry[1].toFixed(5);
+    if (this.selectedItems) {
+      record_id = this.selectedItems[0].card_id
+    } else if (this.selectedItem) {
+      record_id = this.selectedItem.card_id
     }
-    this.map.setFilter('labels-active', ['==', ['get', 'record_id'], record_id]);
+    this.map.setFilter('labels-active', ['==', ['get', 'point_id'], record_id]);
   }
 
   handleEvent(event: string) {
     console.log('EV', this.itemState, event, this.drawerState);
     if (this.itemState === ItemState.Preview) {
       if (event === 'click' || event === 'up' || event === 'close') {
-        this.selectItem(null);
+        this.state.selectService(null);
       }
     } else if (this.itemState === ItemState.Full) {
       if (event === 'click' || event === 'down') {
@@ -105,7 +116,7 @@ export class MainComponent implements OnInit {
         }
       }
       if (event === 'close') {
-        this.selectItem(null);
+        this.state.selectService(null);
       }
     } else if (this.itemState === ItemState.None) {
       if (event === 'click') {
