@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import { ReplaySubject } from 'rxjs';
-import { distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Card, DrawerState, HeaderState, ItemState } from '../common/datatypes';
 import { StateService } from '../state.service';
 
@@ -45,6 +45,7 @@ export class MainComponent implements OnInit {
       this.state.selectService(cards[0], true);
     } else {
       this.selectItems(cards);
+      this.setLabelsFilter();
     }    
   }
 
@@ -100,6 +101,7 @@ export class MainComponent implements OnInit {
     } else if (this.selectedItem) {
       record_id = this.selectedItem.card_id
     }
+    console.log('LABELS FILTER', record_id);
     this.map.setFilter('labels-active', ['==', ['get', 'point_id'], record_id]);
   }
 

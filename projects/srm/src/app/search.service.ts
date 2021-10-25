@@ -40,10 +40,9 @@ export class SearchService {
 
     // Fetching services from the DB
     this.state.state.pipe(
-      filter((state: State) => !!state.geo && state.geo.length === 2),
       switchMap((state: State) => {
-        console.log('FETCHING SERVICES');
-        return forkJoin([this.api.getServices(state), this.api.countCategories(state)]);
+        console.log('FETCHING SERVICES', this.state.latestBounds);
+        return forkJoin([this.api.getServices(state, this.state.latestBounds), this.api.countCategories(state, this.state.latestBounds)]);
       })
     ).subscribe(([services, counts]: QueryCardsResult[]) => {
       console.log('GOT SERVICES');

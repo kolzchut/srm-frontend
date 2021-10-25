@@ -7,7 +7,7 @@ import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Card, CategoryCountsResult, QueryCardsResult, QueryPlacesResult, QueryResponsesResult } from './common/datatypes';
 import { CATEGORY_COLORS } from './common/consts';
-import { LngLatBounds } from 'mapbox-gl';
+import { LngLatBounds, LngLatBoundsLike } from 'mapbox-gl';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,7 @@ export class ApiService {
     return [
       [
         this.coord(bounds.getWest()),
-        this.coord(bounds?.getNorth()),
+        this.coord(bounds.getNorth()),
       ], [
         this.coord(bounds.getEast()),
         this.coord(bounds.getSouth()),
@@ -41,12 +41,11 @@ export class ApiService {
     );
   }
 
-  getServices(state: State): Observable<QueryCardsResult> {
+  getServices(state: State, bounds: LngLatBounds): Observable<QueryCardsResult> {
     const params: any = {size: 10};
-    const bounds = state.geo;
-    if (bounds && bounds.length === 2) {
+    if (bounds) {
       const filter = {
-        branch_geometry__bounded: this.boundsFilter(new LngLatBounds(bounds as [[number, number], [number, number]]))
+        branch_geometry__bounded: this.boundsFilter(bounds)
       };
       params['filter'] = JSON.stringify(filter);
     }
@@ -58,10 +57,10 @@ export class ApiService {
     );
   }
 
-  countCategories(state: State): Observable<QueryCardsResult> {
+  countCategories(state: State, bounds: LngLatBounds): Observable<QueryCardsResult> {
     const filters: any = {};
-    if (state.geo && state.geo.length === 2) {
-      filters.branch_geometry__bounded = this.boundsFilter(new LngLatBounds(state.geo as [[number, number], [number, number]]));
+    if (bounds) {
+      filters.branch_geometry__bounded = this.boundsFilter(bounds);
     }
     const config = CATEGORY_COLORS.map((cc) => {
       return {

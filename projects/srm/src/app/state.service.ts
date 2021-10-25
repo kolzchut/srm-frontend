@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LngLat, LngLatBounds, LngLatLike } from 'mapbox-gl';
-import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, from, Observable, ReplaySubject, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, first, map, switchMap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { Card } from './common/datatypes';
@@ -11,6 +11,7 @@ export type State = {
   searchBoxTitle?: string,
   cardId?: string | null,
   skipGeoUpdate?: boolean,
+  responseId?: string | null,
 };
 
 function makeKey(obj: any, keys: string[]) {
@@ -34,12 +35,14 @@ export class StateService {
   state = new ReplaySubject<State>(1);
   currentState: string = '_';
   geoChanges: Observable<State>;
+  filterChanges: Observable<State>;
   selectedService = new ReplaySubject<{service: Card | null, preview: boolean}>(1);
   savedGeo: [number, number, number] | null;
+  latestBounds: LngLatBounds;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute, private api: ApiService) {
     // State encoding into URL
-    const S = this.state.subscribe(state => {
+    this.state.subscribe(state => {
       console.log('STATE CHANGED');
       this.currentState = this.encode(state);
       const queryParams = {
@@ -62,13 +65,19 @@ export class StateService {
       } catch (e) {
       }
     });
-    // State stream - only for bounds changes
+    // State stream - only for geo view changes
     this.geoChanges = this.state.pipe(
       filter((state) => !state.skipGeoUpdate),
       distinctUntilChanged<State>(keyComparer(['geo'])),
       debounceTime(1000),
       map((state) => {
         return {geo: state.geo};
+      }),
+    );
+    this.filterChanges = this.state.pipe(
+      distinctUntilChanged<State>(keyComparer(['responseId'])),
+      map((state) => {
+        return {responseId: state.responseId};
       }),
     );
     // State stream - for first time item fetching
@@ -86,7 +95,8 @@ export class StateService {
     const prepared = [
       state.geo || null,
       state.searchBoxTitle || null,
-      state.cardId || null
+      state.cardId || null,
+      state.responseId || null
     ];
     return JSON.stringify(prepared);
   }
@@ -98,7 +108,8 @@ export class StateService {
         return {
           geo: prepared[0] || null,
           searchBoxTitle: prepared[1] || '',
-          cardId: prepared[2]
+          cardId: prepared[2] || null,
+          responseId: prepared[3] || null
         };
       } catch (e) {
         console.log('DECODE ERROR', e);
@@ -130,6 +141,11 @@ export class StateService {
 
   set cardId(cardId: string | null) {
     this._state = Object.assign({}, this._state, {cardId});
+    this.state.next(this._state);
+  }
+
+  set responseFilter(responseId: string | null) {
+    this._state = Object.assign({}, this._state, {responseId});
     this.state.next(this._state);
   }
 

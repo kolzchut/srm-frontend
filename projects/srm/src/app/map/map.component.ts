@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, Vie
 import { MapboxService } from '../mapbox.service';
 
 import * as mapboxgl from 'mapbox-gl';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { StateService } from '../state.service';
 import { ALL_CATEGORIES, CATEGORY_COLORS } from '../common/consts';
@@ -10,6 +10,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Card } from '../common/datatypes';
 import { Point } from 'geojson';
 import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-map',
@@ -26,7 +27,10 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   map: mapboxgl.Map;
   moveEvents = new Subject<[number, number, number]>();
-  
+  markers: any = {};
+  markersOnScreen: any = {};
+  clusterData = new ReplaySubject<any>(1);
+
   ZOOM_THRESHOLD = 10;
   OFFSETS = [
     [[0.0, 0.0]],
@@ -39,9 +43,13 @@ export class MapComponent implements OnInit, AfterViewInit {
 ];
   ALL_CATEGORIES = ALL_CATEGORIES; 
 
-  constructor(private mapboxService: MapboxService, private state: StateService, private sanitizer: DomSanitizer) {
+  constructor(private mapboxService: MapboxService, private state: StateService, private http: HttpClient) {
     this.moveEvents.subscribe(centerZoom => {
       state.updateCenterZoom(centerZoom, true);
+    });
+    http.get(environment.clusterDataURL).subscribe(data => {
+      this.clusterData.next(data);
+      this.clusterData.complete();
     });
   }
 
@@ -64,6 +72,8 @@ export class MapComponent implements OnInit, AfterViewInit {
           minZoom: 3,
         };
         this.map = new mapboxgl.Map(mapParams);
+        // Handle filter changes and apply on map
+        // Listen for changes in geo view
         this.state.geoChanges.pipe(
           debounceTime(500),
         ).subscribe(state => {
@@ -117,60 +127,63 @@ export class MapComponent implements OnInit, AfterViewInit {
           //   }
           //   this.map.setLayoutProperty(layerName, 'visibility', 'none');
           // }
-          const clusterProperties: any = {};
-          CATEGORY_COLORS.forEach(cc => {
-            clusterProperties[cc.category] = ['+', ['case', ['==', ['get', 'response_category'], cc.category], 1, 0]];
-          });
-          clusterProperties.care = ['+', 1];
-          this.map.addSource('clustee', {
-            'type': 'geojson',
-            'data': environment.clusterDataURL,
-            'cluster': true,
-            'clusterRadius': 50,
-            'clusterProperties': clusterProperties,
-            'maxzoom': this.ZOOM_THRESHOLD,
-          });
-          this.map.addLayer({
-            'id': 'clustee_dummy',
-            'type': 'circle',
-            'source': 'clustee',
-            'filter': ['==', 'cluster', true],
-            'paint': {
-              'circle-color': '#000000',
-              'circle-opacity': 0,
-              'circle-radius': 12
-            },
-            // maxzoom: 10
-          });
-          const markers: any= {};
-          let markersOnScreen: any = {};
-          this.map.on('render', () => {
-            if (!this.map.isSourceLoaded('clustee')) return;
-            const newMarkers: any = {};
-            const features = this.map.querySourceFeatures('clustee');
-            // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
-            // and add it to the map if it's not there already
-            for (const feature of features) {
-              const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
-              const props: any = feature.properties;
-              if (!props.cluster) continue;
-              const id = props.cluster_id;
-              
-              let marker = markers[id];
-              if (!marker) {
-                const el = this.createDonutChart(props);
-                marker = markers[id] = new mapboxgl.Marker({
-                  element: el
-                }).setLngLat(coords);
+          this.clusterData.subscribe(data => {
+            const clusterProperties: any = {};
+            CATEGORY_COLORS.forEach(cc => {
+              clusterProperties[cc.category] = ['+', ['case', ['==', ['get', 'response_category'], cc.category], 1, 0]];
+            });
+            clusterProperties.care = ['+', 1];
+            this.map.addSource('cluster_source', {
+              'type': 'geojson',
+              'data': environment.clusterDataURL,
+              'cluster': true,
+              'clusterRadius': 80,
+              'clusterProperties': clusterProperties,
+              'clusterMinPoints': 1,
+              'maxzoom': this.ZOOM_THRESHOLD,
+            });
+            this.map.addLayer({
+              'id': 'clusters',
+              'type': 'circle',
+              'source': 'cluster_source',
+              // 'filter': ['==', 'cluster', true],
+              'paint': {
+                'circle-color': '#000000',
+                'circle-opacity': 0,
+                'circle-radius': 12
+              },
+              // maxzoom: 10
+            });
+            
+            this.map.on('render', () => {
+              if (!this.map.isSourceLoaded('cluster_source')) return;
+              console.log('RENDERING!');
+              const newMarkers: any = {};
+              const features = this.map.querySourceFeatures('cluster_source');
+              // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
+              // and add it to the map if it's not there already
+              for (const feature of features) {
+                const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
+                const props: any = feature.properties;
+                if (!props.cluster) continue;
+                const id = props.cluster_id;
+                
+                let marker = this.markers[id];
+                if (!marker) {
+                  const el = this.createDonutChart(props);
+                  marker = this.markers[id] = new mapboxgl.Marker({
+                    element: el
+                  }).setLngLat(coords);
+                }
+                newMarkers[id] = marker;
+                if (!this.markersOnScreen[id]) marker.addTo(this.map);
               }
-              newMarkers[id] = marker;
-              if (!markersOnScreen[id]) marker.addTo(this.map);
-            }
-            // for every marker we've added previously, remove those that are no longer visible
-            for (const id in markersOnScreen) {
-              if (!newMarkers[id]) markersOnScreen[id].remove();
-            }
-            markersOnScreen = newMarkers;            
+              // for every marker we've added previously, remove those that are no longer visible
+              for (const id in this.markersOnScreen) {
+                if (!newMarkers[id]) this.markersOnScreen[id].remove();
+              }
+              this.markersOnScreen = newMarkers;            
+            });
           });
 
           this.map.getStyle().layers?.filter((l) => l.id.indexOf('points-stroke-on') === 0).forEach((layer) => {
@@ -184,16 +197,40 @@ export class MapComponent implements OnInit, AfterViewInit {
               }
             });
           });
-          this.newMap.next(this.map);
           this.map.on('moveend', (event: DragEvent) => {
             const fromState = (event as any).fromState;
             console.log('MOVED', this.map?.getBounds(), fromState);
+            this.state.latestBounds = this.map?.getBounds();
             if (!fromState) {
               this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
             }
           });  
+          this.state.filterChanges.subscribe(state => {
+            console.log('STATE FILTER CHANGEDD');
+            let filter: any[] | null = null;
+            if (state.responseId) {
+              filter = ['in', state.responseId, ['get', 'responses']];
+            }
+            for (const layer of ['points-on', 'points-stroke-on', 'clusters']) {
+              console.log('FILTERING', layer, filter);
+              this.map.setFilter(layer, filter);
+            }
+            this.clusterData.subscribe(data => {
+              const newData: GeoJSON.FeatureCollection = {
+                type: 'FeatureCollection',
+                features: state.responseId ? 
+                  data.features.filter((f: GeoJSON.Feature) => (f.properties?.responses || []).indexOf(state.responseId) !== -1)
+                  : data.features
+              };
+              (this.map.getSource('cluster_source') as mapboxgl.GeoJSONSource).setData(newData);
+              console.log('SET NEW DATA for SOURCE', newData.features.filter((f: any) => f.geometry.coordinates[1] < 30));
+            });
+          });
+  
+          this.state.latestBounds = this.map.getBounds();
+          this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
+          this.newMap.next(this.map);
         });
-        // this.state.bounds = this.map.getBounds();
       } catch (e) {
         console.log('FAILED TO LOAD', e)
       }
@@ -222,7 +259,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       total += count;
     }
     const fontSize = 16;
-    const r = 24;
+    const r = 39;
     const r0 = Math.round(r * 0.6);
     const w = r * 2;
      
