@@ -1,6 +1,3 @@
-<div class='counts'>
-    <app-chip *ngFor='let chip of counts' [chip]='chip'></app-chip>
-</div>
 <div class='cards'>
-    <app-service-card [item]='service' *ngFor='let service of (search.visibleServices | async)' (click)='selected.emit(service)'></app-service-card>
+    <app-service-card [item]='card' *ngFor='let card of (search.visibleServices | async)' (click)='selectCard(card)'></app-service-card>
 </div>

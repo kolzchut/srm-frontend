@@ -43,12 +43,14 @@ export class ApiService {
 
   getServices(state: State, bounds: LngLatBounds): Observable<QueryCardsResult> {
     const params: any = {size: 10};
+    const filter: any = {};
     if (bounds) {
-      const filter = {
-        branch_geometry__bounded: this.boundsFilter(bounds)
-      };
-      params['filter'] = JSON.stringify(filter);
+      filter.branch_geometry__bounded = this.boundsFilter(bounds);
     }
+    if (state.responseId) {
+      filter.response_ids = state.responseId;
+    }
+    params['filter'] = JSON.stringify(filter);
     return this.http.get(environment.servicesURL, {params}).pipe(
       map((res: any) => {
         const results = res as QueryCardsResult;
@@ -61,6 +63,9 @@ export class ApiService {
     const filters: any = {};
     if (bounds) {
       filters.branch_geometry__bounded = this.boundsFilter(bounds);
+    }
+    if (state.responseId) {
+      filters.response_ids = state.responseId;
     }
     const config = CATEGORY_COLORS.map((cc) => {
       return {

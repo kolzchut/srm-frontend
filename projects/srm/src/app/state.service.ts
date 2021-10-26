@@ -43,7 +43,6 @@ export class StateService {
   constructor(private router: Router, private activatedRoute: ActivatedRoute, private api: ApiService) {
     // State encoding into URL
     this.state.subscribe(state => {
-      console.log('STATE CHANGED');
       this.currentState = this.encode(state);
       const queryParams = {
         state: this.currentState
@@ -147,6 +146,10 @@ export class StateService {
   set responseFilter(responseId: string | null) {
     this._state = Object.assign({}, this._state, {responseId});
     this.state.next(this._state);
+  }
+
+  get responseFilter() {
+    return this._state.responseId ? this._state.responseId : null;
   }
 
   selectService(service: Card | null, preview: boolean = false) {

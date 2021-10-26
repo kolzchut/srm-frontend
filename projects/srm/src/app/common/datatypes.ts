@@ -13,6 +13,7 @@ export enum HeaderState {
 
 export enum ItemState {
     None = 'none',
+    MultiStrip = 'multiStrip',
     Preview = 'preview',
     Full = 'full',
 };
@@ -121,6 +122,7 @@ export type SearchResult<T> = {
 };
 
 export type CategoryCountsResult = {
+    id: string,
     category?: string,
     display?: string,
     count?: number,

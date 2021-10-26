@@ -40,6 +40,7 @@ export class SearchService {
 
     // Fetching services from the DB
     this.state.state.pipe(
+      debounceTime(500),
       switchMap((state: State) => {
         console.log('FETCHING SERVICES', this.state.latestBounds);
         return forkJoin([this.api.getServices(state, this.state.latestBounds), this.api.countCategories(state, this.state.latestBounds)]);
@@ -52,6 +53,7 @@ export class SearchService {
       this.visibleCounts.next(
         CATEGORY_COLORS.map((cc) => {
           return {
+            id: `human_services:${cc.category}`,
             category: cc.category,
             count: counts.search_counts[cc.category].total_overall,
             color: cc.color

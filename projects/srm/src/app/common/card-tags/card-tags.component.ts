@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { getResponseColor } from '../consts';
 import { Card, CategoryCountsResult } from '../datatypes';
 
@@ -7,31 +7,34 @@ import { Card, CategoryCountsResult } from '../datatypes';
   templateUrl: './card-tags.component.html',
   styleUrls: ['./card-tags.component.less']
 })
-export class CardTagsComponent implements OnInit {
+export class CardTagsComponent implements OnInit, OnChanges {
 
   @Input() item: Card;
   @Input() big = false;
   
+  chips: CategoryCountsResult[] = [];
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  get chips(): CategoryCountsResult[] {
-    if (!this.item || !this.item.responses) {
-      return [];
+  ngOnChanges() {
+    if (this.item && this.item.responses) {
+      this.chips = [
+        // {
+        //   display: 'סוג המענה',
+        //   color: getResponseColor(this.item.responses[0].id),
+        // },
+        ...this.item.responses.map((r: any) => {
+            return {
+              id: r.id,
+              display: r.name,
+              category: r.id.split(':')[1],
+              color: getResponseColor(r.id),
+            };
+        })      
+      ];
     }
-    return [
-      // {
-      //   display: 'סוג המענה',
-      //   color: getResponseColor(this.item.responses[0].id),
-      // },
-      ...this.item.responses.map((r: any) => {
-          return {
-            display: r.name,
-            color: getResponseColor(r.id),
-          };
-      })      
-    ];
   }
 }

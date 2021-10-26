@@ -8,8 +8,11 @@
     <div class='strip'>
         <ng-content select='strip'></ng-content>
     </div>
-    <div class='handle' (click)='handle.emit("click")'>
+    <div class='handle' (click)='$event.stopPropagation()'>
         <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
+    </div>
+    <div class='non-scrollable'>
+        <ng-content select='content-header'></ng-content>
     </div>
     <div class='scrollable' #scrollable>
         <ng-content select='content'></ng-content>

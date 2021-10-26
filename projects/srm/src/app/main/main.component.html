@@ -4,10 +4,15 @@
 </div>
 <div class='content' [class.hidden]='headerState === HeaderState.Visible && headerActive'>
     <app-map (points)='mapSelectedPoints($event)' (map)='map=$event; loaded.next()'></app-map>
-    <app-drawer [state]='drawerState' (handle)='handleEvent($event)'>
+    <app-drawer [state]='drawerState' (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)'>
         <ng-container ngProjectAs='strip'>
             <app-strip-single *ngIf='selectedItem && drawerState !== DrawerState.Most' [service]='selectedItem' (selected)='state.selectService($event)'></app-strip-single>
             <app-strip-multiple *ngIf='selectedItems && drawerState === DrawerState.Peek' [services]='selectedItems' (selected)='state.selectService($event)'></app-strip-multiple>
+        </ng-container>
+        <ng-container ngProjectAs='content-header'>
+            <div *ngIf='itemState !== ItemState.Full' class='counts' (click)='$event.stopPropagation()'>
+                <app-chip *ngFor='let chip of counts' [chip]='chip'></app-chip>
+            </div>
         </ng-container>
         <ng-container ngProjectAs='content'>
             <app-service-list *ngIf='itemState !== ItemState.Full' (selected)='state.selectService($event)'></app-service-list>

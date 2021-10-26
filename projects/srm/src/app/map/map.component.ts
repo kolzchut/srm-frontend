@@ -85,7 +85,6 @@ export class MapComponent implements OnInit, AfterViewInit {
                 this.map.flyTo({
                   center: geo.slice(0, 2) as mapboxgl.LngLatLike,
                   zoom: geo[2],
-                  padding: {top: 0, left: 0, right: 0, bottom: 500}
                 });
               } else if (geo.length === 2) {
                 console.log('FITTING BOUNDS', geo);
@@ -102,31 +101,21 @@ export class MapComponent implements OnInit, AfterViewInit {
           }
         });
         this.map.on('load', () => {
-          // for (const layerName of ['points-on', 'points-stroke-on']) {
-          //   const layer = this.map.getStyle().layers?.filter((l) => l.id === layerName)[0] as mapboxgl.CircleLayer;
-          //   for (const countList of this.OFFSETS) {
-          //     const count = countList.length;
-          //     for (const offsetIdx_ in countList) {
-          //       const offsetIdx = parseInt(offsetIdx_);
-          //       const offset = countList[offsetIdx];
-          //       const radius = 6;
-          //       const modifiedOffset = [offset[0] * radius, offset[1] * radius];
-          //       const offsetLayerName = `${layerName}-${count}-${offsetIdx+1}`;
-          //       const newLayer: any = {
-          //         id: offsetLayerName, 
-          //         type: layer.type,
-          //         source: layer.source,
-          //         'source-layer': layer['source-layer'],
-          //         layout: layer.layout || {},
-          //         paint: Object.assign(layer.paint, {'circle-translate': modifiedOffset}),
-          //         filter: ['==', ['get', 'offset'], `${count}-${offsetIdx+1}`]
-          //       };
-          //       console.log('SS', newLayer.source, newLayer['source-layer']);
-          //       this.map.addLayer(newLayer, layerName);
-          //     }
-          //   }
-          //   this.map.setLayoutProperty(layerName, 'visibility', 'none');
-          // }
+          const colorStyle = [
+            "match",
+            [
+              "get",
+              "response_category"
+            ],
+          ];
+          CATEGORY_COLORS.forEach(cc => {
+            colorStyle.push([cc.category]);
+            colorStyle.push(cc.color);
+          });
+          colorStyle.push('#444444');
+          this.map.setPaintProperty('points-on', 'circle-color', colorStyle);
+          this.map.setPaintProperty('points-stroke-on', 'circle-stroke-color', colorStyle);
+
           this.clusterData.subscribe(data => {
             const clusterProperties: any = {};
             CATEGORY_COLORS.forEach(cc => {
@@ -157,7 +146,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             
             this.map.on('render', () => {
               if (!this.map.isSourceLoaded('cluster_source')) return;
-              console.log('RENDERING!');
+              // console.log('RENDERING!');
               const newMarkers: any = {};
               const features = this.map.querySourceFeatures('cluster_source');
               // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
@@ -184,6 +173,28 @@ export class MapComponent implements OnInit, AfterViewInit {
               }
               this.markersOnScreen = newMarkers;            
             });
+            this.state.filterChanges.subscribe(state => {
+              let filter: any[] | null = null;
+              if (state.responseId) {
+                filter = ['in', state.responseId, ['get', 'responses']];
+              }
+              for (const layer of ['points-on', 'points-stroke-on', 'clusters']) {
+                this.map.setFilter(layer, filter);
+              }
+              this.clusterData.subscribe(data => {
+                let features: any[] = data.features;
+                if (state.responseId) {
+                  features = features.filter((f: GeoJSON.Feature) => (f.properties?.responses || []).filter((r: string) => r.indexOf(state.responseId as string) === 0).length > 0);
+                }
+                const newData: GeoJSON.FeatureCollection = {
+                  type: 'FeatureCollection',
+                  features: features
+                };
+                (this.map.getSource('cluster_source') as mapboxgl.GeoJSONSource).setData(newData);
+                // console.log('SET NEW DATA for SOURCE', newData.features.filter((f: any) => f.geometry.coordinates[1] < 30));
+              });
+            });
+  
           });
 
           this.map.getStyle().layers?.filter((l) => l.id.indexOf('points-stroke-on') === 0).forEach((layer) => {
@@ -195,38 +206,21 @@ export class MapComponent implements OnInit, AfterViewInit {
                 const records = JSON.parse(props.records) as Card[];
                 this.points.next(records);
               }
+              e.preventDefault();
             });
+          });
+          this.map.on('click', (e: mapboxgl.MapLayerMouseEvent) => {
+            if (!e.defaultPrevented) {
+              this.points.next([]);  
+            }
           });
           this.map.on('moveend', (event: DragEvent) => {
             const fromState = (event as any).fromState;
-            console.log('MOVED', this.map?.getBounds(), fromState);
             this.state.latestBounds = this.map?.getBounds();
             if (!fromState) {
               this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
             }
-          });  
-          this.state.filterChanges.subscribe(state => {
-            console.log('STATE FILTER CHANGEDD');
-            let filter: any[] | null = null;
-            if (state.responseId) {
-              filter = ['in', state.responseId, ['get', 'responses']];
-            }
-            for (const layer of ['points-on', 'points-stroke-on', 'clusters']) {
-              console.log('FILTERING', layer, filter);
-              this.map.setFilter(layer, filter);
-            }
-            this.clusterData.subscribe(data => {
-              const newData: GeoJSON.FeatureCollection = {
-                type: 'FeatureCollection',
-                features: state.responseId ? 
-                  data.features.filter((f: GeoJSON.Feature) => (f.properties?.responses || []).indexOf(state.responseId) !== -1)
-                  : data.features
-              };
-              (this.map.getSource('cluster_source') as mapboxgl.GeoJSONSource).setData(newData);
-              console.log('SET NEW DATA for SOURCE', newData.features.filter((f: any) => f.geometry.coordinates[1] < 30));
-            });
-          });
-  
+          });    
           this.state.latestBounds = this.map.getBounds();
           this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
           this.newMap.next(this.map);

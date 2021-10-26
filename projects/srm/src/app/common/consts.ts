@@ -1,15 +1,19 @@
 export const CATEGORY_COLORS = [
     // categories: education, work, care, health, housing, legal, money, emergency, transit
-    {category: 'education', color: '#9b51e0'},
-    {category: 'work', color: '#f2994a'},
-    {category: 'care', color: '#27ae60'},
-    {category: 'health', color: '#eb3cba'},
+    {category: 'health', color: '#07B2EA'},
+    {category: 'care', color: '#27AE60'},
+    {category: 'education', color: '#BB6BD9'},
+    {category: 'legal', color: '#F2994A'},
+    {category: 'work', color: '#F2C94C'},
 
-    {category: 'housing', color: '#a0a164'},
-    {category: 'legal', color: '#a0a164'},
-    {category: 'money', color: '#a0a164'},
-    {category: 'emergency', color: '#a0a164'},
-    {category: 'transit', color: '#a0a164'},
+    {category: 'goods', color: '#9B51E0'},
+    {category: 'housing', color: '#EB3CBA'},
+    {category: 'community_services', color: '#EB5757'},
+
+    {category: 'money', color: '#a6761d'},
+    {category: 'emergency', color: '#a6761d'},
+    {category: 'transit', color: '#a6761d'},
+    {category: 'food', color: '#a6761d'},
 ]
 export const MULTIPLE_CATEGORY_COLOR = [
     {category: 'multiple', color: '#4F4F4F'},
@@ -17,12 +21,12 @@ export const MULTIPLE_CATEGORY_COLOR = [
 
 export const ALL_CATEGORIES = [...CATEGORY_COLORS, ...MULTIPLE_CATEGORY_COLOR];
 
+const responseColors: any = CATEGORY_COLORS.reduce((obj: any, cat) => {
+    obj[cat.category] = cat.color;  
+    return obj
+}, {})
+
 export function getResponseColor(id: string) {
     const category = id.split(':')[1];
-    for (const cc of CATEGORY_COLORS) {
-        if (cc.category === category) {
-            return cc.color;
-        }
-    }
-    return MULTIPLE_CATEGORY_COLOR[0].color;
+    return responseColors[category] || MULTIPLE_CATEGORY_COLOR[0].color;
 }
