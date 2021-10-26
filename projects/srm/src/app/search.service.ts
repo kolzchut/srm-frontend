@@ -12,9 +12,9 @@ import { State, StateService } from './state.service';
 export class SearchService {
 
   query = new Subject<string>();
-  services = new Subject<QueryCardsResult>();
-  places = new Subject<QueryPlacesResult>();
-  responses = new Subject<QueryResponsesResult>();
+  services = new ReplaySubject<QueryCardsResult>(1);
+  places = new ReplaySubject<QueryPlacesResult>(1);
+  responses = new ReplaySubject<QueryResponsesResult>(1);
   searchQuery: string = '';
 
   visibleServices = new ReplaySubject<Card[]>(1);

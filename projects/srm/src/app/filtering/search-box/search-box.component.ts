@@ -36,6 +36,9 @@ export class SearchBoxComponent implements OnInit, OnChanges {
   set active(value: boolean) {
     this._active = value;
     this.activated.next(value ? 'search': null);
+    if (value) {
+      this.query = this._query;
+    }
   }
 
   get active() {
