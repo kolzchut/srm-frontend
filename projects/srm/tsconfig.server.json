@@ -6,10 +6,7 @@
     "target": "es2019",
     "types": [
       "node"
-    ],
-    "lib": [
-      "es2019",
-    ],
+    ]
   },
   "files": [
     "src/main.server.ts",
