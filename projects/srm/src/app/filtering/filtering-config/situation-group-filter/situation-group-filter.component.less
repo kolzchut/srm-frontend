@@ -1,0 +1,122 @@
+@import '../../../../common.less';
+
+:host {
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 8px;
+
+    .header {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: space-between;
+    
+        .group-name {
+            .font-rag-sans;
+            font-weight: 300;
+            font-size: 16px;
+            color: @color-gray-3;            
+        }
+
+        .size-of {
+            background: @color-gray-6;
+            border-radius: 4px;
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            padding: 0 5px;
+
+            span {
+                .font-rag-sans;
+                font-weight: normal;
+                font-size: 13px;
+                color: @color-gray-1;
+            }
+        }
+    }
+    
+    .filtering-box {
+        border-radius: 4px;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 16px;
+        height: 48px;
+        background-image: url(../../../../assets/img/icon-chevron-left.svg);
+        background-position: 12px center;
+        background-size: 24px;
+        background-repeat: no-repeat;
+        cursor: pointer;
+    }
+
+    .no-filtering {
+        background: @color-white;
+        .filtering-box;
+        .card-shadow-card;
+
+        span {
+            .font-rag-sans;
+            font-weight: normal;
+            font-size: 16px;
+            color: @color-gray-1;
+        }
+    }
+
+    .filtering {
+        background: @color-gray-6;
+        .filtering-box;
+        box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+        padding-left: 36px;
+        position: relative;
+
+        .faded-scroll {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-flow: row;
+            gap: 8px;
+            align-items: center;
+            justify-content: flex-start;
+            overflow-x: scroll;
+            cursor: initial;
+            .no-scrollbars;
+
+            .filtered-tag {
+                display: flex;
+                flex-flow: row;
+                align-items: center;
+                gap: 4px;
+                height: 24px;
+                padding: 0 4px;
+                background: @color-white;
+                border-radius: 4px;
+                cursor: pointer;
+                white-space: nowrap;
+
+                > span {
+                    white-space: nowrap;
+                    .font-rag-sans;
+                    font-weight: normal;
+                    font-size: 16px;
+                    color: @color-gray-1;           
+                }
+            }
+        }
+
+        &::after {
+            position: absolute;
+            height: 36px;
+            top: 6px;
+            left: 36px;
+            width: 16px;
+            background: linear-gradient(90deg, #F2F2F2 0%, rgba(242, 242, 242, 0) 100%);
+            z-index: 1;
+            pointer-events: none;
+            content: ' ';
+        }
+    }
+}

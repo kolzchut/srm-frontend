@@ -132,3 +132,14 @@ export type CategoryCountsResult = {
 export type QueryCardsResult = SearchResult<Card>;
 export type QueryPlacesResult = SearchResult<Place>;
 export type QueryResponsesResult = SearchResult<Response>;
+
+export type TaxonomyGroup = {
+    slug: string,
+    name: string | {
+        source: string,
+        tx: {
+            he: string,
+        }
+    },
+    items: TaxonomyGroup[],
+};

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { SituationsService } from '../../situations.service';
 
 @Component({
   selector: 'app-filter-bar',
@@ -12,7 +13,7 @@ export class FilterBarComponent implements OnInit {
 
   _active: boolean = false;
 
-  constructor() { }
+  constructor(public situations: SituationsService) { }
 
   ngOnInit(): void {
   }

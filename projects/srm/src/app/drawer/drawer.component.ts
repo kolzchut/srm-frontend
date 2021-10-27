@@ -27,12 +27,14 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnChanges(): void {
-    const el = this.handleEl.nativeElement as HTMLDivElement;
-    from([true]).pipe(
-      delay(250),
-    ).subscribe(() => {
-      this.height.emit(el.clientHeight);
-    });
+    const el = this.handleEl?.nativeElement as HTMLDivElement;
+    if (el) {
+      from([true]).pipe(
+        delay(250),
+      ).subscribe(() => {
+        this.height.emit(el.clientHeight);
+      });  
+    }
   }
 
   ngAfterViewInit(): void {
@@ -53,6 +55,7 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
           });
         });  
       }
+      this.height.emit(el.clientHeight);
     }
   }
 

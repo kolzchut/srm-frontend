@@ -28,6 +28,7 @@ import { FormsModule } from '@angular/forms';
 import { AutocompleteSectionComponent } from './filtering/search-autocomplete/autocomplete-section/autocomplete-section.component';
 import { AutocompleteResultComponent } from './filtering/search-autocomplete/autocomplete-result/autocomplete-result.component';
 import { StripMultipleComponent } from './drawer/strip/strip-multiple/strip-multiple.component';
+import { SituationGroupFilterComponent } from './filtering/filtering-config/situation-group-filter/situation-group-filter.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { StripMultipleComponent } from './drawer/strip/strip-multiple/strip-mult
     FilteringConfigComponent,
     AutocompleteSectionComponent,
     AutocompleteResultComponent,
-    StripMultipleComponent
+    StripMultipleComponent,
+    SituationGroupFilterComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

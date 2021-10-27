@@ -10,6 +10,7 @@ export const environment = {
   placesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/places',
   responsesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/responses',
   itemURL: 'https://srm-staging-api.whiletrue.industries/api/idx/get/',
+  taxonomySituationsRL: 'https://srm-staging.datacity.org.il/dataset/657a1b09-2474-4309-aac8-381d41e115d8/resource/e80f6ce0-fdf8-42ef-a134-13014b228cdd/download/situations.json',
 };
 
 /*

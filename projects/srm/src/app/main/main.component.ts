@@ -174,7 +174,7 @@ export class MainComponent implements OnInit {
   }
 
   updateDrawerHeight(height: number) {    
-    this.map.flyTo({
+    this.map?.flyTo({
       center: this.map.getCenter(),
       zoom: this.map.getZoom(),
       padding: {top: 0, left: 0, bottom: height, right: 0}

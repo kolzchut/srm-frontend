@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SituationsService } from '../../situations.service';
 
 @Component({
   selector: 'app-filtering-config',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FilteringConfigComponent implements OnInit {
 
-  constructor() { }
+  constructor(public situations: SituationsService) { }
 
   ngOnInit(): void {
   }
