@@ -19,6 +19,7 @@ button {
         width: 24px;
         height: 24px;
         .background-image;
+        flex: 0 0 auto;
     }
 
     .arrow {
@@ -26,7 +27,8 @@ button {
         height: 24px;
         margin-right: auto;
         .background-image;
-        background-image: url('../../../assets/img/icon-arrow-right.svg');
+        background-image: url('../../../assets/img/icon-arrow-left.svg');
+        flex: 0 0 auto;
     }
 
     .label {
@@ -34,6 +36,8 @@ button {
         font-weight: normal;
         font-size: 16px;
         color: @color-gray-1;
+        text-align: right;
+        white-space: pre-wrap;
     }
 
     &.kind-link {
@@ -62,6 +66,8 @@ button {
 
     &.kind-free {
         background: @color-blue-7;
+        height: auto;
+        min-height: 48px;
         .icon {
             background-image: url('../../../assets/img/icon-circle-information.svg');
         }
@@ -69,6 +75,8 @@ button {
 
     &.kind-payment {
         background: @color-yellow-7;
+        height: auto;
+        min-height: 48px;
         .icon {
             background-image: url('../../../assets/img/icon-warning.svg');
         }

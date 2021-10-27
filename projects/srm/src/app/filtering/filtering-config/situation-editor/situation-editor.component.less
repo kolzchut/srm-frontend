@@ -1,0 +1,79 @@
+@import '../../../../common.less';
+
+:host {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    z-index: 10;
+
+    padding: 0 24px;
+    overflow-x: hidden;
+
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    gap: 8px;
+
+    transform: translateX(-100%);
+    transition: transform 200ms ease-out;
+    &.active {
+        transform: translateX(0);
+    }
+
+    background: @color-white;
+
+    .header {
+        height: 48px;
+        border-bottom: 1px solid @color-gray-3;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        app-image-button {
+            flex: 0 0 auto;
+            width: 24px;
+            height: 24px;
+        }
+        span {
+            flex: 1 1 100%;
+            text-align: center;
+            .font-rag-sans;
+            font-weight: normal;
+            font-size: 20px;
+        }
+    }
+
+    .editor {
+        flex: 1 1 100%;
+        overflow-y: scroll;
+        .no-scrollbars;
+        display: flex;
+        flex-flow: column;
+        align-items: stretch;
+
+        .item {
+            flex: 0 0 auto;
+            height: 48px;
+            display: flex;
+            flex-flow: row;
+            gap: 4px;
+            align-items: center;
+            border-bottom: 1px solid @color-gray-5;
+
+            app-image-button {
+                flex: 0 0 auto;
+                width: 24px;
+                height: 24px;
+            }
+            span {
+                flex: 1 1 100%;
+                text-align: right;
+                .font-rag-sans;
+                font-weight: normal;
+                font-size: 16px;
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+<div class='header'>
+    <app-image-button imageUrl='assets/img/icon-arrow-right.svg' (clicked)='back($event)'></app-image-button>
+    <span>{{ situations.nameOf(editor.group)}}</span>
+</div>
+<div class='editor'>
+    <ng-container *ngFor='let item of editor.group.items'>
+        <div class='item'>
+            <app-image-button [imageUrl]='checkedImage(item)' (clicked)='checkItem(item, $event)'></app-image-button>
+            <span (click)='checkItem(item, $event)'>{{ situations.nameOf(item) }}</span>
+            <app-image-button *ngIf='item.items' imageUrl='assets/img/icon-chevron-left-dark.svg' (clicked)='situations.addEditor(item)'></app-image-button>
+        </div>
+    </ng-container>
+</div>

@@ -1,6 +1,6 @@
 <div class='wrapper'>
     <app-menu-button *ngIf='!active'></app-menu-button>
-    <app-image-button *ngIf='active' imageUrl='assets/img/icon-right.svg' (click)='active = false'></app-image-button>
+    <app-image-button *ngIf='active' imageUrl='assets/img/icon-right.svg' (clicked)='active = false'></app-image-button>
     <input type='text' class='search-box' placeholder='ניתן לחפש לפי שם, סוג מענה, מיקום…' (focus)='active = true' [(ngModel)]='query'/>
     <app-image-button *ngIf='!active' imageUrl='assets/img/icon-search.svg'></app-image-button>
 </div>

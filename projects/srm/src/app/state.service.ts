@@ -12,6 +12,7 @@ export type State = {
   cardId?: string | null,
   skipGeoUpdate?: boolean,
   responseId?: string | null,
+  situations?: string[][] | null,
 };
 
 function makeKey(obj: any, keys: string[]) {
@@ -95,7 +96,8 @@ export class StateService {
       state.geo || null,
       state.searchBoxTitle || null,
       state.cardId || null,
-      state.responseId || null
+      state.responseId || null,
+      state.situations || null,
     ];
     return JSON.stringify(prepared);
   }
@@ -108,7 +110,8 @@ export class StateService {
           geo: prepared[0] || null,
           searchBoxTitle: prepared[1] || '',
           cardId: prepared[2] || null,
-          responseId: prepared[3] || null
+          responseId: prepared[3] || null,
+          situations: prepared[4] || null,
         };
       } catch (e) {
         console.log('DECODE ERROR', e);
@@ -150,6 +153,11 @@ export class StateService {
 
   get responseFilter() {
     return this._state.responseId ? this._state.responseId : null;
+  }
+
+  set situations(situations: string[][] | null) {
+    this._state = Object.assign({}, this._state, {situations});
+    this.state.next(this._state);
   }
 
   selectService(service: Card | null, preview: boolean = false) {

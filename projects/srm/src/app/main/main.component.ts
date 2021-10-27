@@ -4,6 +4,7 @@ import { ReplaySubject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Card, CategoryCountsResult, DrawerState, HeaderState, ItemState } from '../common/datatypes';
 import { SearchService } from '../search.service';
+import { SituationsService } from '../situations.service';
 import { StateService } from '../state.service';
 
 @Component({
@@ -31,7 +32,7 @@ export class MainComponent implements OnInit {
 
   counts: CategoryCountsResult[] = [];
 
-  constructor(public state: StateService, private search: SearchService) {
+  constructor(public state: StateService, private search: SearchService, private situations: SituationsService) {
     this.loaded.pipe(
       switchMap(() => this.state.selectedService)
     ).subscribe(({service, preview}) => {
@@ -50,6 +51,12 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  headerVisible(): boolean {
+    return this.headerState === HeaderState.Visible && (
+      this.headerActive || this.situations.activeEditors().length > 0
+    );
   }
 
   mapSelectedPoints(cards: Card[]) {

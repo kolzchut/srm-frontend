@@ -1,4 +1,4 @@
-<div class='header' [class.hidden]='headerState === HeaderState.Hidden' [class.active]='headerState === HeaderState.Visible && headerActive'>
+<div class='header' [class.hidden]='headerState === HeaderState.Hidden' [class.active]='headerVisible()'>
     <div class='close-button' (click)='handleEvent("close")'></div>
     <app-filtering (activated)='headerActive = $event'></app-filtering>
 </div>

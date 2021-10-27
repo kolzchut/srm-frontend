@@ -43,12 +43,23 @@ export class ApiService {
 
   getServices(state: State, bounds: LngLatBounds): Observable<QueryCardsResult> {
     const params: any = {size: 10};
-    const filter: any = {};
+    const baseFilter: any = {};
     if (bounds) {
-      filter.branch_geometry__bounded = this.boundsFilter(bounds);
+      baseFilter.branch_geometry__bounded = this.boundsFilter(bounds);
     }
     if (state.responseId) {
-      filter.response_ids = state.responseId;
+      baseFilter.response_ids = state.responseId;
+    }
+    const filter: any[] = [];
+    const prefix = 'human_situations:';
+    if (state.situations && state.situations.length > 0) {
+      state.situations.forEach((situations) => {
+        filter.push(
+          Object.assign({}, baseFilter, {situation_ids: situations.slice(1).map((s) => prefix + s)})
+        );
+      });
+    } else {
+      filter.push(baseFilter);
     }
     params['filter'] = JSON.stringify(filter);
     return this.http.get(environment.servicesURL, {params}).pipe(

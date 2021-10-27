@@ -29,6 +29,7 @@ import { AutocompleteSectionComponent } from './filtering/search-autocomplete/au
 import { AutocompleteResultComponent } from './filtering/search-autocomplete/autocomplete-result/autocomplete-result.component';
 import { StripMultipleComponent } from './drawer/strip/strip-multiple/strip-multiple.component';
 import { SituationGroupFilterComponent } from './filtering/filtering-config/situation-group-filter/situation-group-filter.component';
+import { SituationEditorComponent } from './filtering/filtering-config/situation-editor/situation-editor.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { SituationGroupFilterComponent } from './filtering/filtering-config/situ
     AutocompleteSectionComponent,
     AutocompleteResultComponent,
     StripMultipleComponent,
-    SituationGroupFilterComponent
+    SituationGroupFilterComponent,
+    SituationEditorComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
