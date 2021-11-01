@@ -4,4 +4,4 @@
     <app-search-autocomplete *ngIf='activeSection === "search"' (selected)='active = null'></app-search-autocomplete>
     <app-filtering-config *ngIf='activeSection === "filters"'></app-filtering-config>
 </div>
-ֿ<app-situation-editor *ngFor='let editor of situations.activeEditors()' [editor]='editor'></app-situation-editor>
+<app-situation-editor *ngFor='let editor of situations.activeEditors()' [editor]='editor'></app-situation-editor>

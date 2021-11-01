@@ -75,3 +75,37 @@
     white-space: nowrap;
     overflow: hidden;
 }
+
+
+@mobile-threshold: 768px;
+
+.mobile(@rules) {
+    @media only screen and (max-width: (@mobile-threshold - 1px)) {
+        @rules();
+    }
+}
+
+.desktop(@rules) {
+    @media only screen and (min-width: @mobile-threshold) {
+        @rules();
+    }
+}
+
+.mobile({
+    ::ng-deep .layout-desktop {
+        display: none !important;
+    }
+});
+
+.desktop({
+    ::ng-deep .layout-mobile {
+        display: none !important;
+    }
+});
+
+::ng-deep .display-none {
+    display: block;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}

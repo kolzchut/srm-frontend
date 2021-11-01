@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, O
 import { from, fromEvent } from 'rxjs';
 import { delay, first, tap } from 'rxjs/operators';
 import { DrawerState } from '../common/datatypes';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-drawer',
@@ -21,7 +22,7 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
   startY: number;
   startTime: number;
 
-  constructor() { }
+  constructor(public layout: LayoutService) { }
 
   ngOnInit(): void {
   }

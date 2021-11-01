@@ -1,4 +1,4 @@
-<div class='wrapper' [class.materialized]='forceOpaque || situations.isActive()'>
+<div class='wrapper' [class.materialized]='forceOpaque || situations.isActive() || layout.desktop'>
     <app-filter-button (clicked)='active = !active'></app-filter-button>
     <ng-container *ngFor='let group of (situations.taxonomy | async)'>
         <div class='group-selector' *ngIf='situations.activeGroup(group.slug)' (click)='situations.addEditor(group)'>

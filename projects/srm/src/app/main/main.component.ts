@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Card, CategoryCountsResult, DrawerState, HeaderState, ItemState } from '../common/datatypes';
+import { LayoutService } from '../layout.service';
 import { SearchService } from '../search.service';
 import { SituationsService } from '../situations.service';
 import { StateService } from '../state.service';
@@ -13,6 +14,8 @@ import { StateService } from '../state.service';
   styleUrls: ['./main.component.less']
 })
 export class MainComponent implements OnInit {
+
+  @ViewChild('mapPopup') mapPopup: ElementRef;
 
   drawerState: DrawerState = DrawerState.Peek;
   savedDrawerState: DrawerState | null = null;
@@ -32,7 +35,7 @@ export class MainComponent implements OnInit {
 
   counts: CategoryCountsResult[] = [];
 
-  constructor(public state: StateService, private search: SearchService, private situations: SituationsService) {
+  constructor(public state: StateService, private search: SearchService, private situations: SituationsService, public layout: LayoutService) {
     this.loaded.pipe(
       switchMap(() => this.state.selectedService)
     ).subscribe(({service, preview}) => {
@@ -76,6 +79,30 @@ export class MainComponent implements OnInit {
     this.selectedItems = items;
     this.itemState = ItemState.MultiStrip;
     this.drawerState = DrawerState.Peek;
+
+    if (this.layout.desktop) {
+      timer(0).subscribe(() => {
+        if (this.selectedItems !== null) {
+          console.log('select items desktop', this.selectedItems[0].branch_geometry);
+          const mapPopup = (this.mapPopup.nativeElement as HTMLElement).firstChild as HTMLElement;
+          
+          if (mapPopup !== null) {
+            console.log('add popup', mapPopup);
+            new mapboxgl.Popup({
+              closeButton: false,
+              closeOnClick: false,
+              anchor: 'bottom',
+              className: 'map-popup-multistrip'
+            })
+            .setLngLat(this.selectedItems[0].branch_geometry)
+            // .setHTML(el.innerHTML)
+            .setDOMContent(mapPopup)
+            .setMaxWidth("300px")
+            .addTo(this.map);
+          }
+        }
+      });
+    }
   }
 
   selectItem(item: Card | null, preview: boolean = false) {
@@ -124,6 +151,12 @@ export class MainComponent implements OnInit {
     this.setLabelsFilter();
   }
 
+  setMap(map: mapboxgl.Map) {
+    this.map = map;
+    this.loaded.next();
+    this.setLabelsFilter();
+  }
+
   setLabelsFilter() {
     let record_id = 'nonexistent';
     if (this.selectedItems) {
@@ -132,6 +165,7 @@ export class MainComponent implements OnInit {
       record_id = this.selectedItem.card_id
     }
     this.map.setFilter('labels-active', ['==', ['get', 'point_id'], record_id]);
+    this.map.setFilter('labels-off', ['!=', ['get', 'point_id'], record_id]);
   }
 
   handleEvent(event: string) {
@@ -180,11 +214,19 @@ export class MainComponent implements OnInit {
     }
   }
 
-  updateDrawerHeight(height: number) {    
-    this.map?.flyTo({
-      center: this.map.getCenter(),
-      zoom: this.map.getZoom(),
-      padding: {top: 0, left: 0, bottom: height, right: 0}
-    });
+  updateDrawerHeight(height: number) {
+    if (this.layout.mobile && this.itemState !== ItemState.None) {
+      this.map?.flyTo({
+        center: this.map.getCenter(),
+        zoom: this.map.getZoom(),
+        padding: {top: 0, left: 0, bottom: height, right: 0}
+      });
+    } else {
+      this.map?.flyTo({
+        center: this.map.getCenter(),
+        zoom: this.map.getZoom(),
+        padding: {top: 0, left: 0, bottom: 0, right: 0}
+      });      
+    }
   }
 }

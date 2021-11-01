@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, Vie
 import { MapboxService } from '../mapbox.service';
 
 import * as mapboxgl from 'mapbox-gl';
-import { ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject, Subject, timer } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { StateService } from '../state.service';
 import { ALL_CATEGORIES, CATEGORY_COLORS } from '../common/consts';
@@ -19,7 +19,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class MapComponent implements OnInit, AfterViewInit {
 
-  STYLE = 'mapbox://styles/srm-kolzchut/cksprr4sy0hbg18o5ct2ty2oc/draft';
+  STYLE = 'mapbox://styles/srm-kolzchut/cksprr4sy0hbg18o5ct2ty2oc';
 
   @Output('points') points = new EventEmitter<Card[]>();
   @Output('map') newMap = new EventEmitter<mapboxgl.Map>();
@@ -30,6 +30,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   markers: any = {};
   markersOnScreen: any = {};
   clusterData = new ReplaySubject<any>(1);
+  addedImages: {[key: string]: boolean} = {};
 
   ZOOM_THRESHOLD = 10;
   OFFSETS = [
@@ -95,9 +96,24 @@ export class MapComponent implements OnInit, AfterViewInit {
         });    
         this.map.on('styleimagemissing', (e) => {
           const id: string = e.id;
+          if (this.addedImages[id]) {
+            return;
+          }
+          console.log('CREATING BG IMAGE for', id);
+          this.addedImages[id] = true;
+          this.map.addImage(id, {width: 0, height: 0, data: new Uint8Array()});
           const img: HTMLImageElement | null = this.createLabelBg(id);
           if (img) {
-            img.onload = () => this.map.addImage(id, img);
+            console.log('CREATED BG IMAGE for', img);
+            img.onload = () => {
+              this.map.setLayoutProperty('labels-active', 'visibility', 'none');
+              this.map.removeImage(id);
+              this.map.addImage(id, img);
+              timer(0).subscribe(() => {
+                this.map.setLayoutProperty('labels-active', 'visibility', 'visible');
+              });
+              console.log('ADDED BG IMAGE for', id);
+            };
           }
         });
         this.map.on('load', () => {
@@ -142,8 +158,7 @@ export class MapComponent implements OnInit, AfterViewInit {
                 'circle-radius': 12
               },
               // maxzoom: 10
-            });
-            
+            });            
             this.map.on('render', () => {
               if (!this.map.isSourceLoaded('cluster_source')) return;
               // console.log('RENDERING!');
@@ -172,6 +187,16 @@ export class MapComponent implements OnInit, AfterViewInit {
                 if (!newMarkers[id]) this.markersOnScreen[id].remove();
               }
               this.markersOnScreen = newMarkers;            
+            });
+            this.map.on('click', 'clusters', (e: mapboxgl.MapLayerMouseEvent) => {
+              if (e.features && e.features.length > 0) {
+                const geometry: Point = e.features[0].geometry as Point;
+                const center = new mapboxgl.LngLat(geometry.coordinates[0], geometry.coordinates[1]);
+                this.map.flyTo({
+                  center: center,
+                  zoom: 10.5
+                });
+              }
             });
             this.state.filterChanges.subscribe(state => {
               let filter: any[] | null = null;

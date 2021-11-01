@@ -32,6 +32,7 @@ export class AutocompleteResultComponent implements OnInit {
     } else if (this.type === 'response') {
       this.state.responseFilter = this.result.id;
     } else if (this.type === 'service') {
+      console.log('THIS RESULT', this.result);
       this.state.selectService(this.result);
     }
     this.selected.emit();
