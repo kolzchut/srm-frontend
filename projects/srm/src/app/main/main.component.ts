@@ -20,7 +20,7 @@ export class MainComponent implements OnInit {
   drawerState: DrawerState = DrawerState.Peek;
   savedDrawerState: DrawerState | null = null;
   headerState: HeaderState = HeaderState.Visible;
-  headerActive = false;
+  _headerActive = false;
   itemState: ItemState = ItemState.None;
   selectedItem: Card | null = null;
   selectedItems: Card[] | null = null;
@@ -31,6 +31,7 @@ export class MainComponent implements OnInit {
   HeaderState = HeaderState;
 
   map: mapboxgl.Map;
+  activePopup: mapboxgl.Popup | null = null;
   loaded = new ReplaySubject(1);
 
   counts: CategoryCountsResult[] = [];
@@ -74,34 +75,40 @@ export class MainComponent implements OnInit {
     }
   }
 
+  popup(card: Card | null, multistrip: boolean = false) {
+    if (this.layout.desktop) {
+      if (this.activePopup) {
+        this.activePopup.remove();
+        this.activePopup = null;
+      }
+      if (card) {
+        timer(0).subscribe(() => {
+          const mapPopup = (this.mapPopup.nativeElement as HTMLElement).firstChild as HTMLElement;          
+          if (mapPopup !== null) {
+            console.log('add popup', mapPopup);
+            this.activePopup = new mapboxgl.Popup({
+              closeButton: false,
+              closeOnClick: false,
+              anchor: 'bottom',
+              className: multistrip ? 'map-popup-multistrip' : 'map-popup-single',
+            })
+            .setLngLat(card.branch_geometry)
+            .setDOMContent(mapPopup)
+            .setMaxWidth("300px")
+            .addTo(this.map);
+          }
+        });  
+      }
+    }
+  }
+
   selectItems(items: Card[]) {
     this.selectItem(null);
     this.selectedItems = items;
     this.itemState = ItemState.MultiStrip;
     this.drawerState = DrawerState.Peek;
-
-    if (this.layout.desktop) {
-      timer(0).subscribe(() => {
-        if (this.selectedItems !== null) {
-          console.log('select items desktop', this.selectedItems[0].branch_geometry);
-          const mapPopup = (this.mapPopup.nativeElement as HTMLElement).firstChild as HTMLElement;
-          
-          if (mapPopup !== null) {
-            console.log('add popup', mapPopup);
-            new mapboxgl.Popup({
-              closeButton: false,
-              closeOnClick: false,
-              anchor: 'bottom',
-              className: 'map-popup-multistrip'
-            })
-            .setLngLat(this.selectedItems[0].branch_geometry)
-            // .setHTML(el.innerHTML)
-            .setDOMContent(mapPopup)
-            .setMaxWidth("300px")
-            .addTo(this.map);
-          }
-        }
-      });
+    if (items) {
+      this.popup(items[0], true);
     }
   }
 
@@ -132,6 +139,9 @@ export class MainComponent implements OnInit {
         this.headerState = HeaderState.Hidden;
       }
       this.state.centerZoom = [...item.branch_geometry, 15];
+      if (!this.savedSelectedItems) {
+        this.popup(item);
+      }
     } else {
       if (this.savedDrawerState) {
         this.drawerState = this.savedDrawerState;
@@ -144,6 +154,7 @@ export class MainComponent implements OnInit {
         this.itemState = ItemState.MultiStrip;
         this.drawerState = DrawerState.Peek;
       } else {
+        this.popup(null);
         this.itemState = ItemState.None;
       }
     }
@@ -158,13 +169,18 @@ export class MainComponent implements OnInit {
   }
 
   setLabelsFilter() {
-    let record_id = 'nonexistent';
+    const non_existent = 'nonexistent';
+    let record_id = non_existent;
     if (this.selectedItems) {
       record_id = this.selectedItems[0].card_id
     } else if (this.selectedItem) {
       record_id = this.selectedItem.card_id
     }
-    this.map.setFilter('labels-active', ['==', ['get', 'point_id'], record_id]);
+    if (this.layout.desktop) {
+      this.map.setFilter('labels-active', ['==', ['get', 'point_id'], non_existent]);
+    } else {
+      this.map.setFilter('labels-active', ['==', ['get', 'point_id'], record_id]);
+    }
     this.map.setFilter('labels-off', ['!=', ['get', 'point_id'], record_id]);
   }
 
@@ -228,5 +244,16 @@ export class MainComponent implements OnInit {
         padding: {top: 0, left: 0, bottom: 0, right: 0}
       });      
     }
+  }
+
+  set headerActive(active: boolean) {
+    this._headerActive = active;
+    if (active) {
+      this.handleEvent('map-click');
+    }
+  }
+
+  get headerActive(): boolean {
+    return this._headerActive;
   }
 }

@@ -75,9 +75,9 @@ export class StateService {
       }),
     );
     this.filterChanges = this.state.pipe(
-      distinctUntilChanged<State>(keyComparer(['responseId'])),
+      distinctUntilChanged<State>(keyComparer(['responseId', 'situations'])),
       map((state) => {
-        return {responseId: state.responseId};
+        return {responseId: state.responseId, situations: state.situations};
       }),
     );
     // State stream - for first time item fetching

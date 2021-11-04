@@ -91,6 +91,13 @@
         flex-flow: row;
         align-items: stretch;
         
+        .header {
+            transition: margin 0.3s ease-out;
+            &.hidden {
+                margin-bottom: -103px;
+            }
+        }
+
         .sidebar {
             flex: 0 0 360px;
             width: 360px;
@@ -113,16 +120,30 @@
         }
 
         .map-popup {
-            height: 100px;
+            min-height: 102px;
             width: 300px;
         }
 
-        ::ng-deep .map-popup-multistrip {
+        ::ng-deep {
             .mapboxgl-popup-content {
-                padding: 0 0 15px;
+                border-radius: 8px;
+                overflow: hidden;
             }
-            .mapboxgl-popup-tip {
-                border-top-color: @color-gray-2;
+            .map-popup-single {
+                .mapboxgl-popup-content {
+                    padding: 0;
+                    app-strip-single {
+                        padding: 0;
+                    }
+                }
+            }
+            .map-popup-multistrip {
+                .mapboxgl-popup-content {
+                    padding: 0 0 18px;
+                }
+                .mapboxgl-popup-tip {
+                    border-top-color: @color-gray-2;
+                }
             }
         }
     });

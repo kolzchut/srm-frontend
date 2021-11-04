@@ -44,6 +44,12 @@
     padding: 0;
 }
 
+.tags-container {
+    position: relative;
+    display: block;
+    transform: rotate(0deg);
+}
+
 .tag-list {
     width: 100%;
     display: flex;
@@ -56,7 +62,28 @@
     .tag-list;
     flex-wrap: nowrap;
     overflow-x: scroll;
+    position: relative;
+    padding: 0 16px;
     .no-scrollbars;
+    .shade {
+        position: fixed;
+        height: 100%;
+        top: 0;
+        width: 16px;
+        z-index: 1;
+        pointer-events: none;
+        content: ' ';
+    }
+    &::before {
+        .shade;
+        right: 0;
+        background: linear-gradient(270deg, #FCFCFC 0%, rgba(252, 252, 252, 0) 83.33%);
+    }
+    &::after {
+        .shade;
+        left: 0;
+        background: linear-gradient(90deg, #FCFCFC 0%, rgba(252, 252, 252, 0) 83.33%);
+    }
 }
 
 .no-scrollbars {

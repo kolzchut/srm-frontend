@@ -11,6 +11,7 @@ import { Card } from '../common/datatypes';
 import { Point } from 'geojson';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { SituationMatcher } from '../situations.service';
 
 @Component({
   selector: 'app-map',
@@ -157,7 +158,7 @@ export class MapComponent implements OnInit, AfterViewInit {
                 'circle-opacity': 0,
                 'circle-radius': 12
               },
-              // maxzoom: 10
+              maxzoom: 10
             });            
             this.map.on('render', () => {
               if (!this.map.isSourceLoaded('cluster_source')) return;
@@ -169,7 +170,10 @@ export class MapComponent implements OnInit, AfterViewInit {
               for (const feature of features) {
                 const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
                 const props: any = feature.properties;
-                if (!props.cluster) continue;
+                if (!props.cluster) {
+                  console.log('!cluster', props);
+                  continue;
+                }
                 const id = props.cluster_id;
                 
                 let marker = this.markers[id];
@@ -189,6 +193,7 @@ export class MapComponent implements OnInit, AfterViewInit {
               this.markersOnScreen = newMarkers;            
             });
             this.map.on('click', 'clusters', (e: mapboxgl.MapLayerMouseEvent) => {
+              console.log('CLUSTERS CLICK');
               if (e.features && e.features.length > 0) {
                 const geometry: Point = e.features[0].geometry as Point;
                 const center = new mapboxgl.LngLat(geometry.coordinates[0], geometry.coordinates[1]);
@@ -199,6 +204,7 @@ export class MapComponent implements OnInit, AfterViewInit {
               }
             });
             this.state.filterChanges.subscribe(state => {
+              console.log('FILTER CHANGED');
               let filter: any[] | null = null;
               if (state.responseId) {
                 filter = ['in', state.responseId, ['get', 'responses']];
@@ -207,9 +213,14 @@ export class MapComponent implements OnInit, AfterViewInit {
                 this.map.setFilter(layer, filter);
               }
               this.clusterData.subscribe(data => {
+                console.log('clusterData.subscribe');
                 let features: any[] = data.features;
                 if (state.responseId) {
                   features = features.filter((f: GeoJSON.Feature) => (f.properties?.responses || []).filter((r: string) => r.indexOf(state.responseId as string) === 0).length > 0);
+                }
+                if (state.situations) {
+                  const situationMatcher: SituationMatcher = new SituationMatcher(state.situations);
+                  features = features.filter((f: GeoJSON.Feature) => situationMatcher.match(f.properties?.situations || []));
                 }
                 const newData: GeoJSON.FeatureCollection = {
                   type: 'FeatureCollection',

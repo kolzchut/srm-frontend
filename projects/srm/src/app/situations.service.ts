@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { from, ReplaySubject, timer } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+import { SITUATIONS_PREFIX } from './common/consts';
 import { TaxonomyGroup } from './common/datatypes';
 import { State, StateService } from './state.service';
 
@@ -11,6 +12,41 @@ export type TaxonomyGroupEditor = {
     group: TaxonomyGroup,
     active: boolean
 };
+
+
+export class SituationMatcher {
+  constructor(private situations: string[][]) {}
+
+  match(situations: string[]): boolean {
+    const prefixes = situations.map(s => s.split(':').slice(0, 2).join(':'));
+    // console.log('MATCHING', this.situations, situations, prefixes);
+    let found = false;
+    for (const group of this.situations) {
+      const prefix = SITUATIONS_PREFIX + group[0];
+      if (prefixes.indexOf(prefix) < 0) {
+        // console.log('OUT 1', prefix);
+        continue;
+      }
+      let groupFound = false;
+      for (let idx = 1 ; idx < group.length ; idx++) {
+        if (situations.indexOf(SITUATIONS_PREFIX + group[idx]) >= 0) {
+          if (!found && group[0] !== 'age_group') {
+            console.log('FOUND!!', this.situations, situations);
+            found = true;
+          }
+          groupFound = true;
+          break;
+        }
+      }
+      if (!groupFound) {
+        // console.log('GROUP NOT FOUND', situations, group);
+        return false;
+      }
+    }
+    return found;
+  }
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +57,10 @@ export class SituationsService {
   activeSituations: {[key: string]: TaxonomyGroup[]} = {};
   byId: {[key: string]: TaxonomyGroup} = {};
   editors: TaxonomyGroupEditor[] = [];
-  PREFIX = 'human_situations:';
 
 
   constructor(private http: HttpClient, private state: StateService) {
-    this.http.get(environment.taxonomySituationsRL).subscribe((data) => {
+    this.http.get(environment.taxonomySituationsURL).subscribe((data) => {
       const taxonomies = data as TaxonomyGroup[];
       this.processTaxonomies(taxonomies);
       this.taxonomy.next(taxonomies);
@@ -36,8 +71,8 @@ export class SituationsService {
         const situations = state.situations || [];
         this.activeSituations = {};
         situations.forEach(situation => {
-          const group = this.PREFIX + situation[0];
-          const items = situation.slice(1).map(item => this.PREFIX + item).map(item => this.byId[item]);
+          const group = SITUATIONS_PREFIX + situation[0];
+          const items = situation.slice(1).map(item => SITUATIONS_PREFIX + item).map(item => this.byId[item]);
           this.activeSituations[group] = items;
         });
       });
@@ -141,6 +176,6 @@ export class SituationsService {
       delete this.activeSituations[group];
     }
     this.state.situations = Object.keys(this.activeSituations)
-        .map(key => [key.slice(this.PREFIX.length), ...this.activeSituations[key].map(i => i.slug.slice(this.PREFIX.length))]);
+        .map(key => [key.slice(SITUATIONS_PREFIX.length), ...this.activeSituations[key].map(i => i.slug.slice(SITUATIONS_PREFIX.length))]);
   }
 }

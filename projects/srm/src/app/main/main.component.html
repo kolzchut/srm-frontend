@@ -43,7 +43,7 @@
 <div class='mainbar layout-desktop'>
     <app-map *ngIf='layout.desktop' (points)='mapSelectedPoints($event)' (map)='setMap($event)'></app-map>
 </div>
-<div class='display-none' #mapPopup *ngIf='selectedItem || selectedItems || savedSelectedItems'>
+<div class='display-none' #mapPopup *ngIf='layout.desktop && (selectedItem || selectedItems || savedSelectedItems)'>
     <div class='map-popup'>
         <app-strip-single *ngIf='selectedItem && !savedSelectedItems' [service]='selectedItem'></app-strip-single>
         <app-strip-multiple *ngIf='selectedItems || savedSelectedItems' [services]='selectedItems || savedSelectedItems' (selected)='state.selectService($event)'></app-strip-multiple>    

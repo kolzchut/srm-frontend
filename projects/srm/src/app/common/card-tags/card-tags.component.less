@@ -1,10 +1,12 @@
 @import '../../../common.less';
-
-.tags {
-    &.big {
-        .tag-list;
-    }
-    &:not(.big) {
-        .scrolled-tag-list;
+:host {
+    .tags-container;
+    .tags {
+        &.big {
+            .tag-list;
+        }
+        &:not(.big) {
+            .scrolled-tag-list;
+        }
     }
 }

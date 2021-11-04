@@ -6,7 +6,7 @@ import { StateService, State } from './state.service';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Card, CategoryCountsResult, QueryCardsResult, QueryPlacesResult, QueryResponsesResult } from './common/datatypes';
-import { CATEGORY_COLORS } from './common/consts';
+import { CATEGORY_COLORS, SITUATIONS_PREFIX } from './common/consts';
 import { LngLatBounds, LngLatBoundsLike } from 'mapbox-gl';
 
 @Injectable({
@@ -51,15 +51,13 @@ export class ApiService {
       baseFilter.response_ids = state.responseId;
     }
     const filter: any[] = [];
-    const prefix = 'human_situations:';
+    filter.push(baseFilter);
     if (state.situations && state.situations.length > 0) {
-      state.situations.forEach((situations) => {
-        filter.push(
-          Object.assign({}, baseFilter, {situation_ids: situations.slice(1).map((s) => prefix + s)})
-        );
-      });
-    } else {
-      filter.push(baseFilter);
+      const terms = [];
+      for (const situations of state.situations) {
+        terms.push(...situations.map((s) => SITUATIONS_PREFIX + s));
+      }
+      params['extra'] = terms.join('|');
     }
     params['filter'] = JSON.stringify(filter);
     return this.http.get(environment.servicesURL, {params}).pipe(
@@ -85,7 +83,14 @@ export class ApiService {
         filters: Object.assign({response_categories: cc.category}, filters)
       };
     });
-    const params = {config: JSON.stringify(config)};
+    const params: any = {config: JSON.stringify(config)};
+    if (state.situations && state.situations.length > 0) {
+      const terms = [];
+      for (const situations of state.situations) {
+        terms.push(...situations.map((s) => SITUATIONS_PREFIX + s));
+      }
+      params['extra'] = terms.join('|');
+    }
     return this.http.get(environment.countCategoriesURL, {params}).pipe(
       map((res: any) => {
         const results = res as QueryCardsResult;

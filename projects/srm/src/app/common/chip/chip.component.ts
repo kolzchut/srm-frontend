@@ -20,9 +20,7 @@ export class ChipComponent implements OnInit {
     if (!!this.chip.id && !!this.state.responseFilter) {
       const chip: string = this.chip.id as string;
       const response: string = this.state.responseFilter as string;
-      return (chip === response) ||
-        (chip.indexOf(response) === 0) ||
-        (response.indexOf(chip) === 0);
+      return (chip === response);
     }
     return false;
   }

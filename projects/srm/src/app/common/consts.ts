@@ -30,3 +30,5 @@ export function getResponseColor(id: string) {
     const category = id.split(':')[1];
     return responseColors[category] || MULTIPLE_CATEGORY_COLOR[0].color;
 }
+
+export const SITUATIONS_PREFIX = 'human_situations:';
