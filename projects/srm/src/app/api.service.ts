@@ -5,7 +5,7 @@ import { StateService, State } from './state.service';
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Card, CategoryCountsResult, QueryCardsResult, QueryPlacesResult, QueryResponsesResult } from './common/datatypes';
+import { Card, CategoryCountsResult, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryResponsesResult } from './common/datatypes';
 import { CATEGORY_COLORS, SITUATIONS_PREFIX } from './common/consts';
 import { LngLatBounds, LngLatBoundsLike } from 'mapbox-gl';
 
@@ -41,8 +41,7 @@ export class ApiService {
     );
   }
 
-  getServices(state: State, bounds: LngLatBounds): Observable<QueryCardsResult> {
-    const params: any = {size: 10};
+  setParams(params: any, state: State, bounds: LngLatBounds): any {
     const baseFilter: any = {};
     if (bounds) {
       baseFilter.branch_geometry__bounded = this.boundsFilter(bounds);
@@ -60,12 +59,34 @@ export class ApiService {
       params['extra'] = terms.join('|');
     }
     params['filter'] = JSON.stringify(filter);
+  }
+
+  getServices(state: State, bounds: LngLatBounds): Observable<QueryCardsResult> {
+    const params: any = {size: 10};
+    this.setParams(params, state, bounds);
     return this.http.get(environment.servicesURL, {params}).pipe(
       map((res: any) => {
         const results = res as QueryCardsResult;
         return results;
       })
     );
+  }
+
+  getPoints(state: State, bounds: LngLatBounds): Observable<QueryPointsResult | null> {
+    const params: any = {size: 1000, order: 'point_id'};
+    if ((state.responseId && state.responseId.length > 0)|| (state.situations && state.situations.length > 0)) {
+      console.log('GETTING POINTS', state.responseId, state.situations);
+      this.setParams(params, state, bounds);
+      return this.http.get(environment.pointsURL, {params}).pipe(
+        map((res: any) => {
+          const results = res as QueryPointsResult;
+          return results;
+        })
+      );
+    } else {
+      // console.log('SKIPPING POINTS');
+      return from([null]);
+    }
   }
 
   countCategories(state: State, bounds: LngLatBounds): Observable<QueryCardsResult> {

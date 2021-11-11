@@ -6,7 +6,7 @@ export const environment = {
   production: true,
   servicesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/cards',
   countCategoriesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/count',
-  clusterDataURL: 'https://srm-staging.datacity.org.il/dataset/2902488f-da99-4836-9a90-1582958cfba4/resource/9947f36c-ad71-4b72-ba47-5302c4645a28/download/geo_data.geojson',
+  clusterDataURL: 'https://srm-staging.datacity.org.il/dataset/2902488f-da99-4836-9a90-1582958cfba4/resource/4c5ea1c5-af92-4930-914e-4c835ab25fb7/download/geo_data.geojson',
   placesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/places',
   responsesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/responses',
   itemURL: 'https://srm-staging-api.whiletrue.industries/api/idx/get/',

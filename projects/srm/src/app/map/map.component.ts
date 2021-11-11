@@ -3,7 +3,7 @@ import { MapboxService } from '../mapbox.service';
 
 import * as mapboxgl from 'mapbox-gl';
 import { ReplaySubject, Subject, timer } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, filter } from 'rxjs/operators';
 import { StateService } from '../state.service';
 import { ALL_CATEGORIES, CATEGORY_COLORS } from '../common/consts';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -11,7 +11,8 @@ import { Card } from '../common/datatypes';
 import { Point } from 'geojson';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { SituationMatcher } from '../situations.service';
+import { SearchService } from '../search.service';
+// import { SituationMatcher } from '../situations.service';
 
 @Component({
   selector: 'app-map',
@@ -34,22 +35,22 @@ export class MapComponent implements OnInit, AfterViewInit {
   addedImages: {[key: string]: boolean} = {};
 
   ZOOM_THRESHOLD = 10;
-  OFFSETS = [
-    [[0.0, 0.0]],
-    [[0.0, -0.5], [0.0, 0.5]],
-    [[0.0, -0.577], [0.5, 0.289], [-0.5, 0.289]], 
-    [[0.0, -0.707], [0.707, -0.0], [0.0, 0.707], [-0.707, 0.0]], 
-    // [[0.0, -0.851], [0.809, -0.263], [0.5, 0.688], [-0.5, 0.688], [-0.809, -0.263]],
-    // [[0.0, -1.0], [0.866, -0.5], [0.866, 0.5], [0.0, 1.0], [-0.866, 0.5], [-0.866, -0.5]],
-    // [[0.0, 0.0], [0.0, -1.0], [0.866, -0.5], [0.866, 0.5], [0.0, 1.0], [-0.866, 0.5], [-0.866, -0.5]]
-];
+  // OFFSETS = [
+  //   [[0.0, 0.0]],
+  //   [[0.0, -0.5], [0.0, 0.5]],
+  //   [[0.0, -0.577], [0.5, 0.289], [-0.5, 0.289]], 
+  //   [[0.0, -0.707], [0.707, -0.0], [0.0, 0.707], [-0.707, 0.0]], 
+  //   // [[0.0, -0.851], [0.809, -0.263], [0.5, 0.688], [-0.5, 0.688], [-0.809, -0.263]],
+  //   // [[0.0, -1.0], [0.866, -0.5], [0.866, 0.5], [0.0, 1.0], [-0.866, 0.5], [-0.866, -0.5]],
+  //   // [[0.0, 0.0], [0.0, -1.0], [0.866, -0.5], [0.866, 0.5], [0.0, 1.0], [-0.866, 0.5], [-0.866, -0.5]]
+  // ];
   ALL_CATEGORIES = ALL_CATEGORIES; 
 
-  constructor(private mapboxService: MapboxService, private state: StateService, private http: HttpClient) {
+  constructor(private mapboxService: MapboxService, private state: StateService, private http: HttpClient, private search: SearchService) {
     this.moveEvents.subscribe(centerZoom => {
       state.updateCenterZoom(centerZoom, true);
     });
-    http.get(environment.clusterDataURL).subscribe(data => {
+    this.http.get(environment.clusterDataURL).subscribe(data => {
       this.clusterData.next(data);
       this.clusterData.complete();
     });
@@ -77,6 +78,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         // Handle filter changes and apply on map
         // Listen for changes in geo view
         this.state.geoChanges.pipe(
+          filter((state) => !state.skipGeoUpdate),
           debounceTime(500),
         ).subscribe(state => {
           if (this.map) {
@@ -87,10 +89,10 @@ export class MapComponent implements OnInit, AfterViewInit {
                 this.map.flyTo({
                   center: geo.slice(0, 2) as mapboxgl.LngLatLike,
                   zoom: geo[2],
-                });
+                }, {internal: true});
               } else if (geo.length === 2) {
                 console.log('FITTING BOUNDS', geo);
-                this.map.fitBounds(geo as mapboxgl.LngLatBoundsLike, {}, {fromState: true});  
+                this.map.fitBounds(geo as mapboxgl.LngLatBoundsLike, {},);
               }
             }
           }
@@ -132,13 +134,14 @@ export class MapComponent implements OnInit, AfterViewInit {
           colorStyle.push('#444444');
           this.map.setPaintProperty('points-on', 'circle-color', colorStyle);
           this.map.setPaintProperty('points-stroke-on', 'circle-stroke-color', colorStyle);
+          console.log('COLOR STYLE', JSON.stringify(colorStyle));
 
           this.clusterData.subscribe(data => {
             const clusterProperties: any = {};
             CATEGORY_COLORS.forEach(cc => {
-              clusterProperties[cc.category] = ['+', ['case', ['==', ['get', 'response_category'], cc.category], 1, 0]];
+              clusterProperties[cc.category] = ['+', ['case', ['in', cc.category, ['get', 'response_categories']], 1, 0]];
             });
-            clusterProperties.care = ['+', 1];
+            console.log('CLUSTER PROPERTIES', clusterProperties);
             this.map.addSource('cluster_source', {
               'type': 'geojson',
               'data': environment.clusterDataURL,
@@ -171,7 +174,6 @@ export class MapComponent implements OnInit, AfterViewInit {
                 const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
                 const props: any = feature.properties;
                 if (!props.cluster) {
-                  console.log('!cluster', props);
                   continue;
                 }
                 const id = props.cluster_id;
@@ -203,33 +205,61 @@ export class MapComponent implements OnInit, AfterViewInit {
                 });
               }
             });
-            this.state.filterChanges.subscribe(state => {
-              console.log('FILTER CHANGED');
-              let filter: any[] | null = null;
-              if (state.responseId) {
-                filter = ['in', state.responseId, ['get', 'responses']];
-              }
-              for (const layer of ['points-on', 'points-stroke-on', 'clusters']) {
-                this.map.setFilter(layer, filter);
+            // TODO!!
+            this.search.point_ids.subscribe(ids => {
+              console.log('point ids changed', ids);
+              if (ids) {
+                const filter = ['in', ['get', 'point_id'], ['literal', ids]];
+                for (const layer of ['points-on', 'points-stroke-on', 'labels-off']) {
+                  const ret = this.map.setFilter(layer, filter);
+                }  
+              } else {
+                for (const layer of ['points-on', 'points-stroke-on', 'labels-off']) {
+                  this.map.setFilter(layer, null);
+                }  
               }
               this.clusterData.subscribe(data => {
                 console.log('clusterData.subscribe');
                 let features: any[] = data.features;
-                if (state.responseId) {
-                  features = features.filter((f: GeoJSON.Feature) => (f.properties?.responses || []).filter((r: string) => r.indexOf(state.responseId as string) === 0).length > 0);
+                let newData: GeoJSON.FeatureCollection = data;
+                if (ids) {
+                  newData = {
+                    type: 'FeatureCollection',
+                    features: features.filter(f => ids.indexOf(f.properties.point_id) >= 0)
+                  };
+                  console.log('SET NEW DATA for SOURCE', newData.features.length, features[0].properties);
                 }
-                if (state.situations) {
-                  const situationMatcher: SituationMatcher = new SituationMatcher(state.situations);
-                  features = features.filter((f: GeoJSON.Feature) => situationMatcher.match(f.properties?.situations || []));
-                }
-                const newData: GeoJSON.FeatureCollection = {
-                  type: 'FeatureCollection',
-                  features: features
-                };
                 (this.map.getSource('cluster_source') as mapboxgl.GeoJSONSource).setData(newData);
-                // console.log('SET NEW DATA for SOURCE', newData.features.filter((f: any) => f.geometry.coordinates[1] < 30));
               });
+
             });
+            // this.state.filterChanges.subscribe(state => {
+            //   console.log('FILTER CHANGED');
+            //   let filter: any[] | null = null;
+            //   if (state.responseId) {
+            //     filter = ['in', state.responseId, ['get', 'responses']];
+            //   }
+            //   for (const layer of ['points-on', 'points-stroke-on', 'clusters']) {
+            //     this.map.setFilter(layer, filter);
+            //   }
+            //   this.clusterData.subscribe(data => {
+            //     console.log('clusterData.subscribe');
+          //     let features: any[] = data.features;
+            //     if (state.responseId) {
+            //       features = features.filter((f: GeoJSON.Feature) => (f.properties?.responses || []).filter((r: string) => r.indexOf(state.responseId as string) === 0).length > 0);
+            //     }
+            //     if (state.situations) {
+            //       const situationMatcher: SituationMatcher = new SituationMatcher(state.situations);
+            //       features = features.filter((f: GeoJSON.Feature) => situationMatcher.match(f.properties?.situations || []));
+            //     }
+            //     const newData: GeoJSON.FeatureCollection = {
+            //       type: 'FeatureCollection',
+            //       features: features
+            //     };
+            //     (this.map.getSource('cluster_source') as mapboxgl.GeoJSONSource).setData(newData);
+            //     // console.log('SET NEW DATA for SOURCE', newData.features.filter((f: any) => f.geometry.coordinates[1] < 30));
+            //   });
+            // });
   
           });
 
@@ -253,6 +283,7 @@ export class MapComponent implements OnInit, AfterViewInit {
           this.map.on('moveend', (event: DragEvent) => {
             const fromState = (event as any).fromState;
             this.state.latestBounds = this.map?.getBounds();
+            console.log('MOVED', fromState, this.state.latestBounds);
             if (!fromState) {
               this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
             }
@@ -309,7 +340,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
     html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />
       <text dominant-baseline="central" x="${r}" y="${r}">
-      ${total.toLocaleString()}
+      ${props.point_count.toLocaleString()}
       </text>
       </svg>
       </div>`;

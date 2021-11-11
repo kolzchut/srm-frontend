@@ -138,7 +138,7 @@ export class MainComponent implements OnInit {
         this.drawerState = DrawerState.Most;
         this.headerState = HeaderState.Hidden;
       }
-      this.state.centerZoom = [...item.branch_geometry, 15];
+      this.map.flyTo({center: item.branch_geometry, zoom: 15}, {internal: true});
       if (!this.savedSelectedItems) {
         this.popup(item);
       }

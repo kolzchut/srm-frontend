@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LngLat, LngLatBounds, LngLatLike } from 'mapbox-gl';
 import { BehaviorSubject, from, Observable, ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, first, map, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { Card } from './common/datatypes';
 
@@ -63,22 +63,15 @@ export class StateService {
         this._state = Object.assign({}, this._state, parsed);
         this.state.next(this._state);
       } catch (e) {
+        console.log('DECODE ERROR', e);
       }
     });
     // State stream - only for geo view changes
     this.geoChanges = this.state.pipe(
-      filter((state) => !state.skipGeoUpdate),
       distinctUntilChanged<State>(keyComparer(['geo'])),
-      debounceTime(1000),
-      map((state) => {
-        return {geo: state.geo};
-      }),
     );
     this.filterChanges = this.state.pipe(
       distinctUntilChanged<State>(keyComparer(['responseId', 'situations'])),
-      map((state) => {
-        return {responseId: state.responseId, situations: state.situations};
-      }),
     );
     // State stream - for first time item fetching
     this.state.pipe(
@@ -174,7 +167,5 @@ export class StateService {
       this.savedGeo = null;
     }
     this.selectedService.next({service, preview});
-  }
-
-  
+  }  
 }

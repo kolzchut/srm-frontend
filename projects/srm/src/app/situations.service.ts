@@ -14,38 +14,38 @@ export type TaxonomyGroupEditor = {
 };
 
 
-export class SituationMatcher {
-  constructor(private situations: string[][]) {}
+// export class SituationMatcher {
+//   constructor(private situations: string[][]) {}
 
-  match(situations: string[]): boolean {
-    const prefixes = situations.map(s => s.split(':').slice(0, 2).join(':'));
-    // console.log('MATCHING', this.situations, situations, prefixes);
-    let found = false;
-    for (const group of this.situations) {
-      const prefix = SITUATIONS_PREFIX + group[0];
-      if (prefixes.indexOf(prefix) < 0) {
-        // console.log('OUT 1', prefix);
-        continue;
-      }
-      let groupFound = false;
-      for (let idx = 1 ; idx < group.length ; idx++) {
-        if (situations.indexOf(SITUATIONS_PREFIX + group[idx]) >= 0) {
-          if (!found && group[0] !== 'age_group') {
-            console.log('FOUND!!', this.situations, situations);
-            found = true;
-          }
-          groupFound = true;
-          break;
-        }
-      }
-      if (!groupFound) {
-        // console.log('GROUP NOT FOUND', situations, group);
-        return false;
-      }
-    }
-    return found;
-  }
-}
+//   match(situations: string[]): boolean {
+//     const prefixes = situations.map(s => s.split(':').slice(0, 2).join(':'));
+//     // console.log('MATCHING', this.situations, situations, prefixes);
+//     let found = false;
+//     for (const group of this.situations) {
+//       const prefix = SITUATIONS_PREFIX + group[0];
+//       if (prefixes.indexOf(prefix) < 0) {
+//         // console.log('OUT 1', prefix);
+//         continue;
+//       }
+//       let groupFound = false;
+//       for (let idx = 1 ; idx < group.length ; idx++) {
+//         if (situations.indexOf(SITUATIONS_PREFIX + group[idx]) >= 0) {
+//           if (!found && group[0] !== 'age_group') {
+//             // console.log('FOUND!!', this.situations, situations);
+//             found = true;
+//           }
+//           groupFound = true;
+//           break;
+//         }
+//       }
+//       if (!groupFound) {
+//         // console.log('GROUP NOT FOUND', situations, group);
+//         return false;
+//       }
+//     }
+//     return found;
+//   }
+// }
 
 
 @Injectable({

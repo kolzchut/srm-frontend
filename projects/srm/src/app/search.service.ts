@@ -3,7 +3,7 @@ import { forkJoin, from, ReplaySubject, Subject } from 'rxjs';
 import { distinctUntilChanged, debounceTime, switchMap, filter } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { CATEGORY_COLORS } from './common/consts';
-import { Card, CategoryCountsResult, Place, QueryCardsResult, QueryPlacesResult, QueryResponsesResult, Response } from './common/datatypes';
+import { Card, CategoryCountsResult, Place, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryResponsesResult, Response, SearchResult } from './common/datatypes';
 import { State, StateService } from './state.service';
 
 @Injectable({
@@ -15,6 +15,7 @@ export class SearchService {
   services = new ReplaySubject<QueryCardsResult>(1);
   places = new ReplaySubject<QueryPlacesResult>(1);
   responses = new ReplaySubject<QueryResponsesResult>(1);
+  point_ids = new ReplaySubject<string[] | null>(1);
   searchQuery: string = '';
 
   visibleServices = new ReplaySubject<Card[]>(1);
@@ -39,27 +40,41 @@ export class SearchService {
     });
 
     // Fetching services from the DB
-    this.state.state.pipe(
-      debounceTime(500),
-      switchMap((state: State) => {
-        console.log('FETCHING SERVICES', this.state.latestBounds);
-        return forkJoin([this.api.getServices(state, this.state.latestBounds), this.api.countCategories(state, this.state.latestBounds)]);
-      })
-    ).subscribe(([services, counts]: QueryCardsResult[]) => {
-      console.log('GOT SERVICES');
-      this.visibleServices.next(
-        services.search_results.map((x) => x.source)
-      );
-      this.visibleCounts.next(
-        CATEGORY_COLORS.map((cc) => {
-          return {
-            id: `human_services:${cc.category}`,
-            category: cc.category,
-            count: counts.search_counts[cc.category].total_overall,
-            color: cc.color
-          };
-        }).filter((x) => x.count > 0)
-      );
-    });
+    const sources = [
+      this.state.geoChanges.pipe(debounceTime(2000)),
+      this.state.filterChanges
+    ];
+    for (const source of sources) {
+      source.pipe(
+        switchMap((state: State) => {
+          console.log('FETCHING SERVICES', this.state.latestBounds);
+          return forkJoin([
+            this.api.getServices(state, this.state.latestBounds),
+            this.api.countCategories(state, this.state.latestBounds),
+            this.api.getPoints(state, this.state.latestBounds)
+          ]);
+        })
+      ).subscribe(([services, counts, points]) => {
+        console.log('GOT SERVICES');
+        this.visibleServices.next(
+          services.search_results.map((x) => x.source)
+        );
+        this.visibleCounts.next(
+          CATEGORY_COLORS.map((cc) => {
+            return {
+              id: `human_services:${cc.category}`,
+              category: cc.category,
+              count: counts.search_counts[cc.category].total_overall,
+              color: cc.color
+            };
+          }).filter((x) => x.count > 0)
+        );
+        if (points !== null) {
+          this.point_ids.next((points as QueryPointsResult).search_results.map((x) => x.source.point_id));
+        } else {
+          this.point_ids.next(null);
+        }
+      });
+    }
   }
 }

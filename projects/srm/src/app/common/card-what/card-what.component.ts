@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HighlighterService } from '../../highlighter.service';
-import { getResponseColor } from '../consts';
+import { getResponseCategoryColor, getResponseIdColor } from '../consts';
 import { Card } from '../datatypes';
 
 @Component({
@@ -20,7 +20,7 @@ export class CardWhatComponent implements OnInit {
   }
 
   get categoryColor() {
-    return getResponseColor(this.item.responses[0].id);
+    return this.item.response_category ? getResponseCategoryColor(this.item.response_category) : getResponseIdColor(this.item.responses[0].id);
   }
 
   highlightText(text: string) {

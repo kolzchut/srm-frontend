@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { getResponseColor } from '../consts';
+import { getResponseIdColor } from '../consts';
 import { Card, CategoryCountsResult } from '../datatypes';
 
 @Component({
@@ -31,7 +31,7 @@ export class CardTagsComponent implements OnInit, OnChanges {
               id: r.id,
               display: r.name,
               category: r.id.split(':')[1],
-              color: getResponseColor(r.id),
+              color: getResponseIdColor(r.id),
             };
         })      
       ];

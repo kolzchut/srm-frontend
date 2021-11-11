@@ -43,6 +43,7 @@ export class Card {
     response_categories: string[];
     situations: {id: string; name: string}[];
     responses: {id: string; name: string}[];
+    response_category: string;
 };
 
 export class Place {
@@ -96,6 +97,14 @@ export type Service = {
     urls: {href: string, title: string}[],
 };
 
+export type Point = {
+    response_categories: string[],
+    point_id: string,
+    response_ids: string[],
+    situation_ids: string[],
+    response_category: string,
+};
+
 export type CardResponse = {
     id: string,
     name: string,
@@ -129,6 +138,7 @@ export type CategoryCountsResult = {
     color: string,
 };
 
+export type QueryPointsResult = SearchResult<Point>;
 export type QueryCardsResult = SearchResult<Card>;
 export type QueryPlacesResult = SearchResult<Place>;
 export type QueryResponsesResult = SearchResult<Response>;

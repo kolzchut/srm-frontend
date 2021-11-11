@@ -26,9 +26,13 @@ const responseColors: any = CATEGORY_COLORS.reduce((obj: any, cat) => {
     return obj
 }, {})
 
-export function getResponseColor(id: string) {
-    const category = id.split(':')[1];
+export function getResponseCategoryColor(category: string) {
     return responseColors[category] || MULTIPLE_CATEGORY_COLOR[0].color;
+}
+
+export function getResponseIdColor(id: string) {
+    const category = id.split(':')[1];
+    return getResponseCategoryColor(category);
 }
 
 export const SITUATIONS_PREFIX = 'human_situations:';

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { switchMap, tap } from 'rxjs/operators';
-import { getResponseColor } from '../../common/consts';
+import { getResponseIdColor } from '../../common/consts';
 import { Response } from '../../common/datatypes';
 import { LayoutService } from '../../layout.service';
 import { ResponsesService } from '../../responses.service';
@@ -30,7 +30,7 @@ export class FilterBarComponent implements OnInit {
     ).subscribe(state => {
       if (state.responseId) {
         this.responseFilter = this.responseMap[state.responseId] || null;
-        this.responseColor = getResponseColor(this.responseFilter.id) + 'c0';
+        this.responseColor = getResponseIdColor(this.responseFilter.id) + 'c0';
       } else {
         this.responseFilter = null;
       }
