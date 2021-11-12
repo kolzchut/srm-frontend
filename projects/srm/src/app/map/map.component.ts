@@ -73,8 +73,12 @@ export class MapComponent implements OnInit, AfterViewInit {
           container: this.mapEl.nativeElement,
           style: this.STYLE,
           minZoom: 3,
+
         };
         this.map = new mapboxgl.Map(mapParams);
+        this.map.dragRotate.disable();
+        this.map.touchZoomRotate.disableRotation();
+        this.map.touchPitch.disable();
         // Handle filter changes and apply on map
         // Listen for changes in geo view
         this.state.geoChanges.pipe(

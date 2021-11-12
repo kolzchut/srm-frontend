@@ -21,6 +21,39 @@
     }
 
     .details {
+        width: 100%;
+        .details-handle {
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            justify-content: flex-start;
+            // gap: 8px;
+            height: 21px;
+            width: 100%;
+            padding: 0 8px;
+            margin: 16px 0;
+            background: linear-gradient(180deg, #FCFCFC 0%, rgba(252, 252, 252, 0) 100%), #F7F7F7;
+            border-radius: 2px;
+            cursor: pointer;
+
+            span {
+                .font-rag-sans;
+                font-weight: normal;
+                font-size: 13px;
+                color: @color-gray-2;
+            }
+
+            img.rotate {
+                transform: rotate(180deg);
+            }
+        }
+        .details-content {
+            overflow: hidden;
+
+            .details-text {
+                transition: margin-top 0.3s ease-in-out;
+            }
+        }
         font-weight: 300;
     }
 }

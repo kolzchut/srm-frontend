@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import { ReplaySubject, timer } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { delay, switchMap, tap } from 'rxjs/operators';
 import { Card, CategoryCountsResult, DrawerState, HeaderState, ItemState } from '../common/datatypes';
 import { LayoutService } from '../layout.service';
 import { SearchService } from '../search.service';
@@ -32,6 +32,7 @@ export class MainComponent implements OnInit {
 
   map: mapboxgl.Map;
   activePopup: mapboxgl.Popup | null = null;
+  hasPopup = false;
   loaded = new ReplaySubject(1);
 
   counts: CategoryCountsResult[] = [];
@@ -51,6 +52,7 @@ export class MainComponent implements OnInit {
           color: c.color,
         };
       });
+      this.handleEvent(this.counts.length > 0 ? 'has-results' : 'no-results');
     });  
   }
 
@@ -77,13 +79,20 @@ export class MainComponent implements OnInit {
 
   popup(card: Card | null, multistrip: boolean = false) {
     if (this.layout.desktop) {
+      console.log('popup');
       if (this.activePopup) {
+        console.log('remove active popup');
         this.activePopup.remove();
         this.activePopup = null;
       }
+      this.hasPopup = false;
       if (card) {
-        timer(0).subscribe(() => {
+        timer(0).pipe(
+          tap(() => this.hasPopup = true),
+          delay(0),
+        ).subscribe(() => {
           const mapPopup = (this.mapPopup.nativeElement as HTMLElement).firstChild as HTMLElement;          
+          console.log('new popup', mapPopup);
           if (mapPopup !== null) {
             console.log('add popup', mapPopup);
             this.activePopup = new mapboxgl.Popup({
@@ -226,6 +235,14 @@ export class MainComponent implements OnInit {
           this.drawerState = DrawerState.Card;
         } else if (this.drawerState === DrawerState.Card) {
           this.drawerState = DrawerState.Peek;
+        }
+      } else if (event === 'no-results') {
+        this.savedDrawerState = this.drawerState;
+        this.drawerState = DrawerState.Hidden;
+      } else if (event === 'has-results') {
+        if (this.drawerState === DrawerState.Hidden && this.savedDrawerState) {
+          this.drawerState = this.savedDrawerState;
+          this.savedDrawerState = null;
         }
       }
     }

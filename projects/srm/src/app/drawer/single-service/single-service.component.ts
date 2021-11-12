@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { timer } from 'rxjs';
 import { Card } from '../../common/datatypes';
 
 @Component({
@@ -6,11 +7,15 @@ import { Card } from '../../common/datatypes';
   templateUrl: './single-service.component.html',
   styleUrls: ['./single-service.component.less']
 })
-export class SingleServiceComponent implements OnInit {
+export class SingleServiceComponent implements OnInit, AfterViewInit {
 
   @Input() item: Card | null = null;
+  @ViewChild('details') detailsElement: ElementRef;
 
   card: Card;
+
+  detailsVisible = false;
+  detailsHeight = -10000;
 
   constructor() { }
 
@@ -20,6 +25,15 @@ export class SingleServiceComponent implements OnInit {
     }
   }
 
+  ngAfterViewInit(): void {
+    timer(0).subscribe(() => {
+      const el = this.detailsElement.nativeElement;
+      if (el) {
+        this.detailsHeight = -(el.offsetHeight + 16 + 21);
+      }
+    });
+  }
+  
   geoLink() {
     return 'geo:' + this.card.branch_geometry.join(',');
   }

@@ -21,7 +21,19 @@
     </ng-container>
 </div>
 <div class='content' *ngIf='card.service_details'>
-    <div class='details'>{{card.service_details}}</div>
+    <div class='details'>
+        <div class='details-handle' (click)='detailsVisible = !detailsVisible'>
+            <span i18n>עוד</span>
+            <img src='assets/img/icon-dropdown.svg'>
+        </div>
+        <div class='details-content'>
+            <div class='details-text' #details [style.margin-top]='(detailsVisible ? 0 : detailsHeight) + "px"'>{{card.service_details}}</div>
+            <div class='details-handle' (click)='detailsVisible = !detailsVisible'>
+                <span i18n>פחות</span>
+                <img class='rotate' src='assets/img/icon-dropdown.svg'>
+            </div>
+        </div>
+    </div>
 </div>
 <div class='buttons'>
     <app-card-button kind='fix' display-i18n display='מצאתי טעות בנתונים' action='https://www.kolzchut.org.il/he/%D7%9B%D7%9C-%D7%96%D7%9B%D7%95%D7%AA:%D7%A6%D7%A8%D7%95_%D7%A7%D7%A9%D7%A8' [arrow]='true'></app-card-button>
