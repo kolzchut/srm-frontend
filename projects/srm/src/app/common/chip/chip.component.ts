@@ -51,12 +51,8 @@ export class ChipComponent implements OnInit {
     event.stopPropagation();
     if (this.state.responseFilter === this.chip.id) {
       this.state.responseFilter = null;
-      this.state.searchBoxTitle = '';
     } else {
       this.state.responseFilter = this.chip.id;
-      if (this.chip.display) {
-        this.state.searchBoxTitle = this.chip.display;
-      }
     }
   }
 }

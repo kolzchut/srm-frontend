@@ -5,6 +5,7 @@ import { BehaviorSubject, from, Observable, ReplaySubject, Subject } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { Card } from './common/datatypes';
+import { ResponsesService } from './responses.service';
 
 export type State = {
   geo?: [number, number, number] | [[number, number], [number, number]] | null;
@@ -41,7 +42,7 @@ export class StateService {
   savedGeo: [number, number, number] | null;
   latestBounds: LngLatBounds;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private api: ApiService) {
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private api: ApiService, private responses: ResponsesService) {
     // State encoding into URL
     this.state.subscribe(state => {
       this.currentState = this.encode(state);
@@ -129,10 +130,10 @@ export class StateService {
     this.updateCenterZoom(centerZoom);
   }
 
-  set searchBoxTitle(searchBoxTitle: string) {
-    this._state = Object.assign({}, this._state, {searchBoxTitle});
-    this.state.next(this._state);
-  }
+  // set searchBoxTitle(searchBoxTitle: string) {
+  //   this._state = Object.assign({}, this._state, {searchBoxTitle});
+  //   this.state.next(this._state);
+  // }
 
   set cardId(cardId: string | null) {
     this._state = Object.assign({}, this._state, {cardId});
@@ -140,7 +141,8 @@ export class StateService {
   }
 
   set responseFilter(responseId: string | null) {
-    this._state = Object.assign({}, this._state, {responseId});
+    const searchBoxTitle = responseId ? this.responses.getResponseName(responseId) : '';
+    this._state = Object.assign({}, this._state, {responseId, searchBoxTitle});
     this.state.next(this._state);
   }
 
@@ -156,7 +158,6 @@ export class StateService {
   selectService(service: Card | null, preview: boolean = false) {
     console.log('SELECT SERVICE', service?.card_id, 'Current:', this._state.cardId);
     this.cardId = service?.card_id || null;
-    this.searchBoxTitle = service?.service_name || '';
     if (service && !this.savedGeo && this._state.geo && this._state.geo.length === 3) {
       this.savedGeo = this._state.geo;
       console.log('SAVED GEO', this.savedGeo);

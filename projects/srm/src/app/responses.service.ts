@@ -31,4 +31,8 @@ export class ResponsesService {
     }
   }
 
+  getResponseName(id: string): string {
+    return this.byId[id].name;
+  }
+
 }

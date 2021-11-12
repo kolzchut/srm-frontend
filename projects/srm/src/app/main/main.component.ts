@@ -172,10 +172,11 @@ export class MainComponent implements OnInit {
     const non_existent = 'nonexistent';
     let record_id = non_existent;
     if (this.selectedItems) {
-      record_id = this.selectedItems[0].card_id
+      record_id = this.selectedItems[0].point_id
     } else if (this.selectedItem) {
-      record_id = this.selectedItem.card_id
+      record_id = this.selectedItem.point_id
     }
+    console.log('Filtering cards for', record_id);
     if (this.layout.desktop) {
       this.map.setFilter('labels-active', ['==', ['get', 'point_id'], non_existent]);
     } else {

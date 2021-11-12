@@ -44,6 +44,7 @@ export class Card {
     situations: {id: string; name: string}[];
     responses: {id: string; name: string}[];
     response_category: string;
+    point_id: string;
 };
 
 export class Place {
