@@ -5,13 +5,24 @@
     padding-top: 16px;
 }
 
+.actions {
+    padding: 8px;
+    display: flex;
+    flex-flow: row;
+    gap: 8px;
+    margin: 0;
+    width: 100%;
+    overflow-x: scroll;
+    .no-scrollbars;        
+}
+
 .content {
     display: flex;
     flex-flow: column;
     width: 100%;
     gap: 16px;
     padding: 0 28px;
-    margin-top: 28px;
+    margin-top: 16px;
 
     .description, .details {
         .font-rag-sans;
@@ -31,7 +42,13 @@
             height: 21px;
             width: 100%;
             padding: 0 8px;
-            margin: 16px 0;
+            margin: 0;
+            &:first-child {
+                margin-bottom: 8px;
+            }
+            &:last-child {
+                margin-top: 8px;
+            }
             background: linear-gradient(180deg, #FCFCFC 0%, rgba(252, 252, 252, 0) 100%), #F7F7F7;
             border-radius: 2px;
             cursor: pointer;

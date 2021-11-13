@@ -7,10 +7,33 @@
     background-color: @color-white;
     border-radius: 8px;
 
-    .header {
+    .header-wrapper {
         display: flex;
-        flex-flow: column;    
-        padding: 0px 4px 0px 0px;
-        margin-bottom: 12px;
+        flex-flow: row;
+        align-items: flex-start;
+        margin-left: -8px;
+
+        .header {
+            width: 100%;
+            flex: 1 1 auto;
+            display: flex;
+            flex-flow: column;    
+            padding: 0px 4px 0px 0px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .close {
+            flex: 0 0 auto;
+            width: 24px;
+            cursor: pointer;
+            opacity: 0.5;
+            
+            .icon {
+                .background-image;
+                background-image: url(../../../assets/img/icon-close.svg);
+                width: 24px;
+                height: 24px;
+            }
+        }
     }
 }

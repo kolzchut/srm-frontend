@@ -1,3 +1,4 @@
 <div class='cards'>
     <app-service-card [item]='card' *ngFor='let card of (search.visibleServices | async)' (click)='selectCard(card)'></app-service-card>
+    <div class='more' #more></div>
 </div>

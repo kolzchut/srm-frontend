@@ -27,9 +27,11 @@ export class SingleServiceComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     timer(0).subscribe(() => {
-      const el = this.detailsElement.nativeElement;
-      if (el) {
-        this.detailsHeight = -(el.offsetHeight + 16 + 21);
+      if (this.detailsElement) {
+        const el = this.detailsElement.nativeElement;
+        if (el) {
+          this.detailsHeight = -(el.offsetHeight + 16 + 21);
+        }          
       }
     });
   }

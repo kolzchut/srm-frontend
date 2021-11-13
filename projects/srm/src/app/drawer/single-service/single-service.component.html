@@ -2,7 +2,11 @@
     <app-card-what [item]='card' [big]='true'></app-card-what>
     <app-card-where [item]='card'></app-card-where>
 </div>
-<div class='actions'></div>
+<div class='actions'>
+    <app-card-action kind='link' *ngFor='let url of urls().slice(0, 1)' [display]='url.title' [action]='url.href'></app-card-action>
+    <app-card-action kind='phone' *ngIf='card.branch_phone_numbers' [display]='card.branch_phone_numbers' [action]='"tel:" + card.branch_phone_numbers'></app-card-action>
+    <app-card-action kind='address' *ngIf='card.branch_address' [display]='card.branch_address' [action]='geoLink()'></app-card-action>
+</div>
 <div class='content'>
     <div class='description' *ngIf='card.service_description'>{{card.service_description}}</div>
     <app-card-tags [item]='card' [big]='true'></app-card-tags>    

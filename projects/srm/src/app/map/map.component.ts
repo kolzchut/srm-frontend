@@ -87,13 +87,13 @@ export class MapComponent implements OnInit, AfterViewInit {
         ).subscribe(state => {
           if (this.map) {
             const geo = state.geo;
-            if (geo) {
+            if (geo && !state.cardId) {
               if (geo.length === 3) {
                 console.log('CENTERING', geo);
                 this.map.flyTo({
                   center: geo.slice(0, 2) as mapboxgl.LngLatLike,
                   zoom: geo[2],
-                }, {internal: true});
+                }, {internal: true, kind: 'centering'});
               } else if (geo.length === 2) {
                 console.log('FITTING BOUNDS', geo);
                 this.map.fitBounds(geo as mapboxgl.LngLatBoundsLike, {},);
@@ -124,6 +124,7 @@ export class MapComponent implements OnInit, AfterViewInit {
           }
         });
         this.map.on('load', () => {
+          console.log('MAP LOADED');
           const colorStyle = [
             "match",
             [
@@ -209,7 +210,6 @@ export class MapComponent implements OnInit, AfterViewInit {
                 });
               }
             });
-            // TODO!!
             this.search.point_ids.subscribe(ids => {
               console.log('point ids changed', ids);
               if (ids) {
@@ -237,34 +237,7 @@ export class MapComponent implements OnInit, AfterViewInit {
               });
 
             });
-            // this.state.filterChanges.subscribe(state => {
-            //   console.log('FILTER CHANGED');
-            //   let filter: any[] | null = null;
-            //   if (state.responseId) {
-            //     filter = ['in', state.responseId, ['get', 'responses']];
-            //   }
-            //   for (const layer of ['points-on', 'points-stroke-on', 'clusters']) {
-            //     this.map.setFilter(layer, filter);
-            //   }
-            //   this.clusterData.subscribe(data => {
-            //     console.log('clusterData.subscribe');
-          //     let features: any[] = data.features;
-            //     if (state.responseId) {
-            //       features = features.filter((f: GeoJSON.Feature) => (f.properties?.responses || []).filter((r: string) => r.indexOf(state.responseId as string) === 0).length > 0);
-            //     }
-            //     if (state.situations) {
-            //       const situationMatcher: SituationMatcher = new SituationMatcher(state.situations);
-            //       features = features.filter((f: GeoJSON.Feature) => situationMatcher.match(f.properties?.situations || []));
-            //     }
-            //     const newData: GeoJSON.FeatureCollection = {
-            //       type: 'FeatureCollection',
-            //       features: features
-            //     };
-            //     (this.map.getSource('cluster_source') as mapboxgl.GeoJSONSource).setData(newData);
-            //     // console.log('SET NEW DATA for SOURCE', newData.features.filter((f: any) => f.geometry.coordinates[1] < 30));
-            //   });
-            // });
-  
+            this.newMap.next(this.map);
           });
 
           this.map.getStyle().layers?.filter((l) => l.id.indexOf('points-stroke-on') === 0).forEach((layer) => {
@@ -285,16 +258,17 @@ export class MapComponent implements OnInit, AfterViewInit {
             }
           });
           this.map.on('moveend', (event: DragEvent) => {
-            const fromState = (event as any).fromState;
-            this.state.latestBounds = this.map?.getBounds();
-            console.log('MOVED', fromState, this.state.latestBounds);
-            if (!fromState) {
+            const internal = (event as any).internal;
+            if (!internal) {
+              this.state.latestBounds = this.map?.getBounds();
+              console.log('MOVED', event, internal, this.state.latestBounds);
               this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
+            } else {
+              console.log('MOVED INTERNALLY', event, internal);
             }
           });    
           this.state.latestBounds = this.map.getBounds();
           this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
-          this.newMap.next(this.map);
         });
       } catch (e) {
         console.log('FAILED TO LOAD', e)

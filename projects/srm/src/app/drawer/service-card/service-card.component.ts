@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Card } from '../../common/datatypes';
 import { HighlighterService } from '../../highlighter.service';
 
@@ -11,6 +11,8 @@ export class ServiceCardComponent implements OnInit {
 
   @Input() item: Card;
   @Input() highlight = false;
+  @Input() closeable = false;
+  @Output() closed = new EventEmitter<void>();
 
   constructor() { }
 

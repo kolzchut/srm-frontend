@@ -7,8 +7,14 @@
     <app-map *ngIf='layout.mobile' (points)='mapSelectedPoints($event)' (map)='setMap($event)'></app-map>
     <app-drawer [state]='drawerState' (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)'>
         <ng-container ngProjectAs='strip'>
-            <app-strip-single *ngIf='selectedItem && drawerState !== DrawerState.Most' [service]='selectedItem' (selected)='state.selectService($event)'></app-strip-single>
-            <app-strip-multiple *ngIf='selectedItems && drawerState === DrawerState.Peek' [services]='selectedItems' (selected)='state.selectService($event)'></app-strip-multiple>
+            <app-strip-single *ngIf='selectedItem && drawerState !== DrawerState.Most' 
+                [service]='selectedItem' (selected)='state.selectService($event)'
+                (closed)='handleEvent("map-click")'
+            ></app-strip-single>
+            <app-strip-multiple *ngIf='selectedItems && drawerState === DrawerState.Peek'
+                [services]='selectedItems' (selected)='state.selectService($event)'
+                (closed)='handleEvent("map-click")'
+            ></app-strip-multiple>
         </ng-container>
         <ng-container ngProjectAs='content-header'>
             <div *ngIf='itemState !== ItemState.Full' class='counts' (click)='$event.stopPropagation()'>
@@ -45,7 +51,14 @@
 </div>
 <div class='display-none' #mapPopup *ngIf='layout.desktop && hasPopup && (selectedItem || selectedItems || savedSelectedItems)'>
     <div class='map-popup'>
-        <app-strip-single *ngIf='selectedItem && !savedSelectedItems' [service]='selectedItem'></app-strip-single>
-        <app-strip-multiple *ngIf='selectedItems || savedSelectedItems' [services]='selectedItems || savedSelectedItems' (selected)='state.selectService($event)'></app-strip-multiple>    
+        <app-strip-single *ngIf='selectedItem && !savedSelectedItems'
+            [service]='selectedItem'
+            (closed)='handleEvent("map-click")'
+        ></app-strip-single>
+        <app-strip-multiple *ngIf='selectedItems || savedSelectedItems'
+            [services]='selectedItems || savedSelectedItems'
+            (selected)='state.selectService($event)'
+            (closed)='handleEvent("map-click")'
+        ></app-strip-multiple>    
     </div>
 </div>

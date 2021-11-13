@@ -122,6 +122,7 @@ export class MainComponent implements OnInit {
   }
 
   selectItem(item: Card | null, preview: boolean = false) {
+    console.log('selectItem', item);
     if (item !== null && this.selectedItem !== null && item !== this.selectedItem) {
       return;
     }
@@ -147,7 +148,8 @@ export class MainComponent implements OnInit {
         this.drawerState = DrawerState.Most;
         this.headerState = HeaderState.Hidden;
       }
-      this.map.flyTo({center: item.branch_geometry, zoom: 15}, {internal: true});
+      console.log('MAP flying to', item.branch_geometry, this.map.isMoving(), this.map);
+      this.map.flyTo({center: item.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'});
       if (!this.savedSelectedItems) {
         this.popup(item);
       }
@@ -173,8 +175,9 @@ export class MainComponent implements OnInit {
 
   setMap(map: mapboxgl.Map) {
     this.map = map;
-    this.loaded.next();
     this.setLabelsFilter();
+    console.log('LOADED');
+    this.loaded.next();
   }
 
   setLabelsFilter() {
@@ -249,18 +252,19 @@ export class MainComponent implements OnInit {
   }
 
   updateDrawerHeight(height: number) {
+    console.log('UPDATING DRAWER HEIGHT');
     if (this.layout.mobile && this.itemState !== ItemState.None) {
       this.map?.flyTo({
         center: this.map.getCenter(),
         zoom: this.map.getZoom(),
         padding: {top: 0, left: 0, bottom: height, right: 0}
-      });
+      }, {internal: true, kind: 'update-drawer-height'});
     } else {
       this.map?.flyTo({
         center: this.map.getCenter(),
         zoom: this.map.getZoom(),
         padding: {top: 0, left: 0, bottom: 0, right: 0}
-      });      
+      }, {internal: true, kind: 'update-drawer-height'});
     }
   }
 

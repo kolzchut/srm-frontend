@@ -10,6 +10,7 @@ export class SingleComponent implements OnInit {
 
   @Input() service: Card;
   @Output() selected = new EventEmitter<Card>();
+  @Output() closed = new EventEmitter<void>();
 
   constructor() { }
 

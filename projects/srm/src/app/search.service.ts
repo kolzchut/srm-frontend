@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { forkJoin, from, ReplaySubject, Subject } from 'rxjs';
-import { distinctUntilChanged, debounceTime, switchMap, filter } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, switchMap, filter, first } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { CATEGORY_COLORS } from './common/consts';
 import { Card, CategoryCountsResult, Place, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryResponsesResult, Response, SearchResult } from './common/datatypes';
@@ -21,6 +21,9 @@ export class SearchService {
   visibleServices = new ReplaySubject<Card[]>(1);
   visibleCounts = new ReplaySubject<CategoryCountsResult[]>(1);
   searchResults = new Subject<any[]>();
+
+  latestServices: Card[] = [];
+  latestFetch = -1;
 
   constructor(private api: ApiService, private state: StateService) {
     this.query.pipe(
@@ -48,6 +51,9 @@ export class SearchService {
       source.pipe(
         switchMap((state: State) => {
           console.log('FETCHING SERVICES', this.state.latestBounds);
+          this.latestServices = [];
+          this.latestFetch = 0;
+          this.visibleServices.next(this.latestServices);
           return forkJoin([
             this.api.getServices(state, this.state.latestBounds),
             this.api.countCategories(state, this.state.latestBounds),
@@ -56,9 +62,8 @@ export class SearchService {
         })
       ).subscribe(([services, counts, points]) => {
         console.log('GOT SERVICES');
-        this.visibleServices.next(
-          services.search_results.map((x) => x.source)
-        );
+        this.latestServices = services.search_results.map((x) => x.source);
+        this.visibleServices.next(this.latestServices);
         this.visibleCounts.next(
           CATEGORY_COLORS.map((cc) => {
             return {
@@ -76,5 +81,21 @@ export class SearchService {
         }
       });
     }
+  }
+
+  loadMore() {
+    if (this.latestFetch === this.latestServices.length || this.latestServices.length === 0) {
+      return;
+    }
+    this.latestFetch = this.latestServices.length;
+    this.state.state.pipe(
+      first(),
+      switchMap((state: State) => {
+        return this.api.getServices(state, this.state.latestBounds, this.latestFetch);
+      })
+    ).subscribe((services: QueryCardsResult) => {
+      this.latestServices.push(...services.search_results.map((x) => x.source));
+      this.visibleServices.next(this.latestServices);
+    });
   }
 }

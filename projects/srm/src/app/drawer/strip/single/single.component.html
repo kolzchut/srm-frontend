@@ -1,1 +1,1 @@
-<app-service-card [item]='service' (click)='selected.emit(service)'></app-service-card>
+<app-service-card [item]='service' (click)='selected.emit(service)' [closeable]='true' (closed)='closed.emit()'></app-service-card>

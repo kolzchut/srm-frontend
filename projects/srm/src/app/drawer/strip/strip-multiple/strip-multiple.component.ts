@@ -10,6 +10,7 @@ export class StripMultipleComponent implements OnInit {
 
   @Input() services: Card[] | null;
   @Output() selected = new EventEmitter<Card>();
+  @Output() closed = new EventEmitter<void>();
 
   constructor() { }
 

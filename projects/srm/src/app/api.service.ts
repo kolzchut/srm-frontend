@@ -61,8 +61,8 @@ export class ApiService {
     params['filter'] = JSON.stringify(filter);
   }
 
-  getServices(state: State, bounds: LngLatBounds): Observable<QueryCardsResult> {
-    const params: any = {size: 10};
+  getServices(state: State, bounds: LngLatBounds, offset=0): Observable<QueryCardsResult> {
+    const params: any = {size: 10, offset: offset};
     this.setParams(params, state, bounds);
     return this.http.get(environment.servicesURL, {params}).pipe(
       map((res: any) => {

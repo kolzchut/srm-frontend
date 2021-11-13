@@ -1,0 +1,6 @@
+<button type='button' [class]='"kind-" + kind' [class.action]='!!action' (click)='onclick()'>
+    <span class='icon'></span>
+    <span class='label' i18n *ngIf='kind === "link"'>קישור</span>
+    <span class='label' i18n *ngIf='kind === "address"'>ניווט</span>
+    <span class='label' i18n *ngIf='kind === "phone"'>טלפון</span>
+</button>

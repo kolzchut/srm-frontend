@@ -21,6 +21,7 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
   
   startY: number;
   startTime: number;
+  currentHeight = -1;
 
   constructor(public layout: LayoutService) { }
 
@@ -33,7 +34,11 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
       from([true]).pipe(
         delay(250),
       ).subscribe(() => {
-        this.height.emit(el.clientHeight);
+        const height = el.clientHeight;
+        if (height !== this.currentHeight) {
+          this.currentHeight = height;
+          this.height.emit(height);
+        }
       });  
     }
   }
@@ -56,7 +61,8 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
           });
         });  
       }
-      this.height.emit(el.clientHeight);
+      this.currentHeight = el.clientHeight;
+      this.height.emit(this.currentHeight);
     }
   }
 

@@ -30,6 +30,7 @@ import { AutocompleteResultComponent } from './filtering/search-autocomplete/aut
 import { StripMultipleComponent } from './drawer/strip/strip-multiple/strip-multiple.component';
 import { SituationGroupFilterComponent } from './filtering/filtering-config/situation-group-filter/situation-group-filter.component';
 import { SituationEditorComponent } from './filtering/filtering-config/situation-editor/situation-editor.component';
+import { CardActionComponent } from './common/card-action/card-action.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { SituationEditorComponent } from './filtering/filtering-config/situation
     AutocompleteResultComponent,
     StripMultipleComponent,
     SituationGroupFilterComponent,
-    SituationEditorComponent
+    SituationEditorComponent,
+    CardActionComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
