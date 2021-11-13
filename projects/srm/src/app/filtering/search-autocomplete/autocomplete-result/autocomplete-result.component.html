@@ -1,5 +1,5 @@
 <a (click)='click($event)'>
-    <ng-container *ngIf="type === 'response'">
+    <ng-container *ngIf="type === 'responses'">
         <div class='result'>
             <div class='count'>{{result.count}}</div>
             <div class='name'>
@@ -9,14 +9,14 @@
             <div class='arrow'></div>
         </div>
     </ng-container>
-    <ng-container *ngIf="type === 'place'">
+    <ng-container *ngIf="type === 'places'">
         <div class='result'>
             <div class='location'></div>
             <div class='name' [innerHtml]='highlight(result.name[0])'></div>
             <div class='arrow'></div>
         </div>
     </ng-container>
-    <ng-container *ngIf="type === 'service'">
+    <ng-container *ngIf="type === 'services'">
         <app-service-card [item]='result' [highlight]='true'></app-service-card>
     </ng-container>
 </a>

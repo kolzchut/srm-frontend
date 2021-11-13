@@ -120,7 +120,7 @@ export type CardResponse = {
     categories: string
 };
 
-export type SearchResult<T> = {
+export type SearchResult<T extends any> = {
     search_counts: {
         [key: string]: {
             total_overall: number,

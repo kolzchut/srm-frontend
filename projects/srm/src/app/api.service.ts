@@ -120,9 +120,9 @@ export class ApiService {
     );
   }
 
-  query<T>(query: string, url: string): Observable<T> {
+  query<T>(query: string, url: string, offset: number): Observable<T> {
     if (query && query.length > 0) {
-      const params = {q: query};
+      const params = {q: query, offset};
       return this.http.get(url, {params}).pipe(
         map((res: any) => {
           const results = res as T;
@@ -134,16 +134,16 @@ export class ApiService {
     }
   }
 
-  queryServices(query: string) {
-    return this.query<QueryCardsResult>(query, environment.servicesURL);
+  queryServices(query: string, offset=0) {
+    return this.query<QueryCardsResult>(query, environment.servicesURL, offset);
   }
 
-  queryPlaces(query: any) {
-    return this.query<QueryPlacesResult>(query, environment.placesURL);
+  queryPlaces(query: any, offset=0) {
+    return this.query<QueryPlacesResult>(query, environment.placesURL, offset);
   }
 
-  queryResponses(query: any) {
-    return this.query<QueryResponsesResult>(query, environment.responsesURL);
+  queryResponses(query: any, offset=0) {
+    return this.query<QueryResponsesResult>(query, environment.responsesURL, offset);
   }
 
 }

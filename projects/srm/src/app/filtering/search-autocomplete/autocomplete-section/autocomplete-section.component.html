@@ -1,11 +1,12 @@
-<div class='container'>
-    <div class='header' *ngIf='visible'>
+<div class='container' *ngIf='visible'>
+    <div class='header'>
         <div class='type'>{{typeName}}:</div>
-        <div class='more' *ngIf='count > show'>עוד {{count - show}}</div>
+        <div class='more' *ngIf='count > show && !more' (click)='fetchMore()'>עוד {{count - show}}</div>
     </div>
     <div class='results'>
-        <ng-container *ngFor='let result of results.slice(0, show)'>
+        <ng-container *ngFor='let result of slice()'>
             <app-autocomplete-result [type]='type' [result]='result' (selected)='selected.emit()'></app-autocomplete-result>
-        </ng-container>    
+        </ng-container>
     </div>    
+    <div class='more-trigger' [attr.result-type]='type' *ngIf='more' #more></div>
 </div>

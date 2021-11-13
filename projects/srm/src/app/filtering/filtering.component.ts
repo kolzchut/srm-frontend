@@ -1,4 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { SearchService } from '../search.service';
 import { SituationsService } from '../situations.service';
 
 @Component({
@@ -9,15 +10,30 @@ import { SituationsService } from '../situations.service';
     '[class.active]': '!!this.activeSection || situations.activeEditors().length > 0'
   }
 })
-export class FilteringComponent implements OnInit {
+export class FilteringComponent implements OnInit, AfterViewInit {
 
   @Output() activated = new EventEmitter<boolean>();
+  @ViewChild('content') contentEl: ElementRef;
 
   activeSection: string | null = null;
+  intersectionObserver: IntersectionObserver;
 
-  constructor(public situations: SituationsService) { }
+  constructor(public situations: SituationsService, private search: SearchService) { }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
+    this.intersectionObserver = new IntersectionObserver(entries => {
+      const entry = entries[0];
+      if (entry.isIntersecting) {
+        const kind = entry.target.getAttribute('result-type');
+        if (kind) {
+          console.log('MORE', kind);  
+          this.search.queryMore(kind);        
+        }
+      }
+    }, {root: this.contentEl.nativeElement});
   }
 
   set active(value: string | null) {

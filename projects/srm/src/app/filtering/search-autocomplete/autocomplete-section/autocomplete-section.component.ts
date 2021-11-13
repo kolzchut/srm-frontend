@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Observable, timer } from 'rxjs';
 import { SearchResult } from '../../../common/datatypes';
 import { SearchService } from '../../../search.service';
+import { StateService } from '../../../state.service';
 
 @Component({
   selector: 'app-autocomplete-section',
@@ -14,25 +15,31 @@ export class AutocompleteSectionComponent implements OnInit {
 
   @Input() type: string;
   @Input() typeName: string;
+  @Input() intersectionObserver: IntersectionObserver;
   @Output() selected = new EventEmitter();
+  @ViewChild('more') moreEl: ElementRef;
 
   visible = false;
   count = 0;
   show = this.PREVIEW;
+  more = false;
 
   results: any[] = [];
 
-  constructor(private search: SearchService) {
+  constructor(private search: SearchService, private state: StateService, private host: ElementRef) {
+    this.search.query.subscribe(() => {
+      this.more = false;
+    });
   }
 
   ngOnInit(): void {
     const obs = {
-      response: this.search.responses,
-      place: this.search.places,
-      service: this.search.services,
+      responses: this.search.responses,
+      places: this.search.places,
+      services: this.search.services,
     }[this.type] as Observable<SearchResult<any>>;
     obs.subscribe(res => {
-      if (res.search_results && res.search_results.length > 0) {
+      if (res && res.search_results && res.search_results.length > 0) {
         this.visible = true;
         this.results = res.search_results.map((s) => s.source);
         this.count = res.search_counts._current.total_overall;
@@ -44,4 +51,16 @@ export class AutocompleteSectionComponent implements OnInit {
     });
   }
 
+  fetchMore() {
+    this.more = true;
+    timer(0).subscribe(() => {
+      if (this.moreEl.nativeElement) {
+        this.intersectionObserver.observe(this.moreEl.nativeElement);
+      }
+    });
+  }
+
+  slice() {
+    return this.more ? this.results : this.results.slice(0, this.PREVIEW);
+  }
 }

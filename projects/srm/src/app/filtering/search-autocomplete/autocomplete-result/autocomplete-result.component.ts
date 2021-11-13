@@ -25,12 +25,12 @@ export class AutocompleteResultComponent implements OnInit {
   click(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    if (this.type === 'place') {
+    if (this.type === 'places') {
       const bounds = new LngLatBounds(this.result.bounds);
       this.state.bounds = bounds;
-    } else if (this.type === 'response') {
+    } else if (this.type === 'responses') {
       this.state.responseFilter = this.result.id;
-    } else if (this.type === 'service') {
+    } else if (this.type === 'services') {
       console.log('THIS RESULT', this.result);
       this.state.selectService(this.result);
     }
