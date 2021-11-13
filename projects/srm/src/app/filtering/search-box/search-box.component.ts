@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { Subject, timer } from 'rxjs';
 import { Response, Place, Card } from '../../common/datatypes';
 import { SearchService } from '../../search.service';
 import { StateService } from '../../state.service';
@@ -13,12 +13,13 @@ export class SearchBoxComponent implements OnInit, OnChanges {
 
   @Input() isActive: boolean;
   @Output() activated = new EventEmitter<string | null>();
+  @ViewChild('input') input: ElementRef;
 
   _active = false;
   _query = '';
 
   constructor(private search: SearchService, private state: StateService) {
-    state.state.subscribe(state => {
+    state.queryChanges.subscribe(state => {
       this._query = state.searchBoxTitle || '';
       console.log('NEW QUERY', JSON.stringify(this._query));
     });
@@ -38,6 +39,13 @@ export class SearchBoxComponent implements OnInit, OnChanges {
     this.activated.next(value ? 'search': null);
     if (value) {
       this.query = this._query;
+
+      timer(10).subscribe(() => {
+        const inputEl = this.input?.nativeElement as HTMLInputElement;
+        if (inputEl) {
+          inputEl.setSelectionRange(0, this.query.length);
+        }
+      });
     }
   }
 

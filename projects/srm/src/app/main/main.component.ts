@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import { ReplaySubject, timer } from 'rxjs';
-import { delay, switchMap, tap } from 'rxjs/operators';
+import { delay, filter, switchMap, tap } from 'rxjs/operators';
 import { Card, CategoryCountsResult, DrawerState, HeaderState, ItemState } from '../common/datatypes';
 import { LayoutService } from '../layout.service';
 import { SearchService } from '../search.service';
@@ -53,7 +53,12 @@ export class MainComponent implements OnInit {
         };
       });
       this.handleEvent(this.counts.length > 0 ? 'has-results' : 'no-results');
-    });  
+    });
+    this.state.filterChanges.pipe(
+      filter((state) => ((state.responseId && state.responseId.length > 0) || (!!state.situations && state.situations.length > 0))),
+    ).subscribe(() => {
+      this.handleEvent('show-results');
+    });
   }
 
   ngOnInit(): void {
@@ -247,6 +252,8 @@ export class MainComponent implements OnInit {
           this.drawerState = this.savedDrawerState;
           this.savedDrawerState = null;
         }
+      } else if (event === 'show-results') {
+        this.drawerState = DrawerState.Most;
       }
     }
   }

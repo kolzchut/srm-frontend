@@ -38,6 +38,7 @@ export class StateService {
   currentState: string = '_';
   geoChanges: Observable<State>;
   filterChanges: Observable<State>;
+  queryChanges: Observable<State>;
   selectedService = new ReplaySubject<{service: Card | null, preview: boolean}>(1);
   savedGeo: [number, number, number] | null;
   latestBounds: LngLatBounds;
@@ -73,6 +74,9 @@ export class StateService {
     );
     this.filterChanges = this.state.pipe(
       distinctUntilChanged<State>(keyComparer(['responseId', 'situations'])),
+    );
+    this.queryChanges = this.state.pipe(
+      distinctUntilChanged<State>(keyComparer(['searchBoxTitle'])),
     );
     // State stream - for first time item fetching
     this.state.pipe(

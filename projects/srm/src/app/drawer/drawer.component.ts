@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
-import { from, fromEvent } from 'rxjs';
+import { from, fromEvent, timer } from 'rxjs';
 import { delay, first, tap } from 'rxjs/operators';
 import { DrawerState } from '../common/datatypes';
 import { LayoutService } from '../layout.service';
@@ -107,7 +107,9 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
     } else if (this.startTime) {
       const timeDiff = performance.now() - this.startTime;
       if (Math.abs(diff) < 50 && timeDiff < 500) {
-        this.handle.emit('click');
+        timer(500 - timeDiff).subscribe(() => {
+          this.handle.emit('click');
+        });
         event.stopPropagation();
       }  
     }

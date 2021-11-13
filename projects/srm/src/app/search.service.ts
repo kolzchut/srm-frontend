@@ -72,7 +72,7 @@ export class SearchService {
               count: counts.search_counts[cc.category].total_overall,
               color: cc.color
             };
-          }).filter((x) => x.count > 0)
+          }).filter((x) => x.count > 0).sort((a, b) => b.count - a.count)
         );
         if (points !== null) {
           this.point_ids.next((points as QueryPointsResult).search_results.map((x) => x.source.point_id));
