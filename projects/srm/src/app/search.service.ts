@@ -3,7 +3,7 @@ import { forkJoin, from, Observable, ReplaySubject, Subject } from 'rxjs';
 import { distinctUntilChanged, debounceTime, switchMap, filter, first } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { CATEGORY_COLORS } from './common/consts';
-import { Card, CategoryCountsResult, Place, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryResponsesResult, Response, SearchResult } from './common/datatypes';
+import { Card, CategoryCountsResult, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryResponsesResult, Response, SearchResult } from './common/datatypes';
 import { State, StateService } from './state.service';
 
 @Injectable({
@@ -15,6 +15,7 @@ export class SearchService {
   services = new ReplaySubject<QueryCardsResult | null>(1);
   places = new ReplaySubject<QueryPlacesResult | null>(1);
   responses = new ReplaySubject<QueryResponsesResult | null>(1);
+  presets = new ReplaySubject<Preset[]>(1);
   searchQuery: string = '';
 
   latestQuery: {[key: string]: number} = {
@@ -101,6 +102,10 @@ export class SearchService {
         }
       });
     }
+    this.api.getPresets().subscribe((presets: Preset[]) => {
+      this.presets.next(presets);
+      this.presets.complete();
+    });
   }
 
   loadMore() {

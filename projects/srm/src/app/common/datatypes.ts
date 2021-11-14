@@ -106,6 +106,12 @@ export type Point = {
     response_category: string,
 };
 
+export type Preset = {
+    url: string,
+    title: string,
+    style: string,
+};
+
 export type CardResponse = {
     id: string,
     name: string,
@@ -143,6 +149,7 @@ export type QueryPointsResult = SearchResult<Point>;
 export type QueryCardsResult = SearchResult<Card>;
 export type QueryPlacesResult = SearchResult<Place>;
 export type QueryResponsesResult = SearchResult<Response>;
+export type QueryPresetResult = SearchResult<Preset>;
 
 export type TaxonomyGroup = {
     slug: string,
