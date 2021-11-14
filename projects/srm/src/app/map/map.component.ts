@@ -110,9 +110,9 @@ export class MapComponent implements OnInit, AfterViewInit {
               this.map.setLayoutProperty('labels-active', 'visibility', 'none');
               this.map.removeImage(id);
               const options: any = {
-                content: [2, 2, 162, 46], // place text over left half of image, avoiding the 16px border
-                stretchX: [[8, 156]], // stretch everything horizontally except the 16px border
-                stretchY: [[8, 40]], // stretch everything vertically except the 16px border
+                content: [2, 0, 162, 48],
+                stretchX: [[8, 156]],
+                stretchY: [[8, 40]],
               };
               this.map.addImage(id, img, options);
               timer(0).subscribe(() => {
