@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { environment } from 'projects/srm/src/environments/environment';
 import { timer } from 'rxjs';
 import { Card } from '../../common/datatypes';
 
@@ -16,6 +17,8 @@ export class SingleServiceComponent implements OnInit, AfterViewInit {
 
   detailsVisible = false;
   detailsHeight = -10000;
+
+  suggestChangesURL = environment.suggestChangesForm;
 
   constructor() { }
 
