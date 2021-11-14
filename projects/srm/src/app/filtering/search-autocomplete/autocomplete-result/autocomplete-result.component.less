@@ -36,15 +36,10 @@ a {
             color: @color-gray-3;
         }
 
-        .name {
-            .font-rag-sans;
-            font-weight: normal;
-            font-size: 20px;
-            color: @color-gray-1;
+        .name-container {
             display: flex;
             flex-flow: row;
             align-items: baseline;
-            overflow: hidden;
 
             .breadcrumbs {
                 .font-rag-sans;
@@ -55,6 +50,24 @@ a {
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
+            }
+        }
+
+        .name {
+            .font-rag-sans;
+            font-weight: normal;
+            font-size: 20px;
+            line-height: 26px;
+            color: @color-gray-1;
+            display: flex;
+            flex-flow: row;
+            align-items: stretch;
+            overflow: hidden;
+
+            ::ng-deep strong {
+                background-color: @color-gray-6;
+                border-radius: 2px;
+                padding: 0 1px;
             }
         }
         

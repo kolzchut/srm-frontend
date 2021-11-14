@@ -32,7 +32,7 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
     const el = this.handleEl?.nativeElement as HTMLDivElement;
     if (el) {
       from([true]).pipe(
-        delay(250),
+        delay(500),
       ).subscribe(() => {
         const height = el.clientHeight;
         if (height !== this.currentHeight) {

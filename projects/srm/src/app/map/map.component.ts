@@ -24,7 +24,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   STYLE = 'mapbox://styles/srm-kolzchut/cksprr4sy0hbg18o5ct2ty2oc';
 
   @Output('points') points = new EventEmitter<Card[]>();
-  @Output('map') newMap = new EventEmitter<mapboxgl.Map>();
+  @Output('map') newMap = new EventEmitter<MapComponent>();
   @ViewChild('map') mapEl: ElementRef;
 
   map: mapboxgl.Map;
@@ -34,16 +34,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   clusterData = new ReplaySubject<any>(1);
   addedImages: {[key: string]: boolean} = {};
 
+  moveQueue: ((map: mapboxgl.Map) => void)[] = [];
+
   ZOOM_THRESHOLD = 10;
-  // OFFSETS = [
-  //   [[0.0, 0.0]],
-  //   [[0.0, -0.5], [0.0, 0.5]],
-  //   [[0.0, -0.577], [0.5, 0.289], [-0.5, 0.289]], 
-  //   [[0.0, -0.707], [0.707, -0.0], [0.0, 0.707], [-0.707, 0.0]], 
-  //   // [[0.0, -0.851], [0.809, -0.263], [0.5, 0.688], [-0.5, 0.688], [-0.809, -0.263]],
-  //   // [[0.0, -1.0], [0.866, -0.5], [0.866, 0.5], [0.0, 1.0], [-0.866, 0.5], [-0.866, -0.5]],
-  //   // [[0.0, 0.0], [0.0, -1.0], [0.866, -0.5], [0.866, 0.5], [0.0, 1.0], [-0.866, 0.5], [-0.866, -0.5]]
-  // ];
   ALL_CATEGORIES = ALL_CATEGORIES; 
 
   constructor(private mapboxService: MapboxService, private state: StateService, private http: HttpClient, private search: SearchService) {
@@ -90,13 +83,14 @@ export class MapComponent implements OnInit, AfterViewInit {
             if (geo && !state.cardId) {
               if (geo.length === 3) {
                 console.log('CENTERING', geo);
-                this.map.flyTo({
-                  center: geo.slice(0, 2) as mapboxgl.LngLatLike,
-                  zoom: geo[2],
-                }, {internal: true, kind: 'centering'});
+                this.queueAction((map) => map.flyTo({
+                    center: geo.slice(0, 2) as mapboxgl.LngLatLike,
+                    zoom: geo[2],
+                  }, {internal: true, kind: 'centering'}
+                ));
               } else if (geo.length === 2) {
                 console.log('FITTING BOUNDS', geo);
-                this.map.fitBounds(geo as mapboxgl.LngLatBoundsLike, {},);
+                this.queueAction((map) => map.fitBounds(geo as mapboxgl.LngLatBoundsLike, {},));
               }
             }
           }
@@ -115,7 +109,12 @@ export class MapComponent implements OnInit, AfterViewInit {
             img.onload = () => {
               this.map.setLayoutProperty('labels-active', 'visibility', 'none');
               this.map.removeImage(id);
-              this.map.addImage(id, img);
+              const options: any = {
+                content: [2, 2, 162, 46], // place text over left half of image, avoiding the 16px border
+                stretchX: [[8, 156]], // stretch everything horizontally except the 16px border
+                stretchY: [[8, 40]], // stretch everything vertically except the 16px border
+              };
+              this.map.addImage(id, img, options);
               timer(0).subscribe(() => {
                 this.map.setLayoutProperty('labels-active', 'visibility', 'visible');
               });
@@ -204,10 +203,11 @@ export class MapComponent implements OnInit, AfterViewInit {
               if (e.features && e.features.length > 0) {
                 const geometry: Point = e.features[0].geometry as Point;
                 const center = new mapboxgl.LngLat(geometry.coordinates[0], geometry.coordinates[1]);
-                this.map.flyTo({
-                  center: center,
-                  zoom: 10.5
-                });
+                this.queueAction((map) => map.flyTo({
+                    center: center,
+                    zoom: 10.5
+                  }
+                ));
               }
             });
             this.search.point_ids.subscribe(ids => {
@@ -237,7 +237,7 @@ export class MapComponent implements OnInit, AfterViewInit {
               });
 
             });
-            this.newMap.next(this.map);
+            this.newMap.next(this);
           });
 
           this.map.getStyle().layers?.filter((l) => l.id.indexOf('points-stroke-on') === 0).forEach((layer) => {
@@ -266,6 +266,13 @@ export class MapComponent implements OnInit, AfterViewInit {
             } else {
               console.log('MOVED INTERNALLY', event, internal);
             }
+            if (this.moveQueue.length > 0) {
+              const action = this.moveQueue.shift();
+              if (!!action) {
+                console.log('PULLING ACTION from QUEUE');
+                action(this.map);  
+              }
+            }
           });    
           this.state.latestBounds = this.map.getBounds();
           this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
@@ -279,7 +286,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   createLabelBg(id: string): HTMLImageElement | null {
     for (const cc of ALL_CATEGORIES) {
       if (id === 'tooltip-rc-' + cc.category) {
-        const img = new Image(82, 24);
+        const img = new Image(164, 48);
         img.src = this.tooltipImg(cc.color);
         return img;
       }
@@ -346,5 +353,13 @@ export class MapComponent implements OnInit, AfterViewInit {
       } ${r + r0 * y1} A ${r0} ${r0} 0 ${largeArc} 0 ${r + r0 * x0} ${
       r + r0 * y0
       }" fill="${color}" />`;
+  }
+
+  queueAction(action: (map: mapboxgl.Map) => void) {
+    if (this.moveQueue.length === 0 && !this.map.isMoving()) {
+      action(this.map);
+    } else {
+      this.moveQueue.push(action);
+    }
   }
 }

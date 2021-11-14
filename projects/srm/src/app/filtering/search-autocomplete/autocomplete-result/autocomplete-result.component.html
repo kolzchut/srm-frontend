@@ -2,8 +2,8 @@
     <ng-container *ngIf="type === 'responses'">
         <div class='result'>
             <div class='count'>{{result.count}}</div>
-            <div class='name'>
-                <span [innerHtml]='highlight(result.name)'></span>
+            <div class='name-container'>
+                <span class='name' [innerHtml]='highlight(result.name)'></span>
                 <div class='breadcrumbs' [innerHtml]='result.breadcrumbs'></div>
             </div>
             <div class='arrow'></div>

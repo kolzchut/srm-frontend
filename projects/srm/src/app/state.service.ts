@@ -159,17 +159,21 @@ export class StateService {
     this.state.next(this._state);
   }
 
-  selectService(service: Card | null, preview: boolean = false) {
+  selectService(service: Card | null, preview: boolean = false, replaceCenterZoom: [number, number, number] | null = null) {
     console.log('SELECT SERVICE', service?.card_id, 'Current:', this._state.cardId);
     this.cardId = service?.card_id || null;
     if (service && !this.savedGeo && this._state.geo && this._state.geo.length === 3) {
       this.savedGeo = this._state.geo;
       console.log('SAVED GEO', this.savedGeo);
     }
-    if (!service && this.savedGeo) {
-      this.centerZoom = this.savedGeo;
-      console.log('CLEARED GEO', this.savedGeo);
-      this.savedGeo = null;
+    if (!service) {
+      if (replaceCenterZoom) {
+        this.centerZoom = replaceCenterZoom;
+      } else if (this.savedGeo) {
+        this.centerZoom = this.savedGeo;
+        console.log('CLEARED GEO', this.savedGeo);
+        this.savedGeo = null;  
+      }
     }
     this.selectedService.next({service, preview});
   }  

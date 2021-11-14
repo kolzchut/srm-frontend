@@ -4,6 +4,7 @@ import { ReplaySubject, timer } from 'rxjs';
 import { delay, filter, switchMap, tap } from 'rxjs/operators';
 import { Card, CategoryCountsResult, DrawerState, HeaderState, ItemState } from '../common/datatypes';
 import { LayoutService } from '../layout.service';
+import { MapComponent } from '../map/map.component';
 import { SearchService } from '../search.service';
 import { SituationsService } from '../situations.service';
 import { StateService } from '../state.service';
@@ -31,16 +32,19 @@ export class MainComponent implements OnInit {
   HeaderState = HeaderState;
 
   map: mapboxgl.Map;
+  mapComponent: MapComponent;
+
   activePopup: mapboxgl.Popup | null = null;
   hasPopup = false;
   loaded = new ReplaySubject(1);
 
   counts: CategoryCountsResult[] = [];
-
+  
   constructor(public state: StateService, private search: SearchService, private situations: SituationsService, public layout: LayoutService) {
     this.loaded.pipe(
       switchMap(() => this.state.selectedService)
     ).subscribe(({service, preview}) => {
+      console.log('SELECTING ITEM FROM STATE');
       this.selectItem(service, preview);
     });
     search.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
@@ -117,7 +121,7 @@ export class MainComponent implements OnInit {
   }
 
   selectItems(items: Card[]) {
-    this.selectItem(null);
+    this.state.selectService(null, false, [...items[0].branch_geometry, 15]);
     this.selectedItems = items;
     this.itemState = ItemState.MultiStrip;
     this.drawerState = DrawerState.Peek;
@@ -154,7 +158,7 @@ export class MainComponent implements OnInit {
         this.headerState = HeaderState.Hidden;
       }
       console.log('MAP flying to', item.branch_geometry, this.map.isMoving(), this.map);
-      this.map.flyTo({center: item.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'});
+      this.mapComponent.queueAction((map) => map.flyTo({center: item.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
       if (!this.savedSelectedItems) {
         this.popup(item);
       }
@@ -178,8 +182,9 @@ export class MainComponent implements OnInit {
     this.setLabelsFilter();
   }
 
-  setMap(map: mapboxgl.Map) {
-    this.map = map;
+  setMap(map: MapComponent) {
+    this.mapComponent = map;
+    this.map = map.map;
     this.setLabelsFilter();
     console.log('LOADED');
     this.loaded.next();
@@ -210,7 +215,7 @@ export class MainComponent implements OnInit {
       }
     } else if (this.itemState === ItemState.MultiStrip) {
       if (event === 'click' || event === 'up' || event === 'map-click') {
-        this.selectItem(null);
+        this.state.selectService(null);
       }
     } else if (this.itemState === ItemState.Full) {
       if (event === 'click' || event === 'down') {
@@ -261,17 +266,19 @@ export class MainComponent implements OnInit {
   updateDrawerHeight(height: number) {
     console.log('UPDATING DRAWER HEIGHT');
     if (this.layout.mobile && this.itemState !== ItemState.None) {
-      this.map?.flyTo({
-        center: this.map.getCenter(),
-        zoom: this.map.getZoom(),
-        padding: {top: 0, left: 0, bottom: height, right: 0}
-      }, {internal: true, kind: 'update-drawer-height'});
+      this.mapComponent?.queueAction((map) => map.flyTo({
+          center: this.map.getCenter(),
+          zoom: this.map.getZoom(),
+          padding: {top: 0, left: 0, bottom: height, right: 0}
+        }, {internal: true, kind: 'update-drawer-height'}
+      ));
     } else {
-      this.map?.flyTo({
-        center: this.map.getCenter(),
-        zoom: this.map.getZoom(),
-        padding: {top: 0, left: 0, bottom: 0, right: 0}
-      }, {internal: true, kind: 'update-drawer-height'});
+      this.mapComponent?.queueAction((map) => map.flyTo({
+          center: this.map.getCenter(),
+          zoom: this.map.getZoom(),
+          padding: {top: 0, left: 0, bottom: 0, right: 0}
+        }, {internal: true, kind: 'update-drawer-height'}
+      ));
     }
   }
 
