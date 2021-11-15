@@ -26,10 +26,10 @@ export class ChipComponent implements OnInit {
   }
 
   get bgColor() {
-    const color = this.chip.color + 'c0';
+    const color = this.chip.color;
     if (!this.state.responseFilter) {
       if (!this.chip.count) {
-        return color;
+        return color + '80';
       }
     } else if (this.stateMatch) {
       return color;
