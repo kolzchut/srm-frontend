@@ -120,6 +120,7 @@
 
         .mainbar {
             flex: 1 1 auto;
+            position: relative;
         }
 
         .map-popup {
@@ -151,6 +152,19 @@
         }
     });
 
+    .logo {
+        .background-image;
+        background-image: url(../../assets/img/logo.svg);
+        width: 58px;
+        height: 36px;
+        position: absolute;
+        bottom: 16px;
+        right: 16px;
+        transition: bottom 0.25s ease-in-out;
+        &.bump {
+            bottom: 70px;
+        };
+    }
     .counts {
         .scrolled-tag-list;
         .mobile({

@@ -26,6 +26,7 @@
             <app-single-service *ngIf='itemState === ItemState.Full' [item]='selectedItem'></app-single-service>    
         </ng-container>
     </app-drawer>
+    <div class='logo' [class.bump]='drawerState !== DrawerState.Hidden'></div>
 </div>
 
 <!-- Desktop -->
@@ -48,6 +49,7 @@
 </div>
 <div class='mainbar layout-desktop'>
     <app-map *ngIf='layout.desktop' (points)='mapSelectedPoints($event)' (map)='setMap($event)'></app-map>
+    <div class='logo'></div>
 </div>
 <div class='display-none' #mapPopup *ngIf='layout.desktop && hasPopup && (selectedItem || selectedItems || savedSelectedItems)'>
     <div class='map-popup'>

@@ -66,9 +66,10 @@ export class MapComponent implements OnInit, AfterViewInit {
           container: this.mapEl.nativeElement,
           style: this.STYLE,
           minZoom: 3,
-
+          attributionControl: false,          
         };
         this.map = new mapboxgl.Map(mapParams);
+        this.map.addControl(new mapboxgl.AttributionControl(), 'top-right');
         this.map.dragRotate.disable();
         this.map.touchZoomRotate.disableRotation();
         this.map.touchPitch.disable();
