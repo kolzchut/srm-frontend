@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '
 import { environment } from 'projects/srm/src/environments/environment';
 import { timer } from 'rxjs';
 import { Card } from '../../common/datatypes';
+import { LayoutService } from '../../layout.service';
 
 @Component({
   selector: 'app-single-service',
@@ -20,7 +21,7 @@ export class SingleServiceComponent implements OnInit, AfterViewInit {
 
   suggestChangesURL = environment.suggestChangesForm;
 
-  constructor() { }
+  constructor(private layout: LayoutService) { }
 
   ngOnInit(): void {
     if (this.item) {
@@ -40,7 +41,12 @@ export class SingleServiceComponent implements OnInit, AfterViewInit {
   }
   
   geoLink() {
-    return 'geo:' + this.card.branch_geometry.join(',');
+    const latLng = [this.card.branch_geometry[1], this.card.branch_geometry[0]].join(',');
+    if (this.layout.mobile) {
+      return 'geo:' + latLng;
+    } else {
+      return `https://www.google.com/maps/search/?api=1&query=${latLng}`
+    }
   }
 
   urls() {
@@ -49,5 +55,14 @@ export class SingleServiceComponent implements OnInit, AfterViewInit {
       ...(this.card.organization_urls || []),
       ...(this.card.branch_urls || []),
     ];
+  }
+
+  linkKind(url: string) {
+    if (url.indexOf('guidestar.org.il') > -1) {
+      return 'guidestar';
+    } else if (url.indexOf('.gov.il') > -1) {
+      return 'state-of-israel';
+    }
+    return 'link';
   }
 }

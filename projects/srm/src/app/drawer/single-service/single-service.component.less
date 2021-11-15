@@ -1,8 +1,7 @@
 @import '../../../common.less';
 
 .header {
-    padding: 0 16px;
-    padding-top: 16px;
+    padding: 16px;
 }
 
 .actions {
@@ -72,6 +71,11 @@
 
             .details-text {
                 transition: margin-top 0.3s ease-in-out;
+
+                ::ng-deep p {
+                    margin: 0;
+                    margin-bottom: 16px;
+                }
             }
         }
     }

@@ -14,15 +14,23 @@
         padding: 8px;
         gap: 8px;
 
-        overflow-x: scroll;
-        .no-scrollbars;
-
         pointer-events: none;
 
         &.materialized {
             background: @color-gray-7;
             box-shadow: inset 0px -2px 0px 0px @color-gray-6;
             pointer-events: all;
+        }
+
+        .scrollable {
+            overflow-x: scroll;
+            .no-scrollbars;    
+            display: flex;
+            flex-flow: row;
+            align-items: stretch;
+            gap: 8px;
+            padding: 0;
+            height: 100%;
         }
 
         .response-toggle {
@@ -52,7 +60,7 @@
             align-items: center;
             padding: 0px 8px;
             height: 32px;
-            border: 2px solid #F2F2F2;
+            border: 1px solid #F2F2F2;
             background: @color-white;
             border-radius: 4px;
             cursor: pointer;

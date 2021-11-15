@@ -22,13 +22,35 @@
             border: none;
             .font-rag-sans;
             font-weight: 400;
-            font-size: 16px;
-            line-height: 21px;
+            font-size: 24px;
+            color: @color-gray-1;
             height: 36px;
+            padding: 0 8px;
+
+            &:placeholder-shown {
+                font-size: 16px;
+                color: @color-gray-3;
+            }
+            &:focus {
+                font-size: 16px;
+                &.has-value {
+                    font-size: 20px;
+                }
+                background: @color-gray-6;
+                border-radius: 4px;
+                margin-left: -40px;
+            }
         }
         > app-image-button {
             flex: 0 0 auto;
-            margin: 0 12px;
+            &.back {
+                margin: 0 12px;
+                margin-left: 4px;
+            }
+            &.search {
+                margin: 0;
+                margin-left: 20px;
+            }
             width: 24px;
             height: 24px;
         }

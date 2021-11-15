@@ -17,6 +17,7 @@ export class SearchBoxComponent implements OnInit, OnChanges {
 
   _active = false;
   _query = '';
+  focused = false;
 
   constructor(private search: SearchService, private state: StateService) {
     state.queryChanges.subscribe(state => {
@@ -60,5 +61,14 @@ export class SearchBoxComponent implements OnInit, OnChanges {
 
   get query() {
     return this._query;
+  }
+
+  clear() {
+    const el = this.input?.nativeElement as HTMLInputElement;
+    if (el) {
+      el.value = '';
+    }
+    this.query = '';
+    this.active = false;
   }
 }

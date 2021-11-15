@@ -9,9 +9,9 @@
 </div>
 <div class='filtering' *ngIf='situations.activeGroup(groupId)' (click)='situations.addEditor(group)'>
     <div class='faded-scroll' (click)='$event.stopPropagation()'>
-        <span class='filtered-tag' *ngFor='let situation of situations.forGroup(groupId)'>
+        <span class='filtered-tag' *ngFor='let situation of situations.forGroup(groupId)' (click)='situations.check(situation)'>
             <span>{{ situations.nameOf(situation) }}</span>
-            <img src='assets/img/icon-circle-x.svg' (click)='situations.addEditor(situation)'>
+            <img src='assets/img/icon-circle-x.svg'>
         </span>
     </div>
 </div>
