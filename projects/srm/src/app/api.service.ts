@@ -120,6 +120,43 @@ export class ApiService {
     );
   }
 
+  getFilteringButtonCounts(state: State, bounds: LngLatBounds): Observable<QueryCardsResult> {
+    const responseFilter: any = {};
+    const mapFilter: any = {};
+    if (bounds) {
+      mapFilter.branch_geometry__bounded = this.boundsFilter(bounds);
+    }
+    if (state.responseId) {
+      responseFilter.response_ids = state.responseId;
+    }
+    const config = [
+      {
+        id: 'all',
+        doc_types: ['cards'],
+        filters: Object.assign({}, responseFilter)
+      },
+      {
+        id: 'map',
+        doc_types: ['cards'],
+        filters: Object.assign({}, responseFilter, mapFilter)
+      }
+    ];
+    const params: any = {config: JSON.stringify(config)};
+    if (state.situations && state.situations.length > 0) {
+      const terms = [];
+      for (const situations of state.situations) {
+        terms.push(...situations.map((s) => SITUATIONS_PREFIX + s));
+      }
+      params['extra'] = terms.join('|');
+    }
+    return this.http.get(environment.countCategoriesURL, {params}).pipe(
+      map((res: any) => {
+        const results = res as QueryCardsResult;
+        return results;
+      })
+    );
+  }
+
   query<T>(query: string, url: string, offset: number): Observable<T> {
     if (query && query.length > 0) {
       const params = {q: query, offset};

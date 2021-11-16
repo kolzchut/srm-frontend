@@ -31,6 +31,7 @@ import { StripMultipleComponent } from './drawer/strip/strip-multiple/strip-mult
 import { SituationGroupFilterComponent } from './filtering/filtering-config/situation-group-filter/situation-group-filter.component';
 import { SituationEditorComponent } from './filtering/filtering-config/situation-editor/situation-editor.component';
 import { CardActionComponent } from './common/card-action/card-action.component';
+import { FilteringResultsButtonComponent } from './filtering/filtering-results-button/filtering-results-button.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { CardActionComponent } from './common/card-action/card-action.component'
     StripMultipleComponent,
     SituationGroupFilterComponent,
     SituationEditorComponent,
-    CardActionComponent
+    CardActionComponent,
+    FilteringResultsButtonComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

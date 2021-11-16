@@ -1,10 +1,10 @@
 <div class='wrapper' [class.materialized]='materialized'>
     <app-filter-button (clicked)='active = !active'></app-filter-button>
     <div class='scrollable'>
-        <div class='response-toggle' *ngIf='responseFilter' [style.background]='responseColor' (click)='state.responseFilter = null'>
+        <!-- <div class='response-toggle' *ngIf='responseFilter' [style.background]='responseColor' (click)='state.responseFilter = null'>
             <span>{{ responseFilter.name }}</span>
             <img _ngcontent-serverapp-c63="" src="assets/img/icon-circle-x.svg">
-        </div>
+        </div> -->
         <ng-container *ngFor='let group of (situations.taxonomy | async)'>
             <ng-container *ngIf='situations.activeGroup(group.slug)' >
                 <div class='group-selector' *ngFor='let situation of situations.forGroup(group.slug)' (click)='situations.addEditor(situation)'>

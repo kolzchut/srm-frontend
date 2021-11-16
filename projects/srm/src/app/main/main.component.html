@@ -32,7 +32,6 @@
 <!-- Desktop -->
 <div class='sidebar layout-desktop'>
     <div class='header' [class.hidden]='!!selectedItem' [class.active]='headerVisible()'>
-        <div class='close-button' (click)='handleEvent("close")'></div>
         <app-filtering (activated)='headerActive = $event'></app-filtering>
     </div>
     <app-drawer [state]='DrawerState.Full' (handle)='handleEvent($event)' [class.display-none]='!!headerActive'>
@@ -43,6 +42,7 @@
         </ng-container>
         <ng-container ngProjectAs='content'>
             <app-service-list *ngIf='!selectedItem' (selected)='state.selectService($event)'></app-service-list>
+            <div  *ngIf='!!selectedItem' class='close-button' (click)='handleEvent("close")'></div>
             <app-single-service *ngIf='!!selectedItem' [item]='selectedItem'></app-single-service>    
         </ng-container>
     </app-drawer>

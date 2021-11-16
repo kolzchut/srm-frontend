@@ -3,5 +3,6 @@
 <div class='content' #content>
     <app-search-autocomplete *ngIf='!!intersectionObserver && activeSection === "search"' (selected)='active = null' [intersectionObserver]='intersectionObserver'></app-search-autocomplete>
     <app-filtering-config *ngIf='activeSection === "filters"'></app-filtering-config>
+    <app-filtering-results-button *ngIf='activeSection === "filters"' (clicked)='active=null'></app-filtering-results-button>
 </div>
 <app-situation-editor *ngFor='let editor of situations.activeEditors()' [editor]='editor'></app-situation-editor>
