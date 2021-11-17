@@ -20,7 +20,7 @@ export class SearchBoxComponent implements OnInit, OnChanges {
   focused = false;
 
   constructor(private search: SearchService, private state: StateService) {
-    state.queryChanges.subscribe(state => {
+    state.state.subscribe(state => {
       this._query = state.searchBoxTitle || '';
       console.log('NEW QUERY', JSON.stringify(this._query));
     });
@@ -47,6 +47,8 @@ export class SearchBoxComponent implements OnInit, OnChanges {
           inputEl.setSelectionRange(0, this.query.length);
         }
       });
+    } else {
+      this._query = this.state._state.searchBoxTitle || '';
     }
   }
 
@@ -70,5 +72,6 @@ export class SearchBoxComponent implements OnInit, OnChanges {
     }
     this.query = '';
     this.active = false;
+    this.state.responseFilter = null;
   }
 }

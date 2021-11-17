@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Observable, timer } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Observable, Subscription, timer } from 'rxjs';
 import { SearchResult } from '../../../common/datatypes';
 import { SearchService } from '../../../search.service';
 import { StateService } from '../../../state.service';
@@ -9,7 +9,7 @@ import { StateService } from '../../../state.service';
   templateUrl: './autocomplete-section.component.html',
   styleUrls: ['./autocomplete-section.component.less']
 })
-export class AutocompleteSectionComponent implements OnInit {
+export class AutocompleteSectionComponent implements OnInit, OnDestroy {
 
   PREVIEW = 3;
 
@@ -25,11 +25,9 @@ export class AutocompleteSectionComponent implements OnInit {
   more = false;
 
   results: any[] = [];
+  subs: Subscription[] = [];
 
   constructor(private search: SearchService, private state: StateService, private host: ElementRef) {
-    this.search.query.subscribe(() => {
-      this.more = false;
-    });
   }
 
   ngOnInit(): void {
@@ -38,7 +36,7 @@ export class AutocompleteSectionComponent implements OnInit {
       places: this.search.places,
       services: this.search.services,
     }[this.type] as Observable<SearchResult<any>>;
-    obs.subscribe(res => {
+    this.subs.push(obs.subscribe(res => {
       if (res && res.search_results && res.search_results.length > 0) {
         this.visible = true;
         this.results = res.search_results.map((s) => s.source);
@@ -48,7 +46,10 @@ export class AutocompleteSectionComponent implements OnInit {
         this.count = 0;
         this.visible = false;
       }
-    });
+    }));
+    this.subs.push(this.search.query.subscribe(() => {
+      this.more = false;
+    }));
   }
 
   fetchMore() {
@@ -62,5 +63,10 @@ export class AutocompleteSectionComponent implements OnInit {
 
   slice() {
     return this.more ? this.results : this.results.slice(0, this.PREVIEW);
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
+    this.subs = [];
   }
 }

@@ -32,6 +32,8 @@ import { SituationGroupFilterComponent } from './filtering/filtering-config/situ
 import { SituationEditorComponent } from './filtering/filtering-config/situation-editor/situation-editor.component';
 import { CardActionComponent } from './common/card-action/card-action.component';
 import { FilteringResultsButtonComponent } from './filtering/filtering-results-button/filtering-results-button.component';
+import { PresetStripComponent } from './common/preset-strip/preset-strip.component';
+import { PresetCardComponent } from './common/preset-card/preset-card.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +64,9 @@ import { FilteringResultsButtonComponent } from './filtering/filtering-results-b
     SituationGroupFilterComponent,
     SituationEditorComponent,
     CardActionComponent,
-    FilteringResultsButtonComponent
+    FilteringResultsButtonComponent,
+    PresetStripComponent,
+    PresetCardComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

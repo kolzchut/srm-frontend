@@ -18,7 +18,7 @@ export class MainComponent implements OnInit {
 
   @ViewChild('mapPopup') mapPopup: ElementRef;
 
-  drawerState: DrawerState = DrawerState.Peek;
+  drawerState: DrawerState = DrawerState.Presets;
   savedDrawerState: DrawerState | null = null;
   headerState: HeaderState = HeaderState.Visible;
   _headerActive = false;
@@ -228,7 +228,7 @@ export class MainComponent implements OnInit {
       }
     } else if (this.itemState === ItemState.None) {
       if (event === 'click') {
-        if (this.drawerState === DrawerState.Peek || this.drawerState === DrawerState.Most || this.drawerState === DrawerState.Full) {
+        if (this.drawerState === DrawerState.Peek || this.drawerState === DrawerState.Most || this.drawerState === DrawerState.Full || this.drawerState === DrawerState.Presets) {
           this.drawerState = DrawerState.Card;
         } else if (this.drawerState === DrawerState.Card) {
           this.drawerState = DrawerState.Most;
@@ -236,7 +236,7 @@ export class MainComponent implements OnInit {
       } else if (event === 'up') {
         if (this.drawerState === DrawerState.Peek) {
           this.drawerState = DrawerState.Most;
-        } else if (this.drawerState === DrawerState.Card) {
+        } else if (this.drawerState === DrawerState.Card || this.drawerState === DrawerState.Presets) {
           this.drawerState = DrawerState.Most;
         } else if (this.drawerState === DrawerState.Most) {
           this.drawerState = DrawerState.Full;
@@ -246,7 +246,7 @@ export class MainComponent implements OnInit {
           this.drawerState = DrawerState.Card;
         } else if (this.drawerState === DrawerState.Most) {
           this.drawerState = DrawerState.Card;
-        } else if (this.drawerState === DrawerState.Card) {
+        } else if (this.drawerState === DrawerState.Card || this.drawerState === DrawerState.Presets) {
           this.drawerState = DrawerState.Peek;
         }
       } else if (event === 'no-results') {

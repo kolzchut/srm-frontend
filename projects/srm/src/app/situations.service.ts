@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from, ReplaySubject, timer } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { filter, first } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { SITUATIONS_PREFIX } from './common/consts';
 import { TaxonomyGroup } from './common/datatypes';
@@ -57,6 +57,7 @@ export class SituationsService {
   activeSituations: {[key: string]: TaxonomyGroup[]} = {};
   byId: {[key: string]: TaxonomyGroup} = {};
   editors: TaxonomyGroupEditor[] = [];
+  latestState: string[][] = [];
 
 
   constructor(private http: HttpClient, private state: StateService) {
@@ -66,7 +67,7 @@ export class SituationsService {
       this.taxonomy.next(taxonomies);
       this.taxonomy.complete();
       this.state.state.pipe(
-        first()
+        filter(state => JSON.stringify(state.situations) !== JSON.stringify(this.latestState))
       ).subscribe((state: State) => {
         const situations = state.situations || [];
         this.activeSituations = {};
@@ -175,7 +176,12 @@ export class SituationsService {
     if (active.length === 0) {
       delete this.activeSituations[group];
     }
-    this.state.situations = Object.keys(this.activeSituations)
-        .map(key => [key.slice(SITUATIONS_PREFIX.length), ...this.activeSituations[key].map(i => i.slug.slice(SITUATIONS_PREFIX.length))]);
+    this.updateState();
+  }
+
+  updateState() {
+    this.latestState = Object.keys(this.activeSituations)
+      .map(key => [key.slice(SITUATIONS_PREFIX.length), ...this.activeSituations[key].map(i => i.slug.slice(SITUATIONS_PREFIX.length))]);
+    this.state.situations = this.latestState;
   }
 }

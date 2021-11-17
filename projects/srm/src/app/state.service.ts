@@ -32,7 +32,6 @@ function keyComparer(keys: string[]) {
   providedIn: 'root'
 })
 export class StateService {
-
   _state: State = {}; 
   state = new ReplaySubject<State>(1);
   currentState: string = '_';
@@ -176,5 +175,18 @@ export class StateService {
       }
     }
     this.selectedService.next({service, preview});
-  }  
+  }
+
+  applyFromUrl(urlToApply: string) {
+    const url = new URL(urlToApply);
+    const params = url.searchParams;
+    if (params) {
+      const encodedState = params.get('state');
+      if (encodedState) {
+        const decoded = this.decode(encodedState);
+        this._state = decoded;
+        this.state.next(this._state);
+      }
+    }
+  }
 }

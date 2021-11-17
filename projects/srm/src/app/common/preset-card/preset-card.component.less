@@ -1,0 +1,88 @@
+@import '../../../common.less';
+
+.card {
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+    width: 144px;
+    height: 96px;
+    background: @color-white;
+    .card-shadow-card;
+    border-radius: 8px;
+    border: 2px solid;
+    cursor: pointer;
+
+    .icon {
+        flex: 0 0 48px;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: center;
+        .icon-img {
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    .text {
+        flex: 1 1 auto;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 8px;
+
+        span {
+            .font-rag-sans;
+            font-size: 16px;
+            text-align: right;
+            color: @color-gray-1;    
+        }
+    }
+
+    &.style-red-alert {
+        border-color: fade(@color-red, 20%);
+        .icon {
+            background: fade(@color-red, 20%);
+            .icon-img {
+                background-image: url(../../../assets/img/icon-warning-red.svg);
+            }
+        }
+    }
+    &.style-yellow-people {
+        border-color: fade(@color-yellow, 20%);
+        .icon {
+            background: fade(@color-yellow, 20%);
+            .icon-img {
+                background-image: url(../../../assets/img/icon-people-group-yellow.svg);
+            }
+        }  
+    }
+    &.style-blue-signature {
+        border-color: fade(@color-blue-1, 20%);
+        .icon {
+            background: fade(@color-blue-1, 20%);
+            .icon-img {
+                background-image: url(../../../assets/img/icon-signature-blue.svg);
+            }
+        }
+    }
+    &.style-orange-lightning {
+        border-color: fade(@color-orange, 20%);
+        .icon {
+            background: fade(@color-orange, 20%);
+            .icon-img {
+                background-image: url(../../../assets/img/icon-flash-orange.svg);
+            }
+        }
+    }
+    &.style-green-leaf {
+        border-color: fade(@color-green-2, 20%);
+        .icon {
+            background: fade(@color-green-2, 20%);
+            .icon-img {
+                background-image: url(../../../assets/img/icon-plant-green.svg);
+            }
+        }
+    }
+}

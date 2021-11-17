@@ -2,6 +2,7 @@ export enum DrawerState {
     Hidden = 'hidden',
     Peek = 'peek',
     Card = 'card',
+    Presets = 'presets',
     Most = 'most',
     Full = 'full',
 };
@@ -107,7 +108,7 @@ export type Point = {
 };
 
 export type Preset = {
-    url: string,
+    link: string,
     title: string,
     style: string,
 };
