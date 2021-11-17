@@ -34,6 +34,7 @@ import { CardActionComponent } from './common/card-action/card-action.component'
 import { FilteringResultsButtonComponent } from './filtering/filtering-results-button/filtering-results-button.component';
 import { PresetStripComponent } from './common/preset-strip/preset-strip.component';
 import { PresetCardComponent } from './common/preset-card/preset-card.component';
+import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { PresetCardComponent } from './common/preset-card/preset-card.component'
     CardActionComponent,
     FilteringResultsButtonComponent,
     PresetStripComponent,
-    PresetCardComponent
+    PresetCardComponent,
+    DisclaimerComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

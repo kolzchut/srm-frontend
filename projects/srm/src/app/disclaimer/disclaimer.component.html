@@ -1,0 +1,25 @@
+<div class='content'>
+    <div class='top'>
+        <p i18n>
+            <strong>כל שירות</strong>&nbsp;ממפה מגוון של שירותים ומענים חברתיים שהמדינה, ארגונים וגופים  שונים מעמידים לרשותינו, האזרחים. בעזרת סינון, חיפוש ושיטוט במפה ניתן לגלות בדיוק מי יוכל לעזור לך.
+        </p>
+        <div class='link'>
+            <span i18n>כל שירות מופעלת ע״י</span>
+            <a i18n class='style-kz' href='https://www.kolzchut.org.il/' target='_blank'>כל זכות</a>
+        </div>
+        <div class='link'>
+            <span i18n>בסיוע</span>
+            <a i18n class='style-il' href='https://www.gov.il/he/departments/ministry_of_justice/govil-landing-page' target='_blank'>משרד המשפטים ומערך הדיגיטל הלאומי</a>
+        </div>
+        <div class='dontshow'>
+            <input type='checkbox' id='dontshow' [(ngModel)]='dontshow'/>
+            <label for='dontshow' i18n>הצג מסך זה שוב כשאחזור למפה בפעם הבאה</label>
+        </div>
+        <div class='close' (click)='closed.emit(dontshow)'></div>
+    </div>
+    <div class='disclaimer'>
+        המידע במפת המענים החברתיים נאסף ממספר מקורות מידע
+        ואין לראות בכל זכות או במשרד המשפטים או מערך הדיגיטל
+        לאומי אחראים עליו.
+    </div>        
+</div>

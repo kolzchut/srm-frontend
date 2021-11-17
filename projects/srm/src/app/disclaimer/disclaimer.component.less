@@ -1,0 +1,92 @@
+@import '../../common.less';
+
+:host {
+    padding: 8px;
+    display: block;
+    width: 100%;
+
+    .content {
+        width: 100%;
+        position: relative;
+        display: flex;
+        flex-flow: column;
+        .card-shadow-base;
+        border-radius: 8px;
+        overflow: hidden;
+
+        .font-rag-sans;
+
+        .top {
+            background: @color-white;
+            padding: 16px;
+            padding-top: 24px;
+            strong {
+                font-weight: 700;
+            }
+    
+            p {
+                margin: 0;
+                margin-bottom: 10px;
+            }
+    
+            .link {
+                height: 24px;
+            }
+    
+            .style-kz {
+                background: rgba(184, 202, 63, 0.15);
+                background-image: url(../../assets/img/icon-kz.svg);
+            }
+    
+            .style-il {
+                background: rgba(57, 138, 193, 0.1);
+                background-image: url(../../assets/img/icon-state-of-israel.svg);
+            }
+    
+            .style-il, .style-kz {
+                &, &:hover, &:visited {
+                    text-decoration: none;
+                    color: inherit;    
+                }
+                border-radius: 4px;
+                padding: 4px;
+                padding-right: 24px;
+                margin-right: 6px;
+                background-repeat: no-repeat;
+                background-position: right 4px center;
+                background-size: 16px 16px;
+            }
+            
+            .dontshow {
+                margin-top: 24px;
+                display: flex;
+                flex-flow: row;
+                gap: 8px;
+                align-items: center;
+                color: @color-gray-3;
+                font-size: 13px;
+            }
+
+            .close {
+                position: absolute;
+                top: 4px;
+                left: 4px;
+                .background-image;
+                width: 24px;
+                height: 24px;
+                background-image: url(../../assets/img/icon-close.svg);
+                cursor: pointer;
+                opacity: 0.8;
+            }
+        }
+
+        .disclaimer {
+            background: @color-gray-7;
+            padding: 16px;
+            padding-top: 8px;
+            width: 100%;
+            font-size: 13px;
+            color: @color-gray-3;
+        }
+    }
+}

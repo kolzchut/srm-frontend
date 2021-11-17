@@ -39,6 +39,9 @@ export class MainComponent implements OnInit {
   loaded = new ReplaySubject(1);
 
   counts: CategoryCountsResult[] = [];
+
+  disclaimerVisible = true;
+  DISMISSED_DISCLAIMER = 'dismissed-disclaimer';
   
   constructor(public state: StateService, private search: SearchService, private situations: SituationsService, public layout: LayoutService) {
     this.loaded.pipe(
@@ -63,6 +66,7 @@ export class MainComponent implements OnInit {
     ).subscribe(() => {
       this.handleEvent('show-results');
     });
+    this.disclaimerVisible = window.localStorage.getItem(this.DISMISSED_DISCLAIMER) !== 'true';
   }
 
   ngOnInit(): void {
@@ -261,6 +265,9 @@ export class MainComponent implements OnInit {
         this.drawerState = DrawerState.Most;
       }
     }
+    if (event === 'map-click') {
+      this.closeDisclaimer();
+    }
   }
 
   updateDrawerHeight(height: number) {
@@ -291,5 +298,12 @@ export class MainComponent implements OnInit {
 
   get headerActive(): boolean {
     return this._headerActive;
+  }
+
+  closeDisclaimer(showAgain=true) {
+    if (!showAgain) {
+      window.localStorage.setItem(this.DISMISSED_DISCLAIMER, 'true');
+    }
+    this.disclaimerVisible = false;
   }
 }

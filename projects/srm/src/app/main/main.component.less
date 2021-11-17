@@ -73,7 +73,13 @@
                 height: calc(100% ~'-' @header-height);
                 top: @header-height;
             }
-    
+            app-disclaimer {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                z-index: 2;
+            }
         }
     });
     .desktop({
@@ -116,6 +122,16 @@
         .mainbar {
             flex: 1 1 auto;
             position: relative;
+
+            app-disclaimer {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 100%;
+                z-index: 2;
+                max-width: 360px;
+                transform: translate(-50%, -50%);
+            }
         }
 
         .map-popup {
