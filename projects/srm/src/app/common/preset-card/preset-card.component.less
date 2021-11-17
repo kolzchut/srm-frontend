@@ -4,7 +4,12 @@
     display: flex;
     flex-flow: row;
     align-items: stretch;
-    width: 144px;
+    .mobile({
+        width: 144px;
+    });
+    .desktop({
+        width: 160px;
+    });
     height: 96px;
     background: @color-white;
     .card-shadow-card;

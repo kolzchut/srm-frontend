@@ -43,14 +43,21 @@
     </div>
     <app-drawer [state]='DrawerState.Full' (handle)='handleEvent($event)' [class.display-none]='!!headerActive'>
         <ng-container ngProjectAs='content-footer'>
-            <div *ngIf='!selectedItem' class='counts' (click)='$event.stopPropagation()'>
-                <app-chip *ngFor='let chip of counts' [chip]='chip'></app-chip>
-            </div>
+            <ng-container *ngIf='drawerState !== DrawerState.Presets'>
+                <div *ngIf='!selectedItem' class='counts' (click)='$event.stopPropagation()'>
+                    <app-chip *ngFor='let chip of counts' [chip]='chip'></app-chip>
+                </div>
+            </ng-container>
         </ng-container>
         <ng-container ngProjectAs='content'>
-            <app-service-list *ngIf='!selectedItem' (selected)='state.selectService($event)'></app-service-list>
-            <div  *ngIf='!!selectedItem' class='close-button' (click)='handleEvent("close")'></div>
-            <app-single-service *ngIf='!!selectedItem' [item]='selectedItem'></app-single-service>    
+            <ng-container *ngIf='drawerState === DrawerState.Presets'>
+                <app-preset-strip></app-preset-strip>
+            </ng-container> 
+            <ng-container *ngIf='drawerState !== DrawerState.Presets'>
+                <app-service-list *ngIf='!selectedItem' (selected)='state.selectService($event)'></app-service-list>
+                <div  *ngIf='!!selectedItem' class='close-button' (click)='handleEvent("close")'></div>
+                <app-single-service *ngIf='!!selectedItem' [item]='selectedItem'></app-single-service>    
+            </ng-container>
         </ng-container>
     </app-drawer>
 </div>
