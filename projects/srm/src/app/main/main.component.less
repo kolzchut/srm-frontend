@@ -202,4 +202,15 @@
         cursor: pointer;
     }
 
+    app-menu {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        .desktop({
+            width: @sidebar-width;
+        });
+        height: 100%;
+        z-index: 4;
+    }
 }

@@ -1,4 +1,4 @@
-<app-search-box [isActive]='activeSection === "search"' (activated)='active = $event'></app-search-box>
+<app-search-box [isActive]='activeSection === "search"' (activated)='active = $event' (menu)='menu.emit()'></app-search-box>
 <app-filter-bar [forceOpaque]='!!activeSection' (activated)='active = $event'></app-filter-bar>
 <div class='content' #content>
     <app-search-autocomplete *ngIf='!!intersectionObserver && activeSection === "search"' (selected)='active = null' [intersectionObserver]='intersectionObserver'></app-search-autocomplete>

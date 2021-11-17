@@ -13,6 +13,8 @@ import { SituationsService } from '../situations.service';
 export class FilteringComponent implements OnInit, AfterViewInit {
 
   @Output() activated = new EventEmitter<boolean>();
+  @Output() menu = new EventEmitter<void>();
+
   @ViewChild('content') contentEl: ElementRef;
 
   activeSection: string | null = null;

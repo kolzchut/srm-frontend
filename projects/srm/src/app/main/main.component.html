@@ -1,7 +1,7 @@
 <!-- Mobile -->
 <div class='header layout-mobile' [class.hidden]='headerState === HeaderState.Hidden' [class.active]='headerVisible()'>
     <div class='close-button' (click)='handleEvent("close")'></div>
-    <app-filtering (activated)='headerActive = $event'></app-filtering>
+    <app-filtering (activated)='headerActive = $event' (menu)='menu=true'></app-filtering>
 </div>
 <div class='content layout-mobile' [class.hidden]='headerState === HeaderState.Visible && headerActive'>
     <app-map *ngIf='layout.mobile' (points)='mapSelectedPoints($event)' (map)='setMap($event)'></app-map>
@@ -42,7 +42,7 @@
 <!-- Desktop -->
 <div class='sidebar layout-desktop'>
     <div class='header' [class.hidden]='!!selectedItem' [class.active]='headerVisible()'>
-        <app-filtering (activated)='headerActive = $event'></app-filtering>
+        <app-filtering (activated)='headerActive = $event' (menu)='menu=true'></app-filtering>
     </div>
     <app-drawer [state]='DrawerState.Full' (handle)='handleEvent($event)' [class.display-none]='!!headerActive'>
         <ng-container ngProjectAs='content-footer'>
@@ -82,3 +82,5 @@
         ></app-strip-multiple>    
     </div>
 </div>
+
+<app-menu *ngIf='menu'></app-menu>

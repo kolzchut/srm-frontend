@@ -42,6 +42,8 @@ export class MainComponent implements OnInit {
 
   disclaimerVisible = true;
   DISMISSED_DISCLAIMER = 'dismissed-disclaimer';
+
+  menu = false;
   
   constructor(public state: StateService, private search: SearchService, private situations: SituationsService, public layout: LayoutService) {
     this.loaded.pipe(

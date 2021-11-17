@@ -29,7 +29,7 @@ export class ChipComponent implements OnInit {
     const color = this.chip.color;
     if (!this.state.responseFilter) {
       if (!this.chip.count) {
-        return color + '80';
+        return color + '40';
       }
     } else if (this.stateMatch) {
       return color;

@@ -13,6 +13,7 @@ export class SearchBoxComponent implements OnInit, OnChanges {
 
   @Input() isActive: boolean;
   @Output() activated = new EventEmitter<string | null>();
+  @Output() menu = new EventEmitter<void>();
   @ViewChild('input') input: ElementRef;
 
   _active = false;

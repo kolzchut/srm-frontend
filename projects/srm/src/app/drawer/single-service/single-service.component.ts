@@ -42,11 +42,11 @@ export class SingleServiceComponent implements OnInit, AfterViewInit {
   
   geoLink() {
     const latLng = [this.card.branch_geometry[1], this.card.branch_geometry[0]].join(',');
-    if (this.layout.mobile) {
-      return 'geo:' + latLng;
-    } else {
-      return `https://www.google.com/maps/search/?api=1&query=${latLng}`
-    }
+    // if (this.layout.mobile) {
+    //   return 'geo:' + latLng;
+    // } else {
+    return `https://www.google.com/maps/search/?api=1&query=${latLng}`
+    // }
   }
 
   urls() {
