@@ -9,6 +9,9 @@
     position: relative;
     height: 100%;
     animation: fly-in 250ms ease-out 0s 1 normal forwards;  
+    &.exit {
+        animation: fly-out 250ms ease-out 0s 1 normal forwards;
+    }
 
     .container {
         display: flex;
@@ -94,5 +97,14 @@
     }
     to {
         transform: translateX(0);
+    }
+}
+
+@keyframes fly-out {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
     }
 }

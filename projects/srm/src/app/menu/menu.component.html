@@ -1,6 +1,6 @@
 <div class='container'>
     <div class='logo'></div>
-    <div class='menu-item' i18n>אודות המפה</div>
+    <div class='menu-item' (click)='closeMe("about")' i18n>אודות המפה</div>
     <div class='menu-item' i18n>שותפים</div>
     <div class='menu-item' i18n>מדיניות פרטיות</div>
     <div class='menu-item' i18n>מצאתי טעות</div>
@@ -12,4 +12,4 @@
         <div *ngFor='let url of logoUrls' class='logo-strip-item' [style.background-image]='"url(" + url + ")"'></div>    
     </div>
 </div>
-<div class='closer' (click)='close.emit(null)'></div>
+<div class='closer' (click)='closeMe(null)'></div>
