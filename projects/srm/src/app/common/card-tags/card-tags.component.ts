@@ -1,4 +1,6 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { ResponsesService } from '../../responses.service';
+import { StateService } from '../../state.service';
 import { getResponseIdColor } from '../consts';
 import { Card, CategoryCountsResult } from '../datatypes';
 
@@ -14,26 +16,25 @@ export class CardTagsComponent implements OnInit, OnChanges {
   
   chips: CategoryCountsResult[] = [];
 
-  constructor() { }
+  constructor(private state: StateService) { }
 
   ngOnInit(): void {
   }
 
   ngOnChanges() {
+    const responseFilter = this.state._state.responseId || 'nonexistent';
     if (this.item && this.item.responses) {
+      this.chips = this.item.responses.map((r: any) => {
+          return {
+            id: r.id,
+            display: r.name,
+            category: r.id.split(':')[1],
+            color: getResponseIdColor(r.id),
+          };
+      });
       this.chips = [
-        // {
-        //   display: 'סוג המענה',
-        //   color: getResponseColor(this.item.responses[0].id),
-        // },
-        ...this.item.responses.map((r: any) => {
-            return {
-              id: r.id,
-              display: r.name,
-              category: r.id.split(':')[1],
-              color: getResponseIdColor(r.id),
-            };
-        })      
+        ...this.chips.filter((c) => c.id.indexOf(responseFilter) === 0),
+        ...this.chips.filter((c) => c.id.indexOf(responseFilter) !== 0),
       ];
     }
   }

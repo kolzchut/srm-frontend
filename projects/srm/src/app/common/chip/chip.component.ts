@@ -10,6 +10,7 @@ import { CategoryCountsResult } from '../datatypes';
 export class ChipComponent implements OnInit {
 
   @Input() chip: CategoryCountsResult;
+  @Input() clickable = true;
 
   constructor(private state: StateService) { }
 
@@ -32,7 +33,7 @@ export class ChipComponent implements OnInit {
         return color + '40';
       }
     } else if (this.stateMatch) {
-      return color;
+      return color + '40';
     }
     return null;    
   }
@@ -48,11 +49,13 @@ export class ChipComponent implements OnInit {
   }
 
   onClick(event: Event) {
-    event.stopPropagation();
-    if (this.state.responseFilter === this.chip.id) {
-      this.state.responseFilter = null;
-    } else {
-      this.state.responseFilter = this.chip.id;
+    if (this.clickable) {
+      event.stopPropagation();
+      if (this.state.responseFilter === this.chip.id) {
+        this.state.responseFilter = null;
+      } else {
+        this.state.responseFilter = this.chip.id;
+      }  
     }
   }
 }

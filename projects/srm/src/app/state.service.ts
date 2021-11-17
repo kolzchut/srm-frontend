@@ -50,7 +50,7 @@ export class StateService {
         state: this.currentState
       };
       console.log('E:STATE', state, '->', queryParams.state);
-      this.router.navigate(['/'], {replaceUrl: true, queryParams});
+      this.router.navigate(['/'], {queryParams});
     });
     // State decoding from URL
     this.activatedRoute.queryParams.pipe(
