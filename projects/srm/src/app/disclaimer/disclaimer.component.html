@@ -13,9 +13,9 @@
         </div>
         <div class='dontshow'>
             <input type='checkbox' id='dontshow' [(ngModel)]='dontshow'/>
-            <label for='dontshow' i18n>הצג מסך זה שוב כשאחזור למפה בפעם הבאה</label>
+            <label for='dontshow' i18n>הבנתי, אין צורך להציג שוב</label>
         </div>
-        <div class='close' (click)='closed.emit(dontshow)'></div>
+        <div class='close' (click)='closed.emit(!dontshow)'></div>
     </div>
     <div class='disclaimer' i18n>
         המידע במפת המענים החברתיים נאסף ממספר מקורות מידע
