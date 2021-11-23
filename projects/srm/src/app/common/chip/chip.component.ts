@@ -43,7 +43,7 @@ export class ChipComponent implements OnInit {
     if (!this.state.responseFilter) {
       return color;
     } else if (this.stateMatch) {
-      return '#00000000';
+      return color;
     }
     return '#44444440';
   }
