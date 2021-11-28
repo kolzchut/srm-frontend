@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { forkJoin, from, Observable, ReplaySubject, Subject } from 'rxjs';
-import { distinctUntilChanged, debounceTime, switchMap, filter, first } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, switchMap, filter, first, tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { CATEGORY_COLORS } from './common/consts';
 import { Card, CategoryCountsResult, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryResponsesResult, Response, SearchResult } from './common/datatypes';
+import { PlatformService } from './platform.service';
 import { State, StateService } from './state.service';
 
 @Injectable({
@@ -34,7 +35,7 @@ export class SearchService {
   latestServices: Card[] = [];
   latestFetch = -1;
 
-  constructor(private api: ApiService, private state: StateService) {
+  constructor(private api: ApiService, private state: StateService, private platform: PlatformService) {
     this.query.pipe(
       distinctUntilChanged(),
       debounceTime(300),
@@ -64,14 +65,18 @@ export class SearchService {
     });
 
     // Fetching services from the DB
-    const sources = [
-      this.state.geoChanges.pipe(debounceTime(2000)),
-      this.state.filterChanges
-    ];
+    const sources: Observable<State>[] = [];
+    this.platform.browser(() => {
+      sources.push(...[
+        this.state.geoChanges.pipe(debounceTime(2000)),
+        this.state.filterChanges
+      ]);
+    });
     for (const source of sources) {
       source.pipe(
+        filter(() => !!this.state.latestBounds),
         switchMap((state: State) => {
-          console.log('FETCHING SERVICES', this.state.latestBounds);
+          // console.log('FETCHING SERVICES, latest bounds:', this.state.latestBounds);
           this.latestServices = [];
           this.latestFetch = 0;
           this.visibleServices.next(this.latestServices);

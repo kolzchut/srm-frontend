@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { ApiService } from '../../api.service';
 import { Card, CategoryCountsResult } from '../../common/datatypes';
+import { PlatformService } from '../../platform.service';
 import { SearchService } from '../../search.service';
 
 @Component({
@@ -17,7 +18,7 @@ export class ServiceListComponent implements OnInit, AfterViewInit {
   @ViewChild('more') more: ElementRef;
   observer: IntersectionObserver;
 
-  constructor(public search: SearchService, private host: ElementRef) {
+  constructor(public search: SearchService, private host: ElementRef, private platform: PlatformService) {
     search.visibleServices.subscribe((services: any[]) => {
       this.services = services;
     });
@@ -29,12 +30,14 @@ export class ServiceListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     const moreEl = this.more.nativeElement;
     const rootEl = (this.host.nativeElement as HTMLElement).parentNode as HTMLElement;
-    this.observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        this.search.loadMore();
-      }
-    }, {root: rootEl, threshold: 1});  
-    this.observer.observe(moreEl);
+    this.platform.browser(() => {
+      this.observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          this.search.loadMore();
+        }
+      }, {root: rootEl, threshold: 1});  
+      this.observer.observe(moreEl);
+    });
   }
 
   countsClick(ev: Event) {

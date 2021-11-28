@@ -1,18 +1,21 @@
 import { Injectable } from '@angular/core';
+import { WindowService } from './window.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LayoutService {
 
-  constructor() { }
+  constructor(private window: WindowService) {
+    // console.log('LAYOUT', this.mobile, this.desktop);
+  }
 
   get mobile() {
-    return window.innerWidth < 768;
+    return (this.window._?.innerWidth || 0) < 768;
   }
 
   get desktop() {
-    return window.innerWidth >= 768;
+    return (this.window._?.innerWidth || 0) >= 768;
   }
 
 }

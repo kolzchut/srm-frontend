@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { environment } from '../environments/environment';
 import { Response } from './common/datatypes';
+import { PlatformService } from './platform.service';
 
 type ResponseMap = {[key: string]: Response};
 
@@ -14,12 +15,16 @@ export class ResponsesService {
   taxonomy = new ReplaySubject<ResponseMap>(1);
   byId: ResponseMap = {};
 
-  constructor(private http: HttpClient) {
-    this.http.get(environment.taxonomyResponsesURL).subscribe((data) => {
-      const taxonomies = data as Response[];
-      this.processTaxonomies(taxonomies);
-      this.taxonomy.next(this.byId);
-      this.taxonomy.complete();
+  constructor(private http: HttpClient, private platform: PlatformService) {
+    this.platform.browser(() => {
+      // console.log('FETCHING RESPONSES');
+      this.http.get(environment.taxonomyResponsesURL).subscribe((data) => {
+        // console.log('GOT RESPONSES');
+        const taxonomies = data as Response[];
+        this.processTaxonomies(taxonomies);
+        this.taxonomy.next(this.byId);
+        this.taxonomy.complete();
+      });
     });
   }
 

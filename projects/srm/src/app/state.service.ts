@@ -1,18 +1,22 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LngLat, LngLatBounds, LngLatLike } from 'mapbox-gl';
-import { BehaviorSubject, from, Observable, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, from, merge, Observable, ReplaySubject, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
-import { Card } from './common/datatypes';
+import { Card, Response } from './common/datatypes';
 import { ResponsesService } from './responses.service';
+import { Location } from '@angular/common';
+
+export type GeoType = [number, number, number] | [[number, number], [number, number]] | null;
 
 export type State = {
-  geo?: [number, number, number] | [[number, number], [number, number]] | null;
+  geo?: GeoType;
   searchBoxTitle?: string,
   cardId?: string | null,
-  skipGeoUpdate?: boolean,
+  placeId?: string | null,
   responseId?: string | null,
+  skipGeoUpdate?: boolean,
   situations?: string[][] | null,
 };
 
@@ -42,31 +46,7 @@ export class StateService {
   savedGeo: [number, number, number] | null;
   latestBounds: LngLatBounds;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private api: ApiService, private responses: ResponsesService) {
-    // State encoding into URL
-    this.state.subscribe(state => {
-      this.currentState = this.encode(state);
-      const queryParams = {
-        state: this.currentState
-      };
-      console.log('E:STATE', state, '->', queryParams.state);
-      this.router.navigate(['/'], {queryParams});
-    });
-    // State decoding from URL
-    this.activatedRoute.queryParams.pipe(
-      map(params => params.state),
-      filter((state) => state && state !== this.currentState)
-    ).subscribe((state) => {
-      this.currentState = state;
-      try {
-        const parsed = this.decode(state);
-        console.log('D:STATE', state, '->', parsed);
-        this._state = Object.assign({}, this._state, parsed);
-        this.state.next(this._state);
-      } catch (e) {
-        console.log('DECODE ERROR', e);
-      }
-    });
+  constructor(private api: ApiService, private responses: ResponsesService, private location: Location) {
     // State stream - only for geo view changes
     this.geoChanges = this.state.pipe(
       distinctUntilChanged<State>(keyComparer(['geo'])),
@@ -81,13 +61,108 @@ export class StateService {
     this.state.pipe(
       first(),
       filter((state) => !!state.cardId),
-      switchMap((state) => this.api.getItem(state.cardId as string))
+      switchMap((state) => this.api.getCard(state.cardId as string))
     ).subscribe((service: Card) => {
-      console.log('FIRST TIME - Fetched', service);
+      // console.log('FIRST TIME - Fetched', service);
       this.selectService(service);
     });
   }
 
+  trackRoute(router: Router, activatedRoute: ActivatedRoute) {
+    // State decoding from URL
+    merge(
+      activatedRoute.queryParams,
+      activatedRoute.url
+    ).pipe(
+      map(() => activatedRoute.snapshot),
+      switchMap((sn) => {
+        const responseId = sn.params.response || null;
+        const placeId = sn.params.place || null;
+        const cardId = sn.params.card || null;
+        const state = sn.queryParams.state || '';
+        return this.processPaths(responseId, placeId, cardId, state);
+      }),
+      filter((state) => {
+        return state !== this.currentState;          
+      }),
+      map((state) => {
+        this.currentState = state;
+        const decoded = this.decode(state);
+        console.log('D:STATE', state, '->', decoded);
+        return decoded
+      })
+    ).subscribe((state: State) => {
+      this._state = Object.assign({}, this._state, state);
+      this.state.next(this._state);
+    });
+
+    this.state.subscribe(state => {
+      const encoded = this.encode(state);
+      this.currentState = encoded;
+      const queryParams = {
+        state: encoded
+      };
+      // const qp = `?g=${encodeURIComponent(queryParams.g)}` +
+      //   `&f=${encodeURIComponent(queryParams.f)}` +
+      //   `&q=${encodeURIComponent(queryParams.q)}`;
+      //   console.log('E:STATE', state, '->', path, queryParams);
+      //   // router.navigateByUrl(path + qp);
+      // const jp = path.join('/');
+      // const cp = this.location.path().split('?')[0];
+      // if (jp !== cp) {
+      //   console.log('PUSH TO HISTORY', cp, jp + qp);
+      //   this.location.go(jp + qp);
+      // } else {
+      //   console.log('REPLACE TO HISTORY', jp + qp);
+      //   this.location.replaceState(jp + qp);
+      // }
+      router.navigate(['/'], {queryParams, replaceUrl: true});
+    });
+  }
+
+  processPaths(responseId: string, placeId: string, cardId: string, encoded: string): Observable<string> {
+    if (!!responseId || !!placeId || !!cardId) {
+      const decoded = this.decode(encoded);
+      let obs: Observable<State> = from([]);
+      if (!!responseId) {
+        obs = this.api.getResponse(responseId).pipe(
+          map((response) => {
+            decoded.responseId = responseId;
+            decoded.searchBoxTitle = response.name;
+            decoded.cardId = null;
+            decoded.placeId = null;
+            return decoded;
+          })
+        );
+      } else if (!!placeId) {
+        obs = this.api.getPlace(placeId).pipe(
+          map((place) => {
+            decoded.geo = [[place.bounds[0], place.bounds[1]], [place.bounds[2], place.bounds[3]]];
+            decoded.searchBoxTitle = place.name[0];
+            decoded.cardId = null;
+            decoded.placeId = placeId;
+            decoded.responseId = null;
+            return decoded;
+          })
+        );
+      } else if (!!cardId) {
+        decoded.responseId = null;
+        decoded.cardId = cardId;
+        decoded.placeId = null;
+        obs = from([
+          decoded          
+        ]);
+      }
+      return obs.pipe(
+        map((state) => {
+          return this.encode(state);
+        })
+      );
+    } else {
+      return from([encoded]);
+    }
+  }
+  
   encode(state: State) {
     const prepared = [
       state.geo || null,
@@ -98,7 +173,7 @@ export class StateService {
     ];
     return JSON.stringify(prepared);
   }
-
+  
   decode(state: string): State {
     if (state) {
       try {
@@ -116,6 +191,96 @@ export class StateService {
     }
     return {};
   }
+
+  // decode(encoded: {responseId: string, placeId: string, cardId: string, queryText: string, geo: string, situations: string}): Observable<State> {
+  //   let pSituations: string[][] | null = null;
+  //   try {
+  //     pSituations = JSON.parse(encoded.situations);
+  //   } catch (e) {
+  //     pSituations = null;
+  //   }
+  //   let pGeo: GeoType = null;
+  //   try {
+  //     pGeo = JSON.parse(encoded.geo);
+  //   } catch (e) {
+  //     pGeo = null;
+  //   }
+
+  //   if (encoded.responseId) {
+  //     if (!encoded.queryText) {
+  //       return this.api.getResponse(encoded.responseId).pipe(
+  //         map((response) => {
+  //           return {
+  //             geo: pGeo,
+  //             responseId: encoded.responseId,
+  //             cardId: null,
+  //             placeId: null,
+  //             searchBoxTitle: response.name,
+  //             situations: pSituations,
+  //           };
+  //         })
+  //       );
+  //     } else {
+  //       return from([
+  //         {
+  //           geo: pGeo,
+  //           responseId: encoded.responseId,
+  //           cardId: null,
+  //           placeId: null,
+  //           searchBoxTitle: encoded.queryText,
+  //           situations: pSituations,
+  //         }
+  //       ]);
+  //     }
+  //   }
+  //   if (encoded.cardId) {
+  //     return from([
+  //       {
+  //         geo: pGeo,
+  //         responseId: null,
+  //         cardId: encoded.cardId,
+  //         placeId: null,
+  //         searchBoxTitle: encoded.queryText,
+  //         situations: pSituations,
+  //       }
+  //     ]);
+  //   }
+  //   if (encoded.placeId) {
+  //     if (!encoded.geo) {
+  //       return this.api.getPlace(encoded.placeId).pipe(
+  //         map((place) => {
+  //           return {
+  //             geo: [[place.bounds[0], place.bounds[1]], [place.bounds[2], place.bounds[3]]],
+  //             responseId: null,
+  //             cardId: null,
+  //             placeId: encoded.placeId,
+  //             searchBoxTitle: place.name[0],
+  //             situations: pSituations,
+  //           };
+  //         })
+  //       );
+  //     } else {
+  //       return from([
+  //         {
+  //           geo: pGeo,
+  //           responseId: null,
+  //           cardId: null,
+  //           placeId: encoded.placeId,
+  //           searchBoxTitle: encoded.queryText,
+  //           situations: pSituations,
+  //         }
+  //       ]);
+  //     }
+  //   }
+  //   return from([{
+  //     geo: pGeo,
+  //     responseId: null,
+  //     cardId: null,
+  //     placeId: null,
+  //     searchBoxTitle: encoded.queryText,
+  //     situations: pSituations,
+  //   }]);
+  // }
 
   set bounds(bounds: LngLatBounds) {
     const geo = bounds.toArray();
@@ -163,14 +328,14 @@ export class StateService {
     this.cardId = service?.card_id || null;
     if (service && !this.savedGeo && this._state.geo && this._state.geo.length === 3) {
       this.savedGeo = this._state.geo;
-      console.log('SAVED GEO', this.savedGeo);
+      // console.log('SAVED GEO', this.savedGeo);
     }
     if (!service) {
       if (replaceCenterZoom) {
         this.centerZoom = replaceCenterZoom;
       } else if (this.savedGeo) {
         this.centerZoom = this.savedGeo;
-        console.log('CLEARED GEO', this.savedGeo);
+        // console.log('CLEARED GEO', this.savedGeo);
         this.savedGeo = null;  
       }
     }

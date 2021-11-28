@@ -1,4 +1,6 @@
+import { isPlatformServer } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { PlatformService } from '../platform.service';
 import { SearchService } from '../search.service';
 import { SituationsService } from '../situations.service';
 
@@ -20,22 +22,23 @@ export class FilteringComponent implements OnInit, AfterViewInit {
   activeSection: string | null = null;
   intersectionObserver: IntersectionObserver;
 
-  constructor(public situations: SituationsService, private search: SearchService) { }
+  constructor(public situations: SituationsService, private search: SearchService, private platform: PlatformService) { }
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
-    this.intersectionObserver = new IntersectionObserver(entries => {
-      const entry = entries[0];
-      if (entry.isIntersecting) {
-        const kind = entry.target.getAttribute('result-type');
-        if (kind) {
-          console.log('MORE', kind);  
-          this.search.queryMore(kind);        
+    this.platform.browser(() => {
+      this.intersectionObserver = new IntersectionObserver(entries => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          const kind = entry.target.getAttribute('result-type');
+          if (kind) {
+            this.search.queryMore(kind);
+          }
         }
-      }
-    }, {root: this.contentEl.nativeElement});
+      }, {root: this.contentEl.nativeElement});
+    });
   }
 
   set active(value: string | null) {

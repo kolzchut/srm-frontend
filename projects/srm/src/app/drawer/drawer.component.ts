@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { from, fromEvent, timer } from 'rxjs';
-import { delay, first, tap } from 'rxjs/operators';
+import { delay, first } from 'rxjs/operators';
 import { DrawerState } from '../common/datatypes';
 import { LayoutService } from '../layout.service';
+import { WindowService } from '../window.service';
 
 @Component({
   selector: 'app-drawer',
@@ -23,7 +24,7 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
   startTime: number;
   currentHeight = -1;
 
-  constructor(public layout: LayoutService) { }
+  constructor(public layout: LayoutService, private window: WindowService) { }
 
   ngOnInit(): void {
   }
@@ -46,7 +47,8 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
   ngAfterViewInit(): void {
     const el = this.handleEl.nativeElement;
     if (el) {
-      if ('ontouchstart' in document.documentElement) {
+      const doc = this.window.D || {};
+      if ('ontouchstart' in doc) {
         fromEvent(el, 'touchstart').subscribe((el) => {
           this.handleGestureStart(el as TouchEvent);
           fromEvent(window, 'touchend').pipe(first()).subscribe((el) => {

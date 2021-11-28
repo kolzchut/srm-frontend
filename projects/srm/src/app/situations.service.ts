@@ -5,6 +5,7 @@ import { filter, first } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { SITUATIONS_PREFIX } from './common/consts';
 import { TaxonomyGroup } from './common/datatypes';
+import { PlatformService } from './platform.service';
 import { State, StateService } from './state.service';
 
 
@@ -12,41 +13,6 @@ export type TaxonomyGroupEditor = {
     group: TaxonomyGroup,
     active: boolean
 };
-
-
-// export class SituationMatcher {
-//   constructor(private situations: string[][]) {}
-
-//   match(situations: string[]): boolean {
-//     const prefixes = situations.map(s => s.split(':').slice(0, 2).join(':'));
-//     // console.log('MATCHING', this.situations, situations, prefixes);
-//     let found = false;
-//     for (const group of this.situations) {
-//       const prefix = SITUATIONS_PREFIX + group[0];
-//       if (prefixes.indexOf(prefix) < 0) {
-//         // console.log('OUT 1', prefix);
-//         continue;
-//       }
-//       let groupFound = false;
-//       for (let idx = 1 ; idx < group.length ; idx++) {
-//         if (situations.indexOf(SITUATIONS_PREFIX + group[idx]) >= 0) {
-//           if (!found && group[0] !== 'age_group') {
-//             // console.log('FOUND!!', this.situations, situations);
-//             found = true;
-//           }
-//           groupFound = true;
-//           break;
-//         }
-//       }
-//       if (!groupFound) {
-//         // console.log('GROUP NOT FOUND', situations, group);
-//         return false;
-//       }
-//     }
-//     return found;
-//   }
-// }
-
 
 @Injectable({
   providedIn: 'root'
@@ -60,21 +26,25 @@ export class SituationsService {
   latestState: string[][] = [];
 
 
-  constructor(private http: HttpClient, private state: StateService) {
-    this.http.get(environment.taxonomySituationsURL).subscribe((data) => {
-      const taxonomies = data as TaxonomyGroup[];
-      this.processTaxonomies(taxonomies);
-      this.taxonomy.next(taxonomies);
-      this.taxonomy.complete();
-      this.state.state.pipe(
-        filter(state => JSON.stringify(state.situations) !== JSON.stringify(this.latestState))
-      ).subscribe((state: State) => {
-        const situations = state.situations || [];
-        this.activeSituations = {};
-        situations.forEach(situation => {
-          const group = SITUATIONS_PREFIX + situation[0];
-          const items = situation.slice(1).map(item => SITUATIONS_PREFIX + item).map(item => this.byId[item]);
-          this.activeSituations[group] = items;
+  constructor(private http: HttpClient, private state: StateService, private platform: PlatformService) {
+    this.platform.browser(() => {
+      // console.log('FETCHING SITUATIONS');
+      this.http.get(environment.taxonomySituationsURL).subscribe((data) => {
+        // console.log('GOT SITUATIONS');
+        const taxonomies = data as TaxonomyGroup[];
+        this.processTaxonomies(taxonomies);
+        this.taxonomy.next(taxonomies);
+        this.taxonomy.complete();
+        this.state.state.pipe(
+          filter(state => JSON.stringify(state.situations) !== JSON.stringify(this.latestState))
+        ).subscribe((state: State) => {
+          const situations = state.situations || [];
+          this.activeSituations = {};
+          situations.forEach(situation => {
+            const group = SITUATIONS_PREFIX + situation[0];
+            const items = situation.slice(1).map(item => SITUATIONS_PREFIX + item).map(item => this.byId[item]);
+            this.activeSituations[group] = items;
+          });
         });
       });
     });

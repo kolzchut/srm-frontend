@@ -1,20 +1,53 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, from, Observable, ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, distinct, distinctUntilChanged, map, mergeMap, switchMap } from 'rxjs/operators';
-import { StateService, State } from './state.service';
+import { isPlatformServer } from '@angular/common';
+import { from, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { State } from './state.service';
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Card, CategoryCountsResult, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryPresetResult, QueryResponsesResult } from './common/datatypes';
+import { Card, Response, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryPresetResult, QueryResponsesResult } from './common/datatypes';
 import { CATEGORY_COLORS, SITUATIONS_PREFIX } from './common/consts';
-import { LngLatBounds, LngLatBoundsLike } from 'mapbox-gl';
+import { LngLatBounds } from 'mapbox-gl';
+import { makeStateKey, TransferState} from '@angular/platform-browser';
+import { PlatformService } from './platform.service';
+import * as memoryCache from 'memory-cache';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private transferState: TransferState,
+    private platform: PlatformService) {
+  }
+
+  innerCache<T>(key: string, fetcher: Observable<T>): Observable<T> {
+    const stateKey = makeStateKey<T | null>(key);
+    if (this.platform.server()) {
+      const cached = memoryCache.get(stateKey);
+      if (cached) {
+        this.transferState.set(stateKey, cached);
+        return from([cached]);
+      }
+    }
+    if (this.transferState.hasKey(stateKey)) {
+      const val: T | null = this.transferState.get<T | null>(stateKey, null);
+      this.transferState.remove(stateKey);
+      if (val !== null) {
+        return from([val]);
+      }
+    }
+    return fetcher.pipe(
+      tap(val => {
+        this.platform.server(() => {
+          this.transferState.set(stateKey, val);
+          memoryCache.put(stateKey, val);
+        });
+      })
+    );
   }
 
   coord(value: number) {
@@ -33,12 +66,28 @@ export class ApiService {
     ];
   }
 
-  getItem(id: string): Observable<Card> {
-    return this.http.get(environment.itemURL + id).pipe(
+  getCard(id: string): Observable<Card> {
+    return this.innerCache(`card-${id}`, this.http.get(environment.itemURL + id).pipe(
       map((res: any) => {
         return res as Card;
       })
-    );
+    ));
+  }
+
+  getPlace(id: string): Observable<Place> {
+    return this.innerCache(`place-${id}`, this.http.get(environment.itemURL + id, {params: {type: 'places'}}).pipe(
+      map((res: any) => {
+        return res as Place;
+      })
+    ));
+  }
+
+  getResponse(id: string): Observable<Response> {
+    return this.innerCache(`response-${id}`, this.http.get(environment.itemURL + id, {params: {type: 'responses'}}).pipe(
+      map((res: any) => {
+        return res as Response;
+      })
+    ));
   }
 
   setParams(params: any, state: State, bounds: LngLatBounds): any {
@@ -64,8 +113,10 @@ export class ApiService {
   getServices(state: State, bounds: LngLatBounds, offset=0): Observable<QueryCardsResult> {
     const params: any = {size: 10, offset: offset};
     this.setParams(params, state, bounds);
+    // console.log('FETCHING SERVICES');
     return this.http.get(environment.servicesURL, {params}).pipe(
       map((res: any) => {
+        // console.log('GOT SERVICES');
         const results = res as QueryCardsResult;
         return results;
       })
@@ -75,10 +126,11 @@ export class ApiService {
   getPoints(state: State, bounds: LngLatBounds): Observable<QueryPointsResult | null> {
     const params: any = {size: 1000, order: 'point_id'};
     if ((state.responseId && state.responseId.length > 0)|| (state.situations && state.situations.length > 0)) {
-      console.log('GETTING POINTS', state.responseId, state.situations);
+      // console.log('GETTING POINTS', state.responseId, state.situations);
       this.setParams(params, state, bounds);
       return this.http.get(environment.pointsURL, {params}).pipe(
         map((res: any) => {
+          // console.log('GOT POINTS');
           const results = res as QueryPointsResult;
           return results;
         })
@@ -112,8 +164,10 @@ export class ApiService {
       }
       params['extra'] = terms.join('|');
     }
+    // console.log('COUNTING CATEGORIES');
     return this.http.get(environment.countCategoriesURL, {params}).pipe(
       map((res: any) => {
+        // console.log('GOT CATEGORY COUNTS');
         const results = res as QueryCardsResult;
         return results;
       })
@@ -185,11 +239,16 @@ export class ApiService {
 
   getPresets(): Observable<Preset[]> {
     const params = {size: 100, order: 'score'};
-    return this.http.get(environment.presetsURL, {params}).pipe(
-      map((res) => {
-        const results = res as QueryPresetResult;
-        return results.search_results.map((r) => r.source);
-      })
+    // console.log('FETCHING PRESETS');
+    return this.innerCache(
+      'presets',
+      this.http.get(environment.presetsURL, {params}).pipe(
+        map((res) => {
+          // console.log('GOT PRESETS');
+          const results = res as QueryPresetResult;
+          return results.search_results.map((r) => r.source);
+        })
+      )
     );
   }
 

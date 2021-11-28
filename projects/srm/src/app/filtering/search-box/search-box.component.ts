@@ -23,7 +23,6 @@ export class SearchBoxComponent implements OnInit, OnChanges {
   constructor(private search: SearchService, private state: StateService) {
     state.state.subscribe(state => {
       this._query = state.searchBoxTitle || '';
-      console.log('NEW QUERY', JSON.stringify(this._query));
     });
   }
 

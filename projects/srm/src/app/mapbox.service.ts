@@ -1,7 +1,7 @@
 import * as mapboxgl from 'mapbox-gl';
 
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { isPlatformServer } from '@angular/common';
+import { Injectable } from '@angular/core';
+import { PlatformService } from './platform.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +11,8 @@ export class MapboxService {
   ACCESS_TOKEN = 'pk.eyJ1Ijoic3JtLWtvbHpjaHV0IiwiYSI6ImNrcnhza3c5ZjBhd3Eydm1za3BvNjNxbzUifQ.dTyD9BD5jAsxZ2nUzSo-yw';
   public init = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: string) {
-    if (!isPlatformServer(this.platformId)) {
+  constructor(private platform: PlatformService) {
+    this.platform.browser(() => {
       this.init = true;
       (mapboxgl as any).accessToken = this.ACCESS_TOKEN;
       mapboxgl.setRTLTextPlugin(
@@ -22,6 +22,6 @@ export class MapboxService {
         },
         true // Lazy load the plugin
       );
-    }
+    });
   }
 }

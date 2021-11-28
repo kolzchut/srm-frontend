@@ -1,13 +1,16 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as mapboxgl from 'mapbox-gl';
 import { ReplaySubject, timer } from 'rxjs';
 import { delay, filter, switchMap, tap } from 'rxjs/operators';
 import { Card, CategoryCountsResult, DrawerState, HeaderState, ItemState } from '../common/datatypes';
 import { LayoutService } from '../layout.service';
 import { MapComponent } from '../map/map.component';
+import { PlatformService } from '../platform.service';
 import { SearchService } from '../search.service';
 import { SituationsService } from '../situations.service';
 import { StateService } from '../state.service';
+import { WindowService } from '../window.service';
 
 @Component({
   selector: 'app-main',
@@ -47,14 +50,19 @@ export class MainComponent implements OnInit {
   infoPage: string | null = null;
   
   
-  constructor(public state: StateService, private search: SearchService, private situations: SituationsService, public layout: LayoutService) {
+  constructor(
+        public state: StateService, private search: SearchService,
+        private situations: SituationsService, public layout: LayoutService,
+        private router: Router, private activatedRoute: ActivatedRoute,
+        private window: WindowService, private platform: PlatformService,
+  ) {
+    this.state.trackRoute(this.router, this.activatedRoute);
     this.loaded.pipe(
       switchMap(() => this.state.selectedService)
     ).subscribe(({service, preview}) => {
-      console.log('SELECTING ITEM FROM STATE');
       this.selectItem(service, preview);
     });
-    search.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
+    this.search.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
       this.counts = counts.map(c => {
         return {
           id: `human_services:${c.category}`,
@@ -70,7 +78,10 @@ export class MainComponent implements OnInit {
     ).subscribe(() => {
       this.handleEvent('show-results');
     });
-    this.disclaimerVisible = window.localStorage.getItem(this.DISMISSED_DISCLAIMER) !== 'true';
+    this.disclaimerVisible = this.window._?.localStorage?.getItem(this.DISMISSED_DISCLAIMER) !== 'true';
+    this.platform.server(() => {
+      this.loaded.next();
+    });
   }
 
   ngOnInit(): void {
@@ -96,9 +107,7 @@ export class MainComponent implements OnInit {
 
   popup(card: Card | null, multistrip: boolean = false) {
     if (this.layout.desktop) {
-      console.log('popup');
       if (this.activePopup) {
-        console.log('remove active popup');
         this.activePopup.remove();
         this.activePopup = null;
       }
@@ -108,20 +117,20 @@ export class MainComponent implements OnInit {
           tap(() => this.hasPopup = true),
           delay(0),
         ).subscribe(() => {
-          const mapPopup = (this.mapPopup.nativeElement as HTMLElement).firstChild as HTMLElement;          
-          console.log('new popup', mapPopup);
-          if (mapPopup !== null) {
-            console.log('add popup', mapPopup);
-            this.activePopup = new mapboxgl.Popup({
-              closeButton: false,
-              closeOnClick: false,
-              anchor: 'bottom',
-              className: multistrip ? 'map-popup-multistrip' : 'map-popup-single',
-            })
-            .setLngLat(card.branch_geometry)
-            .setDOMContent(mapPopup)
-            .setMaxWidth("300px")
-            .addTo(this.map);
+          if (this.mapPopup && this.mapPopup.nativeElement) {
+            const mapPopup = (this.mapPopup.nativeElement as HTMLElement).firstChild as HTMLElement;
+            if (mapPopup !== null) {
+              this.activePopup = new mapboxgl.Popup({
+                closeButton: false,
+                closeOnClick: false,
+                anchor: 'bottom',
+                className: multistrip ? 'map-popup-multistrip' : 'map-popup-single',
+              })
+              .setLngLat(card.branch_geometry)
+              .setDOMContent(mapPopup)
+              .setMaxWidth("300px")
+              .addTo(this.map);
+            }
           }
         });  
       }
@@ -139,7 +148,6 @@ export class MainComponent implements OnInit {
   }
 
   selectItem(item: Card | null, preview: boolean = false) {
-    console.log('selectItem', item);
     if (item !== null && this.selectedItem !== null && item !== this.selectedItem) {
       return;
     }
@@ -165,8 +173,7 @@ export class MainComponent implements OnInit {
         this.drawerState = DrawerState.Most;
         this.headerState = HeaderState.Hidden;
       }
-      console.log('MAP flying to', item.branch_geometry, this.map.isMoving(), this.map);
-      this.mapComponent.queueAction((map) => map.flyTo({center: item.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
+      this.mapComponent?.queueAction((map) => map.flyTo({center: item.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
       if (!this.savedSelectedItems) {
         this.popup(item);
       }
@@ -208,11 +215,11 @@ export class MainComponent implements OnInit {
     }
     console.log('Filtering cards for', record_id);
     if (this.layout.desktop) {
-      this.map.setFilter('labels-active', ['==', ['get', 'point_id'], non_existent]);
+      this.map?.setFilter('labels-active', ['==', ['get', 'point_id'], non_existent]);
     } else {
-      this.map.setFilter('labels-active', ['==', ['get', 'point_id'], record_id]);
+      this.map?.setFilter('labels-active', ['==', ['get', 'point_id'], record_id]);
     }
-    this.map.setFilter('labels-off', ['!=', ['get', 'point_id'], record_id]);
+    this.map?.setFilter('labels-off', ['!=', ['get', 'point_id'], record_id]);
   }
 
   handleEvent(event: string) {
@@ -275,7 +282,6 @@ export class MainComponent implements OnInit {
   }
 
   updateDrawerHeight(height: number) {
-    console.log('UPDATING DRAWER HEIGHT');
     if (this.layout.mobile && this.itemState !== ItemState.None) {
       this.mapComponent?.queueAction((map) => map.flyTo({
           center: this.map.getCenter(),

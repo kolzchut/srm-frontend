@@ -12,6 +12,7 @@ import { Point } from 'geojson';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { SearchService } from '../search.service';
+import { PlatformService } from '../platform.service';
 // import { SituationMatcher } from '../situations.service';
 
 @Component({
@@ -39,13 +40,17 @@ export class MapComponent implements OnInit, AfterViewInit {
   ZOOM_THRESHOLD = 10;
   ALL_CATEGORIES = ALL_CATEGORIES; 
 
-  constructor(private mapboxService: MapboxService, private state: StateService, private http: HttpClient, private search: SearchService) {
+  constructor(private mapboxService: MapboxService, private state: StateService, private http: HttpClient, private search: SearchService, private platform: PlatformService) {
     this.moveEvents.subscribe(centerZoom => {
       state.updateCenterZoom(centerZoom, true);
     });
-    this.http.get(environment.clusterDataURL).subscribe(data => {
-      this.clusterData.next(data);
-      this.clusterData.complete();
+    this.platform.browser(() => {
+      // console.log('FETCHING CLUSTERS');
+      this.http.get(environment.clusterDataURL).subscribe(data => {
+        // console.log('GOT CLUSTERS');
+        this.clusterData.next(data);
+        this.clusterData.complete();
+      });  
     });
   }
 
@@ -60,7 +65,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.mapEl && this.mapEl.nativeElement && this.mapboxService.init) {
+    if (this.platform.browser() && this.mapEl && this.mapEl.nativeElement && this.mapboxService.init) {
       try {
         const mapParams: any = {
           container: this.mapEl.nativeElement,
@@ -139,14 +144,12 @@ export class MapComponent implements OnInit, AfterViewInit {
           colorStyle.push('#444444');
           this.map.setPaintProperty('points-on', 'circle-color', colorStyle);
           this.map.setPaintProperty('points-stroke-on', 'circle-stroke-color', colorStyle);
-          console.log('COLOR STYLE', JSON.stringify(colorStyle));
 
           this.clusterData.subscribe(data => {
             const clusterProperties: any = {};
             CATEGORY_COLORS.forEach(cc => {
               clusterProperties[cc.category] = ['+', ['case', ['in', cc.category, ['get', 'response_categories']], 1, 0]];
             });
-            console.log('CLUSTER PROPERTIES', clusterProperties);
             this.map.addSource('cluster_source', {
               'type': 'geojson',
               'data': environment.clusterDataURL,
@@ -200,7 +203,6 @@ export class MapComponent implements OnInit, AfterViewInit {
               this.markersOnScreen = newMarkers;            
             });
             this.map.on('click', 'clusters', (e: mapboxgl.MapLayerMouseEvent) => {
-              console.log('CLUSTERS CLICK');
               if (e.features && e.features.length > 0) {
                 const geometry: Point = e.features[0].geometry as Point;
                 const center = new mapboxgl.LngLat(geometry.coordinates[0], geometry.coordinates[1]);
@@ -212,7 +214,6 @@ export class MapComponent implements OnInit, AfterViewInit {
               }
             });
             this.search.point_ids.subscribe(ids => {
-              console.log('point ids changed', ids);
               if (ids) {
                 const filter = ['in', ['get', 'point_id'], ['literal', ids]];
                 for (const layer of ['points-on', 'points-stroke-on', 'labels-off']) {
@@ -224,7 +225,6 @@ export class MapComponent implements OnInit, AfterViewInit {
                 }  
               }
               this.clusterData.subscribe(data => {
-                console.log('clusterData.subscribe');
                 let features: any[] = data.features;
                 let newData: GeoJSON.FeatureCollection = data;
                 if (ids) {
