@@ -22,7 +22,9 @@ export class FilteringComponent implements OnInit, AfterViewInit {
   activeSection: string | null = null;
   intersectionObserver: IntersectionObserver;
 
-  constructor(public situations: SituationsService, private search: SearchService, private platform: PlatformService) { }
+  constructor(public situations: SituationsService, private search: SearchService, private platform: PlatformService) {
+    this.search.closeFilter.subscribe(() => this.active = null);
+  }
 
   ngOnInit(): void {
   }

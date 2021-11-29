@@ -9,6 +9,7 @@ import { Card } from '../datatypes';
 export class CardWhereComponent implements OnInit {
 
   @Input() item: Card;
+  @Input() icon = true;
   
   constructor() { }
 

@@ -1,5 +1,5 @@
 <div class='where'>
-    <img class='icon' src='assets/img/icon-location.svg'>
+    <img *ngIf='icon' class='icon' src='assets/img/icon-location.svg'>
     <div class='location'>
         <ng-container *ngIf='item.branch_name'>
             <span class='branch-name' [innerHtml]='item.branch_name'></span>

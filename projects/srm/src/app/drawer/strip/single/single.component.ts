@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Card } from '../../../common/datatypes';
+import { LayoutService } from '../../../layout.service';
 
 @Component({
   selector: 'app-strip-single',
@@ -12,7 +13,7 @@ export class SingleComponent implements OnInit {
   @Output() selected = new EventEmitter<Card>();
   @Output() closed = new EventEmitter<void>();
 
-  constructor() { }
+  constructor(public layout: LayoutService) { }
 
   ngOnInit(): void {
   }

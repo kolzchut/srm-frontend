@@ -82,10 +82,12 @@
 
 .scrolled-tag-list {
     .tag-list;
+    width: ~'calc(100% + 16px)';
     flex-wrap: nowrap;
     overflow-x: scroll;
     position: relative;
-    padding: 0 16px;
+    padding: 0 8px;
+    margin: 0 -8px;
     .no-scrollbars;
     .shade {
         position: fixed;
@@ -98,12 +100,12 @@
     }
     &::before {
         .shade;
-        right: 0;
+        right: -8px;
         background: linear-gradient(270deg, #FCFCFC 0%, rgba(252, 252, 252, 0) 83.33%);
     }
     &::after {
         .shade;
-        left: 0;
+        left: -8px;
         background: linear-gradient(90deg, #FCFCFC 0%, rgba(252, 252, 252, 0) 83.33%);
     }
 }

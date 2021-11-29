@@ -67,11 +67,20 @@ export class SearchBoxComponent implements OnInit, OnChanges {
 
   clear() {
     const el = this.input?.nativeElement as HTMLInputElement;
+    let currentValue = '';
     if (el) {
+      currentValue = el.value;
       el.value = '';
     }
     this.query = '';
-    this.active = false;
     this.state.responseFilter = null;
+    if (currentValue.length === 0) {
+      this.active = false;
+    } else {
+      const inputEl = this.input?.nativeElement as HTMLInputElement;
+      if (inputEl) {
+        inputEl.focus();
+      }
+    }
   }
 }

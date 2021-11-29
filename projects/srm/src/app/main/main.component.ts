@@ -43,7 +43,8 @@ export class MainComponent implements OnInit {
 
   counts: CategoryCountsResult[] = [];
 
-  disclaimerVisible = true;
+  disclaimerVisible = false;
+  miniDisclaimerHidden = false;
   DISMISSED_DISCLAIMER = 'dismissed-disclaimer';
 
   menu = false;
@@ -78,7 +79,11 @@ export class MainComponent implements OnInit {
     ).subscribe(() => {
       this.handleEvent('show-results');
     });
-    this.disclaimerVisible = this.window._?.localStorage?.getItem(this.DISMISSED_DISCLAIMER) !== 'true';
+    this.platform.browser(() => {
+      this.disclaimerVisible = this.window._?.localStorage?.getItem(this.DISMISSED_DISCLAIMER) !== 'true';
+      if (!this.disclaimerVisible) {
+      }
+    });
     this.platform.server(() => {
       this.loaded.next();
     });
@@ -144,6 +149,7 @@ export class MainComponent implements OnInit {
     this.drawerState = DrawerState.Peek;
     if (items) {
       this.popup(items[0], true);
+      this.search.closeFilter.next();
     }
   }
 
@@ -177,6 +183,8 @@ export class MainComponent implements OnInit {
       if (!this.savedSelectedItems) {
         this.popup(item);
       }
+      console.log('CLOSEFILTER');
+      this.search.closeFilter.next();
     } else {
       if (this.savedDrawerState) {
         this.drawerState = this.savedDrawerState;
@@ -276,6 +284,9 @@ export class MainComponent implements OnInit {
         this.drawerState = DrawerState.Most;
       }
     }
+    if (!this.disclaimerVisible && event === 'map-click' || event === 'click') {
+      this.miniDisclaimerHidden = true;
+    }
     if (event === 'map-click') {
       this.closeDisclaimer();
     }
@@ -316,4 +327,5 @@ export class MainComponent implements OnInit {
     }
     this.disclaimerVisible = false;
   }
+
 }

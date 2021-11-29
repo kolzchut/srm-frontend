@@ -3,15 +3,20 @@
 :host {
     display: flex;
     flex-flow: column;
-    padding: 8px 8px 8px 12px;
+    // padding: 8px 8px 8px 12px;
+    padding: 8px;
     background-color: @color-white;
     border-radius: 8px;
+
+    &.clickable {
+        cursor: pointer;
+    }
 
     .header-wrapper {
         display: flex;
         flex-flow: row;
         align-items: flex-start;
-        margin-left: -8px;
+        // margin-left: -8px;
 
         .header {
             width: 100%;

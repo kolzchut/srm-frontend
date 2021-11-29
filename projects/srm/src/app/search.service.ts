@@ -17,6 +17,7 @@ export class SearchService {
   places = new ReplaySubject<QueryPlacesResult | null>(1);
   responses = new ReplaySubject<QueryResponsesResult | null>(1);
   presets = new ReplaySubject<Preset[]>(1);
+  closeFilter = new Subject<void>();
   searchQuery: string = '';
 
   latestQuery: {[key: string]: number} = {

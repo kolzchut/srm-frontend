@@ -176,6 +176,22 @@
             bottom: 70px;
         };
     }
+    .disclaimer {
+        .background-image;
+        background-image: url(../../assets/img/disclaimer.svg);
+        width: ~'calc(100% - 158px)';
+        max-width: 762px;
+        height: 42px;
+        position: absolute;
+        bottom: 11px;
+        right: 101px;
+        opacity: 1;
+        transition: opacity 1s linear;
+        pointer-events: none;
+        &.fade {
+            opacity: 0;
+        };
+    }
     .counts {
         .scrolled-tag-list;
         .mobile({
