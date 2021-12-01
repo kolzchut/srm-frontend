@@ -12,8 +12,8 @@
             <a i18n class='style-il' href='https://www.gov.il/he/departments/ministry_of_justice/govil-landing-page' target='_blank'>משרד המשפטים ומערך הדיגיטל הלאומי</a>
         </div>
         <div class='dontshow'>
-            <input type='checkbox' id='dontshow' [(ngModel)]='dontshow'/>
-            <label for='dontshow' i18n>הבנתי, אין צורך להציג שוב</label>
+            <input type='checkbox' [id]='uid' [(ngModel)]='dontshow'/>
+            <label [for]='uid' i18n>הבנתי, אין צורך להציג שוב</label>
         </div>
         <div class='close' (click)='closed.emit(!dontshow)'></div>
     </div>
