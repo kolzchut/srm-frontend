@@ -1,3 +1,3 @@
 import * as devEnv from './development-env';
 
-export const environment = devEnv;
+export const environment: any = devEnv;
