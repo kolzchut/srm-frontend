@@ -34,7 +34,7 @@
             "tsConfig": "projects/srm/tsconfig.app.json",
             "inlineStyleLanguage": "less",
             "assets": [
-              "projects/srm/src/favicon.ico",
+              "projects/srm/src/favicon.svg",
               "projects/srm/src/assets"
             ],
             "styles": [
@@ -123,7 +123,7 @@
             "karmaConfig": "projects/srm/karma.conf.js",
             "inlineStyleLanguage": "less",
             "assets": [
-              "projects/srm/src/favicon.ico",
+              "projects/srm/src/favicon.svg",
               "projects/srm/src/assets"
             ],
             "styles": [
