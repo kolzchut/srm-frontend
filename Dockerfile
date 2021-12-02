@@ -9,7 +9,7 @@ RUN npm install
 COPY . /app/
 
 ARG ENV_NAME
-RUN npm run ng build --configration ${ENV_NAME} && npm run ng run srm:server --configration ${ENV_NAME}
+RUN npm run ng build -c ${ENV_NAME} && npm run ng run srm:server -c ${ENV_NAME}
 
 FROM node:lts-buster-slim
 
