@@ -14,17 +14,17 @@ jobs:
       run: |
         if [[ "${GITHUB_REF}" =~ ^refs/tags/.* ]]; then
           TAG_NAME="${GITHUB_REF/refs\/tags\//}"
+          ENV_NAME="production"
         else
           TAG_NAME=""
+          ENV_NAME="staging"
         fi
         BUILD_ARGS=""
         if docker pull "ghcr.io/whiletrue-industries/${IMAGE_NAME}:latest"; then
           BUILD_ARGS="--cache-from ghcr.io/whiletrue-industries/${IMAGE_NAME}:latest"
         fi
-        docker build -t api $BUILD_ARGS . &&\
+        docker build -t api $BUILD_ARGS --build-arg ENV_NAME=$ENV_NAME . &&\
         echo "${GITHUB_TOKEN}" | docker login https://ghcr.io -u whiletrue-industries --password-stdin &&\
-        docker tag api "ghcr.io/whiletrue-industries/${IMAGE_NAME}:${GITHUB_SHA}" &&\
-        docker push "ghcr.io/whiletrue-industries/${IMAGE_NAME}:${GITHUB_SHA}" &&\
         if [ "${GITHUB_REF}" == "refs/heads/main" ] || [ "${TAG_NAME}" != "" ]; then
           echo "${SRM_DEVOPS_DEPLOY_KEY}" > srm_devops_deploy_key &&\
           chmod 400 srm_devops_deploy_key &&\
@@ -37,10 +37,10 @@ jobs:
           IMAGE="ghcr.io/whiletrue-industries/${IMAGE_NAME}:${GITHUB_SHA}" &&\
           if [ "${TAG_NAME}" != "" ]; then
             VALUES_AUTO_UPDATED_FILE="helm/${CHART_NAME}/values.auto-updated.production.yaml" &&\
-            docker tag "${IMAGE}" "ghcr.io/whiletrue-industries/${IMAGE_NAME}:${TAG_NAME}-${GITHUB_SHA}" &&\
-            docker push "ghcr.io/whiletrue-industries/${IMAGE_NAME}:${TAG_NAME}-${GITHUB_SHA}" &&\
             IMAGE="ghcr.io/whiletrue-industries/${IMAGE_NAME}:${TAG_NAME}-${GITHUB_SHA}"
           fi &&\
+          docker tag api "${IMAGE}" &&\
+          docker push "${IMAGE}" &&\
           bin/update_yaml.py '{"'"${CHART_NAME}"'":{"image":"'"${IMAGE}"'"}}' "${VALUES_AUTO_UPDATED_FILE}" &&\
           git add "${VALUES_AUTO_UPDATED_FILE}" &&\
           git commit -m "update image: ${VALUES_AUTO_UPDATED_FILE}" &&\

@@ -64,6 +64,27 @@
               ],
               "outputHashing": "all"
             },
+            "staging": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "4mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kb",
+                  "maximumError": "8kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/srm/src/environments/environment.ts",
+                  "with": "projects/srm/src/environments/environment.staging.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -129,6 +150,15 @@
                 }
               ]
             },
+            "staging": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "projects/srm/src/environments/environment.ts",
+                  "with": "projects/srm/src/environments/environment.staging.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "sourceMap": true,
@@ -162,6 +192,10 @@
             "production": {
               "browserTarget": "srm:build:production",
               "serverTarget": "srm:server:production"
+            },
+            "staging": {
+              "browserTarget": "srm:build:staging",
+              "serverTarget": "srm:server:staging"
             },
             "development": {
               "browserTarget": "srm:build:development",
