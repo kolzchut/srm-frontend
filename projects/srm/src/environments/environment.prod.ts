@@ -4,16 +4,16 @@
 
 export const environment = {
   production: true,
-  servicesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/cards',
-  pointsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/points',
-  countCategoriesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/count',
-  clusterDataURL: 'https://srm-staging.datacity.org.il/dataset/2902488f-da99-4836-9a90-1582958cfba4/resource/4c5ea1c5-af92-4930-914e-4c835ab25fb7/download/geo_data.geojson',
-  placesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/places',
-  responsesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/responses',
-  presetsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/presets',
-  itemURL: 'https://srm-staging-api.whiletrue.industries/api/idx/get/',
-  taxonomySituationsURL: 'https://srm-staging.datacity.org.il/dataset/657a1b09-2474-4309-aac8-381d41e115d8/resource/e80f6ce0-fdf8-42ef-a134-13014b228cdd/download/situations.json',
-  taxonomyResponsesURL: 'https://srm-staging.datacity.org.il/dataset/71a7e998-4984-472a-9e96-66890bbef5f5/resource/7a8d9349-c8af-485e-981a-be9411fe8ba5/download/responses.json',
+  servicesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/cards',
+  pointsURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/points',
+  countCategoriesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/count',
+  clusterDataURL: 'https://srm.datacity.org.il/dataset/0f51648d-b5dd-4981-88d1-c47023f14585/resource/0457d754-7acb-405f-ac36-37128e84c2ef/download/geo_data.geojson',
+  placesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/places',
+  responsesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/responses',
+  presetsURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/presets',
+  itemURL: 'https://srm-production-api.whiletrue.industries/api/idx/get/',
+  taxonomySituationsURL: 'https://srm.datacity.org.il/dataset/6f1a45c6-c855-43c8-8a3f-acaad318581c/resource/f705ef6e-182c-40a9-8305-a6fd17a3af24/download/situations.json',
+  taxonomyResponsesURL: 'https://srm.datacity.org.il/dataset/812345ae-521e-4171-9a91-d66d0fcf03df/resource/8f77667c-fb75-48ff-a696-093321ee3bda/download/responses.json',
   suggestChangesForm: 'https://airtable.com/shriuBukhE2B2Loy8',
 };
 
