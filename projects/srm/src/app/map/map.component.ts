@@ -22,7 +22,7 @@ import { PlatformService } from '../platform.service';
 })
 export class MapComponent implements OnInit, AfterViewInit {
 
-  STYLE = 'mapbox://styles/srm-kolzchut/cksprr4sy0hbg18o5ct2ty2oc';
+  STYLE = environment.mapStyle;
 
   @Output('points') points = new EventEmitter<Card[]>();
   @Output('map') newMap = new EventEmitter<MapComponent>();

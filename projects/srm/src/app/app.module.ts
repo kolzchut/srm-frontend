@@ -36,6 +36,7 @@ import { PresetStripComponent } from './common/preset-strip/preset-strip.compone
 import { PresetCardComponent } from './common/preset-card/preset-card.component';
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 import { MenuComponent } from './menu/menu.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { MenuComponent } from './menu/menu.component';
     PresetStripComponent,
     PresetCardComponent,
     DisclaimerComponent,
-    MenuComponent
+    MenuComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

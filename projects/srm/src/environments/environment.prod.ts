@@ -15,6 +15,7 @@ export const environment = {
   taxonomySituationsURL: 'https://srm.datacity.org.il/dataset/6f1a45c6-c855-43c8-8a3f-acaad318581c/resource/f705ef6e-182c-40a9-8305-a6fd17a3af24/download/situations.json',
   taxonomyResponsesURL: 'https://srm.datacity.org.il/dataset/812345ae-521e-4171-9a91-d66d0fcf03df/resource/8f77667c-fb75-48ff-a696-093321ee3bda/download/responses.json',
   suggestChangesForm: 'https://airtable.com/shriuBukhE2B2Loy8',
+  mapStyle: 'mapbox://styles/srm-kolzchut/cksprr4sy0hbg18o5ct2ty2oc'
 };
 
 /*
