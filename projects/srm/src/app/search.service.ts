@@ -13,6 +13,7 @@ import { State, StateService } from './state.service';
 export class SearchService {
 
   query = new ReplaySubject<string>(1);
+  searchedQueries = new Subject<string>();
   services = new ReplaySubject<QueryCardsResult | null>(1);
   places = new ReplaySubject<QueryPlacesResult | null>(1);
   responses = new ReplaySubject<QueryResponsesResult | null>(1);
@@ -42,6 +43,7 @@ export class SearchService {
       debounceTime(300),
       switchMap(query => {
         if (query && query.length > 0) {
+          this.searchedQueries.next(query);
           return forkJoin([
             from([query]),
             this.api.queryServices(query),

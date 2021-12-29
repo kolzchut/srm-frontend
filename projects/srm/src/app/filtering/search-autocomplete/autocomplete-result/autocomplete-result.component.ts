@@ -27,6 +27,7 @@ export class AutocompleteResultComponent implements OnInit {
     event.stopPropagation();
     if (this.type === 'places') {
       const bounds = new LngLatBounds(this.result.bounds);
+      this.state.placeNames.next(this.result.name[0]);
       this.state.bounds = bounds;
     } else if (this.type === 'responses') {
       this.state.responseFilter = this.result.id;

@@ -40,8 +40,11 @@ export class StateService {
   state = new ReplaySubject<State>(1);
   currentState: string = '_';
   geoChanges: Observable<State>;
+  responseChanges: Observable<State>;
+  situationChanges: Observable<State>;
   filterChanges: Observable<State>;
   queryChanges: Observable<State>;
+  placeNames = new Subject<string>();
   selectedService = new ReplaySubject<{service: Card | null, preview: boolean}>(1);
   savedGeo: [number, number, number] | null;
   latestBounds: LngLatBounds;
@@ -53,6 +56,12 @@ export class StateService {
     );
     this.filterChanges = this.state.pipe(
       distinctUntilChanged<State>(keyComparer(['responseId', 'situations'])),
+    );
+    this.responseChanges = this.state.pipe(
+      distinctUntilChanged<State>(keyComparer(['responseId'])),
+    );
+    this.situationChanges = this.state.pipe(
+      distinctUntilChanged<State>(keyComparer(['situations'])),
     );
     this.queryChanges = this.state.pipe(
       distinctUntilChanged<State>(keyComparer(['searchBoxTitle'])),
@@ -142,6 +151,7 @@ export class StateService {
             decoded.cardId = null;
             decoded.placeId = placeId;
             decoded.responseId = null;
+            this.placeNames.next(placeId);
             return decoded;
           })
         );
