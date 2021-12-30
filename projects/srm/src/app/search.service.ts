@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { forkJoin, from, Observable, ReplaySubject, Subject } from 'rxjs';
-import { distinctUntilChanged, debounceTime, switchMap, filter, first, tap } from 'rxjs/operators';
+import { distinctUntilChanged, throttleTime, switchMap, filter, first, tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { CATEGORY_COLORS } from './common/consts';
 import { Card, CategoryCountsResult, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryResponsesResult, Response, SearchResult } from './common/datatypes';
@@ -36,11 +36,15 @@ export class SearchService {
   searchResults = new Subject<any[]>();
   latestServices: Card[] = [];
   latestFetch = -1;
+  _loading = false;
 
   constructor(private api: ApiService, private state: StateService, private platform: PlatformService) {
     this.query.pipe(
       distinctUntilChanged(),
-      debounceTime(300),
+      tap(() => {
+        this.loading = true;
+      }),
+      throttleTime(300),
       switchMap(query => {
         if (query && query.length > 0) {
           this.searchedQueries.next(query);
@@ -60,6 +64,7 @@ export class SearchService {
         }
       })
     ).subscribe(([query, services, places, responses]) => {
+      this.loading = false;
       this.searchQuery = query;
       this.latestSearchResults = {services, places, responses};
       this.services.next(services);
@@ -71,13 +76,18 @@ export class SearchService {
     const sources: Observable<State>[] = [];
     this.platform.browser(() => {
       sources.push(...[
-        this.state.geoChanges.pipe(debounceTime(2000)),
+        this.state.geoChanges.pipe(
+          throttleTime(2000)
+        ),
         this.state.filterChanges
       ]);
     });
     for (const source of sources) {
       source.pipe(
         filter(() => !!this.state.latestBounds),
+        tap(() => {
+          this.loading = true;
+        }),    
         switchMap((state: State) => {
           // console.log('FETCHING SERVICES, latest bounds:', this.state.latestBounds);
           this.latestServices = [];
@@ -91,6 +101,7 @@ export class SearchService {
         })
       ).subscribe(([services, counts, points]) => {
         console.log('GOT SERVICES');
+        this.loading = false;
         this.latestServices = services.search_results.map((x) => x.source);
         this.visibleServices.next(this.latestServices);
         this.visibleCounts.next(
@@ -158,4 +169,14 @@ export class SearchService {
       ((this as any)[kind] as Subject<any>).next(this.latestSearchResults[kind]);
     });    
   }
+
+  set loading(value: boolean) {
+    this._loading = value;
+    console.log('LOADING', value);
+  }
+
+  get loading(): boolean {
+    return this._loading;
+  }
+
 }

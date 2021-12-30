@@ -19,7 +19,16 @@
         <ng-container ngProjectAs='content-header'>
             <ng-container *ngIf='drawerState !== DrawerState.Presets'>
                 <div *ngIf='itemState !== ItemState.Full' class='counts' (click)='$event.stopPropagation()'>
-                    <app-chip *ngFor='let chip of counts' [chip]='chip'></app-chip>
+                    <ng-container *ngIf='search.loading'>
+                        <div class='loading'></div>
+                        <div class='loading'></div>
+                        <div class='loading'></div>
+                        <div class='loading'></div>
+                        <div class='loading'></div>
+                    </ng-container>
+                    <ng-container *ngIf='!search.loading'>
+                        <app-chip *ngFor='let chip of counts' [chip]='chip'></app-chip>                        
+                    </ng-container>
                 </div>
             </ng-container>
         </ng-container>
@@ -48,7 +57,16 @@
         <ng-container ngProjectAs='content-footer'>
             <ng-container *ngIf='drawerState !== DrawerState.Presets'>
                 <div *ngIf='!selectedItem' class='counts' (click)='$event.stopPropagation()'>
-                    <app-chip *ngFor='let chip of counts' [chip]='chip'></app-chip>
+                    <ng-container *ngIf='search.loading'>
+                        <div class='loading'></div>
+                        <div class='loading'></div>
+                        <div class='loading'></div>
+                        <div class='loading'></div>
+                        <div class='loading'></div>
+                    </ng-container>
+                    <ng-container *ngIf='!search.loading'>
+                        <app-chip *ngFor='let chip of counts' [chip]='chip'></app-chip>                        
+                    </ng-container>
                 </div>
             </ng-container>
         </ng-container>

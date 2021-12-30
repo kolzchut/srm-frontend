@@ -3,7 +3,7 @@ import { MapboxService } from '../mapbox.service';
 
 import * as mapboxgl from 'mapbox-gl';
 import { ReplaySubject, Subject, timer } from 'rxjs';
-import { debounceTime, filter } from 'rxjs/operators';
+import { throttleTime, filter } from 'rxjs/operators';
 import { StateService } from '../state.service';
 import { ALL_CATEGORIES, CATEGORY_COLORS } from '../common/consts';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -82,7 +82,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         // Listen for changes in geo view
         this.state.geoChanges.pipe(
           filter((state) => !state.skipGeoUpdate),
-          debounceTime(500),
+          throttleTime(500),
         ).subscribe(state => {
           if (this.map) {
             const geo = state.geo;

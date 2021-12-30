@@ -52,7 +52,7 @@ export class MainComponent implements OnInit {
   
   
   constructor(
-        public state: StateService, private search: SearchService,
+        public state: StateService, public search: SearchService,
         private situations: SituationsService, public layout: LayoutService,
         private router: Router, private activatedRoute: ActivatedRoute,
         private window: WindowService, private platform: PlatformService,

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LngLat, LngLatBounds, LngLatLike } from 'mapbox-gl';
 import { BehaviorSubject, from, merge, Observable, ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, first, map, switchMap, tap } from 'rxjs/operators';
+import { throttleTime, distinctUntilChanged, filter, first, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { Card, Response } from './common/datatypes';
 import { ResponsesService } from './responses.service';
