@@ -17,6 +17,7 @@ export const environment = {
   suggestChangesForm: 'https://airtable.com/shrV3pmEN3ctycWVN',
   mapStyle: 'mapbox://styles/srm-kolzchut/cksprr4sy0hbg18o5ct2ty2oc/draft',
   gaTag: 'G-7ZHM371DDF',
+  sitemapUrl: 'https://srm-staging.datacity.org.il/dataset/572c3ee3-8d50-4da8-99ea-88db35f1bdd4/resource/6b0a249e-3dd1-4051-a2af-eae27dd4e219/download/sitemap.xml',
 };
 
 /*

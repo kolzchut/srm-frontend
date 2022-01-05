@@ -12,6 +12,9 @@ import { AppServerModule } from './src/main.server';
 import { APP_BASE_HREF } from '@angular/common';
 import { existsSync } from 'fs';
 
+import { environment  } from './src/environments/environment';
+import fetch from 'node-fetch';
+
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
@@ -26,12 +29,18 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
-  // Example Express Rest API endpoints
-  // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
   server.get('*.*', express.static(distFolder, {
     maxAge: '1y'
   }));
+
+  server.get('/sitemap.xml', (req, res) => {
+    fetch(environment.sitemapUrl)
+      .then(sm => sm.body?.pipe(
+        res.contentType('application/xml')
+      )
+    )
+  });
 
   // All regular routes use the Universal engine
   server.get('*', (req, res) => {

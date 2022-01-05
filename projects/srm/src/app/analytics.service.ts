@@ -35,6 +35,6 @@ export class AnalyticsService {
     event_label?: string,  
     value?: number) {
       console.log('GA EVENT', action, event_category, event_label);
-      gtag('event', action, {event_category, event_label, value});
+      window.gtag && gtag('event', action, {event_category, event_label, value});
     }
 }

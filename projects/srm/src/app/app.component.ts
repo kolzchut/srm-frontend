@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import { AnalyticsService } from './analytics.service';
+import { PlatformService } from './platform.service';
 
 @Component({
   selector: 'app-root',
@@ -10,13 +11,15 @@ import { AnalyticsService } from './analytics.service';
 })
 export class AppComponent {
 
-  constructor(private analytics: AnalyticsService, private router: Router) {
+  constructor(private analytics: AnalyticsService, private router: Router, private platform: PlatformService) {
     if (environment.gaTag) {
       this.router.events.subscribe(event => {
-        if(event instanceof NavigationEnd){
-          gtag('config', environment.gaTag, {
-            'page_path': event.urlAfterRedirects
-          });
+        if(event instanceof NavigationEnd) {
+          platform.browser(() => {
+            window.gtag && gtag('config', environment.gaTag, {
+              'page_path': event.urlAfterRedirects
+            });  
+          })
         }
       });
     }
