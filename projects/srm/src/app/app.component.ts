@@ -24,7 +24,7 @@ export class AppComponent {
         }
       });
     }
-    seo.setData({
+    this.seo.setData({
       title: 'כל שירות',
       description: 'מפת המענים החברתיים',
       image: 'https://www.kolsherut.org.il/assets/img/logo.svg',

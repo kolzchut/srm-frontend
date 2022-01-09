@@ -75,7 +75,8 @@ export class ApiService {
   }
 
   getPlace(id: string): Observable<Place> {
-    return this.innerCache(`place-${id}`, this.http.get(environment.itemURL + id, {params: {type: 'places'}}).pipe(
+    const place = encodeURIComponent(id);
+    return this.innerCache(`place-${id}`, this.http.get(environment.itemURL + place, {params: {type: 'places'}}).pipe(
       map((res: any) => {
         return res as Place;
       })

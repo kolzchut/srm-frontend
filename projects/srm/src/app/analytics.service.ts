@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { PlatformService } from './platform.service';
 import { SearchService } from './search.service';
 import { State, StateService } from './state.service';
 
@@ -8,7 +9,7 @@ import { State, StateService } from './state.service';
 })
 export class AnalyticsService {
 
-  constructor(private state: StateService, private search: SearchService) {
+  constructor(private state: StateService, private search: SearchService, private platform: PlatformService) {
     this.state.responseChanges.subscribe((state: State) => {
       if (state.responseId) {
         this.sendEvent('search', 'responses', state.responseId);
@@ -34,7 +35,9 @@ export class AnalyticsService {
     event_category: string, 
     event_label?: string,  
     value?: number) {
-      console.log('GA EVENT', action, event_category, event_label);
-      window.gtag && gtag('event', action, {event_category, event_label, value});
+      this.platform.browser(() => {
+        console.log('GA EVENT', action, event_category, event_label);
+        window.gtag && gtag('event', action, {event_category, event_label, value});
+      });
     }
 }

@@ -152,7 +152,7 @@ export class StateService {
             decoded.cardId = null;
             decoded.placeId = placeId;
             decoded.responseId = null;
-            this.placeNames.next(placeId);
+            this.placeName = placeId;
             return decoded;
           })
         );
@@ -321,8 +321,8 @@ export class StateService {
 
   set responseFilter(responseId: string | null) {
     const searchBoxTitle = responseId ? this.responses.getResponseName(responseId) : '';
-    this.seo.setTitle(`כל שירות - חיפוש {searchBoxTitle}`);
-    this.seo.setUrl(`https://www.kolsherut.org.il/r/{responseId}`);
+    this.seo.setTitle(`כל שירות - חיפוש ${searchBoxTitle}`);
+    this.seo.setUrl(`https://www.kolsherut.org.il/r/${responseId}`);
     this._state = Object.assign({}, this._state, {responseId, searchBoxTitle});
     this.state.next(this._state);
   }
@@ -337,16 +337,16 @@ export class StateService {
   }
 
   set placeName(place: string) {
-    this.seo.setTitle(`כל שירות - שירותים ב{place}`);
-    this.seo.setUrl(`https://www.kolsherut.org.il/p/{place}`);  
+    this.seo.setTitle(`כל שירות - שירותים חברתיים ב${place}`);
+    this.seo.setUrl(`https://www.kolsherut.org.il/p/${place}`);  
     this.placeNames.next(place);
   }
   selectService(service: Card | null, preview: boolean = false, replaceCenterZoom: [number, number, number] | null = null) {
     console.log('SELECT SERVICE', service?.card_id, 'Current:', this._state.cardId);
     if (service) {
-      this.seo.setTitle(`כל שירות - {service.service_name}`);
-      this.seo.setDescription(`כל שירות - {service.service_description}`);
-      this.seo.setUrl(`https://www.kolsherut.org.il/c/{card_id}`);  
+      this.seo.setTitle(`כל שירות - ${service.service_name}`);
+      this.seo.setDescription(`כל שירות - ${service.service_description}`);
+      this.seo.setUrl(`https://www.kolsherut.org.il/c/${service.card_id}`);  
     }
     this.cardId = service?.card_id || null;
     if (service && !this.savedGeo && this._state.geo && this._state.geo.length === 3) {
