@@ -27,7 +27,7 @@ export class AppComponent {
     this.seo.setData({
       title: 'כל שירות',
       description: 'מפת המענים החברתיים',
-      image: 'https://www.kolsherut.org.il/assets/img/logo.svg',
+      image: 'https://www.kolsherut.org.il/assets/img/logo.png',
       imageAuxData: {mimeType: 'image/svg+xml', width: 58, height: 36},
       url: 'https://www.kolsherut.org.il/',
       type: 'website',
