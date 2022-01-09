@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
+import { SeoSocialShareService } from 'ngx-seo';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -79,7 +80,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     BrowserTransferStateModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    SeoSocialShareService,
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

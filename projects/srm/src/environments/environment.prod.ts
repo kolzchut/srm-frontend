@@ -17,7 +17,7 @@ export const environment = {
   suggestChangesForm: 'https://airtable.com/shriuBukhE2B2Loy8',
   mapStyle: 'mapbox://styles/srm-kolzchut/cksprr4sy0hbg18o5ct2ty2oc',
   gaTag: 'G-7ZHM371DDF',
-  sitemapUrl: 'https://srm-staging.datacity.org.il/dataset/572c3ee3-8d50-4da8-99ea-88db35f1bdd4/resource/6b0a249e-3dd1-4051-a2af-eae27dd4e219/download/sitemap.xml',  // TODO: change to production
+  sitemapUrl: 'https://srm.datacity.org.il/dataset/6fbf9571-b66e-4264-a4e6-605539517b22/resource/84a08676-b695-429f-a487-f9084b0b4888/download/sitemap.xml',
 };
 
 /*

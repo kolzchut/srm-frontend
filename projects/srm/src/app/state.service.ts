@@ -7,6 +7,7 @@ import { ApiService } from './api.service';
 import { Card, Response } from './common/datatypes';
 import { ResponsesService } from './responses.service';
 import { Location } from '@angular/common';
+import { SeoSocialShareService } from 'ngx-seo';
 
 export type GeoType = [number, number, number] | [[number, number], [number, number]] | null;
 
@@ -49,7 +50,7 @@ export class StateService {
   savedGeo: [number, number, number] | null;
   latestBounds: LngLatBounds;
 
-  constructor(private api: ApiService, private responses: ResponsesService, private location: Location) {
+  constructor(private api: ApiService, private responses: ResponsesService, private location: Location, private seo: SeoSocialShareService) {
     // State stream - only for geo view changes
     this.geoChanges = this.state.pipe(
       distinctUntilChanged<State>(keyComparer(['geo'])),
@@ -320,6 +321,8 @@ export class StateService {
 
   set responseFilter(responseId: string | null) {
     const searchBoxTitle = responseId ? this.responses.getResponseName(responseId) : '';
+    this.seo.setTitle(`כל שירות - חיפוש {searchBoxTitle}`);
+    this.seo.setUrl(`https://www.kolsherut.org.il/r/{responseId}`);
     this._state = Object.assign({}, this._state, {responseId, searchBoxTitle});
     this.state.next(this._state);
   }
@@ -333,8 +336,18 @@ export class StateService {
     this.state.next(this._state);
   }
 
+  set placeName(place: string) {
+    this.seo.setTitle(`כל שירות - שירותים ב{place}`);
+    this.seo.setUrl(`https://www.kolsherut.org.il/p/{place}`);  
+    this.placeNames.next(place);
+  }
   selectService(service: Card | null, preview: boolean = false, replaceCenterZoom: [number, number, number] | null = null) {
     console.log('SELECT SERVICE', service?.card_id, 'Current:', this._state.cardId);
+    if (service) {
+      this.seo.setTitle(`כל שירות - {service.service_name}`);
+      this.seo.setDescription(`כל שירות - {service.service_description}`);
+      this.seo.setUrl(`https://www.kolsherut.org.il/c/{card_id}`);  
+    }
     this.cardId = service?.card_id || null;
     if (service && !this.savedGeo && this._state.geo && this._state.geo.length === 3) {
       this.savedGeo = this._state.geo;
