@@ -11,7 +11,7 @@ import { State, StateService } from './state.service';
 
 export type TaxonomyGroupEditor = {
     group: TaxonomyGroup,
-    active: boolean
+    state: 'pre' | 'active' | 'hidden',
 };
 
 @Injectable({
@@ -105,23 +105,27 @@ export class SituationsService {
         if (_group.items) {
           newEditors.push({
             group: this.byId[slug],
-            active: false
+            state: 'pre',
           });  
         }
       }
     });
     this.editors = newEditors;
     timer(0).subscribe(() => {
-      this.editors.forEach(editor => {
-        editor.active = true;
+      this.editors.forEach((editor, index) => {
+        editor.state = index < newEditors.length - 1 ? 'hidden' : 'active';
+        console.log('EDITOR STATE', index, editor.state);
       });
     });
   }
 
   popEditor() {
     if (this.editors.length > 0) {
-      this.editors[this.editors.length - 1].active = false;
-      timer(300).pipe(
+      this.editors[this.editors.length - 1].state = 'pre';
+      if (this.editors.length > 1) {
+        this.editors[this.editors.length - 2].state = 'active';
+      }
+      timer(250).pipe(
         first()
       ).subscribe(() => {
         const removed = this.editors.pop();

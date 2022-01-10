@@ -7,7 +7,9 @@ import { SituationsService, TaxonomyGroupEditor } from '../../../situations.serv
   templateUrl: './situation-editor.component.html',
   styleUrls: ['./situation-editor.component.less'],
   host: {
-    '[class.active]': 'editor.active'
+    '[class.active]': 'editor.state === "active"',
+    '[class.pre]': 'editor.state === "pre"',
+    '[class.hidden]': 'editor.state === "hidden"',
   }
 })
 export class SituationEditorComponent implements OnInit {

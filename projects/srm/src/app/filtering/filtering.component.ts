@@ -8,8 +8,8 @@ import { SituationsService } from '../situations.service';
   selector: 'app-filtering',
   templateUrl: './filtering.component.html',
   styleUrls: ['./filtering.component.less'],
-  host: {
-    '[class.active]': '!!this.activeSection || situations.activeEditors().length > 0'
+  'host': {
+    '[class.active]': 'isActive()'
   }
 })
 export class FilteringComponent implements OnInit, AfterViewInit {
@@ -48,4 +48,11 @@ export class FilteringComponent implements OnInit, AfterViewInit {
     this.activated.next(!!value);
   }
 
+  isActive() {
+    return !!this.activeSection || this.situations.activeEditors().length > 0
+  }
+  
+  hasSituationEditor() {
+    return this.situations.activeEditors().length > 0 && this.situations.activeEditors()[0].state === 'active';
+  }
 }
