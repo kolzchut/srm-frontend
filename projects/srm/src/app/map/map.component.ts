@@ -6,14 +6,12 @@ import { ReplaySubject, Subject, timer } from 'rxjs';
 import { throttleTime, filter } from 'rxjs/operators';
 import { StateService } from '../state.service';
 import { ALL_CATEGORIES, CATEGORY_COLORS } from '../common/consts';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Card } from '../common/datatypes';
 import { Point } from 'geojson';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { SearchService } from '../search.service';
 import { PlatformService } from '../platform.service';
-// import { SituationMatcher } from '../situations.service';
 
 @Component({
   selector: 'app-map',
@@ -71,10 +69,12 @@ export class MapComponent implements OnInit, AfterViewInit {
           container: this.mapEl.nativeElement,
           style: this.STYLE,
           minZoom: 3,
-          attributionControl: false,          
+          attributionControl: false,
+        
         };
         this.map = new mapboxgl.Map(mapParams);
         this.map.addControl(new mapboxgl.AttributionControl(), 'top-right');
+        this.map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'bottom-left');
         this.map.dragRotate.disable();
         this.map.touchZoomRotate.disableRotation();
         this.map.touchPitch.disable();
@@ -129,7 +129,12 @@ export class MapComponent implements OnInit, AfterViewInit {
           }
         });
         this.map.on('load', () => {
-          console.log('MAP LOADED');
+          console.log('MAP LOADED', environment.production);
+          if (!environment.production) {
+            for (const layer of ['labels-active', 'labels-off', 'points-on', 'points-off', 'points-stroke-on']) {
+              this.setStagingLayerSource(this.map, layer);
+            }
+          }
           const colorStyle = [
             "match",
             [
@@ -262,10 +267,10 @@ export class MapComponent implements OnInit, AfterViewInit {
             const internal = (event as any).internal;
             if (!internal) {
               this.state.latestBounds = this.map?.getBounds();
-              console.log('MOVED', event, internal, this.state.latestBounds);
+              // console.log('MOVED', event, internal, this.state.latestBounds);
               this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
             } else {
-              console.log('MOVED INTERNALLY', event, internal);
+              // console.log('MOVED INTERNALLY', event, internal);
             }
             if (this.moveQueue.length > 0) {
               const action = this.moveQueue.shift();
@@ -282,6 +287,16 @@ export class MapComponent implements OnInit, AfterViewInit {
         console.log('FAILED TO LOAD', e)
       }
     }
+  }
+
+  setStagingLayerSource(map: mapboxgl.Map, layerId: string) {
+    const oldLayers = map.getStyle().layers || [];
+    const layerIndex = oldLayers.findIndex(l => l.id === layerId);
+    const layerDef: any = oldLayers[layerIndex];
+    const before = oldLayers[layerIndex + 1] && oldLayers[layerIndex + 1].id;
+    layerDef['source-layer'] = 'geo_data_staging';
+    map.removeLayer(layerId);
+    map.addLayer(layerDef, before);
   }
 
   createLabelBg(id: string): HTMLImageElement | null {

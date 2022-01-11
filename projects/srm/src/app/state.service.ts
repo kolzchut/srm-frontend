@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router, Event } from '@angular/router';
 import { LngLat, LngLatBounds, LngLatLike } from 'mapbox-gl';
 import { BehaviorSubject, from, merge, Observable, ReplaySubject, Subject } from 'rxjs';
 import { throttleTime, distinctUntilChanged, filter, first, map, switchMap, tap } from 'rxjs/operators';
@@ -80,6 +80,14 @@ export class StateService {
 
   trackRoute(router: Router, activatedRoute: ActivatedRoute) {
     // State decoding from URL
+    router.events.pipe(
+      filter((event: Event) =>(event instanceof NavigationStart)),
+    ).subscribe((event) => {
+      const ns = (event as NavigationStart);
+      if (ns.navigationTrigger === 'popstate') {
+        this._state.skipGeoUpdate = false;
+      }
+    });
     merge(
       activatedRoute.queryParams,
       activatedRoute.url
@@ -126,7 +134,7 @@ export class StateService {
       //   console.log('REPLACE TO HISTORY', jp + qp);
       //   this.location.replaceState(jp + qp);
       // }
-      router.navigate(['/'], {queryParams, replaceUrl: true});
+      router.navigate(['/'], {queryParams, replaceUrl: false});
     });
   }
 
@@ -322,6 +330,7 @@ export class StateService {
   set responseFilter(responseId: string | null) {
     const searchBoxTitle = responseId ? this.responses.getResponseName(responseId) : '';
     this.seo.setTitle(`כל שירות - חיפוש ${searchBoxTitle}`);
+    this.seo.setDescription(`כל שירות - חיפוש שירותים מסוג ${searchBoxTitle} המסופקים על ידי הממשלה, עמותות וחברות`);
     this.seo.setUrl(`https://www.kolsherut.org.il/r/${responseId}`);
     this._state = Object.assign({}, this._state, {responseId, searchBoxTitle});
     this.state.next(this._state);
@@ -338,14 +347,16 @@ export class StateService {
 
   set placeName(place: string) {
     this.seo.setTitle(`כל שירות - שירותים חברתיים ב${place}`);
+    this.seo.setDescription(`כל שירות - חיפוש שירותים באזור ${place} המסופקים על ידי הממשלה, עמותות וחברות`);
     this.seo.setUrl(`https://www.kolsherut.org.il/p/${place}`);  
     this.placeNames.next(place);
   }
+
   selectService(service: Card | null, preview: boolean = false, replaceCenterZoom: [number, number, number] | null = null) {
     console.log('SELECT SERVICE', service?.card_id, 'Current:', this._state.cardId);
     if (service) {
       this.seo.setTitle(`כל שירות - ${service.service_name}`);
-      this.seo.setDescription(`כל שירות - ${service.service_description}`);
+      this.seo.setDescription(`${service.branch_name} - ${service.service_description}`);
       this.seo.setUrl(`https://www.kolsherut.org.il/c/${service.card_id}`);  
     }
     this.cardId = service?.card_id || null;
@@ -366,12 +377,13 @@ export class StateService {
   }
 
   applyFromUrl(urlToApply: string) {
+    console.log('APPLY FROM URL', urlToApply);
     const url = new URL(urlToApply);
     const params = url.searchParams;
     if (params) {
       const encodedState = params.get('state');
       if (encodedState) {
-        const decoded = this.decode(encodedState);
+        const decoded: State = this.decode(encodedState);
         this._state = decoded;
         this.state.next(this._state);
       }

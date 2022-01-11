@@ -30,7 +30,11 @@ export class FilterBarComponent implements OnInit {
     ).subscribe(state => {
       if (state.responseId) {
         this.responseFilter = this.responseMap[state.responseId] || null;
-        this.responseColor = getResponseIdColor(this.responseFilter.id) + 'c0';
+        if (this.responseFilter) {
+          this.responseColor = getResponseIdColor(this.responseFilter.id) + 'c0';
+        } else {
+          console.log('STRANGE RESPONSE ID', state.responseId);
+        }
       } else {
         this.responseFilter = null;
       }
