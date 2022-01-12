@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  servicesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/cards',
+  cardsURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/cards',
   pointsURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/points',
   countCategoriesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/count',
   clusterDataURL: 'https://srm.datacity.org.il/dataset/0f51648d-b5dd-4981-88d1-c47023f14585/resource/0457d754-7acb-405f-ac36-37128e84c2ef/download/geo_data.geojson',

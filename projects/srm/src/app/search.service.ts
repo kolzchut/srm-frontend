@@ -14,7 +14,7 @@ export class SearchService {
 
   query = new ReplaySubject<string>(1);
   searchedQueries = new Subject<string>();
-  services = new ReplaySubject<QueryCardsResult | null>(1);
+  cards = new ReplaySubject<QueryCardsResult | null>(1);
   places = new ReplaySubject<QueryPlacesResult | null>(1);
   responses = new ReplaySubject<QueryResponsesResult | null>(1);
   presets = new ReplaySubject<Preset[]>(1);
@@ -22,7 +22,7 @@ export class SearchService {
   searchQuery: string = '';
 
   latestQuery: {[key: string]: number} = {
-    services: -1,
+    cards: -1,
     places: -1,
     responses: -1
   };
@@ -31,10 +31,10 @@ export class SearchService {
 
   point_ids = new ReplaySubject<string[] | null>(1);
 
-  visibleServices = new ReplaySubject<Card[]>(1);
+  visibleCards = new ReplaySubject<Card[]>(1);
   visibleCounts = new ReplaySubject<CategoryCountsResult[]>(1);
   searchResults = new Subject<any[]>();
-  latestServices: Card[] = [];
+  latestCards: Card[] = [];
   latestFetch = -1;
   _loading = false;
 
@@ -50,7 +50,7 @@ export class SearchService {
           this.searchedQueries.next(query);
           return forkJoin([
             from([query]),
-            this.api.queryServices(query),
+            this.api.queryCards(query),
             this.api.queryPlaces(query),
             this.api.queryResponses(query)
           ]);
@@ -63,11 +63,11 @@ export class SearchService {
           ]);
         }
       })
-    ).subscribe(([query, services, places, responses]) => {
+    ).subscribe(([query, cards, places, responses]) => {
       this.loading = false;
       this.searchQuery = query;
-      this.latestSearchResults = {services, places, responses};
-      this.services.next(services);
+      this.latestSearchResults = {cards, places, responses};
+      this.cards.next(cards);
       this.places.next(places);
       this.responses.next(responses);
     });
@@ -90,20 +90,20 @@ export class SearchService {
         }),    
         switchMap((state: State) => {
           // console.log('FETCHING SERVICES, latest bounds:', this.state.latestBounds);
-          this.latestServices = [];
+          this.latestCards = [];
           this.latestFetch = 0;
-          this.visibleServices.next(this.latestServices);
+          this.visibleCards.next(this.latestCards);
           return forkJoin([
-            this.api.getServices(state, this.state.latestBounds),
+            this.api.getCards(state, this.state.latestBounds),
             this.api.countCategories(state, this.state.latestBounds),
             this.api.getPoints(state, this.state.latestBounds)
           ]);
         })
-      ).subscribe(([services, counts, points]) => {
-        console.log('GOT SERVICES');
+      ).subscribe(([cards, counts, points]) => {
+        console.log('GOT CARDS');
         this.loading = false;
-        this.latestServices = services.search_results.map((x) => x.source);
-        this.visibleServices.next(this.latestServices);
+        this.latestCards = cards.search_results.map((x) => x.source);
+        this.visibleCards.next(this.latestCards);
         this.visibleCounts.next(
           CATEGORY_COLORS.map((cc) => {
             return {
@@ -128,18 +128,18 @@ export class SearchService {
   }
 
   loadMore() {
-    if (this.latestFetch === this.latestServices.length || this.latestServices.length === 0) {
+    if (this.latestFetch === this.latestCards.length || this.latestCards.length === 0) {
       return;
     }
-    this.latestFetch = this.latestServices.length;
+    this.latestFetch = this.latestCards.length;
     this.state.state.pipe(
       first(),
       switchMap((state: State) => {
-        return this.api.getServices(state, this.state.latestBounds, this.latestFetch);
+        return this.api.getCards(state, this.state.latestBounds, this.latestFetch);
       })
-    ).subscribe((services: QueryCardsResult) => {
-      this.latestServices.push(...services.search_results.map((x) => x.source));
-      this.visibleServices.next(this.latestServices);
+    ).subscribe((cards: QueryCardsResult) => {
+      this.latestCards.push(...cards.search_results.map((x) => x.source));
+      this.visibleCards.next(this.latestCards);
     });
   }
 
@@ -151,7 +151,7 @@ export class SearchService {
     }
     this.latestQuery[kind] = currentLength;
     const sources: {[key: string]: ((q: string, o: number) => Observable<any>)} = {
-      services: (q: string, o: number) => this.api.queryServices(q, o),
+      cards: (q: string, o: number) => this.api.queryCards(q, o),
       places: (q: string, o: number) => this.api.queryPlaces(q, o),
       responses: (q: string, o: number) => this.api.queryResponses(q, o),
     };
@@ -163,9 +163,9 @@ export class SearchService {
           sources[kind](query, this.latestQuery[kind])
         ]);
       })
-    ).subscribe(([query, services]) => {
-      console.log('GOT MORE', query, kind, services);
-      this.latestSearchResults[kind]?.search_results.push(...services.search_results);
+    ).subscribe(([query, cards]) => {
+      console.log('GOT MORE', query, kind, cards);
+      this.latestSearchResults[kind]?.search_results.push(...cards.search_results);
       ((this as any)[kind] as Subject<any>).next(this.latestSearchResults[kind]);
     });    
   }

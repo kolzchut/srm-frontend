@@ -59,9 +59,9 @@ export class MainComponent implements OnInit {
   ) {
     this.state.trackRoute(this.router, this.activatedRoute);
     this.loaded.pipe(
-      switchMap(() => this.state.selectedService)
-    ).subscribe(({service, preview}) => {
-      this.selectItem(service, preview);
+      switchMap(() => this.state.selectedCard)
+    ).subscribe(({card, preview}) => {
+      this.selectItem(card, preview);
     });
     this.search.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
       this.counts = counts.map(c => {
@@ -101,7 +101,7 @@ export class MainComponent implements OnInit {
   mapSelectedPoints(cards: Card[]) {
     if (cards.length === 1) {
       this.selectedItems = null;
-      this.state.selectService(cards[0], true);
+      this.state.selectCardPreview(cards[0]);
     } else if (cards.length > 1) {
       this.selectItems(cards);
       this.setLabelsFilter();
@@ -143,7 +143,7 @@ export class MainComponent implements OnInit {
   }
 
   selectItems(items: Card[]) {
-    this.state.selectService(null, false, [...items[0].branch_geometry, 15]);
+    this.state.deselectCardWithCenterZoom([...items[0].branch_geometry, 15]);
     this.selectedItems = items;
     this.itemState = ItemState.MultiStrip;
     this.drawerState = DrawerState.Peek;
@@ -154,6 +154,7 @@ export class MainComponent implements OnInit {
   }
 
   selectItem(item: Card | null, preview: boolean = false) {
+    console.log('SELECT ITEM',this.itemState, preview, item?.card_id);
     if (item !== null && this.selectedItem !== null && item !== this.selectedItem) {
       return;
     }
@@ -234,11 +235,11 @@ export class MainComponent implements OnInit {
     console.log('EV', this.itemState, event, this.drawerState);
     if (this.itemState === ItemState.Preview) {
       if (event === 'click' || event === 'up' || event === 'close' || event === 'map-click') {
-        this.state.selectService(null);
+        this.state.card = null;
       }
     } else if (this.itemState === ItemState.MultiStrip) {
       if (event === 'click' || event === 'up' || event === 'map-click') {
-        this.state.selectService(null);
+        this.state.card = null;
       }
     } else if (this.itemState === ItemState.Full) {
       if (event === 'click' || event === 'down') {
@@ -247,7 +248,7 @@ export class MainComponent implements OnInit {
         }
       }
       if (event === 'close' || event === 'map-click') {
-        this.state.selectService(null);
+        this.state.card = null;
       }
     } else if (this.itemState === ItemState.None) {
       if (event === 'click') {

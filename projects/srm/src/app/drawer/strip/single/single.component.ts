@@ -9,7 +9,7 @@ import { LayoutService } from '../../../layout.service';
 })
 export class SingleComponent implements OnInit {
 
-  @Input() service: Card;
+  @Input() card: Card;
   @Output() selected = new EventEmitter<Card>();
   @Output() closed = new EventEmitter<void>();
 

@@ -9,7 +9,8 @@ import { ResponsesService } from './responses.service';
 import { Location } from '@angular/common';
 import { SeoSocialShareService } from 'ngx-seo';
 
-export type GeoType = [number, number, number] | [[number, number], [number, number]] | null;
+export type CenterZoomType = [number, number, number];
+export type GeoType = CenterZoomType | [[number, number], [number, number]] | null;
 
 export type State = {
   geo?: GeoType;
@@ -20,6 +21,7 @@ export type State = {
   skipGeoUpdate?: boolean,
   situations?: string[][] | null,
 };
+
 
 function makeKey(obj: any, keys: string[]) {
   const ret = [];
@@ -40,15 +42,23 @@ export class StateService {
   _state: State = {}; 
   state = new ReplaySubject<State>(1);
   currentState: string = '_';
+
   geoChanges: Observable<State>;
   responseChanges: Observable<State>;
   situationChanges: Observable<State>;
   filterChanges: Observable<State>;
   queryChanges: Observable<State>;
+  cardChanges: Observable<State>;
+
   placeNames = new Subject<string>();
-  selectedService = new ReplaySubject<{service: Card | null, preview: boolean}>(1);
-  savedGeo: [number, number, number] | null;
+
+  selectedCard = new ReplaySubject<{card: Card | null, preview: boolean}>(1);
+  cardCache: {[key: string]: Card} = {};
+  cardPreview = false;
+
+  savedGeo: CenterZoomType | null;
   latestBounds: LngLatBounds;
+  replaceCenterZoom: CenterZoomType | null = null;
 
   constructor(private api: ApiService, private responses: ResponsesService, private location: Location, private seo: SeoSocialShareService) {
     // State stream - only for geo view changes
@@ -67,14 +77,21 @@ export class StateService {
     this.queryChanges = this.state.pipe(
       distinctUntilChanged<State>(keyComparer(['searchBoxTitle'])),
     );
-    // State stream - for first time item fetching
-    this.state.pipe(
-      first(),
-      filter((state) => !!state.cardId),
-      switchMap((state) => this.api.getCard(state.cardId as string))
-    ).subscribe((service: Card) => {
-      // console.log('FIRST TIME - Fetched', service);
-      this.selectService(service);
+    this.cardChanges = this.state.pipe(
+      distinctUntilChanged<State>(keyComparer(['cardId'])),
+    );
+    // // State stream - for first time item fetching
+    // this.state.pipe(
+    //   first(),
+    //   filter((state) => !!state.cardId),
+    //   switchMap((state) => this.api.getCard(state.cardId as string))
+    // ).subscribe((service: Card) => {
+    //   // console.log('FIRST TIME - Fetched', service);
+    //   this.selectService(service);
+    // });
+    this.cardChanges.subscribe((state) => {
+      console.log('STATE CARD CHANGED', state);
+      this.selectCardById(state.cardId || null);
     });
   }
 
@@ -307,13 +324,13 @@ export class StateService {
     this.state.next(this._state);
   }
 
-  updateCenterZoom(geo: [number, number, number], skipGeoUpdate=false) {
-    geo = geo.map(x => Math.round(x * 10000) / 10000) as [number, number, number];
+  updateCenterZoom(geo: CenterZoomType, skipGeoUpdate=false) {
+    geo = geo.map(x => Math.round(x * 10000) / 10000) as CenterZoomType;
     this._state = Object.assign({}, this._state, {geo, skipGeoUpdate});
     this.state.next(this._state);
   }
 
-  set centerZoom(centerZoom: [number, number, number]) {
+  set centerZoom(centerZoom: CenterZoomType) {
     this.updateCenterZoom(centerZoom);
   }
 
@@ -323,8 +340,19 @@ export class StateService {
   // }
 
   set cardId(cardId: string | null) {
+    console.log('STATE CARD ID <-', cardId);
     this._state = Object.assign({}, this._state, {cardId});
     this.state.next(this._state);
+  }
+
+  set card(card: Card | null) {
+    console.log('STATE CARD <-', card);
+    if (card) {
+      this.cardCache[card.card_id] = card;
+      this.cardId = card.card_id;  
+    } else {
+      this.cardId = null;
+    }
   }
 
   set responseFilter(responseId: string | null) {
@@ -352,28 +380,58 @@ export class StateService {
     this.placeNames.next(place);
   }
 
-  selectService(service: Card | null, preview: boolean = false, replaceCenterZoom: [number, number, number] | null = null) {
-    console.log('SELECT SERVICE', service?.card_id, 'Current:', this._state.cardId);
-    if (service) {
-      this.seo.setTitle(`כל שירות - ${service.service_name}`);
-      this.seo.setDescription(`${service.branch_name} - ${service.service_description}`);
-      this.seo.setUrl(`https://www.kolsherut.org.il/c/${service.card_id}`);  
+  selectCardById(cardId: string | null) {
+    console.log('SELECT CARD BY ID', cardId);
+    if (cardId) {
+      const card = this.cardCache[cardId];
+      if (card) {
+        this.selectCard(card);
+      } else {
+        this.api.getCard(cardId).subscribe((card) => {
+          this.selectCard(card);
+        });
+      }
+    } else {
+      this.selectCard(null);
     }
-    this.cardId = service?.card_id || null;
-    if (service && !this.savedGeo && this._state.geo && this._state.geo.length === 3) {
+  }
+
+  selectCardPreview(card: Card | null) {
+    this.cardPreview = true;
+    this.card = card;
+  }
+
+  deselectCardWithCenterZoom(centerZoom: CenterZoomType) {
+    this.cardPreview = false;
+    this.replaceCenterZoom = centerZoom;
+    this.card = null;
+  }
+  
+  selectCard(card: Card | null, replaceCenterZoom: CenterZoomType | null = null) {
+    const cardId = card?.card_id || null;
+    console.log('SELECT CARD', cardId);
+    if (card) {
+      this.cardCache[card.card_id] = card;
+      this.seo.setTitle(`כל שירות - ${card.service_name}`);
+      this.seo.setDescription(`${card.branch_name} - ${card.service_description}`);
+      this.seo.setUrl(`https://www.kolsherut.org.il/c/${card.card_id}`);  
+    }
+    if (card && !this.savedGeo && this._state.geo && this._state.geo.length === 3) {
       this.savedGeo = this._state.geo;
       // console.log('SAVED GEO', this.savedGeo);
     }
-    if (!service) {
-      if (replaceCenterZoom) {
-        this.centerZoom = replaceCenterZoom;
+    if (!card) {
+      if (this.replaceCenterZoom) {
+        this.centerZoom = (replaceCenterZoom as CenterZoomType);
+        this.replaceCenterZoom = null;
       } else if (this.savedGeo) {
         this.centerZoom = this.savedGeo;
         // console.log('CLEARED GEO', this.savedGeo);
         this.savedGeo = null;  
       }
     }
-    this.selectedService.next({service, preview});
+    this.selectedCard.next({card, preview: this.cardPreview});
+    this.cardPreview = false;
   }
 
   applyFromUrl(urlToApply: string) {

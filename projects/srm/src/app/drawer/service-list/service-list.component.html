@@ -7,7 +7,7 @@
         <div class='loading'></div>
     </ng-container>
     <ng-container *ngIf='!search.loading'>
-        <app-service-card [item]='card' *ngFor='let card of (search.visibleServices | async)' (click)='selectCard(card)'></app-service-card>
+        <app-service-card [item]='card' *ngFor='let card of (search.visibleCards | async)' (click)='selectCard(card)'></app-service-card>
     </ng-container>
     <div class='more' #more></div>
 </div>

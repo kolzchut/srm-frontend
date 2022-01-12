@@ -15,9 +15,9 @@ export class AnalyticsService {
         this.sendEvent('search', 'responses', state.responseId);
       }
     });
-    this.state.selectedService.subscribe(({service, preview}) => {
-      if (service) {
-        this.sendEvent('view_service', 'services', service.service_name);
+    this.state.selectedCard.subscribe(({card, preview}) => {
+      if (card) {
+        this.sendEvent('view_service', 'services', card.service_name);
       }
     });
     this.state.placeNames.subscribe(placeName => {

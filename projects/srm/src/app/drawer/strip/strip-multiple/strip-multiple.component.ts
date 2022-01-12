@@ -8,7 +8,7 @@ import { Card } from '../../../common/datatypes';
 })
 export class StripMultipleComponent implements OnInit {
 
-  @Input() services: Card[] | null;
+  @Input() cards: Card[] | null;
   @Output() selected = new EventEmitter<Card>();
   @Output() closed = new EventEmitter<void>();
 

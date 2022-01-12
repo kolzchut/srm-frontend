@@ -31,9 +31,9 @@ export class AutocompleteResultComponent implements OnInit {
       this.state.bounds = bounds;
     } else if (this.type === 'responses') {
       this.state.responseFilter = this.result.id;
-    } else if (this.type === 'services') {
+    } else if (this.type === 'cards') {
       this.state.responseFilter = null;
-      this.state.selectService(this.result);
+      this.state.card = this.result;
     }
     this.selected.emit();
     return false;

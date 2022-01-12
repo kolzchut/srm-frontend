@@ -10,7 +10,7 @@ import { SearchService } from '../../search.service';
   styleUrls: ['./service-list.component.less']
 })
 export class ServiceListComponent implements OnInit, AfterViewInit {
-  services: Card[] = [];
+  cards: Card[] = [];
 
   @Output() selected = new EventEmitter<any>();
   @Output() click = new EventEmitter<void>();
@@ -19,8 +19,8 @@ export class ServiceListComponent implements OnInit, AfterViewInit {
   observer: IntersectionObserver;
 
   constructor(public search: SearchService, private host: ElementRef, private platform: PlatformService) {
-    search.visibleServices.subscribe((services: any[]) => {
-      this.services = services;
+    search.visibleCards.subscribe((cards: any[]) => {
+      this.cards = cards;
     });
   }
 

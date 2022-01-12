@@ -111,11 +111,11 @@ export class ApiService {
     params['filter'] = JSON.stringify(filter);
   }
 
-  getServices(state: State, bounds: LngLatBounds, offset=0): Observable<QueryCardsResult> {
+  getCards(state: State, bounds: LngLatBounds, offset=0): Observable<QueryCardsResult> {
     const params: any = {size: 10, offset: offset};
     this.setParams(params, state, bounds);
     // console.log('FETCHING SERVICES');
-    return this.http.get(environment.servicesURL, {params}).pipe(
+    return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         // console.log('GOT SERVICES');
         const results = res as QueryCardsResult;
@@ -226,8 +226,8 @@ export class ApiService {
     }
   }
 
-  queryServices(query: string, offset=0) {
-    return this.query<QueryCardsResult>(query, environment.servicesURL, offset);
+  queryCards(query: string, offset=0) {
+    return this.query<QueryCardsResult>(query, environment.cardsURL, offset);
   }
 
   queryPlaces(query: any, offset=0) {

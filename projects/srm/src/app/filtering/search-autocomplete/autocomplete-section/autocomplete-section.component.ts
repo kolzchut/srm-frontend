@@ -34,7 +34,7 @@ export class AutocompleteSectionComponent implements OnInit, OnDestroy {
     const obs = {
       responses: this.search.responses,
       places: this.search.places,
-      services: this.search.services,
+      cards: this.search.cards,
     }[this.type] as Observable<SearchResult<any>>;
     this.subs.push(obs.subscribe(res => {
       if (res && res.search_results && res.search_results.length > 0) {
