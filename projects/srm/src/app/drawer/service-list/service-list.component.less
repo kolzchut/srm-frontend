@@ -15,8 +15,10 @@
         gap: 8px;
         padding: 8px 16px;
         background-color: @color-gray-7;
-        height: 100%;
-
+        &.multi {
+            background-color: @color-gray-2;
+        }
+        flex: 1 0 100%;
         app-service-card {
             filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.06));
             .desktop({

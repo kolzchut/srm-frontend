@@ -10,7 +10,7 @@ import { Card, CategoryCountsResult } from '../datatypes';
 })
 export class CardTagsComponent implements OnInit, OnChanges {
 
-  @Input() item: Card;
+  @Input() card: Card;
   @Input() big = false;
   
   chips: CategoryCountsResult[] = [];
@@ -22,8 +22,8 @@ export class CardTagsComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     const responseFilter = this.state._state.responseId || 'nonexistent';
-    if (this.item && this.item.responses) {
-      this.chips = this.item.responses.map((r: any) => {
+    if (this.card && this.card.responses) {
+      this.chips = this.card.responses.map((r: any) => {
           return {
             id: r.id,
             display: r.name,

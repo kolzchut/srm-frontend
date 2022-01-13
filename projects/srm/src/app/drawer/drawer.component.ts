@@ -48,20 +48,22 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
     const el = this.handleEl.nativeElement;
     if (el) {
       const doc = this.window.D || {};
-      if ('ontouchstart' in doc) {
-        fromEvent(el, 'touchstart').subscribe((el) => {
-          this.handleGestureStart(el as TouchEvent);
-          fromEvent(window, 'touchend').pipe(first()).subscribe((el) => {
-            this.handleGestureEnd(el as TouchEvent);
+      if (this.layout.mobile) {
+        if ('ontouchstart' in doc) {
+          fromEvent(el, 'touchstart').subscribe((el) => {
+            this.handleGestureStart(el as TouchEvent);
+            fromEvent(window, 'touchend').pipe(first()).subscribe((el) => {
+              this.handleGestureEnd(el as TouchEvent);
+            });
           });
-        });
-      } else {
-        fromEvent(el, 'mousedown').subscribe((el) => {
-          this.handleGestureStart(el as MouseEvent);
-          fromEvent(window, 'mouseup').pipe(first()).subscribe((el) => {
-            this.handleGestureEnd(el as MouseEvent);
-          });
-        });  
+        } else {
+          fromEvent(el, 'mousedown').subscribe((el) => {
+            this.handleGestureStart(el as MouseEvent);
+            fromEvent(window, 'mouseup').pipe(first()).subscribe((el) => {
+              this.handleGestureEnd(el as MouseEvent);
+            });
+          });  
+        }
       }
       this.currentHeight = el.clientHeight;
       this.height.emit(this.currentHeight);

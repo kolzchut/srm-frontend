@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router, Event } from '@angular/router';
 import { LngLat, LngLatBounds, LngLatLike } from 'mapbox-gl';
-import { BehaviorSubject, from, merge, Observable, ReplaySubject, Subject } from 'rxjs';
-import { throttleTime, distinctUntilChanged, filter, first, map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, merge, Observable, ReplaySubject, Subject, timer } from 'rxjs';
+import { throttleTime, distinctUntilChanged, filter, first, map, switchMap, tap, delay } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { Card, Response } from './common/datatypes';
 import { ResponsesService } from './responses.service';
@@ -16,6 +16,7 @@ export type State = {
   geo?: GeoType;
   searchBoxTitle?: string,
   cardId?: string | null,
+  pointId?: string | null,
   placeId?: string | null,
   responseId?: string | null,
   skipGeoUpdate?: boolean,
@@ -31,8 +32,8 @@ function makeKey(obj: any, keys: string[]) {
   return ret.join(':');
 }
 
-function keyComparer(keys: string[]) {
-  return (x: Object, y: Object) => makeKey(x, keys) === makeKey(y, keys);
+function keyComparer(keys: string[], kind?: string) {
+  return (x: any, y: any) => makeKey(x, keys) === makeKey(y, keys) && y.__kind !== kind;
 }
 
 @Injectable({
@@ -49,12 +50,15 @@ export class StateService {
   filterChanges: Observable<State>;
   queryChanges: Observable<State>;
   cardChanges: Observable<State>;
+  pointIdChanges: Observable<State>;
 
   placeNames = new Subject<string>();
 
-  selectedCard = new ReplaySubject<{card: Card | null, preview: boolean}>(1);
+  selectedCard = new ReplaySubject<{card: Card | null}>(1);
+  selectedCards = new ReplaySubject<{cards: Card[] | null}>(1);
+  
   cardCache: {[key: string]: Card} = {};
-  cardPreview = false;
+  cardsCache: {[key: string]: Card[]} = {};
 
   savedGeo: CenterZoomType | null;
   latestBounds: LngLatBounds;
@@ -78,20 +82,18 @@ export class StateService {
       distinctUntilChanged<State>(keyComparer(['searchBoxTitle'])),
     );
     this.cardChanges = this.state.pipe(
-      distinctUntilChanged<State>(keyComparer(['cardId'])),
+      distinctUntilChanged<State>(keyComparer(['cardId'], 'card-id')),
     );
-    // // State stream - for first time item fetching
-    // this.state.pipe(
-    //   first(),
-    //   filter((state) => !!state.cardId),
-    //   switchMap((state) => this.api.getCard(state.cardId as string))
-    // ).subscribe((service: Card) => {
-    //   // console.log('FIRST TIME - Fetched', service);
-    //   this.selectService(service);
-    // });
+    this.pointIdChanges = this.state.pipe(
+      distinctUntilChanged<State>(keyComparer(['pointId'], 'point-id')),
+    );
     this.cardChanges.subscribe((state) => {
-      console.log('STATE CARD CHANGED', state);
+      // console.log('STATE CARD CHANGED', state);
       this.selectCardById(state.cardId || null);
+    });
+    this.pointIdChanges.subscribe((state) => {
+      // console.log('STATE POINT ID CHANGED', state);
+      this.selectCardsByPointId(state.pointId || null);
     });
   }
 
@@ -123,34 +125,25 @@ export class StateService {
       map((state) => {
         this.currentState = state;
         const decoded = this.decode(state);
-        console.log('D:STATE', state, '->', decoded);
+        // console.log('D:STATE', state, '->', decoded);
         return decoded
       })
     ).subscribe((state: State) => {
-      this._state = Object.assign({}, this._state, state);
-      this.state.next(this._state);
+      this.updateState(state);
     });
 
-    this.state.subscribe(state => {
-      const encoded = this.encode(state);
-      this.currentState = encoded;
+    this.state.pipe(
+      delay(0),
+      map((state) => {
+        const encoded = this.encode(state);
+        this.currentState = encoded;
+        // console.log('E:STATE', state, '->', encoded);  
+        return encoded;
+      }),
+    ).subscribe(encoded => {
       const queryParams = {
         state: encoded
       };
-      // const qp = `?g=${encodeURIComponent(queryParams.g)}` +
-      //   `&f=${encodeURIComponent(queryParams.f)}` +
-      //   `&q=${encodeURIComponent(queryParams.q)}`;
-      //   console.log('E:STATE', state, '->', path, queryParams);
-      //   // router.navigateByUrl(path + qp);
-      // const jp = path.join('/');
-      // const cp = this.location.path().split('?')[0];
-      // if (jp !== cp) {
-      //   console.log('PUSH TO HISTORY', cp, jp + qp);
-      //   this.location.go(jp + qp);
-      // } else {
-      //   console.log('REPLACE TO HISTORY', jp + qp);
-      //   this.location.replaceState(jp + qp);
-      // }
       router.navigate(['/'], {queryParams, replaceUrl: false});
     });
   }
@@ -206,6 +199,7 @@ export class StateService {
       state.cardId || null,
       state.responseId || null,
       state.situations || null,
+      state.pointId || null,
     ];
     return JSON.stringify(prepared);
   }
@@ -220,6 +214,7 @@ export class StateService {
           cardId: prepared[2] || null,
           responseId: prepared[3] || null,
           situations: prepared[4] || null,
+          pointId: prepared[5] || null,
         };
       } catch (e) {
         console.log('DECODE ERROR', e);
@@ -228,106 +223,21 @@ export class StateService {
     return {};
   }
 
-  // decode(encoded: {responseId: string, placeId: string, cardId: string, queryText: string, geo: string, situations: string}): Observable<State> {
-  //   let pSituations: string[][] | null = null;
-  //   try {
-  //     pSituations = JSON.parse(encoded.situations);
-  //   } catch (e) {
-  //     pSituations = null;
-  //   }
-  //   let pGeo: GeoType = null;
-  //   try {
-  //     pGeo = JSON.parse(encoded.geo);
-  //   } catch (e) {
-  //     pGeo = null;
-  //   }
-
-  //   if (encoded.responseId) {
-  //     if (!encoded.queryText) {
-  //       return this.api.getResponse(encoded.responseId).pipe(
-  //         map((response) => {
-  //           return {
-  //             geo: pGeo,
-  //             responseId: encoded.responseId,
-  //             cardId: null,
-  //             placeId: null,
-  //             searchBoxTitle: response.name,
-  //             situations: pSituations,
-  //           };
-  //         })
-  //       );
-  //     } else {
-  //       return from([
-  //         {
-  //           geo: pGeo,
-  //           responseId: encoded.responseId,
-  //           cardId: null,
-  //           placeId: null,
-  //           searchBoxTitle: encoded.queryText,
-  //           situations: pSituations,
-  //         }
-  //       ]);
-  //     }
-  //   }
-  //   if (encoded.cardId) {
-  //     return from([
-  //       {
-  //         geo: pGeo,
-  //         responseId: null,
-  //         cardId: encoded.cardId,
-  //         placeId: null,
-  //         searchBoxTitle: encoded.queryText,
-  //         situations: pSituations,
-  //       }
-  //     ]);
-  //   }
-  //   if (encoded.placeId) {
-  //     if (!encoded.geo) {
-  //       return this.api.getPlace(encoded.placeId).pipe(
-  //         map((place) => {
-  //           return {
-  //             geo: [[place.bounds[0], place.bounds[1]], [place.bounds[2], place.bounds[3]]],
-  //             responseId: null,
-  //             cardId: null,
-  //             placeId: encoded.placeId,
-  //             searchBoxTitle: place.name[0],
-  //             situations: pSituations,
-  //           };
-  //         })
-  //       );
-  //     } else {
-  //       return from([
-  //         {
-  //           geo: pGeo,
-  //           responseId: null,
-  //           cardId: null,
-  //           placeId: encoded.placeId,
-  //           searchBoxTitle: encoded.queryText,
-  //           situations: pSituations,
-  //         }
-  //       ]);
-  //     }
-  //   }
-  //   return from([{
-  //     geo: pGeo,
-  //     responseId: null,
-  //     cardId: null,
-  //     placeId: null,
-  //     searchBoxTitle: encoded.queryText,
-  //     situations: pSituations,
-  //   }]);
-  // }
+  updateState(update: any, kind: string='') {
+    console.log('UPDATE STATE WITH', update);
+    update['__kind'] = kind;
+    this._state = Object.assign({}, this._state, update);
+    this.state.next(this._state);
+  }
 
   set bounds(bounds: LngLatBounds) {
     const geo = bounds.toArray();
-    this._state = Object.assign({}, this._state, {geo, skipGeoUpdate: false});
-    this.state.next(this._state);
+    this.updateState({geo, skipGeoUpdate: false});
   }
 
   updateCenterZoom(geo: CenterZoomType, skipGeoUpdate=false) {
     geo = geo.map(x => Math.round(x * 10000) / 10000) as CenterZoomType;
-    this._state = Object.assign({}, this._state, {geo, skipGeoUpdate});
-    this.state.next(this._state);
+    this.updateState({geo, skipGeoUpdate});
   }
 
   set centerZoom(centerZoom: CenterZoomType) {
@@ -339,29 +249,12 @@ export class StateService {
   //   this.state.next(this._state);
   // }
 
-  set cardId(cardId: string | null) {
-    console.log('STATE CARD ID <-', cardId);
-    this._state = Object.assign({}, this._state, {cardId});
-    this.state.next(this._state);
-  }
-
-  set card(card: Card | null) {
-    console.log('STATE CARD <-', card);
-    if (card) {
-      this.cardCache[card.card_id] = card;
-      this.cardId = card.card_id;  
-    } else {
-      this.cardId = null;
-    }
-  }
-
   set responseFilter(responseId: string | null) {
     const searchBoxTitle = responseId ? this.responses.getResponseName(responseId) : '';
     this.seo.setTitle(`כל שירות - חיפוש ${searchBoxTitle}`);
     this.seo.setDescription(`כל שירות - חיפוש שירותים מסוג ${searchBoxTitle} המסופקים על ידי הממשלה, עמותות וחברות`);
     this.seo.setUrl(`https://www.kolsherut.org.il/r/${responseId}`);
-    this._state = Object.assign({}, this._state, {responseId, searchBoxTitle});
-    this.state.next(this._state);
+    this.updateState({responseId, searchBoxTitle});
   }
 
   get responseFilter() {
@@ -369,8 +262,7 @@ export class StateService {
   }
 
   set situations(situations: string[][] | null) {
-    this._state = Object.assign({}, this._state, {situations});
-    this.state.next(this._state);
+    this.updateState({situations});
   }
 
   set placeName(place: string) {
@@ -380,8 +272,69 @@ export class StateService {
     this.placeNames.next(place);
   }
 
+  set cardId(cardId: string | null) {
+    // console.log('STATE CARD ID <-', cardId);
+    this.updateState({cardId}, cardId ? 'card-id' : '');
+  }
+
+  set card(card: Card | null) {
+    // console.log('STATE CARD <-', card);
+    if (card) {
+      this.cardCache[card.card_id] = card;
+      this.cardId = card.card_id;  
+    } else {
+      this.cardId = null;
+    }
+  }
+
+  set pointId(pointId: string | null) {
+    // console.log('STATE POINT ID <-', pointId);
+    this.updateState({pointId}, pointId ? 'point-id' : '');
+  }
+
+  set cards(cards: Card[] | null) {
+    // console.log('STATE CARDS <-', cards?.length, cards);
+    if (cards) {
+      const pointId = cards[0].point_id;
+      this.cardsCache[pointId] = cards;
+      if (this._state.pointId !== pointId) {
+        // console.log('CHANGED POINT ID, clearing card');
+        this.card = null;
+      }
+      this.pointId = pointId;
+    } else {
+      this.card = null;
+      this.pointId = null;
+    }
+  }
+
+  selectCardsByPointId(pointId: string | null) {
+    // console.log('SELECT CARDS BY POINT ID', pointId);
+    if (pointId) {
+      const cards = this.cardsCache[pointId];
+      let source = from([cards]).pipe(
+        delay(0)
+      );
+      if (!cards) {
+        source = this.api.getGeoData(pointId).pipe(
+          map((point) => point.records)
+        );
+      }
+      source.subscribe((cards) => {
+        if (cards.length > 1) {
+          this.selectCards(cards);
+        } else {
+          this.card = cards[0];
+        }
+      });
+    } else {
+      this.selectCard(null);
+      this.selectCards(null);
+    }
+  }
+
   selectCardById(cardId: string | null) {
-    console.log('SELECT CARD BY ID', cardId);
+    // console.log('SELECT CARD BY ID', cardId);
     if (cardId) {
       const card = this.cardCache[cardId];
       if (card) {
@@ -395,21 +348,18 @@ export class StateService {
       this.selectCard(null);
     }
   }
-
-  selectCardPreview(card: Card | null) {
-    this.cardPreview = true;
-    this.card = card;
-  }
-
-  deselectCardWithCenterZoom(centerZoom: CenterZoomType) {
-    this.cardPreview = false;
-    this.replaceCenterZoom = centerZoom;
-    this.card = null;
-  }
   
+  selectCards(cards: Card[] | null) {
+    // console.log('SELECT CARDS', cards);
+    if (cards) {
+      this.cardsCache[cards[0].point_id] = cards;
+    }
+    this.selectedCards.next({cards});
+  }
+
   selectCard(card: Card | null, replaceCenterZoom: CenterZoomType | null = null) {
     const cardId = card?.card_id || null;
-    console.log('SELECT CARD', cardId);
+    // console.log('SELECT CARD', cardId, this.savedGeo);
     if (card) {
       this.cardCache[card.card_id] = card;
       this.seo.setTitle(`כל שירות - ${card.service_name}`);
@@ -430,8 +380,7 @@ export class StateService {
         this.savedGeo = null;  
       }
     }
-    this.selectedCard.next({card, preview: this.cardPreview});
-    this.cardPreview = false;
+    this.selectedCard.next({card});
   }
 
   applyFromUrl(urlToApply: string) {

@@ -1,10 +1,10 @@
 <div class='header-wrapper'>
     <div class='header'>
-        <app-card-where [item]='item' [icon]='false'></app-card-where>
-        <app-card-what [item]='item' [big]='false' [highlight]='highlight'></app-card-what>
+        <app-card-where [card]='card' [icon]='false'></app-card-where>
+        <app-card-what [card]='card' [big]='false' [highlight]='highlight'></app-card-what>
     </div>
     <div class='close' *ngIf='closeable' (click)='closed.emit()'>
         <div class='icon'></div>
     </div>
 </div>
-<app-card-tags [item]='item'></app-card-tags>
+<app-card-tags [card]='card'></app-card-tags>

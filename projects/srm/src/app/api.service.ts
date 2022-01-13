@@ -6,7 +6,7 @@ import { State } from './state.service';
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Card, Response, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryPresetResult, QueryResponsesResult } from './common/datatypes';
+import { Card, Response, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryPresetResult, QueryResponsesResult, Point } from './common/datatypes';
 import { CATEGORY_COLORS, SITUATIONS_PREFIX } from './common/consts';
 import { LngLatBounds } from 'mapbox-gl';
 import { makeStateKey, TransferState} from '@angular/platform-browser';
@@ -74,6 +74,14 @@ export class ApiService {
     ));
   }
 
+  getGeoData(pointId: string): Observable<Point> {
+    return this.innerCache(`point-${pointId}`, this.http.get(environment.itemURL + pointId, {params: {type: 'geo_data'}}).pipe(
+      map((res: any) => {
+        return res as Point;
+      })
+    ));
+  }
+
   getPlace(id: string): Observable<Place> {
     const place = encodeURIComponent(id);
     return this.innerCache(`place-${id}`, this.http.get(environment.itemURL + place, {params: {type: 'places'}}).pipe(
@@ -114,10 +122,8 @@ export class ApiService {
   getCards(state: State, bounds: LngLatBounds, offset=0): Observable<QueryCardsResult> {
     const params: any = {size: 10, offset: offset};
     this.setParams(params, state, bounds);
-    // console.log('FETCHING SERVICES');
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
-        // console.log('GOT SERVICES');
         const results = res as QueryCardsResult;
         return results;
       })
@@ -127,17 +133,14 @@ export class ApiService {
   getPoints(state: State, bounds: LngLatBounds): Observable<QueryPointsResult | null> {
     const params: any = {size: 1000, order: 'point_id'};
     if ((state.responseId && state.responseId.length > 0)|| (state.situations && state.situations.length > 0)) {
-      // console.log('GETTING POINTS', state.responseId, state.situations);
       this.setParams(params, state, bounds);
       return this.http.get(environment.pointsURL, {params}).pipe(
         map((res: any) => {
-          // console.log('GOT POINTS');
           const results = res as QueryPointsResult;
           return results;
         })
       );
     } else {
-      // console.log('SKIPPING POINTS');
       return from([null]);
     }
   }
@@ -165,10 +168,8 @@ export class ApiService {
       }
       params['extra'] = terms.join('|');
     }
-    // console.log('COUNTING CATEGORIES');
     return this.http.get(environment.countCategoriesURL, {params}).pipe(
       map((res: any) => {
-        // console.log('GOT CATEGORY COUNTS');
         const results = res as QueryCardsResult;
         return results;
       })
@@ -240,12 +241,10 @@ export class ApiService {
 
   getPresets(): Observable<Preset[]> {
     const params = {size: 100, order: 'score'};
-    // console.log('FETCHING PRESETS');
     return this.innerCache(
       'presets',
       this.http.get(environment.presetsURL, {params}).pipe(
         map((res) => {
-          // console.log('GOT PRESETS');
           const results = res as QueryPresetResult;
           return results.search_results.map((r) => r.source);
         })

@@ -45,6 +45,7 @@
             }
             &.state-hidden {
                 top: 100%;
+                max-height: 0;
             }
     
             > .strip {
@@ -87,4 +88,7 @@
             flex: 1 1 auto;
         }
     }
+    .desktop({
+        z-index: 1;
+    });
 }

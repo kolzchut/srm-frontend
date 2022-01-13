@@ -1,6 +1,6 @@
 <div class='header'>
-    <app-card-what [item]='card' [big]='true'></app-card-what>
-    <app-card-where [item]='card'></app-card-where>
+    <app-card-what [card]='card' [big]='true'></app-card-what>
+    <app-card-where [card]='card'></app-card-where>
 </div>
 <div class='actions'>
     <app-card-action kind='link' *ngFor='let url of urls().slice(0, 1)' [display]='url.title' [action]='url.href'></app-card-action>
@@ -9,7 +9,7 @@
 </div>
 <div class='content'>
     <div class='description' *ngIf='card.service_description'>{{card.service_description}}</div>
-    <app-card-tags [item]='card' [big]='true'></app-card-tags>    
+    <app-card-tags [card]='card' [big]='true'></app-card-tags>    
 </div>
 <div class='buttons'>
     <app-card-button [kind]='linkKind(url.href)' *ngFor='let url of urls()' [display]='url.title' [action]='url.href' [arrow]='true'></app-card-button>

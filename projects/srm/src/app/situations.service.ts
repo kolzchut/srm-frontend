@@ -28,9 +28,7 @@ export class SituationsService {
 
   constructor(private http: HttpClient, private state: StateService, private platform: PlatformService) {
     this.platform.browser(() => {
-      // console.log('FETCHING SITUATIONS');
       this.http.get(environment.taxonomySituationsURL).subscribe((data) => {
-        // console.log('GOT SITUATIONS');
         const taxonomies = data as TaxonomyGroup[];
         this.processTaxonomies(taxonomies);
         this.taxonomy.next(taxonomies);
@@ -114,7 +112,6 @@ export class SituationsService {
     timer(0).subscribe(() => {
       this.editors.forEach((editor, index) => {
         editor.state = index < newEditors.length - 1 ? 'hidden' : 'active';
-        console.log('EDITOR STATE', index, editor.state);
       });
     });
   }

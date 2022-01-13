@@ -9,12 +9,10 @@ import { LayoutService } from '../../layout.service';
   templateUrl: './single-service.component.html',
   styleUrls: ['./single-service.component.less']
 })
-export class SingleServiceComponent implements OnInit, AfterViewInit {
+export class SingleServiceComponent implements AfterViewInit {
 
-  @Input() item: Card | null = null;
+  @Input() card: Card;
   @ViewChild('details') detailsElement: ElementRef;
-
-  card: Card;
 
   detailsVisible = false;
   detailsHeight = -10000;
@@ -22,12 +20,6 @@ export class SingleServiceComponent implements OnInit, AfterViewInit {
   suggestChangesURL = environment.suggestChangesForm;
 
   constructor(private layout: LayoutService) { }
-
-  ngOnInit(): void {
-    if (this.item) {
-      this.card = this.item;
-    }
-  }
 
   ngAfterViewInit(): void {
     timer(0).subscribe(() => {
@@ -42,11 +34,7 @@ export class SingleServiceComponent implements OnInit, AfterViewInit {
   
   geoLink() {
     const latLng = [this.card.branch_geometry[1], this.card.branch_geometry[0]].join(',');
-    // if (this.layout.mobile) {
-    //   return 'geo:' + latLng;
-    // } else {
     return `https://www.google.com/maps/search/?api=1&query=${latLng}`
-    // }
   }
 
   urls() {

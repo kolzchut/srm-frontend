@@ -1,13 +1,13 @@
-<div class='cards'>
-    <ng-container *ngIf='search.loading'>
+<div class='cards' [class.multi]='!!cardList'>
+    <ng-container *ngIf='loading'>
         <div class='loading'></div>
         <div class='loading'></div>
         <div class='loading'></div>
         <div class='loading'></div>
         <div class='loading'></div>
     </ng-container>
-    <ng-container *ngIf='!search.loading'>
-        <app-service-card [item]='card' *ngFor='let card of (search.visibleCards | async)' (click)='selectCard(card)'></app-service-card>
+    <ng-container *ngIf='!loading'>
+        <app-service-card [card]='card' *ngFor='let card of cards' (click)='selectCard(card)'></app-service-card>
     </ng-container>
     <div class='more' #more></div>
 </div>

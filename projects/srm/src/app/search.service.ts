@@ -71,8 +71,10 @@ export class SearchService {
       this.places.next(places);
       this.responses.next(responses);
     });
+  }
 
-    // Fetching services from the DB
+  init() {
+    // Fetching services from the DB once map is loaded
     const sources: Observable<State>[] = [];
     this.platform.browser(() => {
       sources.push(...[
@@ -89,7 +91,6 @@ export class SearchService {
           this.loading = true;
         }),    
         switchMap((state: State) => {
-          // console.log('FETCHING SERVICES, latest bounds:', this.state.latestBounds);
           this.latestCards = [];
           this.latestFetch = 0;
           this.visibleCards.next(this.latestCards);
@@ -172,7 +173,6 @@ export class SearchService {
 
   set loading(value: boolean) {
     this._loading = value;
-    console.log('LOADING', value);
   }
 
   get loading(): boolean {

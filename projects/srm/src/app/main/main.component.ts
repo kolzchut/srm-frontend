@@ -1,15 +1,15 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as mapboxgl from 'mapbox-gl';
 import { ReplaySubject, timer } from 'rxjs';
 import { delay, filter, switchMap, tap } from 'rxjs/operators';
-import { Card, CategoryCountsResult, DrawerState, HeaderState, ItemState } from '../common/datatypes';
+import { Card, CategoryCountsResult, DrawerState, HeaderState, CardState, MultiState } from '../common/datatypes';
 import { LayoutService } from '../layout.service';
 import { MapComponent } from '../map/map.component';
 import { PlatformService } from '../platform.service';
 import { SearchService } from '../search.service';
 import { SituationsService } from '../situations.service';
-import { StateService } from '../state.service';
+import { CenterZoomType, GeoType, StateService } from '../state.service';
 import { WindowService } from '../window.service';
 
 @Component({
@@ -22,17 +22,19 @@ export class MainComponent implements OnInit {
   @ViewChild('mapPopup') mapPopup: ElementRef;
 
   drawerState: DrawerState = DrawerState.Presets;
-  savedDrawerState: DrawerState | null = null;
   headerState: HeaderState = HeaderState.Visible;
   _headerActive = false;
-  itemState: ItemState = ItemState.None;
-  selectedItem: Card | null = null;
-  selectedItems: Card[] | null = null;
-  savedSelectedItems: Card[] | null = null;
+  cardState: CardState = CardState.None;
+  multiState: MultiState = MultiState.None;
+  selectedCard: Card | null = null;
+  selectedMulti: Card[] | null = null;
+
+  savedView: {drawerState: DrawerState, geo: GeoType} | null = null;
 
   DrawerState = DrawerState;
-  ItemState = ItemState;
   HeaderState = HeaderState;
+  CardState = CardState;
+  MultiState = MultiState;
 
   map: mapboxgl.Map;
   mapComponent: MapComponent;
@@ -49,6 +51,7 @@ export class MainComponent implements OnInit {
 
   menu = false;
   infoPage: string | null = null;
+  modifier: string | null = null;
   
   
   constructor(
@@ -59,9 +62,13 @@ export class MainComponent implements OnInit {
   ) {
     this.state.trackRoute(this.router, this.activatedRoute);
     this.loaded.pipe(
-      switchMap(() => this.state.selectedCard)
-    ).subscribe(({card, preview}) => {
-      this.selectItem(card, preview);
+    ).subscribe(() => {
+      this.state.selectedCard.subscribe(({card}) => {
+        this.selectCard(card);
+      });
+      this.state.selectedCards.subscribe(({cards}) => {
+        this.selectMulti(cards);
+      });
     });
     this.search.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
       this.counts = counts.map(c => {
@@ -99,12 +106,9 @@ export class MainComponent implements OnInit {
   }
 
   mapSelectedPoints(cards: Card[]) {
-    if (cards.length === 1) {
-      this.selectedItems = null;
-      this.state.selectCardPreview(cards[0]);
-    } else if (cards.length > 1) {
-      this.selectItems(cards);
-      this.setLabelsFilter();
+    if (cards.length > 0) {
+      this.modifier = 'preview';
+      this.state.cards = cards;
     } else {
       this.handleEvent('map-click');
     }
@@ -142,67 +146,66 @@ export class MainComponent implements OnInit {
     }
   }
 
-  selectItems(items: Card[]) {
-    this.state.deselectCardWithCenterZoom([...items[0].branch_geometry, 15]);
-    this.selectedItems = items;
-    this.itemState = ItemState.MultiStrip;
-    this.drawerState = DrawerState.Peek;
-    if (items) {
-      this.popup(items[0], true);
+  selectMulti(cards: Card[] | null) {
+    console.log('MAIN SELECT MULTI',this.multiState, cards && cards.length ? cards[0].point_id : 'pointless');
+    const hasCards = cards && cards.length > 0;
+    if (hasCards) {
+      const card = (cards as Card[])[0];
+      if (this.multiState === MultiState.None) {
+        this.saveView();
+        this.multiState = MultiState.Preview;        
+        this.drawerState = DrawerState.Peek;
+      }
+      this.mapComponent?.queueAction((map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
+      this.popup(card, true);
       this.search.closeFilter.next();
+    } else {
+      if (this.multiState !== MultiState.None) {
+        this.popView();
+        this.multiState = MultiState.None;
+        this.popup(null);
+      }
     }
+    this.selectedMulti = cards;
+    this.modifier = null;
+    this.setLabelsFilter();
   }
 
-  selectItem(item: Card | null, preview: boolean = false) {
-    console.log('SELECT ITEM',this.itemState, preview, item?.card_id);
-    if (item !== null && this.selectedItem !== null && item !== this.selectedItem) {
-      return;
-    }
-    if (item) {
-      if (this.itemState === ItemState.None) {
-        this.savedDrawerState = this.drawerState;
-        if (preview) {
-          this.itemState = ItemState.Preview;
+  selectCard(card: Card | null) {
+    console.log('MAIN SELECT CARD', this.cardState, card?.card_id, this.modifier);
+    if (card) {
+      if (this.cardState === CardState.None) {
+        this.saveView();
+        if (this.modifier === 'preview') {
+          this.cardState = CardState.Preview;
           this.drawerState = DrawerState.Peek;
         } else {
-          this.itemState = ItemState.Full;
+          this.cardState = CardState.Full;
           this.drawerState = DrawerState.Most;
           this.headerState = HeaderState.Hidden;  
         }
-      } else if (this.itemState === ItemState.MultiStrip) {
-        this.itemState = ItemState.Full;
-        this.drawerState = DrawerState.Most;
-        this.headerState = HeaderState.Hidden;
-        this.savedSelectedItems = this.selectedItems;
-        this.selectedItems = null;
       } else {
-        this.itemState = ItemState.Full;
+        this.cardState = CardState.Full;
         this.drawerState = DrawerState.Most;
         this.headerState = HeaderState.Hidden;
       }
-      this.mapComponent?.queueAction((map) => map.flyTo({center: item.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
-      if (!this.savedSelectedItems) {
-        this.popup(item);
+      this.mapComponent?.queueAction((map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
+      if (this.multiState === MultiState.None) {
+        this.popup(card);
       }
-      console.log('CLOSEFILTER');
       this.search.closeFilter.next();
     } else {
-      if (this.savedDrawerState) {
-        this.drawerState = this.savedDrawerState;
+      if (this.multiState === MultiState.None) {
+        this.popView();
       }
-      this.selectedItems = this.savedSelectedItems;
-      this.savedDrawerState = null;
-      this.savedSelectedItems = null;
       this.headerState = HeaderState.Visible;
-      if (this.selectedItems) {
-        this.itemState = ItemState.MultiStrip;
-        this.drawerState = DrawerState.Peek;
-      } else {
+      if (this.multiState === MultiState.None) {
         this.popup(null);
-        this.itemState = ItemState.None;
       }
+      this.cardState = CardState.None;
     }
-    this.selectedItem = item;
+    this.selectedCard = card;
+    this.modifier = null;
     this.setLabelsFilter();
   }
 
@@ -217,10 +220,10 @@ export class MainComponent implements OnInit {
   setLabelsFilter() {
     const non_existent = 'nonexistent';
     let record_id = non_existent;
-    if (this.selectedItems) {
-      record_id = this.selectedItems[0].point_id
-    } else if (this.selectedItem) {
-      record_id = this.selectedItem.point_id
+    if (this.selectedMulti) {
+      record_id = this.selectedMulti[0].point_id
+    } else if (this.selectedCard) {
+      record_id = this.selectedCard.point_id
     }
     console.log('Filtering cards for', record_id);
     if (this.layout.desktop) {
@@ -232,25 +235,28 @@ export class MainComponent implements OnInit {
   }
 
   handleEvent(event: string) {
-    console.log('EV', this.itemState, event, this.drawerState);
-    if (this.itemState === ItemState.Preview) {
-      if (event === 'click' || event === 'up' || event === 'close' || event === 'map-click') {
-        this.state.card = null;
+    console.log('EV', this.cardState, event, this.drawerState);
+    if (this.cardState === CardState.Preview) {
+      if (event === 'click' || event === 'up' || event === 'close-card' || event === 'map-click') {
+        this.state.cards = null;
       }
-    } else if (this.itemState === ItemState.MultiStrip) {
+    } else if (this.multiState === MultiState.Preview) {
       if (event === 'click' || event === 'up' || event === 'map-click') {
+        this.state.cards = null;
+      }
+      if (event === 'close-card') {
         this.state.card = null;
       }
-    } else if (this.itemState === ItemState.Full) {
+    } else if (this.cardState === CardState.Full) {
       if (event === 'click' || event === 'down') {
         if (this.drawerState === DrawerState.Most) {
           this.drawerState = DrawerState.Hidden;
         }
       }
-      if (event === 'close' || event === 'map-click') {
-        this.state.card = null;
+      if (event === 'map-click' || event === 'close-card') {
+        this.state.cards = null;
       }
-    } else if (this.itemState === ItemState.None) {
+    } else if (this.cardState === CardState.None) {
       if (event === 'click') {
         if (this.drawerState === DrawerState.Peek || this.drawerState === DrawerState.Most || this.drawerState === DrawerState.Full || this.drawerState === DrawerState.Presets) {
           this.drawerState = DrawerState.Card;
@@ -274,12 +280,10 @@ export class MainComponent implements OnInit {
           this.drawerState = DrawerState.Peek;
         }
       } else if (event === 'no-results') {
-        this.savedDrawerState = this.drawerState;
         this.drawerState = DrawerState.Hidden;
       } else if (event === 'has-results') {
-        if (this.drawerState === DrawerState.Hidden && this.savedDrawerState) {
-          this.drawerState = this.savedDrawerState;
-          this.savedDrawerState = null;
+        if (this.drawerState === DrawerState.Hidden) {
+          this.drawerState = DrawerState.Card;
         }
       } else if (event === 'show-results') {
         this.drawerState = DrawerState.Most;
@@ -293,19 +297,35 @@ export class MainComponent implements OnInit {
     }
   }
 
+  saveView() {
+    if (!this.savedView) {
+      this.savedView = {
+        drawerState: this.drawerState,
+        geo: this.state._state.geo || null
+      }
+    }
+  }
+
+  popView() {
+    if (this.savedView) {
+      this.drawerState = this.savedView.drawerState;
+      const geo = this.savedView.geo;
+      if (geo && geo.length === 3) {
+        const center: mapboxgl.LngLatLike = [geo[0], geo[1]];
+        const zoom = geo[2];
+        this.mapComponent?.queueAction((map) => map.flyTo({center, zoom}, {internal: true, kind: 'select-item'}));
+      }
+      this.savedView = null;
+    }
+  }
+
   updateDrawerHeight(height: number) {
-    if (this.layout.mobile && this.itemState !== ItemState.None) {
+    if (this.layout.mobile) {
+      console.log('UPDATE DRAWER HEIGHT', height);
       this.mapComponent?.queueAction((map) => map.flyTo({
           center: this.map.getCenter(),
           zoom: this.map.getZoom(),
           padding: {top: 0, left: 0, bottom: height, right: 0}
-        }, {internal: true, kind: 'update-drawer-height'}
-      ));
-    } else {
-      this.mapComponent?.queueAction((map) => map.flyTo({
-          center: this.map.getCenter(),
-          zoom: this.map.getZoom(),
-          padding: {top: 0, left: 0, bottom: 0, right: 0}
         }, {internal: true, kind: 'update-drawer-height'}
       ));
     }

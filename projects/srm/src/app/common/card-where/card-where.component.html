@@ -1,12 +1,12 @@
 <div class='where'>
     <img *ngIf='icon' class='icon' src='assets/img/icon-location.svg'>
     <div class='location'>
-        <ng-container *ngIf='item.branch_name'>
-            <span class='branch-name' [innerHtml]='item.branch_name'></span>
-            <span class='address' [innerHtml]='item.branch_address'></span>    
+        <ng-container *ngIf='card.branch_name'>
+            <span class='branch-name' [innerHtml]='card.branch_name'></span>
+            <span class='address' [innerHtml]='card.branch_address'></span>    
         </ng-container>
-        <ng-container *ngIf='!item.branch_name'>
-            <span class='address' [innerHtml]='item.branch_address'></span>
+        <ng-container *ngIf='!card.branch_name'>
+            <span class='address' [innerHtml]='card.branch_address'></span>
         </ng-container>
     </div>
 </div>    

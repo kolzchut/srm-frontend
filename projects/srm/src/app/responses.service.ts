@@ -17,9 +17,7 @@ export class ResponsesService {
 
   constructor(private http: HttpClient, private platform: PlatformService) {
     this.platform.browser(() => {
-      // console.log('FETCHING RESPONSES');
       this.http.get(environment.taxonomyResponsesURL).subscribe((data) => {
-        // console.log('GOT RESPONSES');
         const taxonomies = data as Response[];
         this.processTaxonomies(taxonomies);
         this.taxonomy.next(this.byId);

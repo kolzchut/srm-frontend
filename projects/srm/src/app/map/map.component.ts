@@ -12,6 +12,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { SearchService } from '../search.service';
 import { PlatformService } from '../platform.service';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-map',
@@ -38,14 +39,13 @@ export class MapComponent implements OnInit, AfterViewInit {
   ZOOM_THRESHOLD = 10;
   ALL_CATEGORIES = ALL_CATEGORIES; 
 
-  constructor(private mapboxService: MapboxService, private state: StateService, private http: HttpClient, private search: SearchService, private platform: PlatformService) {
+  constructor(private mapboxService: MapboxService, private state: StateService, private http: HttpClient, private search: SearchService, 
+              private platform: PlatformService, private layout: LayoutService) {
     this.moveEvents.subscribe(centerZoom => {
       state.updateCenterZoom(centerZoom, true);
     });
     this.platform.browser(() => {
-      // console.log('FETCHING CLUSTERS');
       this.http.get(environment.clusterDataURL).subscribe(data => {
-        // console.log('GOT CLUSTERS');
         this.clusterData.next(data);
         this.clusterData.complete();
       });  
@@ -74,7 +74,9 @@ export class MapComponent implements OnInit, AfterViewInit {
         };
         this.map = new mapboxgl.Map(mapParams);
         this.map.addControl(new mapboxgl.AttributionControl(), 'top-right');
-        this.map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'bottom-left');
+        if (this.layout.desktop) {
+          this.map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'bottom-left');
+        }
         this.map.dragRotate.disable();
         this.map.touchZoomRotate.disableRotation();
         this.map.touchPitch.disable();
@@ -281,6 +283,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             }
           });    
           this.state.latestBounds = this.map.getBounds();
+          this.search.init();
           this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
         });
       } catch (e) {

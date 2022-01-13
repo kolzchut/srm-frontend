@@ -10,7 +10,7 @@ import { Card } from '../datatypes';
 })
 export class CardWhatComponent implements OnInit {
 
-  @Input() item: Card;
+  @Input() card: Card;
   @Input() big = false;
   @Input() highlight = false;
 
@@ -20,7 +20,7 @@ export class CardWhatComponent implements OnInit {
   }
 
   get categoryColor() {
-    return this.item.response_category ? getResponseCategoryColor(this.item.response_category) : getResponseIdColor(this.item.responses[0].id);
+    return this.card.response_category ? getResponseCategoryColor(this.card.response_category) : getResponseIdColor(this.card.responses[0].id);
   }
 
   highlightText(text: string) {

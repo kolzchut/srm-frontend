@@ -12,9 +12,14 @@ export enum HeaderState {
     Visible = 'visible',
 };
 
-export enum ItemState {
+export enum CardState {
     None = 'none',
-    MultiStrip = 'multiStrip',
+    Preview = 'preview',
+    Full = 'full',
+};
+
+export enum MultiState {
+    None = 'none',
     Preview = 'preview',
     Full = 'full',
 };
@@ -105,6 +110,7 @@ export type Point = {
     response_ids: string[],
     situation_ids: string[],
     response_category: string,
+    records: Card[]
 };
 
 export type Preset = {

@@ -7,7 +7,6 @@ import { WindowService } from './window.service';
 export class LayoutService {
 
   constructor(private window: WindowService) {
-    // console.log('LAYOUT', this.mobile, this.desktop);
   }
 
   get mobile() {

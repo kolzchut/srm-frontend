@@ -12,7 +12,7 @@ import { HighlighterService } from '../../highlighter.service';
 })
 export class ServiceCardComponent implements OnInit {
 
-  @Input() item: Card;
+  @Input() card: Card;
   @Input() highlight = false;
   @Input() closeable = false;
   @Input() clickable = true;
