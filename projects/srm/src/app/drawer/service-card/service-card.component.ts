@@ -8,6 +8,8 @@ import { HighlighterService } from '../../highlighter.service';
   styleUrls: ['./service-card.component.less'],
   host: {
     '[class.clickable]' : 'clickable',
+    '(mouseenter)': 'onMouseEnter()',
+    '(mouseleave)': 'onMouseOut()',
   }
 })
 export class ServiceCardComponent implements OnInit {
@@ -17,10 +19,18 @@ export class ServiceCardComponent implements OnInit {
   @Input() closeable = false;
   @Input() clickable = true;
   @Output() closed = new EventEmitter<void>();
+  @Output() hover = new EventEmitter<Card | null>();
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  onMouseEnter() {
+    this.hover.emit(this.card);
+  }
+
+  onMouseOut() {
+    this.hover.emit(null);
+  }
 }

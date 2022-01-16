@@ -94,6 +94,7 @@ export class SearchService {
           this.latestCards = [];
           this.latestFetch = 0;
           this.visibleCards.next(this.latestCards);
+          console.log('GET CARDS...');
           return forkJoin([
             this.api.getCards(state, this.state.latestBounds),
             this.api.countCategories(state, this.state.latestBounds),
@@ -101,7 +102,7 @@ export class SearchService {
           ]);
         })
       ).subscribe(([cards, counts, points]) => {
-        console.log('GOT CARDS');
+        console.log(`GOT ${cards.search_counts.cards.total_overall} CARDS`);
         this.loading = false;
         this.latestCards = cards.search_results.map((x) => x.source);
         this.visibleCards.next(this.latestCards);

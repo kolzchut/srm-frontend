@@ -24,6 +24,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   STYLE = environment.mapStyle;
 
   @Output('points') points = new EventEmitter<Card[]>();
+  @Output('hover') pointsHover = new EventEmitter<Card[]>();
   @Output('map') newMap = new EventEmitter<MapComponent>();
   @ViewChild('map') mapEl: ElementRef;
 
@@ -63,6 +64,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    let first = true;
     if (this.platform.browser() && this.mapEl && this.mapEl.nativeElement && this.mapboxService.init) {
       try {
         const mapParams: any = {
@@ -94,13 +96,15 @@ export class MapComponent implements OnInit, AfterViewInit {
                 this.queueAction((map) => map.flyTo({
                     center: geo.slice(0, 2) as mapboxgl.LngLatLike,
                     zoom: geo[2],
-                  }, {internal: true, kind: 'centering'}
+                    animate: !first
+                  }, {internal: !first, kind: 'centering'}
                 ));
               } else if (geo.length === 2) {
                 console.log('FITTING BOUNDS', geo);
                 this.queueAction((map) => map.fitBounds(geo as mapboxgl.LngLatBoundsLike, {},));
               }
             }
+            first = false;
           }
         });    
         this.map.on('styleimagemissing', (e) => {
@@ -253,11 +257,22 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.map.on('click', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
               if (e.features && e.features.length > 0) {
                 const props: any = e.features[0].properties;
-                // console.log('SELECTED', props);
                 const records = JSON.parse(props.records) as Card[];
                 this.points.next(records);
               }
               e.preventDefault();
+            });
+            this.map.on('mouseenter', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
+              if (e.features && e.features.length > 0) {
+                const props: any = e.features[0].properties;
+                const records = JSON.parse(props.records) as Card[];
+                this.pointsHover.next(records);
+              }
+              this.map.getCanvas().style.cursor = 'pointer';
+            });
+            this.map.on('mouseout', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
+              this.pointsHover.next([]);
+              this.map.getCanvas().style.cursor = '';
             });
           });
           this.map.on('click', (e: mapboxgl.MapLayerMouseEvent) => {
@@ -269,7 +284,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             const internal = (event as any).internal;
             if (!internal) {
               this.state.latestBounds = this.map?.getBounds();
-              // console.log('MOVED', event, internal, this.state.latestBounds);
+              console.log('MOVED', event, internal, this.state.latestBounds);
               this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
             } else {
               // console.log('MOVED INTERNALLY', event, internal);

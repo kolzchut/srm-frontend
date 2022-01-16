@@ -1,0 +1,11 @@
+<app-strip-multiple [cards]='cards'
+                    (selected)='selected.emit($event)'
+                    (closed)='closed.emit($event)'>
+</app-strip-multiple>
+<div class='controls'>
+    <app-image-button imageUrl='assets/img/icon-arrow-right-white.svg' (clicked)='onRight()' *ngIf='rightPossible'></app-image-button>
+    <app-image-button imageUrl='assets/img/icon-arrow-right-gray-3.svg' (clicked)='onRight()' *ngIf='!rightPossible'></app-image-button>
+    <app-image-button imageUrl='assets/img/icon-menu-strip.svg'></app-image-button>
+    <app-image-button imageUrl='assets/img/icon-arrow-left-white.svg' (clicked)='onLeft()' *ngIf='leftPossible'></app-image-button>
+    <app-image-button imageUrl='assets/img/icon-arrow-left-gray-3.svg' (clicked)='onLeft()' *ngIf='!leftPossible'></app-image-button>
+</div>

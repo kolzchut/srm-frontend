@@ -71,7 +71,7 @@
                 <app-preset-strip></app-preset-strip>
             </ng-container> 
             <ng-container *ngIf='drawerState !== DrawerState.Presets'>
-                <app-service-list *ngIf='!selectedCard' (selected)='state.card = $event' [cardList]='selectedMulti'></app-service-list>
+                <app-service-list *ngIf='!selectedCard' (selected)='state.card = $event' [cardList]='selectedMulti' (hover)='mapHoverPoints($event ? [$event] : [])'></app-service-list>
                 <div  *ngIf='!!selectedCard' class='close-button' (click)='$event.stopPropagation(); handleEvent("close-card")'></div>
                 <app-single-service *ngIf='!!selectedCard' [card]='selectedCard'></app-single-service>    
             </ng-container>
@@ -79,22 +79,28 @@
     </app-drawer>
 </div>
 <div class='mainbar layout-desktop'>
-    <app-map *ngIf='layout.desktop' (points)='mapSelectedPoints($event)' (map)='setMap($event)'></app-map>
+    <app-map *ngIf='layout.desktop' (points)='mapSelectedPoints($event)' (map)='setMap($event)' (hover)='mapHoverPoints($event)'></app-map>
     <div class='logo'></div>
     <div *ngIf='!disclaimerVisible' class='disclaimer' [class.fade]='miniDisclaimerHidden'></div>
     <app-disclaimer *ngIf='disclaimerVisible' (closed)='closeDisclaimer($event)'></app-disclaimer>
 </div>
-<div class='display-none' #mapPopup *ngIf='layout.desktop && hasPopup && (selectedCard || selectedMulti)'>
+<div class='display-none' #mapPopup *ngIf='layout.desktop && !!currentPopup && (selectedCard || selectedMulti || hoverCard || hoverMulti)'>
     <div class='map-popup'>
         <app-strip-single *ngIf='selectedCard && !selectedMulti'
             [card]='selectedCard'
             (closed)='handleEvent("map-click")'
         ></app-strip-single>
-        <app-strip-multiple *ngIf='selectedMulti'
+        <app-popup-multiple *ngIf='selectedMulti'
             [cards]='selectedMulti'
             (selected)='state.card = $event'
             (closed)='handleEvent("map-click")'
-        ></app-strip-multiple>    
+        ></app-popup-multiple>
+        <app-strip-single *ngIf='hoverCard'
+            [card]='hoverCard'
+        ></app-strip-single>
+        <app-popup-multiple *ngIf='hoverMulti'
+            [cards]='hoverMulti'
+        ></app-popup-multiple>
     </div>
 </div>
 

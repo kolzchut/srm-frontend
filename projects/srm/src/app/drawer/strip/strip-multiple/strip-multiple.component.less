@@ -12,9 +12,12 @@
         overflow-x: scroll;
         position: relative;
         .no-scrollbars;
-    
+        scroll-snap-type: inline mandatory;
+        scroll-padding-right: 16px;
+
         app-service-card {
             width: 80%;
+            scroll-snap-align: start;
         }
 
         .shade {

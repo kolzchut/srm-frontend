@@ -37,6 +37,7 @@ import { PresetCardComponent } from './common/preset-card/preset-card.component'
 import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 import { MenuComponent } from './menu/menu.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { PopupMultipleComponent } from './drawer/strip/popup-multiple/popup-multiple.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     PresetCardComponent,
     DisclaimerComponent,
     MenuComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    PopupMultipleComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

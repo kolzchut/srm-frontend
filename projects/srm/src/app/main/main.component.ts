@@ -28,6 +28,8 @@ export class MainComponent implements OnInit {
   multiState: MultiState = MultiState.None;
   selectedCard: Card | null = null;
   selectedMulti: Card[] | null = null;
+  hoverCard: Card | null = null;
+  hoverMulti: Card[] | null = null;
 
   savedView: {drawerState: DrawerState, geo: GeoType} | null = null;
 
@@ -40,7 +42,7 @@ export class MainComponent implements OnInit {
   mapComponent: MapComponent;
 
   activePopup: mapboxgl.Popup | null = null;
-  hasPopup = false;
+  currentPopup: string | null = null;
   loaded = new ReplaySubject(1);
 
   counts: CategoryCountsResult[] = [];
@@ -114,16 +116,31 @@ export class MainComponent implements OnInit {
     }
   }
 
+  mapHoverPoints(cards: Card[]) {
+    this.hoverMulti = this.hoverCard = null;
+    if (this.cardState === CardState.None && this.multiState === MultiState.None) {
+      if (cards.length > 1) {
+        this.hoverMulti = cards;
+        this.popup(cards[0], true);
+      } else if (cards.length === 1) {
+        this.hoverCard = cards[0];
+        this.popup(cards[0], false);
+      } else {
+        this.popup(null, false);
+      }
+    }
+  }
+
   popup(card: Card | null, multistrip: boolean = false) {
     if (this.layout.desktop) {
       if (this.activePopup) {
         this.activePopup.remove();
         this.activePopup = null;
       }
-      this.hasPopup = false;
+      this.currentPopup = null;
       if (card) {
         timer(0).pipe(
-          tap(() => this.hasPopup = true),
+          tap(() => this.currentPopup = card.point_id),
           delay(0),
         ).subscribe(() => {
           if (this.mapPopup && this.mapPopup.nativeElement) {
@@ -150,6 +167,7 @@ export class MainComponent implements OnInit {
     console.log('MAIN SELECT MULTI',this.multiState, cards && cards.length ? cards[0].point_id : 'pointless');
     const hasCards = cards && cards.length > 0;
     if (hasCards) {
+      this.hoverMulti = this.hoverCard = null;
       const card = (cards as Card[])[0];
       if (this.multiState === MultiState.None) {
         this.saveView();
@@ -174,6 +192,7 @@ export class MainComponent implements OnInit {
   selectCard(card: Card | null) {
     console.log('MAIN SELECT CARD', this.cardState, card?.card_id, this.modifier);
     if (card) {
+      this.hoverMulti = this.hoverCard = null;
       if (this.cardState === CardState.None) {
         this.saveView();
         if (this.modifier === 'preview') {
