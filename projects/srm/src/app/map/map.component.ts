@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { MapboxService } from '../mapbox.service';
 
-import * as mapboxgl from 'mapbox-gl';
 import { ReplaySubject, Subject, timer } from 'rxjs';
 import { throttleTime, filter } from 'rxjs/operators';
 import { StateService } from '../state.service';
@@ -14,6 +13,8 @@ import { SearchService } from '../search.service';
 import { PlatformService } from '../platform.service';
 import { LayoutService } from '../layout.service';
 
+// import * as mapboxgl from 'mapbox-gl';
+declare var mapboxgl: any;
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -63,7 +64,13 @@ export class MapComponent implements OnInit, AfterViewInit {
     return 'data:image/svg+xml;base64,' + btoa(svg);
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
+      this.mapboxService.init.subscribe(() => {
+        this,this.initialize();
+      });
+  }
+
+  initialize() {
     let first = true;
     if (this.platform.browser() && this.mapEl && this.mapEl.nativeElement && this.mapboxService.init) {
       try {
@@ -77,7 +84,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.map = new mapboxgl.Map(mapParams);
         this.map.addControl(new mapboxgl.AttributionControl(), 'top-right');
         if (this.layout.desktop) {
-          this.map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'bottom-left');
+          this.map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'top-left');
         }
         this.map.dragRotate.disable();
         this.map.touchZoomRotate.disableRotation();

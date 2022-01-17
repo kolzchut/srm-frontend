@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { LngLatBounds } from 'mapbox-gl';
 import { HighlighterService } from '../../../highlighter.service';
 import { StateService } from '../../../state.service';
 
+
+// import { LngLatBounds } from 'mapbox-gl';
+declare var mapboxgl: any;
 @Component({
   selector: 'app-autocomplete-result',
   templateUrl: './autocomplete-result.component.html',
@@ -26,7 +28,7 @@ export class AutocompleteResultComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
     if (this.type === 'places') {
-      const bounds = new LngLatBounds(this.result.bounds);
+      const bounds = new mapboxgl.LngLatBounds(this.result.bounds);
       this.state.placeName = this.result.name[0];
       this.state.bounds = bounds;
     } else if (this.type === 'responses') {

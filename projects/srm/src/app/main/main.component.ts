@@ -1,6 +1,5 @@
 import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as mapboxgl from 'mapbox-gl';
 import { ReplaySubject, timer } from 'rxjs';
 import { delay, filter, switchMap, tap } from 'rxjs/operators';
 import { Card, CategoryCountsResult, DrawerState, HeaderState, CardState, MultiState } from '../common/datatypes';
@@ -12,6 +11,8 @@ import { SituationsService } from '../situations.service';
 import { CenterZoomType, GeoType, StateService } from '../state.service';
 import { WindowService } from '../window.service';
 
+// import * as mapboxgl from 'mapbox-gl';
+declare var mapboxgl: any;
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
