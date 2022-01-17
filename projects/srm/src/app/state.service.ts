@@ -170,7 +170,7 @@ export class StateService {
             decoded.cardId = null;
             decoded.placeId = placeId;
             decoded.responseId = null;
-            this.placeName = placeId;
+            this.placeName = place.name[0];
             return decoded;
           })
         );
