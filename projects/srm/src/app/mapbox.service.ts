@@ -33,6 +33,7 @@ export class MapboxService {
       const scriptTag = document.createElement('script');
       scriptTag.src = 'https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js';
       scriptTag.onload = resolve;
+      scriptTag.async = true;
       (scriptTag as any).onreadystatechange = resolve;
       document.body.appendChild(scriptTag);
     });
