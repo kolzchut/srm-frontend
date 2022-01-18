@@ -1,3 +1,8 @@
-import { environment as devEnv } from './development-env';
+import { devEnv } from './development-env';
 
-export const environment = devEnv;
+export const environment = Object.assign({}, devEnv, {
+    clusterDataURL: '/clusters.json',
+    taxonomySituationsURL: '/situations.json',
+    taxonomyResponsesURL: '/responses.json'
+});
+  

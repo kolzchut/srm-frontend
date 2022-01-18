@@ -174,12 +174,16 @@
               "browserTarget": "srm:build:development",
               "serverTarget": "srm:server:development"
             },
+            "staging": {
+              "browserTarget": "srm:build:staging",
+              "serverTarget": "srm:server:staging"
+            },
             "production": {
               "browserTarget": "srm:build:production",
               "serverTarget": "srm:server:production"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "staging"
         },
         "prerender": {
           "builder": "@nguniversal/builders:prerender",

@@ -2,7 +2,7 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
+export const devEnv: any = {
   production: false,
   cardsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/cards',
   pointsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/points',
@@ -19,12 +19,8 @@ export const environment = {
   gaTag: 'G-7ZHM371DDF',
   sitemapUrl: 'https://srm-staging.datacity.org.il/dataset/572c3ee3-8d50-4da8-99ea-88db35f1bdd4/resource/6b0a249e-3dd1-4051-a2af-eae27dd4e219/download/sitemap.xml',
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+Object.assign(devEnv, {
+  clusterDataSourceURL: devEnv.clusterDataURL,
+  taxonomySituationsSourceURL: devEnv.taxonomySituationsURL,
+  taxonomyResponsesSourceURL: devEnv.taxonomyResponsesURL
+});

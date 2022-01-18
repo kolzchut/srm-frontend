@@ -14,12 +14,17 @@ import { existsSync } from 'fs';
 
 import { environment  } from './src/environments/environment';
 import fetch from 'node-fetch';
+import * as NodeCache from 'node-cache';
+import * as compression from 'compression';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
   const distFolder = join(process.cwd(), 'dist/srm/browser');
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
+  const cache = new NodeCache({ stdTTL: 3600 });
+
+  server.use(compression());
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
   server.engine('html', ngExpressEngine({
@@ -41,6 +46,25 @@ export function app(): express.Express {
       )
     )
   });
+
+  for (const [path, url] of [
+    ['/clusters.json', environment.clusterDataSourceURL],
+    ['/situations.json', environment.taxonomySituationsSourceURL],
+    ['/responses.json', environment.taxonomyResponsesSourceURL],
+  ]) {
+    server.get(path, (req, res) => {
+      if (cache.has(path)) {
+        res.status(200).json(cache.get(path));
+      } else {
+        fetch(url)
+          .then(sm => sm.json())
+          .then((json) => {
+            cache.set(path, json);
+            res.status(200).json(json);
+          });
+      }
+    });
+  }
 
   // All regular routes use the Universal engine
   server.get('*', (req, res) => {
