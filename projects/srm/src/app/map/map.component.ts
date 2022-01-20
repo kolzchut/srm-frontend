@@ -259,7 +259,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.newMap.next(this);
           });
 
-          this.map.getStyle().layers?.filter((l) => l.id.indexOf('points-stroke-on') === 0).forEach((layer) => {
+          this.map.getStyle().layers?.filter((l) => ['points-stroke-on', 'labels-off'].indexOf(l.id) >= 0).forEach((layer) => {
             const layerName = layer.id;
             this.map.on('click', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
               if (e.features && e.features.length > 0) {
