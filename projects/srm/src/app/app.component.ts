@@ -17,6 +17,7 @@ export class AppComponent {
       this.router.events.subscribe(event => {
         if(event instanceof NavigationEnd) {
           platform.browser(() => {
+            console.log('PAGE VIEW', event.urlAfterRedirects);
             window.gtag && gtag('config', environment.gaTag, {
               'page_path': event.urlAfterRedirects
             });  

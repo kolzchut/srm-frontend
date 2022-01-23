@@ -159,6 +159,9 @@ export class StateService {
             decoded.searchBoxTitle = response.name;
             decoded.cardId = null;
             decoded.placeId = null;
+            this.seo.setTitle(`כל שירות - חיפוש ${response.name}`);
+            this.seo.setDescription(`כל שירות - חיפוש שירותים מסוג ${response.name} המסופקים על ידי הממשלה, עמותות וחברות`);
+            this.seo.setUrl(`https://www.kolsherut.org.il/r/${responseId}`);
             return decoded;
           })
         );
@@ -170,7 +173,11 @@ export class StateService {
             decoded.cardId = null;
             decoded.placeId = placeId;
             decoded.responseId = null;
-            this.placeName = place.name[0];
+            const name = place.name[0];
+            this.seo.setTitle(`כל שירות - שירותים חברתיים ב${name}`);
+            this.seo.setDescription(`כל שירות - חיפוש שירותים באזור ${name} המסופקים על ידי הממשלה, עמותות וחברות`);
+            this.seo.setUrl(`https://www.kolsherut.org.il/p/${name}`);  
+            this.placeName = name;
             return decoded;
           })
         );
@@ -251,9 +258,6 @@ export class StateService {
 
   set responseFilter(responseId: string | null) {
     const searchBoxTitle = responseId ? this.responses.getResponseName(responseId) : '';
-    this.seo.setTitle(`כל שירות - חיפוש ${searchBoxTitle}`);
-    this.seo.setDescription(`כל שירות - חיפוש שירותים מסוג ${searchBoxTitle} המסופקים על ידי הממשלה, עמותות וחברות`);
-    this.seo.setUrl(`https://www.kolsherut.org.il/r/${responseId}`);
     this.updateState({responseId, searchBoxTitle});
   }
 
@@ -266,9 +270,6 @@ export class StateService {
   }
 
   set placeName(place: string) {
-    this.seo.setTitle(`כל שירות - שירותים חברתיים ב${place}`);
-    this.seo.setDescription(`כל שירות - חיפוש שירותים באזור ${place} המסופקים על ידי הממשלה, עמותות וחברות`);
-    this.seo.setUrl(`https://www.kolsherut.org.il/p/${place}`);  
     this.placeNames.next(place);
   }
 

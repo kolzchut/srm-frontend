@@ -65,6 +65,10 @@ export class SearchBoxComponent implements OnInit, OnChanges {
     return this._query;
   }
 
+  closeable() {
+    return this.active || (this.query && this.query.length > 0);
+  }
+
   clear() {
     const el = this.input?.nativeElement as HTMLInputElement;
     let currentValue = '';
