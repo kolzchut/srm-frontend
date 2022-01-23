@@ -175,7 +175,9 @@ export class MainComponent implements OnInit {
         this.multiState = MultiState.Preview;        
         this.drawerState = DrawerState.Peek;
       }
-      this.mapComponent?.queueAction((map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
+      timer(0).subscribe(() => {
+        this.mapComponent?.queueAction((map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
+      });
       this.popup(card, true);
       this.search.closeFilter.next();
     } else {
@@ -209,7 +211,9 @@ export class MainComponent implements OnInit {
         this.drawerState = DrawerState.Most;
         this.headerState = HeaderState.Hidden;
       }
-      this.mapComponent?.queueAction((map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
+      timer(0).subscribe(() => {
+        this.mapComponent?.queueAction((map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
+      });
       if (this.multiState === MultiState.None) {
         this.popup(card);
       }
@@ -333,7 +337,9 @@ export class MainComponent implements OnInit {
       if (geo && geo.length === 3) {
         const center: mapboxgl.LngLatLike = [geo[0], geo[1]];
         const zoom = geo[2];
-        this.mapComponent?.queueAction((map) => map.flyTo({center, zoom}, {internal: true, kind: 'select-item'}));
+        timer(0).subscribe(() => {
+          this.mapComponent?.queueAction((map) => map.flyTo({center, zoom}, {internal: true, kind: 'select-item'}));
+        });
       }
       this.savedView = null;
     }

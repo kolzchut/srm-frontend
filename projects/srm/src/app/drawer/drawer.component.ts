@@ -23,47 +23,68 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
   startY: number;
   startTime: number;
   currentHeight = -1;
+  hostHeight: number = 0;
 
-  constructor(public layout: LayoutService, private window: WindowService) { }
+  constructor(public layout: LayoutService, private window: WindowService, private host: ElementRef) { }
 
   ngOnInit(): void {
   }
 
-  ngOnChanges(): void {
-    const el = this.handleEl?.nativeElement as HTMLDivElement;
-    if (el) {
-      from([true]).pipe(
-        delay(500),
-      ).subscribe(() => {
-        const height = el.clientHeight;
-        if (height !== this.currentHeight) {
-          this.currentHeight = height;
-          this.height.emit(height);
-        }
-      });  
+  ngOnChanges(): void {}
+
+  calcHeight(): number {
+    this.hostHeight = this.host.nativeElement.clientHeight;
+    if (this.layout.desktop) {
+      return this.hostHeight;
     }
+    if (this.state === DrawerState.Hidden) {
+      return 0;
+    } else if (this.state === DrawerState.Peek) {
+      return 56;
+    } else if (this.state === DrawerState.Card) {
+      return 174;
+    } else if (this.state === DrawerState.Most) {
+      return 0.75 * this.hostHeight;
+    } else if (this.state === DrawerState.Full) {
+      return this.hostHeight;
+    } else if (this.state === DrawerState.Presets) {
+      return 152;
+    }
+    return 0;
+  }
+
+  calcTop(): number {
+    this.hostHeight = this.host.nativeElement.clientHeight;
+    return this.hostHeight - this.calcHeight();
   }
 
   ngAfterViewInit(): void {
-    const el = this.handleEl.nativeElement;
+    const el = this.handleEl.nativeElement as HTMLDivElement;
     if (el) {
       const doc = this.window.D || {};
       if (this.layout.mobile) {
         if ('ontouchstart' in doc) {
-          fromEvent(el, 'touchstart').subscribe((el) => {
-            this.handleGestureStart(el as TouchEvent);
-            fromEvent(window, 'touchend').pipe(first()).subscribe((el) => {
-              this.handleGestureEnd(el as TouchEvent);
+          fromEvent(el, 'touchstart').subscribe((ev) => {
+            this.handleGestureStart(ev as TouchEvent);
+            fromEvent(window, 'touchend').pipe(first()).subscribe((ev) => {
+              this.handleGestureEnd(ev as TouchEvent);
             });
           });
         } else {
-          fromEvent(el, 'mousedown').subscribe((el) => {
-            this.handleGestureStart(el as MouseEvent);
-            fromEvent(window, 'mouseup').pipe(first()).subscribe((el) => {
-              this.handleGestureEnd(el as MouseEvent);
+          fromEvent(el, 'mousedown').subscribe((ev) => {
+            this.handleGestureStart(ev as MouseEvent);
+            fromEvent(window, 'mouseup').pipe(first()).subscribe((ev) => {
+              this.handleGestureEnd(ev as MouseEvent);
             });
           });  
         }
+        fromEvent(el, 'transitionstart').subscribe((ev: Event) => {
+          const height = this.calcHeight();
+          if (height !== this.currentHeight) {
+            this.currentHeight = height;
+            this.height.emit(height);
+          }
+        });
       }
       this.currentHeight = el.clientHeight;
       this.height.emit(this.currentHeight);

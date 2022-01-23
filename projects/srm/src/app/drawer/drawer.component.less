@@ -23,31 +23,7 @@
             transition-property: top max-height;
             transition-duration: 250ms;
             transition-timing-function: ease-in-out;
-    
-            &.state-full {
-                top: 0;
-            }
-            &.state-most {
-                top: 25%;
-                max-height: 75%;
-            }
-            &.state-peek {
-                top: ~'calc(100% - 56px)';
-                max-height: 56px;
-            }
-            &.state-card {
-                top: ~'calc(100% - 174px)';
-                max-height: 174px;
-            }
-            &.state-presets {
-                top: ~'calc(100% - 152px)';
-                max-height: 152px;
-            }
-            &.state-hidden {
-                top: 100%;
-                max-height: 0;
-            }
-    
+        
             > .strip {
                 position: absolute;
                 top: 0;
