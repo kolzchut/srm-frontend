@@ -19,10 +19,6 @@ export class CardWhatComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  get categoryColor() {
-    return this.card.response_category ? getResponseCategoryColor(this.card.response_category) : getResponseIdColor(this.card.responses[0].id);
-  }
-
   highlightText(text: string) {
     if (this.highlight) {
       return this.highlighter.highlight(text);
