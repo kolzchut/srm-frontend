@@ -17,21 +17,25 @@
     .location {
         flex: 1 1 auto;
         display: flex;
-        flex-flow: row wrap;
+        flex-flow: row;
         align-items: center;
-        width: ~'calc(100% - 20px)';
+        width: ~'calc(100% - 32px)';
         gap: 0 4px;
         // margin: -3px 0;
 
         .branch-name {
+            flex: 0 0 auto;
             .font-rag-sans;
             font-size: 16px;
             // line-height: 16px;
             color: @color-gray-1;
             // margin: 0px 4px;
+            white-space: nowrap;
             .ellipsis;
         }
         .address {
+            flex: 1 1 auto;
+            overflow: hidden;
             .font-rag-sans;
             font-size: 16px;
             // line-height: 16px;
