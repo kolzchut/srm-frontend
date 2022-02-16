@@ -19,8 +19,10 @@ a {
         padding: 0 4px;
         gap: 4px;
         background: @color-white;
+        overflow: hidden;
 
         .count {
+            flex: 0 0 auto;
             width: 24px;
             height: 24px;
             border-radius: 12px;
@@ -40,9 +42,11 @@ a {
             display: flex;
             flex-flow: row;
             align-items: baseline;
+            overflow: hidden;
 
             .breadcrumbs {
                 .font-rag-sans;
+                flex: 0 1 auto;
                 font-size: 16px;
                 color: @color-gray-3;
                 margin-right: 16px;
@@ -53,6 +57,7 @@ a {
         }
 
         .name {
+            flex: 0 0 auto;
             .font-rag-sans;
             font-size: 20px;
             // line-height: 26px;
