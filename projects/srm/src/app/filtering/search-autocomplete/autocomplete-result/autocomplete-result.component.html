@@ -1,6 +1,6 @@
 <a (click)='click($event)'>
     <ng-container *ngIf="type === 'responses'">
-        <div class='result'>
+        <div class='result response'>
             <div class='count'>{{result.count}}</div>
             <div class='name-container'>
                 <span class='name' [innerHtml]='highlight(result.name)'></span>
@@ -10,7 +10,7 @@
         </div>
     </ng-container>
     <ng-container *ngIf="type === 'places'">
-        <div class='result'>
+        <div class='result place'>
             <div class='location'></div>
             <div class='name' [innerHtml]='highlight(result.name[0])'></div>
             <div class='arrow'></div>

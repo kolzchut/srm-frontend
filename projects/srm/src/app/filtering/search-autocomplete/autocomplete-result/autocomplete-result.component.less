@@ -5,7 +5,7 @@ a {
         text-decoration: none;
         color: inherit;
     }
-    > * {
+    .result.response, app-service-card {
         .card-shadow-card;
     }
 
@@ -18,7 +18,13 @@ a {
         height: 40px;
         padding: 0 4px;
         gap: 4px;
-        background: @color-white;
+        &.response {
+            background: @color-white;
+            border-radius: 4px;
+        }
+        &.place {
+            border-bottom: 1px solid @color-gray-6;
+        }
         overflow: hidden;
 
         .count {
@@ -94,9 +100,14 @@ a {
     }
 
     .desktop({
-        app-service-card, .result {
+        app-service-card, .result.response {
             &:hover {
                 .card-hover-shadow;
+            }
+        }
+        .result.place {
+            &:hover {
+                border-color: @color-gray-5;
             }
         }
     });
