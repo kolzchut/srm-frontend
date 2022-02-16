@@ -10,6 +10,7 @@ import { Card } from '../datatypes';
 export class CardWhereComponent implements OnInit {
 
   @Input() card: Card;
+  @Input() big = false;
   
   constructor() { }
 

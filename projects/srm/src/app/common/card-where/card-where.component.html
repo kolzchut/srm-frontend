@@ -6,7 +6,7 @@
         <rect x="2.5" y="2.5" width="7" height="7" rx="3.5" [attr.fill]='categoryColor'/>
         <rect x="2.5" y="2.5" width="7" height="7" rx="3.5" stroke="white"/>
     </svg>
-    <div class='location'>
+    <div class='location' [class.big]='big'>
         <ng-container *ngIf='card.branch_name'>
             <span class='branch-name' [innerHtml]='card.branch_name'></span>
             <span class='address' [innerHtml]='card.branch_address'></span>    
