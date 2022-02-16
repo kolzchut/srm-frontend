@@ -78,7 +78,7 @@ export class SearchBoxComponent implements OnInit, OnChanges {
     }
     this.query = '';
     this.state.responseFilter = null;
-    if (currentValue.length === 0) {
+    if (currentValue.length === 0 || !this.active) {
       this.active = false;
     } else {
       const inputEl = this.input?.nativeElement as HTMLInputElement;
