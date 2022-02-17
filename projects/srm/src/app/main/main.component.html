@@ -1,11 +1,11 @@
 <!-- Mobile -->
-<div class='header layout-mobile' [class.hidden]='headerState === HeaderState.Hidden' [class.active]='headerVisible()'>
+<div class='header layout-mobile' [class.hidden]='headerState === HeaderState.Hidden || infoPage' [class.active]='headerVisible()'>
     <div class='close-button' (click)='$event.stopPropagation(); handleEvent("close-card")'></div>
     <app-filtering (activated)='headerActive = $event' (menu)='menu=true'></app-filtering>
 </div>
 <div class='content layout-mobile' [class.hidden]='headerState === HeaderState.Visible && headerActive'>
     <app-map *ngIf='layout.mobile' (points)='mapSelectedPoints($event)' (map)='setMap($event)'></app-map>
-    <app-drawer [state]='drawerState' (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' *ngIf='!disclaimerVisible'>
+    <app-drawer [state]='drawerState' (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' [class.away]='disclaimerVisible || infoPage'>
         <ng-container ngProjectAs='strip'>
             <app-strip-single *ngIf='selectedCard && drawerState !== DrawerState.Most' 
                 [card]='selectedCard' (selected)='state.card = $event'
@@ -106,4 +106,8 @@
     </div>
 </div>
 
-<app-menu *ngIf='menu' (close)='menu = false; infoPage = $event'></app-menu>
+<app-menu-backdrop [active]='!!menu || !!infoPage' (click)='menu = false; infoPage = null'></app-menu-backdrop>
+<app-menu [active]='!!menu' (close)='menu = false; infoPage = $event; resizeMap()'></app-menu>
+<app-menu-popup-contact [active]='infoPage === "contact"' (close)='infoPage = null'></app-menu-popup-contact>
+<app-menu-popup-partners [active]='infoPage === "partners"' (close)='infoPage = null'></app-menu-popup-partners>
+<app-menu-popup-about [active]='infoPage === "about"' (close)='infoPage = null'></app-menu-popup-about>

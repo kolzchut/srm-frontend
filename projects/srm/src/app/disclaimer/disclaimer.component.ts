@@ -8,7 +8,6 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 export class DisclaimerComponent implements OnInit {
 
   dontshow = false;
-  uid = 'dontshow-' + Math.random().toString(36).substring(2);
 
   @Output() closed = new EventEmitter<boolean>();
 

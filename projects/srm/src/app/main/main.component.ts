@@ -16,7 +16,10 @@ declare var mapboxgl: any;
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.less']
+  styleUrls: ['./main.component.less'],
+  host: {
+    '[class.away]': '!!infoPage'
+  }
 })
 export class MainComponent implements OnInit {
 
@@ -382,4 +385,7 @@ export class MainComponent implements OnInit {
     this.disclaimerVisible = false;
   }
 
+  resizeMap() {
+    timer(400).subscribe(() => {this.map.resize();});
+  }
 }

@@ -67,4 +67,10 @@
     .desktop({
         z-index: 1;
     });
+    .mobile({
+        transition: transform 250ms ease-in-out;
+        &.away {
+            transform: translateY(100%);
+        }
+    });
 }

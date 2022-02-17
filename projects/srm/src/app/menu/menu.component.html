@@ -1,10 +1,11 @@
 <div class='container'>
     <div class='logo'></div>
     <div class='menu-item' (click)='closeMe("about")' i18n>אודות המפה</div>
-    <div class='menu-item' i18n>שותפים</div>
-    <div class='menu-item' i18n>מדיניות פרטיות</div>
-    <div class='menu-item' i18n>מצאתי טעות</div>
-    <div class='menu-item' i18n>צרו קשר</div>
+    <div class='menu-item' (click)='closeMe("partners")' i18n>שותפים</div>
+    <a class='menu-item' i18n  href='https://www.kolzchut.org.il/he/כל-זכות:כל-שירות_-_מדיניות_השימוש' target='_blank' (click)='closeMe(null)'>
+        מדיניות האתר
+    </a>
+    <div class='menu-item' (click)='closeMe("contact")' i18n>צרו קשר</div>
 </div>
 <div class='logos-strip'>
     <div class='scroller'>

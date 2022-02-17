@@ -8,9 +8,15 @@
     .card-shadow-base;
     position: relative;
     height: 100%;
-    animation: fly-in 250ms ease-out 0s 1 normal forwards;  
+    transform: translateX(100%);
+    &.enter {
+        animation: fly-in 250ms ease-out 0s 1 normal forwards;  
+    }
     &.exit {
         animation: fly-out 250ms ease-out 0s 1 normal forwards;
+    }
+    &.exit-info {
+        animation: dissolve 250ms ease-out 0s 1 normal forwards;
     }
 
     .container {
@@ -43,6 +49,11 @@
             background-size: 24px 24px;
             .font-rag-sans;
             font-size: 20px;
+
+            &, &:hover, &:visited {
+                text-decoration: none;
+                color: inherit;
+            }
         }
     }
 
@@ -106,5 +117,17 @@
     }
     to {
         transform: translateX(100%);
+    }
+}
+
+@keyframes dissolve {
+    from {
+        opacity: 1;
+    }
+    99% {
+        opacity: 0;
+    }
+    to {
+        opacity: 0;
     }
 }

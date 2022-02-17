@@ -118,7 +118,6 @@
                 margin-right: 8px;
                 border: 1px solid #F2F2F2;        
             }
-
         }
 
         .mainbar {
@@ -162,6 +161,13 @@
                     border-top-color: @color-gray-2;
                 }
             }
+        }
+
+        transition: all 0.3s ease-out;
+        transition-property: margin-right, width;
+        &.away {
+            margin-right: -@sidebar-width;
+            width: calc(100% ~'+' @sidebar-width);
         }
     });
 
@@ -232,6 +238,9 @@
         width: 100%;
         .desktop({
             width: @sidebar-width;
+        });
+        .mobile({
+            max-width: @mobile-menu-width;
         });
         height: 100%;
         z-index: 4;

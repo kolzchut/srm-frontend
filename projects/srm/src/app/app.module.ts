@@ -38,6 +38,12 @@ import { DisclaimerComponent } from './disclaimer/disclaimer.component';
 import { MenuComponent } from './menu/menu.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { PopupMultipleComponent } from './drawer/strip/popup-multiple/popup-multiple.component';
+import { MenuPopupComponent } from './menu/menu-popup/menu-popup.component';
+import { MenuBackdropComponent } from './menu/menu-backdrop/menu-backdrop.component';
+import { MenuPopupContactComponent } from './menu/menu-popup/menu-popup-contact/menu-popup-contact.component';
+import { MenuPopupPartnersComponent } from './menu/menu-popup/menu-popup-partners/menu-popup-partners.component';
+import { MenuPopupAboutComponent } from './menu/menu-popup/menu-popup-about/menu-popup-about.component';
+import { DisclaimerContentsComponent } from './disclaimer/disclaimer-contents/disclaimer-contents.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +80,13 @@ import { PopupMultipleComponent } from './drawer/strip/popup-multiple/popup-mult
     DisclaimerComponent,
     MenuComponent,
     PageNotFoundComponent,
-    PopupMultipleComponent
+    PopupMultipleComponent,
+    MenuPopupComponent,
+    MenuBackdropComponent,
+    MenuPopupContactComponent,
+    MenuPopupPartnersComponent,
+    MenuPopupAboutComponent,
+    DisclaimerContentsComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

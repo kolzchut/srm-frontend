@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { timer } from 'rxjs';
 
 @Component({
@@ -6,14 +6,18 @@ import { timer } from 'rxjs';
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.less'],
   host: {
-    '[class.exit]': 'exit',
+    '[class.enter]': 'active && init',
+    '[class.exit]': '!active && !info && init',
+    '[class.exit-info]': '!active && !!info && init',
   }
 })
 export class MenuComponent implements OnInit {
 
+  @Input() active = false;
   @Output() close = new EventEmitter<string | null>();
 
-  exit = false;
+  info = false;
+  init = false;
 
   logoUrls: string[] = [
     'assets/img/logo-kolzchut.svg',
@@ -26,8 +30,15 @@ export class MenuComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  ngOnChanges() {
+    if (this.active) {
+      this.info = false;
+      this.init = true;
+    }
+  }
+
   closeMe(selection: string | null) {
-    this.exit = true;
-    timer(300).subscribe(() => this.close.emit(selection));
+    this.info = !!selection;
+    this.close.emit(selection);
   }
 }
