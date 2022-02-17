@@ -5,13 +5,20 @@ import { StripMultipleComponent } from '../strip-multiple/strip-multiple.compone
 @Component({
   selector: 'app-popup-multiple',
   templateUrl: './popup-multiple.component.html',
-  styleUrls: ['./popup-multiple.component.less']
+  styleUrls: ['./popup-multiple.component.less'],
+  host: {
+    '(mouseenter)': 'onMouseEnter()',
+    '(mouseleave)': 'onMouseOut()',
+  }
 })
 export class PopupMultipleComponent implements OnInit {
 
   @Input() cards: Card[] | null;
   @Output() selected = new EventEmitter<Card>();
+  @Output() selectMulti = new EventEmitter<Card[]>();
   @Output() closed = new EventEmitter<void>();
+  @Output() hover = new EventEmitter<Card[]>();
+
   @ViewChild(StripMultipleComponent) strip: StripMultipleComponent;
 
   constructor() { }
@@ -33,5 +40,13 @@ export class PopupMultipleComponent implements OnInit {
 
   get leftPossible() {
     return this.strip? this.strip.leftPossible : true;
+  }
+
+  onMouseEnter() {
+    this.hover.emit(this.cards || []);
+  }
+
+  onMouseOut() {
+    this.hover.emit([]);
   }
 }

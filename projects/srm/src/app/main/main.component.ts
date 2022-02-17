@@ -1,7 +1,7 @@
 import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReplaySubject, timer } from 'rxjs';
-import { delay, filter, switchMap, tap } from 'rxjs/operators';
+import { ReplaySubject, Subject, timer } from 'rxjs';
+import { debounceTime, delay, distinctUntilChanged, filter, switchMap, tap } from 'rxjs/operators';
 import { Card, CategoryCountsResult, DrawerState, HeaderState, CardState, MultiState } from '../common/datatypes';
 import { LayoutService } from '../layout.service';
 import { MapComponent } from '../map/map.component';
@@ -45,6 +45,7 @@ export class MainComponent implements OnInit {
   activePopup: mapboxgl.Popup | null = null;
   currentPopup: string | null = null;
   loaded = new ReplaySubject(1);
+  mapHoverPointsStream = new Subject<Card[]>();
 
   counts: CategoryCountsResult[] = [];
 
@@ -97,6 +98,23 @@ export class MainComponent implements OnInit {
     this.platform.server(() => {
       this.loaded.next();
     });
+    this.mapHoverPointsStream.pipe(
+      debounceTime(250),
+      distinctUntilChanged(),
+    ).subscribe(cards => {
+      this.hoverMulti = this.hoverCard = null;
+      if (this.cardState === CardState.None && this.multiState === MultiState.None) {
+        if (cards.length > 1) {
+          this.hoverMulti = cards;
+          this.popup(cards[0], true);
+        } else if (cards.length === 1) {
+          this.hoverCard = cards[0];
+          this.popup(cards[0], false);
+        } else {
+          this.popup(null, false);
+        }
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -118,18 +136,7 @@ export class MainComponent implements OnInit {
   }
 
   mapHoverPoints(cards: Card[]) {
-    this.hoverMulti = this.hoverCard = null;
-    if (this.cardState === CardState.None && this.multiState === MultiState.None) {
-      if (cards.length > 1) {
-        this.hoverMulti = cards;
-        this.popup(cards[0], true);
-      } else if (cards.length === 1) {
-        this.hoverCard = cards[0];
-        this.popup(cards[0], false);
-      } else {
-        this.popup(null, false);
-      }
-    }
+    this.mapHoverPointsStream.next(cards);
   }
 
   popup(card: Card | null, multistrip: boolean = false) {

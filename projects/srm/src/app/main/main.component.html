@@ -99,6 +99,8 @@
             [card]='hoverCard'
         ></app-strip-single>
         <app-popup-multiple *ngIf='hoverMulti'
+            (hover)='mapHoverPoints($event)'
+            (selectMulti)='mapSelectedPoints($event)'
             [cards]='hoverMulti'
         ></app-popup-multiple>
     </div>
