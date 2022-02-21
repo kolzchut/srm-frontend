@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router, Event } from '@angular/router';
-import { LngLat, LngLatBounds, LngLatLike } from 'mapbox-gl';
-import { BehaviorSubject, from, merge, Observable, ReplaySubject, Subject, timer } from 'rxjs';
-import { throttleTime, distinctUntilChanged, filter, first, map, switchMap, tap, delay } from 'rxjs/operators';
+import { LngLatBounds } from 'mapbox-gl';
+import { from, merge, Observable, ReplaySubject, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, map, switchMap, delay } from 'rxjs/operators';
 import { ApiService } from './api.service';
-import { Card, Response } from './common/datatypes';
+import { Card } from './common/datatypes';
 import { ResponsesService } from './responses.service';
 import { Location } from '@angular/common';
 import { SeoSocialShareService } from 'ngx-seo';

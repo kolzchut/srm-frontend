@@ -18,7 +18,7 @@ export const environment = {
   taxonomyResponsesSourceURL: 'https://srm.datacity.org.il/dataset/812345ae-521e-4171-9a91-d66d0fcf03df/resource/8f77667c-fb75-48ff-a696-093321ee3bda/download/responses.json',
   taxonomyResponsesURL: '/responses.json',
   suggestChangesForm: 'https://airtable.com/shriuBukhE2B2Loy8',
-  mapStyle: 'mapbox://styles/srm-kolzchut/cksprr4sy0hbg18o5ct2ty2oc',
+  mapStyle: 'mapbox://styles/srm-kolzchut/ckzwhyzwr000t14mkynmw94zw',
   gaTag: 'G-0FXK63SSNX',
   // gaTag: 'G-7ZHM371DDF',
   sitemapUrl: 'https://srm.datacity.org.il/dataset/6fbf9571-b66e-4264-a4e6-605539517b22/resource/84a08676-b695-429f-a487-f9084b0b4888/download/sitemap.xml',
