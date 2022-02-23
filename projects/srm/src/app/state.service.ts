@@ -1,48 +1,65 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router, Event } from '@angular/router';
 import { LngLatBounds } from 'mapbox-gl';
-import { from, merge, Observable, ReplaySubject, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map, switchMap, delay } from 'rxjs/operators';
+import { BehaviorSubject, from, merge, Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, switchMap, delay, pairwise, tap, debounceTime } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { Card } from './common/datatypes';
 import { ResponsesService } from './responses.service';
 import { Location } from '@angular/common';
 import { SeoSocialShareService } from 'ngx-seo';
+import { StateEncoderDecoder } from './url-encode-decode';
 
 export type CenterZoomType = [number, number, number];
 export type GeoType = CenterZoomType | [[number, number], [number, number]] | null;
 
 export type State = {
-  geo?: GeoType;
-  searchBoxTitle?: string,
-  cardId?: string | null,
-  pointId?: string | null,
-  placeId?: string | null,
-  responseId?: string | null,
-  skipGeoUpdate?: boolean,
-  situations?: string[][] | null,
+  geo?: GeoType;                      // Where the map is centered and zoomed
+  searchBoxTitle?: string,            // Title of the search box
+  cardId?: string | null,             // Id of the card that is currently selected
+  pointId?: string | null,            // Id of the map point that is currently selected
+  placeId?: string | null,            // Id of the place that is currently selected
+  responseId?: string | null,         // Id of the response that is currently selected
+  skipGeoUpdate?: boolean,            // Whether to skip the geo update when this state is generated (e.g. when the map is moved)
+  situations?: string[][] | null,     // List of situations that are currently filtered on
+  diff?: string[] | null,             // List of diffs between current and previous state
 };
 
-
-function makeKey(obj: any, keys: string[]) {
-  const ret = [];
-  for (const key of keys) {
-    ret.push(JSON.stringify(obj.hasOwnProperty(key)? obj[key] : null));
+function compareStates(a: State, b: State) {
+  const states = [a, b];
+  const diffs = [];
+  for (const key of ['geo', 'searchBoxTitle', 'cardId', 'pointId', 'placeId', 'responseId', 'situations']) {
+    const values = [];
+    for (const state of states) {
+      values.push(JSON.stringify(state.hasOwnProperty(key)? (state as any)[key] : null))
+    }
+    if (values[0] !== values[1]) {
+      diffs.push(key);
+    }
   }
-  return ret.join(':');
+  return diffs;
 }
 
-function keyComparer(keys: string[], kind?: string) {
-  return (x: any, y: any) => makeKey(x, keys) === makeKey(y, keys) && y.__kind !== kind;
+function filterDiffs(keys: string[]) {
+  return (state: State) => {
+    const ret = keys.some((key) => state.diff && state.diff.indexOf(key) >= 0);
+    console.log('FD', keys, state.diff, ret);
+    return ret;
+  };
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class StateService {
-  _state: State = {}; 
-  state = new ReplaySubject<State>(1);
-  currentState: string = '_';
+  _state: State = {};
+  incomingStateSubject = new Subject<State>();
+  stateSubject = new BehaviorSubject<State>({});
+  state = new Subject<State>();
+  // currentState: string = '_';
+  urlEncoderDecoder = new StateEncoderDecoder();
+
+  router: Router;
 
   geoChanges: Observable<State>;
   responseChanges: Observable<State>;
@@ -63,43 +80,67 @@ export class StateService {
   savedGeo: CenterZoomType | null;
   latestBounds: LngLatBounds;
   replaceCenterZoom: CenterZoomType | null = null;
-
+  
   constructor(private api: ApiService, private responses: ResponsesService, private location: Location, private seo: SeoSocialShareService) {
-    // State stream - only for geo view changes
+    // State stream, collect what changed and add it to the state object
+    this.stateSubject.pipe(
+      pairwise(),
+      map(([prev, curr]) => {
+        curr.diff = compareStates(prev, curr);
+        if (curr.diff.length > 0) {
+          console.log('CHANGED IN STATE', curr.diff, curr);
+          if (curr.diff.indexOf('cardId') >= 0) { //TODO: remove
+            console.log('CARD CHANGED', prev.cardId, curr.cardId);
+          }
+        }
+        return curr;
+      }),
+      filter((state) => state.diff? state.diff.length > 0 : false),
+    ).subscribe((state) => {
+      this._state = state;
+      console.log('NNN', state.diff);
+      this.state.next(state);
+    });
+
+    // Streams for specific state changes
     this.geoChanges = this.state.pipe(
-      distinctUntilChanged<State>(keyComparer(['geo'])),
+      filter(filterDiffs(['geo'])),
     );
     this.filterChanges = this.state.pipe(
-      distinctUntilChanged<State>(keyComparer(['responseId', 'situations'])),
+      filter(filterDiffs(['responseId', 'situations'])),
     );
     this.responseChanges = this.state.pipe(
-      distinctUntilChanged<State>(keyComparer(['responseId'])),
+      filter(filterDiffs(['responseId'])),
     );
     this.situationChanges = this.state.pipe(
-      distinctUntilChanged<State>(keyComparer(['situations'])),
+      filter(filterDiffs(['situations'])),
     );
     this.queryChanges = this.state.pipe(
-      distinctUntilChanged<State>(keyComparer(['searchBoxTitle'])),
+      filter(filterDiffs(['searchBoxTitle'])),
     );
     this.cardChanges = this.state.pipe(
-      distinctUntilChanged<State>(keyComparer(['cardId'], 'card-id')),
+      filter(filterDiffs(['cardId'])), // TODO, 'card-id')),
     );
     this.pointIdChanges = this.state.pipe(
-      distinctUntilChanged<State>(keyComparer(['pointId'], 'point-id')),
+      filter(filterDiffs(['pointId'])), // TODO , 'point-id')),
     );
+    
+    // Select card / cards when the cardId/pointId changes
     this.cardChanges.subscribe((state) => {
-      // console.log('STATE CARD CHANGED', state);
+      console.log('STATE CARD CHANGED', state.cardId, state.pointId);
       this.selectCardById(state.cardId || null);
     });
     this.pointIdChanges.subscribe((state) => {
-      // console.log('STATE POINT ID CHANGED', state);
+      console.log('STATE POINT ID CHANGED', state.cardId, state.pointId);
       this.selectCardsByPointId(state.pointId || null);
     });
   }
 
   trackRoute(router: Router, activatedRoute: ActivatedRoute) {
-    // State decoding from URL
-    router.events.pipe(
+    this.router = router;
+
+    // Handle 'back' events
+    router.events.pipe( //TODO: Check if still relevant
       filter((event: Event) =>(event instanceof NavigationStart)),
     ).subscribe((event) => {
       const ns = (event as NavigationStart);
@@ -107,50 +148,67 @@ export class StateService {
         this._state.skipGeoUpdate = false;
       }
     });
+
+    // State decoding from URL
     merge(
       activatedRoute.queryParams,
       activatedRoute.url
     ).pipe(
       map(() => activatedRoute.snapshot),
+      tap((sn) => { console.log('CHANGED ROUTE', sn.queryParams.v); }),
       switchMap((sn) => {
         const responseId = sn.params.response || null;
         const placeId = sn.params.place || null;
         const cardId = sn.params.card || null;
-        const state = sn.queryParams.state || '';
+        const state = sn.queryParams.v || '';
         return this.processPaths(responseId, placeId, cardId, state);
       }),
-      filter((state) => {
-        return state !== this.currentState;          
-      }),
+      // filter((state) => {
+      //   return state !== this.currentState;          
+      // }),
       map((state) => {
-        this.currentState = state;
-        const decoded = this.decode(state);
+        // this.currentState = state;
+        const decoded = this.urlEncoderDecoder.decode(state);
         // console.log('D:STATE', state, '->', decoded);
         return decoded
       })
     ).subscribe((state: State) => {
-      this.updateState(state);
+      this.stateSubject.next(state);
     });
 
-    this.state.pipe(
-      delay(0),
-      map((state) => {
-        const encoded = this.encode(state);
-        this.currentState = encoded;
-        // console.log('E:STATE', state, '->', encoded);  
-        return encoded;
+    // State encoding to URL
+    const incomingUpdates: any[] = [];
+    this.incomingStateSubject.pipe(
+      tap((update) => {
+        incomingUpdates.push(update);
       }),
-    ).subscribe(encoded => {
-      const queryParams = {
-        state: encoded
-      };
-      router.navigate(['/'], {queryParams, replaceUrl: false});
+      debounceTime(100),
+    ).subscribe(() => {
+      const update = Object.assign({}, this._state);
+      while (incomingUpdates.length > 0) {
+        Object.assign(update, incomingUpdates.shift());
+      }
+      // update['__kind'] = kind;
+      this.newState(update);
     });
+  }
+
+  newState(state: State) {
+    if (this.router) {
+      const encoded = this.urlEncoderDecoder.encode(state);
+      // this.currentState = encoded;
+      const queryParams = {
+        v: encoded
+      };
+      this.router.navigate(['/'], {queryParams, replaceUrl: false});  
+    } else {
+      console.log('NO ROUTER');
+    }
   }
 
   processPaths(responseId: string, placeId: string, cardId: string, encoded: string): Observable<string> {
     if (!!responseId || !!placeId || !!cardId) {
-      const decoded = this.decode(encoded);
+      const decoded = this.urlEncoderDecoder.decode(encoded);
       let obs: Observable<State> = from([]);
       if (!!responseId) {
         obs = this.api.getResponse(responseId).pipe(
@@ -191,7 +249,7 @@ export class StateService {
       }
       return obs.pipe(
         map((state) => {
-          return this.encode(state);
+          return this.urlEncoderDecoder.encode(state);
         })
       );
     } else {
@@ -199,42 +257,10 @@ export class StateService {
     }
   }
   
-  encode(state: State) {
-    const prepared = [
-      state.geo || null,
-      state.searchBoxTitle || null,
-      state.cardId || null,
-      state.responseId || null,
-      state.situations || null,
-      state.pointId || null,
-    ];
-    return JSON.stringify(prepared);
-  }
-  
-  decode(state: string): State {
-    if (state) {
-      try {
-        const prepared = JSON.parse(state);
-        return {
-          geo: prepared[0] || null,
-          searchBoxTitle: prepared[1] || '',
-          cardId: prepared[2] || null,
-          responseId: prepared[3] || null,
-          situations: prepared[4] || null,
-          pointId: prepared[5] || null,
-        };
-      } catch (e) {
-        console.log('DECODE ERROR', e);
-      }
-    }
-    return {};
-  }
-
+  // Change current state by one or more fields
   updateState(update: any, kind: string='') {
     console.log('UPDATE STATE WITH', update);
-    update['__kind'] = kind;
-    this._state = Object.assign({}, this._state, update);
-    this.state.next(this._state);
+    this.incomingStateSubject.next(update);
   }
 
   set bounds(bounds: LngLatBounds) {
@@ -250,11 +276,6 @@ export class StateService {
   set centerZoom(centerZoom: CenterZoomType) {
     this.updateCenterZoom(centerZoom);
   }
-
-  // set searchBoxTitle(searchBoxTitle: string) {
-  //   this._state = Object.assign({}, this._state, {searchBoxTitle});
-  //   this.state.next(this._state);
-  // }
 
   set responseFilter(responseId: string | null) {
     const searchBoxTitle = responseId ? this.responses.getResponseName(responseId) : '';
@@ -389,11 +410,10 @@ export class StateService {
     const url = new URL(urlToApply);
     const params = url.searchParams;
     if (params) {
-      const encodedState = params.get('state');
+      const encodedState = params.get('v');
       if (encodedState) {
-        const decoded: State = this.decode(encodedState);
-        this._state = decoded;
-        this.state.next(this._state);
+        const decoded: State = this.urlEncoderDecoder.decode(encodedState);
+        this.updateState(this._state);
       }
     }
   }
