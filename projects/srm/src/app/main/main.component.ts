@@ -88,7 +88,7 @@ export class MainComponent implements OnInit {
       });
       this.mapHoverPointsStream.pipe(
         debounceTime(250),
-        distinctUntilChanged(),
+        distinctUntilChanged((x, y) => !!x && !!y && x.length === y.length && x.length > 0 && x[0].point_id === y[0].point_id),
       ).subscribe(cards => {
         this.clearHovers();
         if (this.cardState === CardState.None && this.multiState === MultiState.None) {

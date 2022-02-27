@@ -100,7 +100,10 @@
             (closed)='handleEvent("map-click")'
         ></app-popup-multiple>
         <app-strip-single *ngIf='hoverCard'
+            class='hover'
             [card]='hoverCard'
+            (selected)='state.card = $event'
+            (hover)='mapHoverPoints($event)'
         ></app-strip-single>
         <app-popup-multiple *ngIf='hoverMulti'
             (hover)='mapHoverPoints($event)'
