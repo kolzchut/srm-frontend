@@ -242,7 +242,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             });
             this.search.point_ids.subscribe(ids => {
               if (ids) {
-                this.pointFilter.searchPoints = [['in', ['get', 'point_id'], ['literal', ids]]];
+                this.pointFilter.searchPoints = ['in', ['get', 'point_id'], ['literal', ids]];
                 for (const layer of ['points-on', 'points-stroke-on']) {
                   this.map.setFilter(layer, this.pointFilter.searchPoints);
                 }  
