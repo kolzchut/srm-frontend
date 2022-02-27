@@ -20,7 +20,6 @@ export type State = {
   pointId?: string | null,            // Id of the map point that is currently selected
   placeId?: string | null,            // Id of the place that is currently selected
   responseId?: string | null,         // Id of the response that is currently selected
-  skipGeoUpdate?: boolean,            // Whether to skip the geo update when this state is generated (e.g. when the map is moved)
   situations?: string[][] | null,     // List of situations that are currently filtered on
   diff?: string[] | null,             // List of diffs between current and previous state
 };
@@ -43,7 +42,6 @@ function compareStates(a: State, b: State) {
 function filterDiffs(keys: string[]) {
   return (state: State) => {
     const ret = keys.some((key) => state.diff && state.diff.indexOf(key) >= 0);
-    console.log('FD', keys, state.diff, ret);
     return ret;
   };
 }
@@ -60,6 +58,7 @@ export class StateService {
   urlEncoderDecoder = new StateEncoderDecoder();
 
   router: Router;
+  firstRoute = true;
 
   geoChanges: Observable<State>;
   responseChanges: Observable<State>;
@@ -77,9 +76,9 @@ export class StateService {
   cardCache: {[key: string]: Card} = {};
   cardsCache: {[key: string]: Card[]} = {};
 
-  savedGeo: CenterZoomType | null;
+  // savedGeo: CenterZoomType | null;
   latestBounds: LngLatBounds;
-  replaceCenterZoom: CenterZoomType | null = null;
+  // replaceCenterZoom: CenterZoomType | null = null;
   
   constructor(private api: ApiService, private responses: ResponsesService, private location: Location, private seo: SeoSocialShareService) {
     // State stream, collect what changed and add it to the state object
@@ -89,16 +88,12 @@ export class StateService {
         curr.diff = compareStates(prev, curr);
         if (curr.diff.length > 0) {
           console.log('CHANGED IN STATE', curr.diff, curr);
-          if (curr.diff.indexOf('cardId') >= 0) { //TODO: remove
-            console.log('CARD CHANGED', prev.cardId, curr.cardId);
-          }
         }
         return curr;
       }),
       filter((state) => state.diff? state.diff.length > 0 : false),
     ).subscribe((state) => {
       this._state = state;
-      console.log('NNN', state.diff);
       this.state.next(state);
     });
 
@@ -127,11 +122,9 @@ export class StateService {
     
     // Select card / cards when the cardId/pointId changes
     this.cardChanges.subscribe((state) => {
-      console.log('STATE CARD CHANGED', state.cardId, state.pointId);
       this.selectCardById(state.cardId || null);
     });
     this.pointIdChanges.subscribe((state) => {
-      console.log('STATE POINT ID CHANGED', state.cardId, state.pointId);
       this.selectCardsByPointId(state.pointId || null);
     });
   }
@@ -139,23 +132,12 @@ export class StateService {
   trackRoute(router: Router, activatedRoute: ActivatedRoute) {
     this.router = router;
 
-    // Handle 'back' events
-    router.events.pipe( //TODO: Check if still relevant
-      filter((event: Event) =>(event instanceof NavigationStart)),
-    ).subscribe((event) => {
-      const ns = (event as NavigationStart);
-      if (ns.navigationTrigger === 'popstate') {
-        this._state.skipGeoUpdate = false;
-      }
-    });
-
     // State decoding from URL
     merge(
       activatedRoute.queryParams,
       activatedRoute.url
     ).pipe(
       map(() => activatedRoute.snapshot),
-      tap((sn) => { console.log('CHANGED ROUTE', sn.queryParams.v); }),
       switchMap((sn) => {
         const responseId = sn.params.response || null;
         const placeId = sn.params.place || null;
@@ -163,13 +145,8 @@ export class StateService {
         const state = sn.queryParams.v || '';
         return this.processPaths(responseId, placeId, cardId, state);
       }),
-      // filter((state) => {
-      //   return state !== this.currentState;          
-      // }),
       map((state) => {
-        // this.currentState = state;
         const decoded = this.urlEncoderDecoder.decode(state);
-        // console.log('D:STATE', state, '->', decoded);
         return decoded
       })
     ).subscribe((state: State) => {
@@ -184,23 +161,25 @@ export class StateService {
       }),
       debounceTime(100),
     ).subscribe(() => {
-      const update = Object.assign({}, this._state);
+      const update: any = {};
       while (incomingUpdates.length > 0) {
         Object.assign(update, incomingUpdates.shift());
       }
       // update['__kind'] = kind;
-      this.newState(update);
+      this.newState(Object.assign({}, this._state, update), Object.keys(update));
     });
   }
 
-  newState(state: State) {
+  newState(state: State, updatedKeys: string[]) {
     if (this.router) {
       const encoded = this.urlEncoderDecoder.encode(state);
       // this.currentState = encoded;
       const queryParams = {
         v: encoded
       };
-      this.router.navigate(['/'], {queryParams, replaceUrl: false});  
+      const replaceUrl = this.firstRoute || (updatedKeys.length === 1 && updatedKeys[0] === 'geo');
+      this.firstRoute = false;
+      this.router.navigate(['/'], {queryParams, replaceUrl});  
     } else {
       console.log('NO ROUTER');
     }
@@ -249,7 +228,9 @@ export class StateService {
       }
       return obs.pipe(
         map((state) => {
-          return this.urlEncoderDecoder.encode(state);
+          const encoded = this.urlEncoderDecoder.encode(state);
+          this.router.navigate(['/'], {queryParams: {v: encoded}, replaceUrl: true});
+          return encoded;
         })
       );
     } else {
@@ -259,18 +240,18 @@ export class StateService {
   
   // Change current state by one or more fields
   updateState(update: any, kind: string='') {
-    console.log('UPDATE STATE WITH', update);
     this.incomingStateSubject.next(update);
   }
 
+  // State Update Shortcuts
   set bounds(bounds: LngLatBounds) {
     const geo = bounds.toArray();
-    this.updateState({geo, skipGeoUpdate: false});
+    this.updateState({geo});
   }
 
-  updateCenterZoom(geo: CenterZoomType, skipGeoUpdate=false) {
+  updateCenterZoom(geo: CenterZoomType) {
     geo = geo.map(x => Math.round(x * 10000) / 10000) as CenterZoomType;
-    this.updateState({geo, skipGeoUpdate});
+    this.updateState({geo});
   }
 
   set centerZoom(centerZoom: CenterZoomType) {
@@ -295,12 +276,14 @@ export class StateService {
   }
 
   set cardId(cardId: string | null) {
-    // console.log('STATE CARD ID <-', cardId);
-    this.updateState({cardId}, cardId ? 'card-id' : '');
+    this.updateState({cardId});
+  }
+
+  set pointId(pointId: string | null) {
+    this.updateState({pointId});
   }
 
   set card(card: Card | null) {
-    // console.log('STATE CARD <-', card);
     if (card) {
       this.cardCache[card.card_id] = card;
       this.cardId = card.card_id;  
@@ -309,18 +292,11 @@ export class StateService {
     }
   }
 
-  set pointId(pointId: string | null) {
-    // console.log('STATE POINT ID <-', pointId);
-    this.updateState({pointId}, pointId ? 'point-id' : '');
-  }
-
   set cards(cards: Card[] | null) {
-    // console.log('STATE CARDS <-', cards?.length, cards);
     if (cards) {
       const pointId = cards[0].point_id;
       this.cardsCache[pointId] = cards;
       if (this._state.pointId !== pointId) {
-        // console.log('CHANGED POINT ID, clearing card');
         this.card = null;
       }
       this.pointId = pointId;
@@ -330,8 +306,10 @@ export class StateService {
     }
   }
 
+  // Select point / cards / card 
+  
+  // (by id, fetch if needed)
   selectCardsByPointId(pointId: string | null) {
-    // console.log('SELECT CARDS BY POINT ID', pointId);
     if (pointId) {
       const cards = this.cardsCache[pointId];
       let source = from([cards]).pipe(
@@ -343,20 +321,14 @@ export class StateService {
         );
       }
       source.subscribe((cards) => {
-        if (cards.length > 1) {
-          this.selectCards(cards);
-        } else {
-          this.card = cards[0];
-        }
+        this.selectCards(cards);
       });
     } else {
-      this.selectCard(null);
       this.selectCards(null);
     }
   }
 
   selectCardById(cardId: string | null) {
-    // console.log('SELECT CARD BY ID', cardId);
     if (cardId) {
       const card = this.cardCache[cardId];
       if (card) {
@@ -371,40 +343,25 @@ export class StateService {
     }
   }
   
+  // By value
   selectCards(cards: Card[] | null) {
-    // console.log('SELECT CARDS', cards);
     if (cards) {
       this.cardsCache[cards[0].point_id] = cards;
     }
     this.selectedCards.next({cards});
   }
 
-  selectCard(card: Card | null, replaceCenterZoom: CenterZoomType | null = null) {
-    const cardId = card?.card_id || null;
-    // console.log('SELECT CARD', cardId, this.savedGeo);
+  selectCard(card: Card | null) { // replaceCenterZoom
     if (card) {
       this.cardCache[card.card_id] = card;
       this.seo.setTitle(`כל שירות - ${card.service_name}`);
       this.seo.setDescription(`${card.branch_name} - ${card.service_description}`);
       this.seo.setUrl(`https://www.kolsherut.org.il/c/${card.card_id}`);  
     }
-    if (card && !this.savedGeo && this._state.geo && this._state.geo.length === 3) {
-      this.savedGeo = this._state.geo;
-      // console.log('SAVED GEO', this.savedGeo);
-    }
-    if (!card) {
-      if (this.replaceCenterZoom) {
-        this.centerZoom = (replaceCenterZoom as CenterZoomType);
-        this.replaceCenterZoom = null;
-      } else if (this.savedGeo) {
-        this.centerZoom = this.savedGeo;
-        // console.log('CLEARED GEO', this.savedGeo);
-        this.savedGeo = null;  
-      }
-    }
     this.selectedCard.next({card});
   }
 
+  // Apply state from url (for presets)
   applyFromUrl(urlToApply: string) {
     console.log('APPLY FROM URL', urlToApply);
     const url = new URL(urlToApply);
@@ -413,7 +370,7 @@ export class StateService {
       const encodedState = params.get('v');
       if (encodedState) {
         const decoded: State = this.urlEncoderDecoder.decode(encodedState);
-        this.updateState(this._state);
+        this.updateState(decoded);
       }
     }
   }

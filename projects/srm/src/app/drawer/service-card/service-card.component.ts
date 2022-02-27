@@ -33,4 +33,9 @@ export class ServiceCardComponent implements OnInit {
   onMouseOut() {
     this.hover.emit(null);
   }
+
+  close(ev: Event) {
+    this.closed.emit();
+    ev.stopPropagation();
+  }
 }

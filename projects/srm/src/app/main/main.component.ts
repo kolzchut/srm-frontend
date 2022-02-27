@@ -25,29 +25,33 @@ export class MainComponent implements OnInit {
 
   @ViewChild('mapPopup') mapPopup: ElementRef;
 
-  drawerState: DrawerState = DrawerState.Presets;
-  headerState: HeaderState = HeaderState.Visible;
-  _headerActive = false;
-  cardState: CardState = CardState.None;
-  multiState: MultiState = MultiState.None;
-  selectedCard: Card | null = null;
-  selectedMulti: Card[] | null = null;
-  hoverCard: Card | null = null;
-  hoverMulti: Card[] | null = null;
-
-  savedView: {drawerState: DrawerState, geo: GeoType} | null = null;
-
   DrawerState = DrawerState;
   HeaderState = HeaderState;
   CardState = CardState;
   MultiState = MultiState;
+
+  drawerState: DrawerState = DrawerState.Presets;
+  headerState: HeaderState = HeaderState.Visible;
+  cardState: CardState = CardState.None;
+  multiState: MultiState = MultiState.None;
+
+  loaded = new ReplaySubject(1);
+
+  selectedCard: Card | null = null;
+  selectedMulti: Card[] | null = null;
+
+  hoverCard: Card | null = null;
+  hoverMulti: Card[] | null = null;
+
+  _headerActive = false;
+
+  savedView: {drawerState: DrawerState, geo: GeoType} | null = null; //TODO: Remove
 
   map: mapboxgl.Map;
   mapComponent: MapComponent;
 
   activePopup: mapboxgl.Popup | null = null;
   currentPopup: string | null = null;
-  loaded = new ReplaySubject(1);
   mapHoverPointsStream = new Subject<Card[]>();
 
   counts: CategoryCountsResult[] = [];
@@ -60,23 +64,49 @@ export class MainComponent implements OnInit {
   infoPage: string | null = null;
   modifier: string | null = null;
   
-  
   constructor(
         public state: StateService, public search: SearchService,
         private situations: SituationsService, public layout: LayoutService,
         private router: Router, private activatedRoute: ActivatedRoute,
         private window: WindowService, private platform: PlatformService,
   ) {
-    this.state.trackRoute(this.router, this.activatedRoute);
-    this.loaded.pipe(
-    ).subscribe(() => {
+    // After loading, start tracking URL, selected card/cards/hovers
+    this.loaded.subscribe(() => {
+      this.state.selectedCards.subscribe(({cards}) => {
+        if (cards) {
+          if (cards.length > 1) {
+            this.selectMulti(cards);
+          } else {
+            this.selectCard(cards[0]);
+          }
+        } else {
+          this.selectMulti(cards);
+        }
+      });
       this.state.selectedCard.subscribe(({card}) => {
         this.selectCard(card);
       });
-      this.state.selectedCards.subscribe(({cards}) => {
-        this.selectMulti(cards);
+      this.mapHoverPointsStream.pipe(
+        debounceTime(250),
+        distinctUntilChanged(),
+      ).subscribe(cards => {
+        this.clearHovers();
+        if (this.cardState === CardState.None && this.multiState === MultiState.None) {
+          if (cards.length > 1) {
+            this.hoverMulti = cards;
+            this.popup(cards[0], true);
+          } else if (cards.length === 1) {
+            this.hoverCard = cards[0];
+            this.popup(cards[0], false);
+          } else {
+            this.popup(null, false);
+          }
+        }
       });
+      this.state.trackRoute(this.router, this.activatedRoute);
     });
+
+    // Track visible counts and generate has-results and no-results events
     this.search.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
       this.counts = counts.map(c => {
         return {
@@ -88,58 +118,43 @@ export class MainComponent implements OnInit {
       });
       this.handleEvent(this.counts.length > 0 ? 'has-results' : 'no-results');
     });
+
+    // Whenever the filter changes, generate the show-results event
     this.state.filterChanges.pipe(
       filter((state) => ((state.responseId && state.responseId.length > 0) || (!!state.situations && state.situations.length > 0))),
     ).subscribe(() => {
       this.handleEvent('show-results');
     });
+
+    // Show disclaimer on browser
     this.platform.browser(() => {
       this.disclaimerVisible = this.window._?.localStorage?.getItem(this.DISMISSED_DISCLAIMER) !== 'true';
       if (!this.disclaimerVisible) {
       }
     });
+
+    // Assume loaded on server
     this.platform.server(() => {
       this.loaded.next();
-    });
-    this.mapHoverPointsStream.pipe(
-      debounceTime(250),
-      distinctUntilChanged(),
-    ).subscribe(cards => {
-      this.hoverMulti = this.hoverCard = null;
-      if (this.cardState === CardState.None && this.multiState === MultiState.None) {
-        if (cards.length > 1) {
-          this.hoverMulti = cards;
-          this.popup(cards[0], true);
-        } else if (cards.length === 1) {
-          this.hoverCard = cards[0];
-          this.popup(cards[0], false);
-        } else {
-          this.popup(null, false);
-        }
-      }
     });
   }
 
   ngOnInit(): void {
   }
 
+  setMap(map: MapComponent) {
+    this.mapComponent = map;
+    this.map = map.map;
+    this.setLabelsFilter();
+    console.log('LOADED');
+    this.loaded.next();
+  }
+
+  // Layout
   headerVisible(): boolean {
     return this.headerState === HeaderState.Visible && (
       this.headerActive || this.situations.activeEditors().length > 0
     );
-  }
-
-  mapSelectedPoints(cards: Card[]) {
-    if (cards.length > 0) {
-      this.modifier = 'preview';
-      this.state.cards = cards;
-    } else {
-      this.handleEvent('map-click');
-    }
-  }
-
-  mapHoverPoints(cards: Card[]) {
-    this.mapHoverPointsStream.next(cards);
   }
 
   popup(card: Card | null, multistrip: boolean = false) {
@@ -174,11 +189,68 @@ export class MainComponent implements OnInit {
     }
   }
 
+  updateDrawerHeight(height: number) {
+    if (this.layout.mobile) {
+      console.log('UPDATE DRAWER HEIGHT', height);
+      this.mapComponent?.queueAction((map) => map.flyTo({
+          center: this.map.getCenter(),
+          zoom: this.map.getZoom(),
+          padding: {top: 0, left: 0, bottom: height, right: 0}
+        }, {internal: true, kind: 'update-drawer-height'}
+      ), 'update-drawer-height');
+    }
+  }
+
+  resizeMap() {
+    timer(400).subscribe(() => {this.map.resize();});
+  }
+
+  // State
+  set headerActive(active: boolean) {
+    this._headerActive = active;
+    if (active) {
+      this.handleEvent('map-click');
+    }
+  }
+
+  get headerActive(): boolean {
+    return this._headerActive;
+  }
+
+  closeDisclaimer(showAgain=true) {
+    if (!showAgain) {
+      window.localStorage.setItem(this.DISMISSED_DISCLAIMER, 'true');
+    }
+    this.disclaimerVisible = false;
+  }
+
+  clearCardSelections() {
+    this.state.card = this.state.cards = null;
+  }
+
+  clearHovers() {
+    this.hoverMulti = this.hoverCard = null;
+  }
+
+  // Event handling
+  mapSelectedPoints(cards: Card[]) {
+    if (cards.length > 0) {
+      this.modifier = 'preview';
+      this.state.cards = cards;
+    } else {
+      this.handleEvent('map-click');
+    }
+  }
+
+  mapHoverPoints(cards: Card[]) {
+    this.mapHoverPointsStream.next(cards);
+  }
+
   selectMulti(cards: Card[] | null) {
     console.log('MAIN SELECT MULTI',this.multiState, cards && cards.length ? cards[0].point_id : 'pointless');
     const hasCards = cards && cards.length > 0;
     if (hasCards) {
-      this.hoverMulti = this.hoverCard = null;
+      this.clearHovers();
       const card = (cards as Card[])[0];
       if (this.multiState === MultiState.None) {
         this.saveView();
@@ -186,18 +258,22 @@ export class MainComponent implements OnInit {
         this.drawerState = DrawerState.Peek;
       }
       timer(0).subscribe(() => {
-        this.mapComponent?.queueAction((map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
+        this.mapComponent?.queueAction(
+          (map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}),
+          'select-item-multi-' + card.branch_geometry
+        );
       });
       this.popup(card, true);
       this.search.closeFilter.next();
+      this.selectedMulti = cards;
     } else {
       if (this.multiState !== MultiState.None) {
         this.popView();
         this.multiState = MultiState.None;
         this.popup(null);
       }
+      this.selectedMulti = null;
     }
-    this.selectedMulti = cards;
     this.modifier = null;
     this.setLabelsFilter();
   }
@@ -205,7 +281,7 @@ export class MainComponent implements OnInit {
   selectCard(card: Card | null) {
     console.log('MAIN SELECT CARD', this.cardState, card?.card_id, this.modifier);
     if (card) {
-      this.hoverMulti = this.hoverCard = null;
+      this.clearHovers();
       if (this.cardState === CardState.None) {
         this.saveView();
         if (this.modifier === 'preview') {
@@ -222,7 +298,10 @@ export class MainComponent implements OnInit {
         this.headerState = HeaderState.Hidden;
       }
       timer(0).subscribe(() => {
-        this.mapComponent?.queueAction((map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}));
+        this.mapComponent?.queueAction(
+          (map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}),
+          'select-item-' + card.branch_geometry
+        );
       });
       if (this.multiState === MultiState.None) {
         this.popup(card);
@@ -243,15 +322,7 @@ export class MainComponent implements OnInit {
     this.setLabelsFilter();
   }
 
-  setMap(map: MapComponent) {
-    this.mapComponent = map;
-    this.map = map.map;
-    this.setLabelsFilter();
-    console.log('LOADED');
-    this.loaded.next();
-  }
-
-  setLabelsFilter() {
+  setLabelsFilter() { //TODO: Needs fixing, as it overrides the filter set in another location
     const non_existent = 'nonexistent';
     let record_id = non_existent;
     if (this.selectedMulti) {
@@ -259,24 +330,23 @@ export class MainComponent implements OnInit {
     } else if (this.selectedCard) {
       record_id = this.selectedCard.point_id
     }
-    console.log('Filtering cards for', record_id);
     if (this.layout.desktop) {
       this.map?.setFilter('labels-active', ['==', ['get', 'point_id'], non_existent]);
     } else {
       this.map?.setFilter('labels-active', ['==', ['get', 'point_id'], record_id]);
     }
-    this.map?.setFilter('labels-off', ['!=', ['get', 'point_id'], record_id]);
+    this.mapComponent.labelsOffFilter = ['!=', ['get', 'point_id'], record_id];
   }
 
   handleEvent(event: string) {
     console.log('EV', this.cardState, event, this.drawerState);
     if (this.cardState === CardState.Preview) {
       if (event === 'click' || event === 'up' || event === 'close-card' || event === 'map-click') {
-        this.state.cards = null;
+        this.clearCardSelections();
       }
     } else if (this.multiState === MultiState.Preview) {
       if (event === 'click' || event === 'up' || event === 'map-click') {
-        this.state.cards = null;
+        this.clearCardSelections();
       }
       if (event === 'close-card') {
         this.state.card = null;
@@ -288,7 +358,7 @@ export class MainComponent implements OnInit {
         }
       }
       if (event === 'map-click' || event === 'close-card') {
-        this.state.cards = null;
+        this.clearCardSelections();
       }
     } else if (this.cardState === CardState.None) {
       if (event === 'click') {
@@ -331,11 +401,12 @@ export class MainComponent implements OnInit {
     }
   }
 
+  // View save / restore
   saveView() {
     if (!this.savedView) {
       this.savedView = {
         drawerState: this.drawerState,
-        geo: this.state._state.geo || null
+        geo: null, //this.state._state.geo || null
       }
     }
   }
@@ -348,44 +419,14 @@ export class MainComponent implements OnInit {
         const center: mapboxgl.LngLatLike = [geo[0], geo[1]];
         const zoom = geo[2];
         timer(0).subscribe(() => {
-          this.mapComponent?.queueAction((map) => map.flyTo({center, zoom}, {internal: true, kind: 'select-item'}));
+          this.mapComponent?.queueAction(
+            (map) => map.flyTo({center, zoom}, {internal: true, kind: 'select-item'}),
+            'pop-view-' + geo
+          );
         });
       }
       this.savedView = null;
     }
   }
 
-  updateDrawerHeight(height: number) {
-    if (this.layout.mobile) {
-      console.log('UPDATE DRAWER HEIGHT', height);
-      this.mapComponent?.queueAction((map) => map.flyTo({
-          center: this.map.getCenter(),
-          zoom: this.map.getZoom(),
-          padding: {top: 0, left: 0, bottom: height, right: 0}
-        }, {internal: true, kind: 'update-drawer-height'}
-      ));
-    }
-  }
-
-  set headerActive(active: boolean) {
-    this._headerActive = active;
-    if (active) {
-      this.handleEvent('map-click');
-    }
-  }
-
-  get headerActive(): boolean {
-    return this._headerActive;
-  }
-
-  closeDisclaimer(showAgain=true) {
-    if (!showAgain) {
-      window.localStorage.setItem(this.DISMISSED_DISCLAIMER, 'true');
-    }
-    this.disclaimerVisible = false;
-  }
-
-  resizeMap() {
-    timer(400).subscribe(() => {this.map.resize();});
-  }
 }

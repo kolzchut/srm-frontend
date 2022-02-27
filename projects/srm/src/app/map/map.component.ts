@@ -3,7 +3,7 @@ import { MapboxService } from '../mapbox.service';
 
 import { ReplaySubject, Subject, timer } from 'rxjs';
 import { throttleTime, filter } from 'rxjs/operators';
-import { StateService } from '../state.service';
+import { StateService, CenterZoomType } from '../state.service';
 import { ALL_CATEGORIES, CATEGORY_COLORS } from '../common/consts';
 import { Card } from '../common/datatypes';
 import { Point } from 'geojson';
@@ -12,9 +12,14 @@ import { HttpClient } from '@angular/common/http';
 import { SearchService } from '../search.service';
 import { PlatformService } from '../platform.service';
 import { LayoutService } from '../layout.service';
+import { ApiService } from '../api.service';
 
 // import * as mapboxgl from 'mapbox-gl';
 declare var mapboxgl: any;
+type MoveQueueItem = {
+  action: (map: mapboxgl.Map) => void,
+  description: string
+};
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -30,21 +35,24 @@ export class MapComponent implements OnInit, AfterViewInit {
   @ViewChild('map') mapEl: ElementRef;
 
   map: mapboxgl.Map;
-  moveEvents = new Subject<[number, number, number]>();
+  moveEvents = new Subject<CenterZoomType>();
   markers: any = {};
   markersOnScreen: any = {};
   clusterData = new ReplaySubject<any>(1);
   addedImages: {[key: string]: boolean} = {};
+  pointFilter: any = {};
 
-  moveQueue: ((map: mapboxgl.Map) => void)[] = [];
+  moveQueue: MoveQueueItem[] = [];
+  expectedMoves = new Set();
 
   ZOOM_THRESHOLD = 10;
   ALL_CATEGORIES = ALL_CATEGORIES; 
 
-  constructor(private mapboxService: MapboxService, private state: StateService, private http: HttpClient, private search: SearchService, 
+  constructor(private mapboxService: MapboxService, private state: StateService, 
+              private http: HttpClient, private search: SearchService, private api: ApiService,
               private platform: PlatformService, private layout: LayoutService) {
     this.moveEvents.subscribe(centerZoom => {
-      state.updateCenterZoom(centerZoom, true);
+      state.updateCenterZoom(centerZoom);
     });
     this.platform.browser(() => {
       this.http.get(environment.clusterDataURL).subscribe(data => {
@@ -66,7 +74,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
       this.mapboxService.init.subscribe(() => {
-        this,this.initialize();
+        this.initialize();
       });
   }
 
@@ -92,7 +100,6 @@ export class MapComponent implements OnInit, AfterViewInit {
         // Handle filter changes and apply on map
         // Listen for changes in geo view
         this.state.geoChanges.pipe(
-          filter((state) => !state.skipGeoUpdate),
           throttleTime(500),
         ).subscribe(state => {
           if (this.map) {
@@ -105,10 +112,13 @@ export class MapComponent implements OnInit, AfterViewInit {
                     zoom: geo[2],
                     animate: !first
                   }, {internal: !first, kind: 'centering'}
-                ));
+                ), 'internal-centering-' + geo);
               } else if (geo.length === 2) {
                 console.log('FITTING BOUNDS', geo);
-                this.queueAction((map) => map.fitBounds(geo as mapboxgl.LngLatBoundsLike, {},));
+                this.queueAction(
+                  (map) => map.fitBounds(geo as mapboxgl.LngLatBoundsLike, {},),
+                  'fit-bounds-' + geo
+                );
               }
             }
             first = false;
@@ -191,7 +201,6 @@ export class MapComponent implements OnInit, AfterViewInit {
             });            
             this.map.on('render', () => {
               if (!this.map.isSourceLoaded('cluster_source')) return;
-              // console.log('RENDERING!');
               const newMarkers: any = {};
               const features = this.map.querySourceFeatures('cluster_source');
               // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
@@ -228,20 +237,22 @@ export class MapComponent implements OnInit, AfterViewInit {
                     center: center,
                     zoom: 10.5
                   }
-                ));
+                ), 'cluster-click-' + center);
               }
             });
             this.search.point_ids.subscribe(ids => {
               if (ids) {
-                const filter = ['in', ['get', 'point_id'], ['literal', ids]];
-                for (const layer of ['points-on', 'points-stroke-on', 'labels-off']) {
-                  const ret = this.map.setFilter(layer, filter);
+                this.pointFilter.searchPoints = [['in', ['get', 'point_id'], ['literal', ids]]];
+                for (const layer of ['points-on', 'points-stroke-on']) {
+                  this.map.setFilter(layer, this.pointFilter.searchPoints);
                 }  
               } else {
-                for (const layer of ['points-on', 'points-stroke-on', 'labels-off']) {
+                this.pointFilter.searchPoints = null;
+                for (const layer of ['points-on', 'points-stroke-on']) {
                   this.map.setFilter(layer, null);
-                }  
+                }
               }
+              this.setLabelsOffFilter();
               this.clusterData.subscribe(data => {
                 let features: any[] = data.features;
                 let newData: GeoJSON.FeatureCollection = data;
@@ -291,15 +302,16 @@ export class MapComponent implements OnInit, AfterViewInit {
             const internal = (event as any).internal;
             if (!internal) {
               this.state.latestBounds = this.map?.getBounds();
-              console.log('MOVED', event, internal, this.state.latestBounds);
-              this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
-            } else {
-              // console.log('MOVED INTERNALLY', event, internal);
+              let geo: CenterZoomType = [this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()];
+              geo = geo.map((x) => this.api.coord(x)) as CenterZoomType;
+              this.expectedMoves.add('internal-centering-' + geo);
+              // console.log('ACTION-INT', 'internal-centering-' + geo);
+              this.moveEvents.next(geo);
             }
             if (this.moveQueue.length > 0) {
-              const action = this.moveQueue.shift();
+              const {action, description} = this.moveQueue.shift() as MoveQueueItem;
               if (!!action) {
-                console.log('PULLING ACTION from QUEUE');
+                // console.log('ACTION-QQ', description);
                 action(this.map);  
               }
             }
@@ -396,11 +408,34 @@ export class MapComponent implements OnInit, AfterViewInit {
       }" fill="${color}" />`;
   }
 
-  queueAction(action: (map: mapboxgl.Map) => void) {
+  queueAction(action: (map: mapboxgl.Map) => void, description: string) {
+    if (this.expectedMoves.has(description)) {
+      // console.log('ACTION-SKIP', description);
+      this.expectedMoves.delete(description);
+      return;
+    }
     if (this.moveQueue.length === 0 && !this.map.isMoving()) {
+      // console.log('ACTION-IMM', description);
       action(this.map);
     } else {
-      this.moveQueue.push(action);
+      this.moveQueue.push({action, description});
     }
+  }
+
+  setLabelsOffFilter() {
+    const terms = [];
+    if (this.pointFilter.externalLabelsOff) {
+      terms.push(this.pointFilter.externalLabelsOff);
+    }
+    if (this.pointFilter.searchPoints) {
+      terms.push(this.pointFilter.searchPoints);
+    }
+    const filter = ['all', ...terms];
+    this.map.setFilter('labels-off', filter);
+  }
+
+  set labelsOffFilter(value: any[]) {
+    this.pointFilter.externalLabelsOff = value;
+    this.setLabelsOffFilter();
   }
 }

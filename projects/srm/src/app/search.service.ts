@@ -44,7 +44,7 @@ export class SearchService {
       tap(() => {
         this.loading = true;
       }),
-      throttleTime(300),
+      throttleTime(300, undefined, {leading: true, trailing: true }),
       switchMap(query => {
         if (query && query.length > 0) {
           this.searchedQueries.next(query);
@@ -94,7 +94,6 @@ export class SearchService {
           this.latestCards = [];
           this.latestFetch = 0;
           this.visibleCards.next(this.latestCards);
-          console.log('GET CARDS...');
           return forkJoin([
             this.api.getCards(state, this.state.latestBounds),
             this.api.countCategories(state, this.state.latestBounds),
