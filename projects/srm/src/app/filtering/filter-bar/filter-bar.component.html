@@ -1,5 +1,5 @@
 <div class='wrapper' [class.materialized]='materialized'>
-    <app-filter-button (clicked)='active = !active'></app-filter-button>
+    <app-filter-button [materialized]='materialized' [count]='situations.activeSituationCount' (clicked)='active = !active'></app-filter-button>
     <div class='scrollable'>
         <!-- <div class='response-toggle' *ngIf='responseFilter' [style.background]='responseColor' (click)='state.responseFilter = null'>
             <span>{{ responseFilter.name }}</span>

@@ -12,6 +12,10 @@
     cursor: pointer;
     pointer-events: all;
 
+    &.materialized {
+        background: @color-gray-6;
+    }
+
     > img {
         width: 24px;
         height: 24px;
@@ -21,5 +25,11 @@
         font-size: 16px;
         color: @color-gray-1;
         white-space: nowrap;
+        &.label {
+            font-weight: 600;
+        }
+        &.count {
+            font-weight: 400;
+        }
     }
 }

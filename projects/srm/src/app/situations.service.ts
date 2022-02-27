@@ -24,7 +24,7 @@ export class SituationsService {
   byId: {[key: string]: TaxonomyGroup} = {};
   editors: TaxonomyGroupEditor[] = [];
   latestState: string[][] = [];
-
+  activeSituationCount = 0;
 
   constructor(private http: HttpClient, private state: StateService, private platform: PlatformService) {
     this.platform.browser(() => {
@@ -38,9 +38,11 @@ export class SituationsService {
         ).subscribe((state: State) => {
           const situations = state.situations || [];
           this.activeSituations = {};
+          this.activeSituationCount = 0;
           situations.forEach(situation => {
             const group = SITUATIONS_PREFIX + situation[0];
             const items = situation.slice(1).map(item => SITUATIONS_PREFIX + item).map(item => this.byId[item]);
+            this.activeSituationCount += items.length;
             this.activeSituations[group] = items;
           });
         });
@@ -154,5 +156,9 @@ export class SituationsService {
     this.latestState = Object.keys(this.activeSituations)
       .map(key => [key.slice(SITUATIONS_PREFIX.length), ...this.activeSituations[key].map(i => i.slug.slice(SITUATIONS_PREFIX.length))]);
     this.state.situations = this.latestState;
+    this.activeSituationCount = 0;
+    this.latestState.forEach(situation => {
+      this.activeSituationCount += situation.length - 1;
+    });
   }
 }
