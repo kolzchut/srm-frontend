@@ -121,11 +121,11 @@ export class StateService {
     );
     
     // Select card / cards when the cardId/pointId changes
-    this.cardChanges.subscribe((state) => {
-      this.selectCardById(state.cardId || null);
-    });
     this.pointIdChanges.subscribe((state) => {
       this.selectCardsByPointId(state.pointId || null);
+    });
+    this.cardChanges.subscribe((state) => {
+      this.selectCardById(state.cardId || null);
     });
   }
 

@@ -84,6 +84,39 @@
             }
         }
     }
+
+    .situations {
+        margin: 10px 0;
+        display: flex;
+        flex-flow: column;
+        gap: 8px;
+        align-items: flex-start;
+        
+        & > span {
+            .font-rag-sans;
+            color: @color-gray-1;
+            font-family: RAG-Sans-1.18;
+            font-size: 13px;
+        }
+        .situations-list {
+            display: flex;
+            flex-flow: row wrap;
+            gap: 2px;
+            .situation {
+                height: 32px;
+                padding: 0 8px;
+                background: #FFFFFF;
+                border: 1px solid @color-gray-5;
+                border-radius: 4px;
+                .font-rag-sans;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: @color-gray-1;
+            }
+        }
+    }
 }
 
 .buttons {

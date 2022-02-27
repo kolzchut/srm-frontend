@@ -7,7 +7,7 @@
     <app-map *ngIf='layout.mobile' (points)='mapSelectedPoints($event)' (map)='setMap($event)'></app-map>
     <app-drawer [state]='drawerState' (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' [class.away]='disclaimerVisible || infoPage'>
         <ng-container ngProjectAs='strip'>
-            <app-strip-single *ngIf='selectedCard && drawerState !== DrawerState.Most' 
+            <app-strip-single *ngIf='selectedCard && cardState === CardState.Preview' 
                 [card]='selectedCard' (selected)='state.card = $event'
                 (closed)='handleEvent("map-click")'
             ></app-strip-single>
@@ -36,7 +36,9 @@
             </ng-container>
             <ng-container *ngIf='drawerState !== DrawerState.Presets'>
                 <app-service-list *ngIf='cardState !== CardState.Full' (selected)='state.card = $event' [cardList]='selectedMulti'></app-service-list>
-                <app-single-service *ngIf='cardState === CardState.Full && selectedCard' [card]='selectedCard'></app-single-service>        
+                <div class='single-service'>
+                    <app-single-service *ngIf='cardState === CardState.Full && selectedCard' [card]='selectedCard'></app-single-service>        
+                </div>
             </ng-container>
         </ng-container>
 
@@ -72,8 +74,10 @@
             </ng-container> 
             <ng-container *ngIf='drawerState !== DrawerState.Presets'>
                 <app-service-list *ngIf='!selectedCard' (selected)='state.card = $event' [cardList]='selectedMulti' (hover)='mapHoverPoints($event ? [$event] : [])'></app-service-list>
-                <div  *ngIf='!!selectedCard' class='close-button' (click)='$event.stopPropagation(); handleEvent("close-card")'></div>
-                <app-single-service *ngIf='!!selectedCard' [card]='selectedCard'></app-single-service>    
+                <div class='single-service' *ngIf='!!selectedCard'>
+                    <div class='close-button' (click)='$event.stopPropagation(); handleEvent("close-card")'></div>
+                    <app-single-service *ngIf='!!selectedCard' [card]='selectedCard'></app-single-service>                            
+                </div>
             </ng-container>
         </ng-container>
     </app-drawer>

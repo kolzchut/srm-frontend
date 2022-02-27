@@ -8,6 +8,12 @@
     <app-card-action kind='address' *ngIf='card.branch_address' [display]='card.branch_address' [action]='geoLink()'></app-card-action>
 </div>
 <div class='content'>
+    <div class='situations'>
+        <span i18n>השירות מתאים עבור:</span>
+        <div class='situations-list'>
+            <div class='situation' *ngFor='let situation of card.situations'><span>{{situation.name}}</span></div>
+        </div>
+    </div>
     <div class='description' *ngIf='card.service_description'>{{card.service_description}}</div>
     <app-card-tags [card]='card' [big]='true'></app-card-tags>    
 </div>

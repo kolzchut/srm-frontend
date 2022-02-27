@@ -218,18 +218,6 @@
             width: 75px;
         }
     }
-    .close-button {
-        width: 48px;
-        height: 48px;
-        border-radius: 24px;
-
-        background-color: @color-white;
-        background-image: url(../../assets/img/icon-arrow-right.svg);
-        .background-image;
-        background-size: 24px;
-
-        cursor: pointer;
-    }
 
     app-menu {
         position: absolute;
@@ -245,4 +233,27 @@
         height: 100%;
         z-index: 4;
     }
+
+    .single-service {
+        min-height: 100%;
+        .close-button {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+    
+            background-color: @color-white;
+            background-image: url(../../assets/img/icon-arrow-right.svg);
+            .background-image;
+            background-size: 24px;
+    
+            cursor: pointer;
+        }
+        .desktop({
+            background: linear-gradient(180deg, #FFFFFF 56px + 60px, @color-gray-7 56px + 120px);
+        });    
+        .mobile({
+            background: linear-gradient(180deg, #FFFFFF 60px, @color-gray-7 120px);
+        });    
+    }
+
 }

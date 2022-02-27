@@ -62,7 +62,7 @@ export class MainComponent implements OnInit {
 
   menu = false;
   infoPage: string | null = null;
-  modifier: string | null = null;
+  waitPreview: string | null = null;
   
   constructor(
         public state: StateService, public search: SearchService,
@@ -235,7 +235,9 @@ export class MainComponent implements OnInit {
   // Event handling
   mapSelectedPoints(cards: Card[]) {
     if (cards.length > 0) {
-      this.modifier = 'preview';
+      if (cards.length === 1) {
+        this.waitPreview = cards[0].card_id;
+      }
       this.state.cards = cards;
     } else {
       this.handleEvent('map-click');
@@ -274,17 +276,16 @@ export class MainComponent implements OnInit {
       }
       this.selectedMulti = null;
     }
-    this.modifier = null;
     this.setLabelsFilter();
   }
 
   selectCard(card: Card | null) {
-    console.log('MAIN SELECT CARD', this.cardState, card?.card_id, this.modifier);
+    console.log('MAIN SELECT CARD', this.cardState, card?.card_id, this.waitPreview);
     if (card) {
       this.clearHovers();
       if (this.cardState === CardState.None) {
         this.saveView();
-        if (this.modifier === 'preview') {
+        if (this.waitPreview === card.card_id) {
           this.cardState = CardState.Preview;
           this.drawerState = DrawerState.Peek;
         } else {
@@ -307,6 +308,7 @@ export class MainComponent implements OnInit {
         this.popup(card);
       }
       this.search.closeFilter.next();
+      this.waitPreview = null;
     } else {
       if (this.multiState === MultiState.None) {
         this.popView();
@@ -318,7 +320,6 @@ export class MainComponent implements OnInit {
       this.cardState = CardState.None;
     }
     this.selectedCard = card;
-    this.modifier = null;
     this.setLabelsFilter();
   }
 
