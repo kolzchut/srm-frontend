@@ -20,6 +20,7 @@ export type TaxonomyGroupEditor = {
 export class SituationsService {
 
   taxonomy = new ReplaySubject<TaxonomyGroup[]>(1);
+  stateSituations = new ReplaySubject<State>(1);
   activeSituations: {[key: string]: TaxonomyGroup[]} = {};
   byId: {[key: string]: TaxonomyGroup} = {};
   editors: TaxonomyGroupEditor[] = [];
@@ -28,14 +29,15 @@ export class SituationsService {
 
   constructor(private http: HttpClient, private state: StateService, private platform: PlatformService) {
     this.platform.browser(() => {
+      this.state.situationChanges.subscribe(state => {
+        this.stateSituations.next(state);
+      });
       this.http.get(environment.taxonomySituationsURL).subscribe((data) => {
         const taxonomies = data as TaxonomyGroup[];
         this.processTaxonomies(taxonomies);
         this.taxonomy.next(taxonomies);
         this.taxonomy.complete();
-        this.state.state.pipe(
-          filter(state => JSON.stringify(state.situations) !== JSON.stringify(this.latestState))
-        ).subscribe((state: State) => {
+        this.stateSituations.subscribe((state: State) => {
           const situations = state.situations || [];
           this.activeSituations = {};
           this.activeSituationCount = 0;

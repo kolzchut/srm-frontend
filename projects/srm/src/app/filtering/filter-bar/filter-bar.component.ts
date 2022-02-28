@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { switchMap, tap } from 'rxjs/operators';
 import { getResponseIdColor } from '../../common/consts';
 import { Response } from '../../common/datatypes';
@@ -12,12 +12,11 @@ import { StateService } from '../../state.service';
   templateUrl: './filter-bar.component.html',
   styleUrls: ['./filter-bar.component.less']
 })
-export class FilterBarComponent implements OnInit {
+export class FilterBarComponent implements OnChanges {
 
+  @Input() active = false;
   @Input() forceOpaque: boolean = false;
   @Output() activated = new EventEmitter<string | null>();
-
-  _active: boolean = false;
 
   responseFilter: Response | null = null;
   responseMap: { [key: string]: Response; };
@@ -42,16 +41,13 @@ export class FilterBarComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
+    console.log('FB changed', this.active);
   }
 
-  set active(value: boolean) {
-    this._active = value;
+  activate(value: boolean) {
+    console.log('ACTIVATE', value);
     this.activated.next(value ? 'filters': null);
-  }
-
-  get active(): boolean {
-    return this._active;
   }
 
   get materialized(): boolean {
