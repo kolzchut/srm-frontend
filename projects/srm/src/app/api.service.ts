@@ -99,7 +99,7 @@ export class ApiService {
     ));
   }
 
-  setParams(params: any, state: State, bounds: LngLatBounds): any {
+  setParams(params: any, state: State, bounds?: LngLatBounds): any {
     const baseFilter: any = {};
     if (bounds) {
       baseFilter.branch_geometry__bounded = this.boundsFilter(bounds);
@@ -134,6 +134,21 @@ export class ApiService {
     const params: any = {size: 1000, order: 'point_id'};
     if ((state.responseId && state.responseId.length > 0)|| (state.situations && state.situations.length > 0)) {
       this.setParams(params, state, bounds);
+      return this.http.get(environment.pointsURL, {params}).pipe(
+        map((res: any) => {
+          const results = res as QueryPointsResult;
+          return results;
+        })
+      );
+    } else {
+      return from([null]);
+    }
+  }
+
+  getPointsForSituations(state: State): Observable<QueryPointsResult | null> {
+    const params: any = {size: 1000, order: 'point_id'};
+    if (state.responseId && state.responseId.length > 0) {
+      this.setParams(params, {responseId: state.responseId});
       return this.http.get(environment.pointsURL, {params}).pipe(
         map((res: any) => {
           const results = res as QueryPointsResult;

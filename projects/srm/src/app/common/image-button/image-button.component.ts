@@ -8,6 +8,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class ImageButtonComponent implements OnInit {
 
   @Input() imageUrl: string = '';
+  @Input() disabled = false;
   @Output() clicked = new EventEmitter<Event>();
 
   constructor() { }

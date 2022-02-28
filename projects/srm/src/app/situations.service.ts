@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from, ReplaySubject, timer } from 'rxjs';
-import { filter, first } from 'rxjs/operators';
+import { filter, first, switchMap } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+import { ApiService } from './api.service';
 import { SITUATIONS_PREFIX } from './common/consts';
 import { TaxonomyGroup } from './common/datatypes';
 import { PlatformService } from './platform.service';
@@ -22,15 +23,29 @@ export class SituationsService {
   taxonomy = new ReplaySubject<TaxonomyGroup[]>(1);
   stateSituations = new ReplaySubject<State>(1);
   activeSituations: {[key: string]: TaxonomyGroup[]} = {};
+  enabledSituations: Set<string> | null = null;
   byId: {[key: string]: TaxonomyGroup} = {};
   editors: TaxonomyGroupEditor[] = [];
   latestState: string[][] = [];
   activeSituationCount = 0;
 
-  constructor(private http: HttpClient, private state: StateService, private platform: PlatformService) {
+  constructor(private http: HttpClient, private state: StateService, private platform: PlatformService, private api: ApiService) {
     this.platform.browser(() => {
       this.state.situationChanges.subscribe(state => {
         this.stateSituations.next(state);
+      });
+      this.state.responseChanges.pipe(
+        switchMap((state) => this.api.getPointsForSituations(state))
+      ).subscribe((points) => {
+        if (points !== null) {
+          this.enabledSituations = new Set();
+          points.search_results.forEach(result => {
+            result.source.situation_ids.forEach(s => this.enabledSituations?.add(s));
+          });
+        } else {
+          this.enabledSituations = null;
+        }
+        console.log('Available situations:', this.enabledSituations);
       });
       this.http.get(environment.taxonomySituationsURL).subscribe((data) => {
         const taxonomies = data as TaxonomyGroup[];
@@ -63,6 +78,10 @@ export class SituationsService {
 
   isActive() {
     return Object.keys(this.activeSituations).length > 0;
+  }
+
+  isEnabled(slug: string) {
+    return this.enabledSituations === null || this.enabledSituations.has(slug);
   }
 
   activeGroup(groupId: string) {

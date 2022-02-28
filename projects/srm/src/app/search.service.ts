@@ -97,7 +97,7 @@ export class SearchService {
           return forkJoin([
             this.api.getCards(state, this.state.latestBounds),
             this.api.countCategories(state, this.state.latestBounds),
-            this.api.getPoints(state, this.state.latestBounds)
+            this.api.getPoints(state, this.state.latestBounds),
           ]);
         })
       ).subscribe(([cards, counts, points]) => {
