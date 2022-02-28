@@ -1,17 +1,14 @@
-<div class='header'>
-    <div class='group-name'>{{ situations.nameOf(group) }}</div>
-    <div class='size-of' *ngIf='situations.sizeOfGroup(groupId) > 1'>
-        <span>{{ situations.sizeOfGroup(groupId) }}</span>&nbsp;<span i18n>סינונים פעילים</span>
-    </div>
-</div>
 <div class='no-filtering' *ngIf='!situations.activeGroup(groupId)' (click)='situations.addEditor(group)'>
-    <span i18n>ללא סינון</span>
+    <span>{{ situations.nameOf(group) }}</span>
 </div>
 <div class='filtering' *ngIf='situations.activeGroup(groupId)' (click)='situations.addEditor(group)'>
+    <span>{{ situations.nameOf(group) }}:</span>
     <div class='faded-scroll' (click)='$event.stopPropagation()'>
-        <span class='filtered-tag' *ngFor='let situation of situations.forGroup(groupId)' (click)='situations.check(situation)'>
-            <span>{{ situations.nameOf(situation) }}</span>
-            <img src='assets/img/icon-circle-x.svg'>
-        </span>
+        <div class='faded-scroll-content'>
+            <span class='filtered-tag' *ngFor='let situation of situations.forGroup(groupId)' (click)='situations.addEditor(group)'>
+                <span>{{ situations.nameOf(situation) }}:</span>
+                <img src='assets/img/icon-circle-x.svg' (click)='situations.check(situation); $event.stopPropagation()'>
+            </span>    
+        </div>
     </div>
 </div>

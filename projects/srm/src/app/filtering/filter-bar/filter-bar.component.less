@@ -13,6 +13,8 @@
         align-items: stretch;
         padding: 8px;
         gap: 8px;
+        height: 48px;
+        transition: padding 0.3s ease-in-out;
 
         pointer-events: none;
 
@@ -31,6 +33,23 @@
             gap: 8px;
             padding: 0;
             height: 100%;
+            transform: translateX(0);
+            transition: transform 0.3s ease-in-out;
+            transition-delay: 0.3s;
+        }
+
+        &.active {
+            padding: 0;
+            .scrollable {
+                transform: translateX(-300%);
+                transition-delay: 0s;
+            }
+        }
+
+        &:not(.materialized) {
+            .scrollable {
+                transform: translateX(-300%);
+            }
         }
 
         .response-toggle {

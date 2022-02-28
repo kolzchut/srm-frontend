@@ -6,12 +6,14 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./filter-button.component.less'],
   host: {
     '[class.materialized]': 'materialized',
+    '[class.active]': 'active',
     '(click)': 'clicked.next($event)'
   }
 })
 export class FilterButtonComponent implements OnInit {
 
   @Input() materialized = false;
+  @Input() active = false;
   @Input() count = 0;
 
   @Output() clicked = new EventEmitter<Event>();

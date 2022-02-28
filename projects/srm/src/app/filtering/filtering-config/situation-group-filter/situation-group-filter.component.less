@@ -6,36 +6,13 @@
     align-items: stretch;
     width: 100%;
     gap: 8px;
-
-    .header {
-        display: flex;
-        flex-flow: row;
-        align-items: center;
-        justify-content: space-between;
     
-        .group-name {
-            .font-rag-sans;
-            font-size: 16px;
-            font-weight: 400;
-            color: @color-gray-1;            
-        }
+    .desktop({
+        &:hover {
+            .card-hover-shadow;
+        }    
+    });
 
-        .size-of {
-            background: @color-gray-6;
-            border-radius: 4px;
-            display: flex;
-            flex-flow: row;
-            align-items: center;
-            padding: 0 5px;
-
-            span {
-                .font-rag-sans;
-                font-size: 13px;
-                color: @color-gray-1;
-            }
-        }
-    }
-    
     .filtering-box {
         border-radius: 4px;
         display: flex;
@@ -59,61 +36,90 @@
         span {
             .font-rag-sans;
             font-size: 16px;
-            color: @color-gray-3;
+            color: @color-gray-1;
         }
     }
 
     .filtering {
-        background: @color-gray-6;
+        background: @color-white;
         .filtering-box;
-        box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
-        padding-left: 36px;
+        .card-shadow-card;
+        // box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+        // padding-left: 36px;
         position: relative;
+        padding-left: 30px;
+
+        & > span {
+            .font-rag-sans;
+            font-size: 16px;
+            color: @color-gray-1;
+            font-weight: 600;
+            white-space: nowrap;
+        }
 
         .faded-scroll {
             position: relative;
             height: 100%;
             width: 100%;
-            display: flex;
-            flex-flow: row;
-            gap: 8px;
-            align-items: center;
-            justify-content: flex-start;
-            overflow-x: scroll;
-            cursor: initial;
-            .no-scrollbars;
+            overflow: hidden;
 
-            .filtered-tag {
+            .faded-scroll-content {
+                height: 100%;
+                width: 100%;
                 display: flex;
                 flex-flow: row;
+                gap: 8px;
                 align-items: center;
-                gap: 4px;
-                height: 24px;
-                padding: 0 4px;
-                background: @color-white;
-                border-radius: 4px;
-                cursor: pointer;
-                white-space: nowrap;
-
-                > span {
+                justify-content: flex-start;
+                overflow-x: scroll;
+                cursor: initial;
+                padding: 0 8px;
+                .no-scrollbars;
+    
+                .filtered-tag {
+                    display: flex;
+                    flex-flow: row;
+                    align-items: center;
+                    gap: 4px;
+                    background: @color-white;
+                    border-radius: 4px;
+                    cursor: pointer;
                     white-space: nowrap;
-                    .font-rag-sans;
-                    font-size: 16px;
-                    color: @color-gray-1;           
-                }
+                    border: 1px solid @color-gray-5;
+                    height: 32px;
+                    padding: 0 4px;
+    
+                    > span {
+                        white-space: nowrap;
+                        .font-rag-sans;
+                        font-size: 16px;
+                        color: @color-gray-1;           
+                    }
+                }        
             }
-        }
-
-        &::after {
-            position: absolute;
-            height: 36px;
-            top: 6px;
-            left: 36px;
-            width: 16px;
-            background: linear-gradient(90deg, #F2F2F2 0%, rgba(242, 242, 242, 0) 100%);
-            z-index: 1;
-            pointer-events: none;
-            content: ' ';
+            &::before {
+                position: absolute;
+                height: 48px;
+                top: 0;
+                right: 0;
+                width: 8px;
+                background: linear-gradient(270deg, #fff 0%, rgba(255, 255, 255, 0) 100%);
+                z-index: 1;
+                pointer-events: none;
+                content: ' ';
+            }
+    
+            &::after {
+                position: absolute;
+                height: 48px;
+                top: 0;
+                left: 0;
+                width: 8px;
+                background: linear-gradient(90deg, #fff 0%, rgba(255, 255, 255, 0) 100%);
+                z-index: 1;
+                pointer-events: none;
+                content: ' ';
+            }    
         }
     }
 }

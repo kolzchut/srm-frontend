@@ -4,6 +4,7 @@
     display: flex;
     flex-flow: row;
     align-items: center;
+    justify-content: center;
     gap: 4px;
     padding: 4px 12px;
     background: @color-white;
@@ -11,9 +12,17 @@
     border-radius: 4px;
     cursor: pointer;
     pointer-events: all;
+    flex: 0 0 auto;
+    min-width: 140px;
+    transition: all 0.3s ease-in-out;
+    transition-property: min-width, height;
 
     &.materialized {
         background: @color-gray-6;
+    }
+
+    &.active {
+        min-width: 100%;
     }
 
     > img {
