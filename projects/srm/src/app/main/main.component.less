@@ -212,6 +212,7 @@
         .desktop({
             box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
             margin-top: 4px;
+            flex-wrap: wrap;
         });
         padding: 12px 16px;
         background-color: @color-white;
@@ -220,6 +221,27 @@
             height: 24px;
             border-radius: 4px;
             width: 75px;
+        }
+        &.expanded {
+            flex-wrap: wrap;
+        }
+        .counts-more {
+            cursor: pointer;
+            padding: 0px 4px;
+            height: 24px;
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            background: @color-gray-7;  
+            border-radius: 4px;
+            span {
+                white-space: nowrap;
+                .font-rag-sans;
+                font-size: 16px;
+                line-height: 21px;
+                display: flex;
+                color: @color-ios-link;
+            }
         }
     }
 

@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { forkJoin, from, Observable, ReplaySubject, Subject } from 'rxjs';
 import { distinctUntilChanged, throttleTime, switchMap, filter, first, tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
-import { CATEGORY_COLORS } from './common/consts';
+import { getResponseCategoryColor } from './common/consts';
 import { Card, CategoryCountsResult, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryResponsesResult, Response, SearchResult } from './common/datatypes';
 import { PlatformService } from './platform.service';
+import { ResponsesService } from './responses.service';
 import { State, StateService } from './state.service';
 
 @Injectable({
@@ -38,7 +39,7 @@ export class SearchService {
   latestFetch = -1;
   _loading = false;
 
-  constructor(private api: ApiService, private state: StateService, private platform: PlatformService) {
+  constructor(private api: ApiService, private state: StateService, private platform: PlatformService, private responseSvc: ResponsesService) {
     this.query.pipe(
       distinctUntilChanged(),
       tap(() => {
@@ -96,27 +97,30 @@ export class SearchService {
           this.visibleCards.next(this.latestCards);
           return forkJoin([
             this.api.getCards(state, this.state.latestBounds),
-            this.api.countCategories(state, this.state.latestBounds),
             this.api.getPoints(state, this.state.latestBounds),
           ]);
         })
-      ).subscribe(([cards, counts, points]) => {
+      ).subscribe(([cards, points]) => {
         console.log(`GOT ${cards.search_counts.cards.total_overall} CARDS`);
         this.loading = false;
         this.latestCards = cards.search_results.map((x) => x.source);
         this.visibleCards.next(this.latestCards);
-        this.visibleCounts.next(
-          CATEGORY_COLORS.map((cc) => {
-            return {
-              id: `human_services:${cc.category}`,
-              category: cc.category,
-              count: counts.search_counts[cc.category].total_overall,
-              color: cc.color
-            };
-          }).filter((x) => x.count > 0).sort((a, b) => b.count - a.count)
-        );
         if (points !== null) {
           this.point_ids.next((points as QueryPointsResult).search_results.map((x) => x.source.point_id));
+          const counts: any = {};
+          points.search_results.forEach((res) => {
+            res.source.response_ids.forEach((id) => {
+              counts[id] = (counts[id] || 0) + 1;
+            });
+          });
+          const visibleCounts = Object.keys(counts).sort((a, b) => counts[b] - counts[a]).map((id) => {
+            const ret: any = {
+              id, category: id.split(':')[1], count: counts[id], display: this.responseSvc.getResponseName(id)
+            };
+            ret.color = getResponseCategoryColor(ret.category);
+            return ret;
+          });
+          this.visibleCounts.next(visibleCounts);
         } else {
           this.point_ids.next(null);
         }

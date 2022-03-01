@@ -44,6 +44,7 @@ export class MainComponent implements OnInit {
   hoverMulti: Card[] | null = null;
 
   _headerActive = false;
+  drawerScrolled = false;
 
   savedView: {drawerState: DrawerState, geo: GeoType} | null = null; //TODO: Remove
 
@@ -55,6 +56,7 @@ export class MainComponent implements OnInit {
   mapHoverPointsStream = new Subject<Card[]>();
 
   counts: CategoryCountsResult[] = [];
+  collapseCounts = 1000;
 
   disclaimerVisible = false;
   miniDisclaimerHidden = false;
@@ -108,14 +110,8 @@ export class MainComponent implements OnInit {
 
     // Track visible counts and generate has-results and no-results events
     this.search.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
-      this.counts = counts.map(c => {
-        return {
-          id: `human_services:${c.category}`,
-          category: c.category,
-          count: c.count,
-          color: c.color,
-        };
-      });
+      this.counts = counts.slice();
+      this.collapseCounts = this.counts.length > 12 ? this.counts.length - 10 : 0;
       this.handleEvent(this.counts.length > 0 ? 'has-results' : 'no-results');
     });
 
@@ -203,6 +199,10 @@ export class MainComponent implements OnInit {
 
   resizeMap() {
     timer(400).subscribe(() => {this.map.resize();});
+  }
+
+  expandCounts() {
+    return !this.drawerScrolled && this.drawerState !== DrawerState.Hidden && this.drawerState !== DrawerState.Peek;
   }
 
   // State

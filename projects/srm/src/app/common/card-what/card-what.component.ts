@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HighlighterService } from '../../highlighter.service';
-import { getResponseCategoryColor, getResponseIdColor } from '../consts';
 import { Card } from '../datatypes';
 
 @Component({

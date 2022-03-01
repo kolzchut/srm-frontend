@@ -14,20 +14,21 @@ export const CATEGORY_COLORS = [
     {category: 'emergency', color: '#a6761d'},
     {category: 'transit', color: '#a6761d'},
     {category: 'food', color: '#a6761d'},
-]
+];
+
 export const MULTIPLE_CATEGORY_COLOR = [
     {category: 'multiple', color: '#4F4F4F'},
 ];
 
 export const ALL_CATEGORIES = [...CATEGORY_COLORS, ...MULTIPLE_CATEGORY_COLOR];
 
-const responseColors: any = CATEGORY_COLORS.reduce((obj: any, cat) => {
+export const CATEGORY_COLORS_MAP: any = CATEGORY_COLORS.reduce((obj: any, cat) => {
     obj[cat.category] = cat.color;  
     return obj
 }, {})
 
 export function getResponseCategoryColor(category: string) {
-    return responseColors[category] || MULTIPLE_CATEGORY_COLOR[0].color;
+    return CATEGORY_COLORS_MAP[category] || MULTIPLE_CATEGORY_COLOR[0].color;
 }
 
 export function getResponseIdColor(id: string) {

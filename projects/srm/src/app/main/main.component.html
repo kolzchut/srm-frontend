@@ -5,7 +5,9 @@
 </div>
 <div class='content layout-mobile' [class.hidden]='headerState === HeaderState.Visible && headerActive'>
     <app-map *ngIf='layout.mobile' (points)='mapSelectedPoints($event)' (map)='setMap($event)'></app-map>
-    <app-drawer [state]='drawerState' (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' [class.away]='disclaimerVisible || infoPage'>
+    <app-drawer [state]='drawerState' 
+                (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
+                [class.away]='disclaimerVisible || infoPage'>
         <ng-container ngProjectAs='strip'>
             <app-strip-single *ngIf='selectedCard && cardState === CardState.Preview' 
                 [card]='selectedCard' (selected)='state.card = $event'
@@ -18,14 +20,17 @@
         </ng-container>
         <ng-container ngProjectAs='content-header'>
             <ng-container *ngIf='drawerState !== DrawerState.Presets'>
-                <div *ngIf='cardState !== CardState.Full' class='counts' (click)='$event.stopPropagation()'>
+                <div *ngIf='cardState !== CardState.Full' class='counts' (click)='$event.stopPropagation()' [class.expanded]='expandCounts()'>
                     <ng-container *ngIf='search.loading'>
                         <div class='loading'></div>
                         <div class='loading'></div>
                         <div class='loading'></div>
                     </ng-container>
                     <ng-container *ngIf='!search.loading'>
-                        <app-chip *ngFor='let chip of counts' [chip]='chip'></app-chip>                        
+                        <app-chip *ngFor='let chip of (collapseCounts ? counts.slice(0, 10) : counts)' [chip]='chip'></app-chip>
+                        <div class='counts-more' *ngIf='collapseCounts' (click)='collapseCounts = 0'>
+                            <span>+{{collapseCounts}}</span>&nbsp;<span i18n>סוגים</span>
+                        </div>
                     </ng-container>
                 </div>
             </ng-container>

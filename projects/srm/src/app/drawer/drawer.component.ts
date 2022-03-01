@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
-import { from, fromEvent, timer } from 'rxjs';
-import { delay, first } from 'rxjs/operators';
+import { animationFrameScheduler, from, fromEvent, timer } from 'rxjs';
+import { delay, distinctUntilChanged, first, map, throttleTime } from 'rxjs/operators';
 import { DrawerState } from '../common/datatypes';
 import { LayoutService } from '../layout.service';
 import { WindowService } from '../window.service';
@@ -15,6 +15,7 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() state: DrawerState = DrawerState.Card;
   @Output() handle = new EventEmitter<string>();
   @Output() height = new EventEmitter<number>();
+  @Output() scrollTop = new EventEmitter<boolean>();
   @ViewChild('handleEl') handleEl: ElementRef;
   @ViewChild('scrollable') scrollable: ElementRef;
 
@@ -84,6 +85,14 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
             this.currentHeight = height;
             this.height.emit(height);
           }
+        });
+        const scrollableEl: HTMLElement = this.scrollable.nativeElement;
+        fromEvent(scrollableEl, 'scroll').pipe(
+          throttleTime(0, animationFrameScheduler),
+          map(() => scrollableEl.scrollTop === 0),
+          distinctUntilChanged(),
+        ).subscribe((top: boolean) => {
+          this.scrollTop.emit(top);
         });
       }
       this.currentHeight = el.clientHeight;
