@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
-import { animationFrameScheduler, from, fromEvent, timer } from 'rxjs';
-import { delay, distinctUntilChanged, first, map, throttleTime } from 'rxjs/operators';
+import { animationFrameScheduler, from, fromEvent, Subscription, timer } from 'rxjs';
+import { delay, distinctUntilChanged, first, map, tap, throttleTime } from 'rxjs/operators';
 import { DrawerState } from '../common/datatypes';
 import { LayoutService } from '../layout.service';
 import { WindowService } from '../window.service';
@@ -25,6 +25,9 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
   startTime: number;
   currentHeight = -1;
   hostHeight: number = 0;
+  moveSub: Subscription | null = null;
+  moveDiff = 0;
+  gesture = false;
 
   constructor(public layout: LayoutService, private window: WindowService, private host: ElementRef) { }
 
@@ -35,23 +38,24 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
 
   calcHeight(): number {
     this.hostHeight = this.host.nativeElement.clientHeight;
+    let ret = 0;
     if (this.layout.desktop) {
-      return this.hostHeight;
-    }
-    if (this.state === DrawerState.Hidden) {
-      return 0;
+      ret = this.hostHeight;
+    } else if (this.state === DrawerState.Hidden) {
+      ret = 0;
     } else if (this.state === DrawerState.Peek) {
-      return 56;
+      ret = 56;
     } else if (this.state === DrawerState.Card) {
-      return 174;
+      ret = 174;
     } else if (this.state === DrawerState.Most) {
-      return 0.75 * this.hostHeight;
+      ret = 0.75 * this.hostHeight;
     } else if (this.state === DrawerState.Full) {
-      return this.hostHeight;
+      ret = this.hostHeight;
     } else if (this.state === DrawerState.Presets) {
-      return 152;
+      ret = 152;
     }
-    return 0;
+    ret -= this.moveDiff;
+    return ret > this.hostHeight ? this.hostHeight : ret;
   }
 
   calcTop(): number {
@@ -66,6 +70,7 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
       if (this.layout.mobile) {
         if ('ontouchstart' in doc) {
           fromEvent(el, 'touchstart').subscribe((ev) => {
+            this.gesture = true;
             this.handleGestureStart(ev as TouchEvent);
             fromEvent(window, 'touchend').pipe(first()).subscribe((ev) => {
               this.handleGestureEnd(ev as TouchEvent);
@@ -89,6 +94,16 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
         const scrollableEl: HTMLElement = this.scrollable.nativeElement;
         fromEvent(scrollableEl, 'scroll').pipe(
           throttleTime(0, animationFrameScheduler),
+          tap(() => {
+            if (this.gesture) {
+              this.gesture = false;
+              this.moveDiff = 0;
+              if (this.moveSub !== null) {
+                this.moveSub.unsubscribe();
+                this.moveSub = null;
+              }
+            }
+          }),
           map(() => scrollableEl.scrollTop === 0),
           distinctUntilChanged(),
         ).subscribe((top: boolean) => {
@@ -113,9 +128,38 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
     } else {
       this.startTime = 0;
     }
+    if (this.moveSub === null) {
+      this.moveSub = fromEvent(window, 'touchmove').pipe(
+        throttleTime(0, animationFrameScheduler),
+      ).subscribe((ev) => {
+        this.handleGestureMove(ev as TouchEvent);
+        console.log('MOVE', this.moveDiff);
+      });
+    }
+  }
+
+  handleGestureMove(event: MouseEvent | TouchEvent): void {
+    let endY: number = this.startY;
+    if (event instanceof MouseEvent) {
+      endY = event.clientY;
+    }
+    else if (event instanceof TouchEvent) {
+      endY = event.changedTouches[0].clientY;
+    }
+    this.moveDiff = endY - this.startY;
   }
 
   handleGestureEnd(event: MouseEvent | TouchEvent): void {
+    this.moveDiff = 0;
+    if (this.moveSub !== null) {
+      this.moveSub.unsubscribe();
+      this.moveSub = null;
+    }
+    if (!this.gesture) {
+      return;
+    }
+    this.gesture = false;
+
     let endY: number = this.startY;
     if (event instanceof MouseEvent) {
       endY = event.clientY;
@@ -127,25 +171,25 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
     const scrollableTop = scrollableEl.getBoundingClientRect().top;
     const scrollableDiff = scrollableTop  + 48 - this.startY;
 
-    const diff = endY - this.startY;
-    if (diff > 100) {
-      if (scrollableEl.scrollTop === 0 || scrollableDiff > 0) {
-        this.handle.emit('down');
-        event.stopPropagation();
-      }
-    } else if (diff < -100) {
-      if (scrollableEl.scrollHeight - scrollableEl.scrollTop - scrollableEl.clientHeight < 1 || scrollableDiff > 0) {
+    timer(0).subscribe(() => {
+      const diff = endY - this.startY;
+      if (diff > 10) {
+        if (scrollableEl.scrollTop === 0 || scrollableDiff > 0) {
+          this.handle.emit('down');
+          event.stopPropagation();
+        }
+      } else if (diff < -10) {
         this.handle.emit('up');
         event.stopPropagation();
+      } else if (this.startTime) {
+        const timeDiff = performance.now() - this.startTime;
+        if (Math.abs(diff) < 50 && timeDiff < 500) {
+          timer(500 - timeDiff).subscribe(() => {
+            this.handle.emit('click');
+          });
+          event.stopPropagation();
+        }
       }
-    } else if (this.startTime) {
-      const timeDiff = performance.now() - this.startTime;
-      if (Math.abs(diff) < 50 && timeDiff < 500) {
-        timer(500 - timeDiff).subscribe(() => {
-          this.handle.emit('click');
-        });
-        event.stopPropagation();
-      }  
-    }
+    });
   }
 }

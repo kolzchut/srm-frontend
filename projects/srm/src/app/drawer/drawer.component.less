@@ -19,9 +19,11 @@
             top: ~'calc(100% - 100px)';
             left: 0;
     
-            transition-property: top max-height;
-            transition-duration: 250ms;
-            transition-timing-function: ease-in-out;
+            &:not(.gesture) {
+                transition-property: top max-height;
+                transition-duration: 250ms;
+                transition-timing-function: ease-in-out;    
+            }
         
             > .strip {
                 position: absolute;
