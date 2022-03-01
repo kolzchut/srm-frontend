@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, from, Observable, ReplaySubject, Subject } from 'rxjs';
-import { distinctUntilChanged, throttleTime, switchMap, filter, first, tap } from 'rxjs/operators';
+import { forkJoin, from, merge, Observable, ReplaySubject, Subject } from 'rxjs';
+import { distinctUntilChanged, throttleTime, switchMap, filter, first, tap, mergeAll } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { getResponseCategoryColor } from './common/consts';
 import { Card, CategoryCountsResult, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryResponsesResult, Response, SearchResult } from './common/datatypes';
@@ -14,6 +14,7 @@ import { State, StateService } from './state.service';
 export class SearchService {
 
   query = new ReplaySubject<string>(1);
+  stateStream = new ReplaySubject<State>(1);
   searchedQueries = new Subject<string>();
   cards = new ReplaySubject<QueryCardsResult | null>(1);
   places = new ReplaySubject<QueryPlacesResult | null>(1);
@@ -72,60 +73,60 @@ export class SearchService {
       this.places.next(places);
       this.responses.next(responses);
     });
+    this.platform.browser(() => {
+      merge(
+        this.state.geoChanges.pipe(
+          throttleTime(2000, undefined, {leading: true, trailing: true}),
+        ),
+        this.state.filterChanges
+      ).subscribe((state: State) => {
+        this.stateStream.next(state);
+      })
+    });
+
   }
 
   init() {
     // Fetching services from the DB once map is loaded
-    const sources: Observable<State>[] = [];
-    this.platform.browser(() => {
-      sources.push(...[
-        this.state.geoChanges.pipe(
-          throttleTime(2000)
-        ),
-        this.state.filterChanges
-      ]);
-    });
-    for (const source of sources) {
-      source.pipe(
-        filter(() => !!this.state.latestBounds),
-        tap(() => {
-          this.loading = true;
-        }),    
-        switchMap((state: State) => {
-          this.latestCards = [];
-          this.latestFetch = 0;
-          this.visibleCards.next(this.latestCards);
-          return forkJoin([
-            this.api.getCards(state, this.state.latestBounds),
-            this.api.getPoints(state, this.state.latestBounds),
-          ]);
-        })
-      ).subscribe(([cards, points]) => {
-        console.log(`GOT ${cards.search_counts.cards.total_overall} CARDS`);
-        this.loading = false;
-        this.latestCards = cards.search_results.map((x) => x.source);
+    this.stateStream.pipe(
+      filter(() => !!this.state.latestBounds),
+      tap(() => {
+        this.loading = true;
+      }),    
+      switchMap((state: State) => {
+        this.latestCards = [];
+        this.latestFetch = 0;
         this.visibleCards.next(this.latestCards);
-        if (points !== null) {
-          this.point_ids.next((points as QueryPointsResult).search_results.map((x) => x.source.point_id));
-          const counts: any = {};
-          points.search_results.forEach((res) => {
-            res.source.response_ids.forEach((id) => {
-              counts[id] = (counts[id] || 0) + 1;
-            });
+        return forkJoin([
+          this.api.getCards(state, this.state.latestBounds),
+          this.api.getPoints(state, this.state.latestBounds),
+        ]);
+      })
+    ).subscribe(([cards, points]) => {
+      console.log(`GOT ${cards.search_counts.cards.total_overall} CARDS`);
+      this.loading = false;
+      this.latestCards = cards.search_results.map((x) => x.source);
+      this.visibleCards.next(this.latestCards);
+      if (points !== null) {
+        this.point_ids.next((points as QueryPointsResult).search_results.map((x) => x.source.point_id));
+        const counts: any = {};
+        points.search_results.forEach((res) => {
+          res.source.response_ids.forEach((id) => {
+            counts[id] = (counts[id] || 0) + 1;
           });
-          const visibleCounts = Object.keys(counts).sort((a, b) => counts[b] - counts[a]).map((id) => {
-            const ret: any = {
-              id, category: id.split(':')[1], count: counts[id], display: this.responseSvc.getResponseName(id)
-            };
-            ret.color = getResponseCategoryColor(ret.category);
-            return ret;
-          });
-          this.visibleCounts.next(visibleCounts);
-        } else {
-          this.point_ids.next(null);
-        }
-      });
-    }
+        });
+        const visibleCounts = Object.keys(counts).sort((a, b) => counts[b] - counts[a]).map((id) => {
+          const ret: any = {
+            id, category: id.split(':')[1], count: counts[id], display: this.responseSvc.getResponseName(id)
+          };
+          ret.color = getResponseCategoryColor(ret.category);
+          return ret;
+        });
+        this.visibleCounts.next(visibleCounts);
+      } else {
+        this.point_ids.next(null);
+      }
+    });
     this.api.getPresets().subscribe((presets: Preset[]) => {
       this.presets.next(presets);
       this.presets.complete();

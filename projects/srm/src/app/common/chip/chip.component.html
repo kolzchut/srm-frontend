@@ -1,9 +1,5 @@
 <div [style.background-color]="bgColor"
     (click)='onClick($event)'
-    (touchstart)='$event.stopPropagation()'
-    (touchend)='$event.stopPropagation()'
-    (mousedown)='$event.stopPropagation()'
-    (mouseup)='$event.stopPropagation()'
 >
     <span class='count' [style.background-color]="countBgColor" *ngIf='chip.count'>{{chip.count}}</span>
     <ng-container *ngIf='!chip.display'>
