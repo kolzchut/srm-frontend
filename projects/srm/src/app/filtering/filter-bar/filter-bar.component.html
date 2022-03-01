@@ -9,6 +9,7 @@
             <ng-container *ngIf='situations.activeGroup(group.slug)' >
                 <div class='group-selector' *ngFor='let situation of situations.forGroup(group.slug)' (click)='situations.addEditor(situation)'>
                     <span>{{ situations.nameOf(situation) }}</span>
+                    <img src='assets/img/icon-circle-x.svg' (click)='situations.check(situation); $event.stopPropagation()'>
                 </div>    
             </ng-container>
         </ng-container>
