@@ -38,6 +38,15 @@
             font-size: 16px;
             color: @color-gray-1;
         }
+
+        &.disabled {
+            span {
+                color: @color-gray-4;
+            }
+            cursor: default;
+            background-color: rgba(255, 255, 255, 0.8);
+            background-blend-mode: lighten;
+        }
     }
 
     .filtering {

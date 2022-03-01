@@ -11,4 +11,9 @@
         </ng-container>
     </div>
 </div>
-<app-situation-group-filter *ngFor='let group of (situations.taxonomy | async)' [group]='group'></app-situation-group-filter>
+<ng-container *ngFor='let group of (situations.taxonomy | async)'>
+    <app-situation-group-filter *ngIf='situations.isEnabled(group.slug)' [group]='group'></app-situation-group-filter>
+</ng-container>
+<ng-container *ngFor='let group of (situations.taxonomy | async)'>
+    <app-situation-group-filter *ngIf='!situations.isEnabled(group.slug)' [group]='group'></app-situation-group-filter>
+</ng-container>

@@ -40,7 +40,13 @@ export class SituationsService {
         if (points !== null) {
           this.enabledSituations = new Set();
           points.search_results.forEach(result => {
-            result.source.situation_ids.forEach(s => this.enabledSituations?.add(s));
+            result.source.situation_ids.forEach(s => {
+              const parts = s.split(':');
+              if (parts.length > 2) {
+                this.enabledSituations?.add(s);
+                this.enabledSituations?.add(parts.slice(0, 2).join(':'));
+              }
+            });
           });
         } else {
           this.enabledSituations = null;

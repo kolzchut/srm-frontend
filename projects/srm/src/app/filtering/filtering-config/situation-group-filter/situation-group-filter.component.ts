@@ -19,4 +19,8 @@ export class SituationGroupFilterComponent implements OnInit {
   get groupId(): string {
     return this.group.slug;
   }
+
+  get disabled(): boolean {
+    return !this.situations.isEnabled(this.group.slug);
+  }
 }
