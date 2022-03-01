@@ -132,17 +132,13 @@ export class ApiService {
 
   getPoints(state: State, bounds: LngLatBounds): Observable<QueryPointsResult | null> {
     const params: any = {size: 10000, order: 'point_id'};
-    if ((state.responseId && state.responseId.length > 0)|| (state.situations && state.situations.length > 0)) {
-      this.setParams(params, state, bounds);
-      return this.http.get(environment.pointsURL, {params}).pipe(
-        map((res: any) => {
-          const results = res as QueryPointsResult;
-          return results;
-        })
-      );
-    } else {
-      return from([null]);
-    }
+    this.setParams(params, state, bounds);
+    return this.http.get(environment.pointsURL, {params}).pipe(
+      map((res: any) => {
+        const results = res as QueryPointsResult;
+        return results;
+      })
+    );
   }
 
   getPointsForSituations(state: State): Observable<QueryPointsResult | null> {

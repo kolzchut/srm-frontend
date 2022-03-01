@@ -68,7 +68,10 @@
                         <div class='loading'></div>
                     </ng-container>
                     <ng-container *ngIf='!search.loading'>
-                        <app-chip *ngFor='let chip of counts' [chip]='chip'></app-chip>                        
+                        <app-chip *ngFor='let chip of (collapseCounts ? counts.slice(0, 10) : counts)' [chip]='chip'></app-chip>
+                        <div class='counts-more' *ngIf='collapseCounts' (click)='collapseCounts = 0'>
+                            <span>+{{collapseCounts}}</span>&nbsp;<span i18n>סוגים</span>
+                        </div>
                     </ng-container>
                 </div>
             </ng-container>
