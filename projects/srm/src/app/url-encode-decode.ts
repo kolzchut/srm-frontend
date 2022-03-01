@@ -72,11 +72,11 @@ export class StateEncoderDecoder {
     while (encoded.length && encoded[encoded.length - 1] === '') {
       encoded.pop();
     }
-    return encoded.join('!');
+    return encoded.join(';');
   }
 
   decode(encoded: string): State {
-    const decoded: string[][] = encoded.split('!').map((str) => str.split('@'));
+    const decoded: string[][] = encoded.split(';').map((str) => str.split('@'));
     const state: State = {};
     for (const i in this.MAPPER) {
       const [key, decoder] = this.MAPPER[i];

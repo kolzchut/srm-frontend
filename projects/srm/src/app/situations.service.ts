@@ -58,9 +58,11 @@ export class SituationsService {
           this.activeSituationCount = 0;
           situations.forEach(situation => {
             const group = SITUATIONS_PREFIX + situation[0];
-            const items = situation.slice(1).map(item => SITUATIONS_PREFIX + item).map(item => this.byId[item]);
-            this.activeSituationCount += items.length;
-            this.activeSituations[group] = items;
+            const items = situation.slice(1).map(item => SITUATIONS_PREFIX + item).map(item => this.byId[item]).filter(item => !!item);
+            if (items.length > 0) {
+              this.activeSituationCount += items.length;
+              this.activeSituations[group] = items;
+            }
           });
         });
       });
