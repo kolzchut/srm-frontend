@@ -242,7 +242,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             });
             this.search.point_ids.subscribe(ids => {
               if (ids) {
-                this.pointFilter.searchPoints = ['in', ['get', 'point_id'], ['literal', ids]];
+                this.pointFilter.searchPoints = ['in', ['get', 'point_id'], ['literal', [...ids]]];
                 for (const layer of ['points-on', 'points-stroke-on']) {
                   this.map.setFilter(layer, this.pointFilter.searchPoints);
                 }  
@@ -259,7 +259,7 @@ export class MapComponent implements OnInit, AfterViewInit {
                 if (ids) {
                   newData = {
                     type: 'FeatureCollection',
-                    features: features.filter(f => ids.indexOf(f.properties.point_id) >= 0)
+                    features: features.filter(f => ids.has(f.properties.point_id))
                   };
                   console.log('SET NEW DATA for SOURCE', newData.features.length, features[0].properties);
                 }
