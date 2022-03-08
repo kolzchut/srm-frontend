@@ -24,10 +24,10 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
   startY: number;
   startTime: number;
   currentHeight = -1;
-  hostHeight: number = 0;
   moveSub: Subscription | null = null;
   moveDiff = 0;
   gesture = false;
+  lastHostHeight = 0;
 
   constructor(public layout: LayoutService, private window: WindowService, private host: ElementRef) { }
 
@@ -36,11 +36,20 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges(): void {}
 
+  get hostHeight(): number {
+    const hostHeight = this.host.nativeElement.clientHeight;
+    if (hostHeight === 0) {
+      return this.lastHostHeight;
+    }
+    this.lastHostHeight = hostHeight;
+    return hostHeight;
+  }
+
   calcHeight(): number {
-    this.hostHeight = this.host.nativeElement.clientHeight;
+    const hostHeight = this.hostHeight;
     let ret = 0;
     if (this.layout.desktop) {
-      ret = this.hostHeight;
+      ret = hostHeight;
     } else if (this.state === DrawerState.Hidden) {
       ret = 0;
     } else if (this.state === DrawerState.Peek) {
@@ -48,19 +57,19 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
     } else if (this.state === DrawerState.Card) {
       ret = 174;
     } else if (this.state === DrawerState.Most) {
-      ret = 0.75 * this.hostHeight;
+      ret = 0.75 * hostHeight;
     } else if (this.state === DrawerState.Full) {
-      ret = this.hostHeight;
+      ret = hostHeight;
     } else if (this.state === DrawerState.Presets) {
       ret = 152;
     }
     ret -= this.moveDiff;
-    return ret > this.hostHeight ? this.hostHeight : ret;
+    return ret > hostHeight ? hostHeight : ret;
   }
 
   calcTop(): number {
-    this.hostHeight = this.host.nativeElement.clientHeight;
-    return this.hostHeight - this.calcHeight();
+    const hostHeight = this.hostHeight;
+    return hostHeight - this.calcHeight();
   }
 
   ngAfterViewInit(): void {

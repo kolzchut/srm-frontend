@@ -5,7 +5,7 @@
 </div>
 <div class='content layout-mobile' [class.hidden]='headerState === HeaderState.Visible && headerActive'>
     <app-map *ngIf='layout.mobile' (points)='mapSelectedPoints($event)' (map)='setMap($event)'></app-map>
-    <app-drawer [state]='drawerState' 
+    <app-drawer [state]='drawerState'
                 (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
                 [class.away]='disclaimerVisible || infoPage'>
         <ng-container ngProjectAs='strip'>
