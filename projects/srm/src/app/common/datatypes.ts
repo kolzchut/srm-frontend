@@ -48,6 +48,7 @@ export class Card {
     card_id: string;
     response_categories: string[];
     situations: {id: string; name: string}[];
+    situation_ids: string[];
     responses: {id: string; name: string}[];
     response_category: string;
     point_id: string;

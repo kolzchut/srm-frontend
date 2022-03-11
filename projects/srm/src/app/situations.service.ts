@@ -190,4 +190,21 @@ export class SituationsService {
       this.activeSituationCount += situation.length - 1;
     });
   }
+
+  shouldFilter(situations: string[]) {
+    let count = 0;
+    for (const sg of Object.keys(this.activeSituations)) {
+      const selected = this.activeSituations[sg].map(i => i.slug).filter(i => i !== sg);
+      if (selected.some(s => situations.indexOf(s) > -1)) {
+        if (sg !== 'human-situations:age-group') {
+          count++;
+        }
+      } else {
+        if (situations.some(s => s.indexOf(sg + ':') > -1)) {
+          return false;
+        }
+      }
+    }
+    return count > 0;
+  }
 }

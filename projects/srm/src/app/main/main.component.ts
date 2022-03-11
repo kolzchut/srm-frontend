@@ -226,7 +226,8 @@ export class MainComponent implements OnInit {
   }
 
   clearCardSelections() {
-    this.state.card = this.state.cards = null;
+    this.state.card = null;
+    this.state.cards = null;
   }
 
   clearHovers() {
@@ -246,13 +247,22 @@ export class MainComponent implements OnInit {
   }
 
   mapHoverPoints(cards: Card[]) {
+    cards = [
+      ...cards.filter(card => this.situations.shouldFilter(card.situation_ids)),
+      ...cards.filter(card => !this.situations.shouldFilter(card.situation_ids)),
+    ];
     this.mapHoverPointsStream.next(cards);
   }
 
   selectMulti(cards: Card[] | null) {
     console.log('MAIN SELECT MULTI',this.multiState, cards && cards.length ? cards[0].point_id : 'pointless');
-    const hasCards = cards && cards.length > 0;
+    const hasCards = !!cards && cards.length > 0;
     if (hasCards) {
+      const _cards = cards as Card[];
+      cards = [
+        ..._cards.filter(card => this.situations.shouldFilter(card.situation_ids)),
+        ..._cards.filter(card => !this.situations.shouldFilter(card.situation_ids)),
+      ];
       this.clearHovers();
       const card = (cards as Card[])[0];
       if (this.multiState === MultiState.None) {
@@ -345,6 +355,7 @@ export class MainComponent implements OnInit {
     if (this.cardState === CardState.Preview) {
       if (event === 'click' || event === 'up' || event === 'close-card' || event === 'map-click') {
         this.clearCardSelections();
+        this.cardState = CardState.None;
       }
     } else if (this.multiState === MultiState.Preview) {
       if (event === 'click' || event === 'up' || event === 'map-click') {
