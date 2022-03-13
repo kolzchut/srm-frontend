@@ -35,6 +35,10 @@ export class ResponsesService {
   }
 
   getResponseName(id: string): string {
+    if (!this.byId[id]) {
+      console.log('Unknown response id:', id);
+      return 'unknown';
+    }
     return this.byId[id].name;
   }
 

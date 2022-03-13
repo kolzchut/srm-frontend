@@ -31,7 +31,7 @@ export class MapboxService {
   loadScript() {
     return new Promise((resolve, reject) => {
       const scriptTag = document.createElement('script');
-      scriptTag.src = 'https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js';
+      scriptTag.src = 'https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js';
       scriptTag.onload = resolve;
       scriptTag.async = true;
       (scriptTag as any).onreadystatechange = resolve;

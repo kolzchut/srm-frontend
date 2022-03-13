@@ -182,10 +182,11 @@ export class MapComponent implements OnInit, AfterViewInit {
               'type': 'geojson',
               'data': environment.clusterDataURL,
               'cluster': true,
-              'clusterRadius': 80,
+              'clusterRadius': 50,
               'clusterProperties': clusterProperties,
-              'clusterMinPoints': 1,
+              'clusterMinPoints': 0,
               'maxzoom': this.ZOOM_THRESHOLD,
+              'tolerance': 0.1,
             });
             this.map.addLayer({
               'id': 'clusters',
@@ -208,9 +209,9 @@ export class MapComponent implements OnInit, AfterViewInit {
               for (const feature of features) {
                 const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
                 const props: any = feature.properties;
-                if (!props.cluster) {
-                  continue;
-                }
+                // if (!props.cluster) {
+                //   continue;
+                // }
                 const id = props.cluster_id;
                 
                 let marker = this.markers[id];
@@ -349,9 +350,15 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   createDonutChart(props: any): HTMLElement {
     const offsets = [];
-    const counts = CATEGORY_COLORS.map(cc => props[cc.category]);
+    const counts = [];
     const clusterColors = CATEGORY_COLORS.map(cc => cc.color);
 
+    if (!props.point_count) {
+      const cat = JSON.parse(props.response_categories)[0];
+      counts.push(...CATEGORY_COLORS.map(cc => cc.category === cat ? 1 : 0));
+    } else {
+      counts.push(...CATEGORY_COLORS.map(cc => props[cc.category]));
+    }
     let total = 0;
     for (const count of counts) {
       offsets.push(total);
@@ -378,7 +385,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
     html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />
       <text dominant-baseline="central" x="${r}" y="${r}">
-      ${props.point_count.toLocaleString()}
+      ${props.point_count?.toLocaleString() || 1}
       </text>
       </svg>
       </div>`;
