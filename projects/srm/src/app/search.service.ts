@@ -138,7 +138,7 @@ export class SearchService {
       return;
     }
     this.latestFetch = this.latestCards.length;
-    this.state.state.pipe(
+    this.stateStream.pipe(
       first(),
       switchMap((state: State) => {
         return this.api.getCards(state, this.state.latestBounds, this.latestFetch);

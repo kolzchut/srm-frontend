@@ -196,7 +196,7 @@ export class SituationsService {
     for (const sg of Object.keys(this.activeSituations)) {
       const selected = this.activeSituations[sg].map(i => i.slug).filter(i => i !== sg);
       if (selected.some(s => situations.indexOf(s) > -1)) {
-        if (sg !== 'human-situations:age-group') {
+        if (sg !== 'human-situations:age-group' && sg !== 'human-situations:language') {
           count++;
         }
       } else {

@@ -120,7 +120,7 @@ export class ApiService {
   }
 
   getCards(state: State, bounds: LngLatBounds, offset=0): Observable<QueryCardsResult> {
-    const params: any = {size: 10, offset: offset};
+    const params: any = {size: 10, offset: offset, order: '-_score'};
     this.setParams(params, state, bounds);
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
