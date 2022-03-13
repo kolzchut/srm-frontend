@@ -48,6 +48,18 @@ export class FilteringComponent implements OnInit, AfterViewInit {
     this.activated.next(!!value);
   }
 
+  setActiveSection(current: string, next: string | null) {
+    if (!!next) {
+      this.activeSection = next;
+      this.activated.next(true);
+    } else {
+      if (this.activeSection === current) {
+        this.active = null;
+        this.activated.next(false);
+      }
+    }
+  }
+
   isActive() {
     return !!this.activeSection || this.situations.activeEditors().length > 0
   }

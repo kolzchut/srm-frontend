@@ -1,6 +1,6 @@
 <div class='wrapper' [class.active]='isActive()' [class.situations-active]='hasSituationEditor()'>
-    <app-search-box [isActive]='activeSection === "search"' (activated)='active = $event' (menu)='menu.emit()'></app-search-box>
-    <app-filter-bar [active]='activeSection === "filters"' [forceOpaque]='!!activeSection' (activated)='active = $event'></app-filter-bar>
+    <app-search-box [isActive]='activeSection === "search"' (activated)='setActiveSection("search", $event)' (menu)='menu.emit()'></app-search-box>
+    <app-filter-bar [active]='activeSection === "filters"' [forceOpaque]='!!activeSection' (activated)='setActiveSection("filters", $event)'></app-filter-bar>
     <div class='content' #content>
         <app-search-autocomplete *ngIf='!!intersectionObserver && activeSection === "search"' (selected)='active = null' [intersectionObserver]='intersectionObserver'></app-search-autocomplete>
         <app-filtering-config *ngIf='activeSection === "filters"'></app-filtering-config>
