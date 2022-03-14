@@ -182,11 +182,10 @@ export class MapComponent implements OnInit, AfterViewInit {
               'type': 'geojson',
               'data': environment.clusterDataURL,
               'cluster': true,
-              'clusterRadius': 50,
+              'clusterRadius': 80,
               'clusterProperties': clusterProperties,
               'clusterMinPoints': 0,
               'maxzoom': this.ZOOM_THRESHOLD,
-              'tolerance': 0.1,
             });
             this.map.addLayer({
               'id': 'clusters',
@@ -206,7 +205,8 @@ export class MapComponent implements OnInit, AfterViewInit {
               const features = this.map.querySourceFeatures('cluster_source');
               // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
               // and add it to the map if it's not there already
-              for (const feature of features) {
+              for (const feature_ of features) {
+                const feature = JSON.parse(JSON.stringify(feature_));
                 const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
                 const props: any = feature.properties;
                 // if (!props.cluster) {
@@ -254,13 +254,15 @@ export class MapComponent implements OnInit, AfterViewInit {
                 }
               }
               this.setLabelsOffFilter();
+            });
+            this.search.card_ids.subscribe(ids => {
               this.clusterData.subscribe(data => {
                 let features: any[] = data.features;
                 let newData: GeoJSON.FeatureCollection = data;
                 if (ids) {
                   newData = {
                     type: 'FeatureCollection',
-                    features: features.filter(f => ids.has(f.properties.point_id))
+                    features: features.filter(f => ids.has(f.properties.card_id))
                   };
                   console.log('SET NEW DATA for SOURCE', newData.features.length, features[0].properties);
                 }

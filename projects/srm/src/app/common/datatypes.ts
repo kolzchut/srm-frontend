@@ -108,6 +108,7 @@ export type Service = {
 export type Point = {
     response_categories: string[],
     point_id: string,
+    card_id: string,
     response_ids: string[],
     situation_ids: string[],
     response_category: string,

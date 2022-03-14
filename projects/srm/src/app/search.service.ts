@@ -32,6 +32,7 @@ export class SearchService {
   };
 
   point_ids = new ReplaySubject<Set<string> | null>(1);
+  card_ids = new ReplaySubject<Set<string> | null>(1);
 
   visibleCards = new ReplaySubject<Card[]>(1);
   visibleCounts = new ReplaySubject<CategoryCountsResult[]>(1);
@@ -109,6 +110,7 @@ export class SearchService {
       this.visibleCards.next(this.latestCards);
       if (points !== null) {
         this.point_ids.next(new Set((points as QueryPointsResult).search_results.map((x) => x.source.point_id)));
+        this.card_ids.next(new Set((points as QueryPointsResult).search_results.map((x) => x.source.card_id)));
         const counts: any = {};
         points.search_results.forEach((res) => {
           res.source.response_ids.forEach((id) => {
@@ -124,6 +126,7 @@ export class SearchService {
         });
         this.visibleCounts.next(visibleCounts);
       } else {
+        this.card_ids.next(null);
         this.point_ids.next(null);
       }
     });
