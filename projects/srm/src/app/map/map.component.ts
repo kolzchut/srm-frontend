@@ -287,6 +287,10 @@ export class MapComponent implements OnInit, AfterViewInit {
               if (e.features && e.features.length > 0) {
                 const props: any = e.features[0].properties;
                 const records = JSON.parse(props.records) as Card[];
+                const coords = (e.features[0].geometry as any)?.coordinates?.slice();
+                if (coords) {
+                  records[0].branch_geometry = coords;
+                }
                 this.pointsHover.next(records);
               }
               this.map.getCanvas().style.cursor = 'pointer';
