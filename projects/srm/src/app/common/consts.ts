@@ -12,7 +12,7 @@ export const CATEGORY_COLORS = [
 
     {category: 'money', color: '#a6761d'},
     {category: 'emergency', color: '#a6761d'},
-    {category: 'transit', color: '#a6761d'},
+    {category: 'culture_and_sports', color: '#a6761d'},
     {category: 'food', color: '#a6761d'},
 ];
 
