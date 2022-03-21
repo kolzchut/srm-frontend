@@ -172,7 +172,7 @@ export class MainComponent implements OnInit {
                 closeButton: false,
                 closeOnClick: false,
                 anchor: 'bottom',
-                offset: [-2, -10],
+                // offset: [-2, -10],
                 className: multistrip ? 'map-popup-multistrip' : 'map-popup-single',
               })
               .setLngLat(card.branch_geometry)
