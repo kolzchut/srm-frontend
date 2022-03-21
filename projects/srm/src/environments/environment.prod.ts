@@ -13,7 +13,7 @@ export const environment = {
   responsesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/responses',
   presetsURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/presets',
   itemURL: 'https://srm-production-api.whiletrue.industries/api/idx/get/',
-  taxonomySituationsSourceURL: 'https://srm.datacity.org.il/dataset/6f1a45c6-c855-43c8-8a3f-acaad318581c/resource/f705ef6e-182c-40a9-8305-a6fd17a3af24/download/situations.json',
+  taxonomySituationsSourceURL: 'https://srm.datacity.org.il/dataset/6f1a45c6-c855-43c8-8a3f-acaad318581c/resource/ddafbcee-e35f-4db3-b07d-2acc4e9b65aa/download/situations_actual.json',
   taxonomySituationsURL: '/situations.json',
   taxonomyResponsesSourceURL: 'https://srm.datacity.org.il/dataset/812345ae-521e-4171-9a91-d66d0fcf03df/resource/8f77667c-fb75-48ff-a696-093321ee3bda/download/responses.json',
   taxonomyResponsesURL: '/responses.json',
