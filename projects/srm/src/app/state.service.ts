@@ -307,7 +307,6 @@ export class StateService {
   }
 
   // Select point / cards / card 
-  
   // (by id, fetch if needed)
   selectCardsByPointId(pointId: string | null) {
     if (pointId) {
