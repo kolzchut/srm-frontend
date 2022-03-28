@@ -347,7 +347,9 @@ export class MainComponent implements OnInit {
     } else {
       this.map?.setFilter('labels-active', ['==', ['get', 'point_id'], record_id]);
     }
-    this.mapComponent.labelsOffFilter = ['!=', ['get', 'point_id'], record_id];
+    if (this.mapComponent) {
+      this.mapComponent.labelsOffFilter = ['!=', ['get', 'point_id'], record_id];
+    }
   }
 
   handleEvent(event: string) {
