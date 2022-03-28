@@ -22,7 +22,7 @@ export function app(): express.Express {
   const server = express();
   const distFolder = join(process.cwd(), 'dist/srm/browser');
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
-  const cache = new NodeCache({ stdTTL: 3600 });
+  const cache = new NodeCache({ stdTTL: 600 });
 
   server.use(compression());
 
