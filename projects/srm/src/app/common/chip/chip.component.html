@@ -1,26 +1,13 @@
 <div [style.background-color]="bgColor"
     (click)='onClick($event)'
 >
-    <span class='count' [style.background-color]="countBgColor" *ngIf='chip.count'>{{chip.count}}</span>
-    <ng-container *ngIf='!chip.display'>
-        <span class='main' *ngIf='chip.category === "health"' i18n>בריאות</span>
-        <span class='main' *ngIf='chip.category === "care"' i18n>רווחה</span>
-        <span class='main' *ngIf='chip.category === "education"' i18n>חינוך</span>
-        <span class='main' *ngIf='chip.category === "legal"' i18n>משפטי</span>
-        <span class='main' *ngIf='chip.category === "work"' i18n>תעסוקה</span>
-
-        <span class='main' *ngIf='chip.category === "goods"' i18n>מוצרים</span>
-        <span class='main' *ngIf='chip.category === "housing"' i18n>דיור</span>
-        <span class='main' *ngIf='chip.category === "community_services"' i18n>קהילה</span>
-        
-        <span class='main' *ngIf='chip.category === "money"' i18n>כספי</span>
-        <span class='main' *ngIf='chip.category === "emergency"' i18n>חירום</span>
-        <span class='main' *ngIf='chip.category === "transit"' i18n>תחבורה</span>
-        <span class='main' *ngIf='chip.category === "food"' i18n>מזון</span>
-    
-    </ng-container>
+    <span class='count' [style.background-color]="countBgColor" *ngIf='showCount'>{{chip.count}}</span>
+    <span class='point' [style.background-color]="countBgColor" *ngIf='showPoint'></span>
     <ng-container *ngIf='chip.display'>
-        <span class='main'>{{chip.display}}</span>        
+        <span class='main'
+              [style.font-weight]='textWeight'
+              [class.faded]='fadeTextColor'
+        >{{chip.display}}</span>
     </ng-container>
 
 </div>

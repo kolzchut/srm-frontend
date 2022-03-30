@@ -17,11 +17,18 @@ export class ChipComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  get stateMatch() {
+  get descendant() {
     if (!!this.chip.id && !!this.state.responseFilter) {
       const chip: string = this.chip.id as string;
       const response: string = this.state.responseFilter as string;
       return (chip.indexOf(response) === 0);
+    }
+    return false;
+  }
+
+  get match() {
+    if (!!this.chip.id && !!this.state.responseFilter) {
+      return this.chip.id === this.state.responseFilter;
     }
     return false;
   }
@@ -32,7 +39,7 @@ export class ChipComponent implements OnInit {
       if (!this.chip.count) {
         return color + '40';
       }
-    } else if (this.stateMatch) {
+    } else if (this.descendant) {
       return color + '40';
     }
     return null;    
@@ -42,10 +49,34 @@ export class ChipComponent implements OnInit {
     const color = this.chip.color;
     if (!this.state.responseFilter) {
       return color;
-    } else if (this.stateMatch) {
+    } else if (this.descendant  ) {
       return color;
     }
     return '#44444440';
+  }
+
+  get showCount() {
+    return this.chip.count && this.match;
+  }
+
+  get showPoint() {
+    return this.chip.count && !this.match;
+  }
+
+  get textWeight() {
+    if (this.descendant) {
+      return 600;
+    } else {
+      return 400;
+    }
+  }
+
+  get fadeTextColor() {
+    if (this.state.responseFilter && !this.descendant) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   onClick(event: Event) {
