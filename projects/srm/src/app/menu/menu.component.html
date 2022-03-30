@@ -7,6 +7,10 @@
     </a>
     <div class='menu-item' (click)='closeMe("contact")' i18n>צרו קשר</div>
 </div>
+<a class='reset' href='/'>
+    <div class='reset-icon'></div>
+    <span i18n>איפוס הגדרות (התחלה מחדש)</span>
+</a>
 <div class='logos-strip'>
     <div class='scroller'>
         <div *ngFor='let url of logoUrls' class='logo-strip-item' [style.background-image]='"url(" + url + ")"'></div>

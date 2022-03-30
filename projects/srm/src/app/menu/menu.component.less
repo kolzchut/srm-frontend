@@ -57,8 +57,42 @@
         }
     }
 
-    .logos-strip {
+    .reset {
+        margin: 16px;
         margin-top: auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 8px;
+        gap: 4px;
+        cursor: pointer;
+
+        height: 48px;
+        border: 1px solid @color-gray-4;
+        border-radius: 4px;
+
+        span {
+            .font-rag-sans;                
+            font-weight: 600;
+            font-size: 16px;
+            color: @color-gray-4;
+        }
+
+        &, &:hover, &:visited {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .reset-icon {
+            .background-image;
+            background-image: url(../../assets/img/icon-refresh.svg);
+            height: 24px;
+            width: 24px;
+        }
+    }
+
+    .logos-strip {
         height: 96px;
         flex: 0 0 auto;
         background: @color-white;
