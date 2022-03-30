@@ -154,7 +154,7 @@ export class MainComponent implements OnInit {
   }
 
   popup(card: Card | null, multistrip: boolean = false) {
-    if (this.layout.desktop) {
+    if (this.layout.desktop && this.map?.getZoom() >= this.mapComponent.ZOOM_THRESHOLD) {
       if (this.activePopup) {
         this.activePopup.remove();
         this.activePopup = null;
