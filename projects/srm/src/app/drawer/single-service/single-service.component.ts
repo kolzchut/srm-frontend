@@ -53,4 +53,13 @@ export class SingleServiceComponent implements AfterViewInit {
     }
     return 'link';
   }
+
+  get card_description() {
+    const sd = this.card.service_description;
+    const bd = this.card.branch_description;
+    let ret = [];
+    if (sd) { ret.push(sd); }
+    if (bd) { ret.push(bd); }
+    return ret.join('\n\n');
+  }
 }

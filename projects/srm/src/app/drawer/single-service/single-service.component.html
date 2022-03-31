@@ -14,7 +14,7 @@
             <div class='situation' *ngFor='let situation of card.situations'><span>{{situation.name}}</span></div>
         </div>
     </div>
-    <div class='description' *ngIf='card.service_description'>{{card.service_description}}</div>
+    <div class='description' *ngIf='card_description'>{{card_description}}</div>
     <app-card-tags [card]='card' [big]='true'></app-card-tags>    
 </div>
 <div class='buttons'>

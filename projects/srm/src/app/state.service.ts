@@ -354,7 +354,7 @@ export class StateService {
     if (card) {
       this.cardCache[card.card_id] = card;
       this.seo.setTitle(`כל שירות - ${card.service_name}`);
-      this.seo.setDescription(`${card.branch_name} - ${card.service_description}`);
+      this.seo.setDescription(`${card.branch_name} - ${card.service_description || card.branch_description}`);
       this.seo.setUrl(`https://www.kolsherut.org.il/c/${card.card_id}`);  
     }
     this.selectedCard.next({card});
