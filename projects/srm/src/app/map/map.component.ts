@@ -100,11 +100,11 @@ export class MapComponent implements OnInit, AfterViewInit {
         // Handle filter changes and apply on map
         // Listen for changes in geo view
         this.state.geoChanges.pipe(
-          throttleTime(500),
+          throttleTime(500, undefined, {leading: true, trailing: true}),
         ).subscribe(state => {
           if (this.map) {
             const geo = state.geo;
-            if (geo && !state.cardId) {
+            if (!!geo) {
               if (geo.length === 3) {
                 console.log('CENTERING', geo);
                 this.queueAction((map) => map.flyTo({
