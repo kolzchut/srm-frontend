@@ -58,7 +58,7 @@
     <div class='header' [class.hidden]='!!selectedCard' [class.active]='headerVisible()'>
         <app-filtering (activated)='headerActive = $event' (menu)='menu=true'></app-filtering>
     </div>
-    <app-drawer [state]='DrawerState.Full' (handle)='handleEvent($event)' [class.display-none]='!!headerActive'>
+    <app-drawer [state]='DrawerState.Full' (handle)='handleEvent($event)' [class.display-none]='!!headerActive' #drawer>
         <ng-container ngProjectAs='content-footer'>
             <ng-container *ngIf='drawerState !== DrawerState.Presets'>
                 <div *ngIf='!selectedCard' class='counts' (click)='$event.stopPropagation()'>

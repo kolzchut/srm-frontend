@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReplaySubject, Subject, timer } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, filter, switchMap, tap } from 'rxjs/operators';
 import { Card, CategoryCountsResult, DrawerState, HeaderState, CardState, MultiState } from '../common/datatypes';
+import { DrawerComponent } from '../drawer/drawer.component';
 import { LayoutService } from '../layout.service';
 import { MapComponent } from '../map/map.component';
 import { PlatformService } from '../platform.service';
@@ -24,6 +25,7 @@ declare var mapboxgl: any;
 export class MainComponent implements OnInit {
 
   @ViewChild('mapPopup') mapPopup: ElementRef;
+  @ViewChild('drawer') drawerComponent: DrawerComponent;
 
   DrawerState = DrawerState;
   HeaderState = HeaderState;
@@ -318,6 +320,7 @@ export class MainComponent implements OnInit {
       if (this.multiState === MultiState.None) {
         this.popup(card);
       }
+      this.drawerComponent?.scrollToTop();
       this.search.closeFilter.next();
       this.waitPreview = null;
     } else {

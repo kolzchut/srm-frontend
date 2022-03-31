@@ -34,7 +34,8 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
   ngOnInit(): void {
   }
 
-  ngOnChanges(): void {}
+  ngOnChanges(): void {
+  }
 
   get hostHeight(): number {
     const hostHeight = this.host.nativeElement.clientHeight;
@@ -200,5 +201,11 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
         }
       }
     });
+  }
+
+  scrollToTop() {
+    if (this.layout.desktop) {
+      (this.scrollable.nativeElement as HTMLDivElement)?.scrollTo({top: 0});
+    }
   }
 }
