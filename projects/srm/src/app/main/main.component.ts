@@ -272,12 +272,13 @@ export class MainComponent implements OnInit {
         this.multiState = MultiState.Preview;        
         this.drawerState = DrawerState.Peek;
       }
-      timer(0).subscribe(() => {
-        this.mapComponent?.queueAction(
-          (map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}),
-          'select-item-multi-' + card.branch_geometry
-        );
-      });
+      // TODO: Zoom in action when point is selected
+      // timer(0).subscribe(() => {
+      //   this.mapComponent?.queueAction(
+      //     (map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}),
+      //     'select-item-multi-' + card.branch_geometry
+      //   );
+      // });
       this.popup(card, true);
       this.search.closeFilter.next();
       this.selectedMulti = cards;
@@ -311,12 +312,13 @@ export class MainComponent implements OnInit {
         this.drawerState = DrawerState.Most;
         this.headerState = HeaderState.Hidden;
       }
-      timer(0).subscribe(() => {
-        this.mapComponent?.queueAction(
-          (map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}),
-          'select-item-' + card.branch_geometry
-        );
-      });
+      // TODO: Zoom in action when point is selected
+      // timer(0).subscribe(() => {
+      //   this.mapComponent?.queueAction(
+      //     (map) => map.flyTo({center: card.branch_geometry, zoom: 15}, {internal: true, kind: 'select-item'}),
+      //     'select-item-' + card.branch_geometry
+      //   );
+      // });
       if (this.multiState === MultiState.None) {
         this.popup(card);
       }
