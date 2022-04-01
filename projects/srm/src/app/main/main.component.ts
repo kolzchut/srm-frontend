@@ -59,6 +59,7 @@ export class MainComponent implements OnInit {
 
   counts: CategoryCountsResult[] = [];
   collapseCounts = 1000;
+  filteredByResponse: string | null = null;
 
   disclaimerVisible = false;
   miniDisclaimerHidden = false;
@@ -112,15 +113,34 @@ export class MainComponent implements OnInit {
 
     // Track visible counts and generate has-results and no-results events
     this.search.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
+      console.log('VISIBLE COUNTS RECEIVED');
       this.counts = counts.slice();
+      if (this.filteredByResponse !== null) {
+        const responseId = this.filteredByResponse as string;
+        const selected = this.counts.filter(c => c.id.indexOf(responseId) === 0);
+        selected.forEach(c => c.level = c.id.split(':').length);
+        const byLevel = [
+          ...this.counts.filter(c => c.level === 1),
+          ...this.counts.filter(c => c.level === 2),
+          ...this.counts.filter(c => c.level === 3),
+          ...this.counts.filter(c => c.level === 4),
+          ...this.counts.filter(c => c.level === 5),
+        ];
+        byLevel.forEach((c, i) => c.order = i);
+        this.counts = [
+          ...selected,
+          ...this.counts.filter(c => c.id.indexOf(responseId) !== 0),
+        ];
+      }
       this.collapseCounts = this.counts.length > 12 ? this.counts.length - 10 : 0;
       this.handleEvent(this.counts.length > 0 ? 'has-results' : 'no-results');
     });
 
     // Whenever the filter changes, generate the show-results event
     this.state.filterChanges.pipe(
+      tap((state) => { this.filteredByResponse = state.responseId || null }),
       filter((state) => ((state.responseId && state.responseId.length > 0) || (!!state.situations && state.situations.length > 0))),
-    ).subscribe(() => {
+    ).subscribe((state) => {
       this.handleEvent('show-results');
     });
 

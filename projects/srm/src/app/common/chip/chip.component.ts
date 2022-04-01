@@ -5,17 +5,21 @@ import { CategoryCountsResult } from '../datatypes';
 @Component({
   selector: 'app-chip',
   templateUrl: './chip.component.html',
-  styleUrls: ['./chip.component.less']
+  styleUrls: ['./chip.component.less'],
+  host: {
+    '[class.animate]': 'animate',
+    '[style.animation-delay]': 'animationDelay',
+  }
 })
 export class ChipComponent implements OnInit {
 
   @Input() chip: CategoryCountsResult;
+  @Input() order = 0
   @Input() clickable = true;
 
   constructor(private state: StateService) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   get descendant() {
     if (!!this.chip.id && !!this.state.responseFilter) {
@@ -24,6 +28,16 @@ export class ChipComponent implements OnInit {
       return (chip.indexOf(response) === 0);
     }
     return false;
+  }
+
+  get level() {
+    if (!!this.chip.id && !!this.state.responseFilter) {
+      const chip: string = this.chip.id as string;
+      const response: string = this.state.responseFilter as string;
+      const level = (chip.slice(response.length).split(':')).length - 1;
+      return level;
+    }
+    return -1;
   }
 
   get match() {
@@ -65,7 +79,11 @@ export class ChipComponent implements OnInit {
 
   get textWeight() {
     if (this.descendant) {
-      return 600;
+      if (this.level === 0) {
+        return 500;
+      } else if (this.level === 1) {
+        return 400;
+      } else return 300;
     } else {
       return 400;
     }
@@ -76,6 +94,18 @@ export class ChipComponent implements OnInit {
       return true;
     } else {
       return false;
+    }
+  }
+
+  get animate() {
+    return !!this.chip.count && this.descendant && !this.match;
+  }
+
+  get animationDelay() {
+    if (!this.animate) {
+      return '0s';
+    } else {
+      return (this.order * 0.65) + 's';
     }
   }
 

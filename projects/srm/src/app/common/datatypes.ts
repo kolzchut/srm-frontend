@@ -152,6 +152,8 @@ export type CategoryCountsResult = {
     display?: string,
     count?: number,
     color: string,
+    level?: number,
+    order?: number
 };
 
 export type QueryPointsResult = SearchResult<Point>;

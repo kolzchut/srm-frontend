@@ -1,5 +1,17 @@
 @import '../../../common.less';
 
+@max-width: 200px;
+
+:host {
+    display: block;
+    background-color: white;
+    overflow: hidden;
+    &.animate {
+        margin-left: -4px;
+        animation: introduce-chip 1s ease-out forwards;   
+    }
+}
+
 div {
     background-color: @color-gray-6;
     display: flex;
@@ -44,5 +56,31 @@ div {
         &.faded {
             color: @color-gray-3;
         }
+    }
+
+    &.animate {
+        transform: translateX(@max-width);
+        margin-right: -@max-width;
+        animation: introduce 1s ease-out forwards;
+    }
+}
+
+@keyframes introduce {
+    from {
+        transform: translateX(@max-width);
+        margin-right: -@max-width;
+    }
+    to {
+        transform: translateX(0);
+        margin-right: 0;
+    }
+}
+
+@keyframes introduce-chip {
+    from {
+        margin-left: -4px;
+    }
+    to {
+        margin-left: 0;
     }
 }

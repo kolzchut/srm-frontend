@@ -1,5 +1,7 @@
 <div [style.background-color]="bgColor"
     (click)='onClick($event)'
+    [class.animate]='animate'
+    [style.animation-delay]='animationDelay'
 >
     <span class='count' [style.background-color]="countBgColor" *ngIf='showCount'>{{chip.count}}</span>
     <span class='point' [style.background-color]="countBgColor" *ngIf='showPoint'></span>
