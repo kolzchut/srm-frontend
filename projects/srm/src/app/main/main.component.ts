@@ -137,9 +137,9 @@ export class MainComponent implements OnInit {
         ];
       }
       this.collapseCounts = this.counts.length > 12 ? 10 : 0;
-      if (this.selectedLen > this.collapseCounts && this.collapseCounts > 0) {
-        this.collapseCounts = this.selectedLen;
-      }
+      // if (this.selectedLen > this.collapseCounts && this.collapseCounts > 0) {
+      //   this.collapseCounts = this.selectedLen;
+      // }
       this.handleEvent(this.counts.length > 0 ? 'has-results' : 'no-results');
     });
 
