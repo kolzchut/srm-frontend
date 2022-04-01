@@ -1,6 +1,7 @@
 @import '../../../common.less';
 
 @max-width: 200px;
+@animation-speed: 0.2s;
 
 :host {
     display: block;
@@ -8,7 +9,7 @@
     overflow: hidden;
     &.animate {
         margin-left: -4px;
-        animation: introduce-chip 0.5s ease-out forwards;   
+        animation: introduce-chip @animation-speed ease-out forwards;   
     }
 }
 
@@ -61,7 +62,7 @@ div {
     &.animate {
         transform: translateX(@max-width);
         margin-right: -@max-width;
-        animation: introduce 0.5s ease-out forwards;
+        animation: introduce @animation-speed ease-out forwards;
     }
 }
 

@@ -106,7 +106,7 @@ export class ChipComponent implements OnInit {
     if (!this.animate) {
       return '0s';
     } else {
-      return (this.order * 0.65) + 's';
+      return (this.order * 0.2) + 's';
     }
   }
 

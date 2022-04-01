@@ -132,12 +132,12 @@ export class MainComponent implements OnInit {
         ];
         byLevel.forEach((c, i) => c.order = i);
         this.counts = [
-          ...selected,
+          ...byLevel,
           ...this.counts.filter(c => c.id.indexOf(responseId) !== 0),
         ];
       }
       this.collapseCounts = this.counts.length > 12 ? 10 : 0;
-      if (this.selectedLen > this.collapseCounts) {
+      if (this.selectedLen > this.collapseCounts && this.collapseCounts > 0) {
         this.collapseCounts = this.selectedLen;
       }
       this.handleEvent(this.counts.length > 0 ? 'has-results' : 'no-results');
