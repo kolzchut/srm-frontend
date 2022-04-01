@@ -120,11 +120,11 @@ export class MainComponent implements OnInit {
         const selected = this.counts.filter(c => c.id.indexOf(responseId) === 0);
         selected.forEach(c => c.level = c.id.split(':').length);
         const byLevel = [
-          ...this.counts.filter(c => c.level === 1),
-          ...this.counts.filter(c => c.level === 2),
-          ...this.counts.filter(c => c.level === 3),
-          ...this.counts.filter(c => c.level === 4),
-          ...this.counts.filter(c => c.level === 5),
+          ...selected.filter(c => c.level === 1),
+          ...selected.filter(c => c.level === 2),
+          ...selected.filter(c => c.level === 3),
+          ...selected.filter(c => c.level === 4),
+          ...selected.filter(c => c.level === 5),
         ];
         byLevel.forEach((c, i) => c.order = i);
         this.counts = [
