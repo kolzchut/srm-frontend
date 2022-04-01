@@ -28,7 +28,7 @@
                     </ng-container>
                     <ng-container *ngIf='!search.loading'>
                         <app-chip *ngFor='let chip of (collapseCounts ? counts.slice(0, collapseCounts) : counts)' 
-                                  [chip]='chip' [order]='chip.order || 0'></app-chip>
+                                  [chip]='chip' [order]='chip.order || 0' [selectedLen]='selectedLen'></app-chip>
                         <div class='counts-more' *ngIf='collapseCounts' (click)='collapseCounts = 0'>
                             <span>+{{counts.length - collapseCounts}}</span>&nbsp;<span i18n>סוגים</span>
                         </div>
@@ -70,7 +70,7 @@
                     </ng-container>
                     <ng-container *ngIf='!search.loading'>
                         <app-chip *ngFor='let chip of (collapseCounts ? counts.slice(0, collapseCounts) : counts)'
-                                 [chip]='chip' [order]='chip.order || 0'></app-chip>
+                                 [chip]='chip' [order]='chip.order || 0' [selectedLen]='selectedLen'></app-chip>
                         <div class='counts-more' *ngIf='collapseCounts' (click)='collapseCounts = 0'>
                             <span>+{{counts.length - collapseCounts}}</span>&nbsp;<span i18n>סוגים</span>
                         </div>

@@ -9,7 +9,7 @@
         <span class='main'
               [style.font-weight]='textWeight'
               [class.faded]='fadeTextColor'
-        >{{chip.display}}</span>
+        >{{chip.display}}<ng-container *ngIf='match && chip.count && selectedLen > 1'>:</ng-container></span>
     </ng-container>
 
 </div>

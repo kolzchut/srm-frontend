@@ -60,6 +60,7 @@ export class MainComponent implements OnInit {
   counts: CategoryCountsResult[] = [];
   collapseCounts = 1000;
   filteredByResponse: string | null = null;
+  selectedLen = 0;
 
   disclaimerVisible = false;
   miniDisclaimerHidden = false;
@@ -115,11 +116,11 @@ export class MainComponent implements OnInit {
     this.search.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
       console.log('VISIBLE COUNTS RECEIVED');
       this.counts = counts.slice();
-      let selectedLen = 0;
+      this.selectedLen = 0;
       if (this.filteredByResponse !== null) {
         const responseId = this.filteredByResponse as string;
         const selected = this.counts.filter(c => c.id.indexOf(responseId) === 0);
-        selectedLen = selected.length;
+        this.selectedLen = selected.length;
         this.counts.forEach(c => c.order = 0);
         selected.forEach(c => c.level = c.id.split(':').length);
         const byLevel = [
@@ -136,8 +137,8 @@ export class MainComponent implements OnInit {
         ];
       }
       this.collapseCounts = this.counts.length > 12 ? 10 : 0;
-      if (selectedLen > this.collapseCounts) {
-        this.collapseCounts = selectedLen;
+      if (this.selectedLen > this.collapseCounts) {
+        this.collapseCounts = this.selectedLen;
       }
       this.handleEvent(this.counts.length > 0 ? 'has-results' : 'no-results');
     });

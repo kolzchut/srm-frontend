@@ -15,6 +15,7 @@ export class ChipComponent implements OnInit {
 
   @Input() chip: CategoryCountsResult;
   @Input() order = 0
+  @Input() selectedLen = 0
   @Input() clickable = true;
 
   constructor(private state: StateService) { }
