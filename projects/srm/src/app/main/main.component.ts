@@ -115,9 +115,12 @@ export class MainComponent implements OnInit {
     this.search.visibleCounts.subscribe((counts: CategoryCountsResult[]) => {
       console.log('VISIBLE COUNTS RECEIVED');
       this.counts = counts.slice();
+      let selectedLen = 0;
       if (this.filteredByResponse !== null) {
         const responseId = this.filteredByResponse as string;
         const selected = this.counts.filter(c => c.id.indexOf(responseId) === 0);
+        selectedLen = selected.length;
+        this.counts.forEach(c => c.order = 0);
         selected.forEach(c => c.level = c.id.split(':').length);
         const byLevel = [
           ...selected.filter(c => c.level === 1),
@@ -132,7 +135,10 @@ export class MainComponent implements OnInit {
           ...this.counts.filter(c => c.id.indexOf(responseId) !== 0),
         ];
       }
-      this.collapseCounts = this.counts.length > 12 ? this.counts.length - 10 : 0;
+      this.collapseCounts = this.counts.length > 12 ? 10 : 0;
+      if (selectedLen > this.collapseCounts) {
+        this.collapseCounts = selectedLen;
+      }
       this.handleEvent(this.counts.length > 0 ? 'has-results' : 'no-results');
     });
 
