@@ -268,8 +268,10 @@ export class MainComponent implements OnInit {
     if (cards.length > 0) {
       if (cards.length === 1) {
         this.waitPreview = cards[0].card_id;
+        this.state.card =  cards[0];
+      } else {
+        this.state.cards = cards;
       }
-      this.state.cards = cards;
     } else {
       this.handleEvent('map-click');
     }

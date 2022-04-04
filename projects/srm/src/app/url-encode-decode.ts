@@ -10,7 +10,7 @@ class StringEncoderDecoder implements StateFieldEncoderDecoder<string> {
     return part ? [part] : [];
   }
   decode(part: string[]): string | null {
-    return part ? part[0] : null;
+    return part ? part[0] || null : null;
   }
 }
 
