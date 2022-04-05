@@ -183,12 +183,12 @@ export class MainComponent implements OnInit {
   }
 
   popup(card: Card | null, multistrip: boolean = false) {
+    if (this.activePopup) {
+      this.activePopup.remove();
+      this.activePopup = null;
+    }
+    this.currentPopup = null;
     if (this.layout.desktop && this.map?.getZoom() >= this.mapComponent.ZOOM_THRESHOLD) {
-      if (this.activePopup) {
-        this.activePopup.remove();
-        this.activePopup = null;
-      }
-      this.currentPopup = null;
       if (card) {
         timer(0).pipe(
           tap(() => this.currentPopup = card.point_id),
