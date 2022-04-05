@@ -29,6 +29,8 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
   gesture = false;
   lastHostHeight = 0;
 
+  STICKINESS = 50;
+
   constructor(public layout: LayoutService, private window: WindowService, private host: ElementRef) { }
 
   ngOnInit(): void {
@@ -157,7 +159,7 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
       endY = event.changedTouches[0].clientY;
     }
     const diff = endY - this.startY;
-    this.moveDiff = diff < 40 ? 0 : diff;
+    this.moveDiff = Math.abs(diff) < this.STICKINESS ? 0 : diff;
   }
 
   handleGestureEnd(event: MouseEvent | TouchEvent): void {
@@ -184,17 +186,17 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
 
     timer(0).subscribe(() => {
       const diff = endY - this.startY;
-      if (diff > 10) {
+      if (diff > this.STICKINESS) {
         if (scrollableEl.scrollTop === 0 || scrollableDiff > 0) {
           this.handle.emit('down');
           event.stopPropagation();
         }
-      } else if (diff < -10) {
+      } else if (diff < -this.STICKINESS) {
         this.handle.emit('up');
         event.stopPropagation();
       } else if (this.startTime) {
         const timeDiff = performance.now() - this.startTime;
-        if (Math.abs(diff) < 50 && timeDiff < 500) {
+        if (Math.abs(diff) < this.STICKINESS && timeDiff < 500) {
           timer(500 - timeDiff).subscribe(() => {
             this.handle.emit('click');
           });
