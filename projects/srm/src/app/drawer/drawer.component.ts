@@ -156,7 +156,8 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
     else if (event instanceof TouchEvent) {
       endY = event.changedTouches[0].clientY;
     }
-    this.moveDiff = endY - this.startY;
+    const diff = endY - this.startY;
+    this.moveDiff = diff < 40 ? 0 : diff;
   }
 
   handleGestureEnd(event: MouseEvent | TouchEvent): void {
