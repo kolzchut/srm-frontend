@@ -63,6 +63,7 @@ export class StateEncoderDecoder {
     ['placeId', this.stringEncoder],
     ['responseId', this.stringEncoder],
     ['situations', this.situationsEncoder],
+    ['orgId', this.stringEncoder],
   ];
 
   encode(state: State): string {

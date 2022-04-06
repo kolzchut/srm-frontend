@@ -20,6 +20,7 @@ export type State = {
   pointId?: string | null,            // Id of the map point that is currently selected
   placeId?: string | null,            // Id of the place that is currently selected
   responseId?: string | null,         // Id of the response that is currently selected
+  orgId?: string | null,              // Id of the organization that is currently selected
   situations?: string[][] | null,     // List of situations that are currently filtered on
   diff?: string[] | null,             // List of diffs between current and previous state
 };
@@ -27,7 +28,7 @@ export type State = {
 function compareStates(a: State, b: State) {
   const states = [a, b];
   const diffs = [];
-  for (const key of ['geo', 'searchBoxTitle', 'cardId', 'pointId', 'placeId', 'responseId', 'situations']) {
+  for (const key of ['geo', 'searchBoxTitle', 'cardId', 'pointId', 'placeId', 'responseId', 'situations', 'orgId']) {
     const values = [];
     for (const state of states) {
       values.push(JSON.stringify(state.hasOwnProperty(key)? (state as any)[key] : null))
@@ -62,6 +63,7 @@ export class StateService {
 
   geoChanges: Observable<State>;
   responseChanges: Observable<State>;
+  orgChanges: Observable<State>;
   situationChanges: Observable<State>;
   filterChanges: Observable<State>;
   queryChanges: Observable<State>;
@@ -102,10 +104,13 @@ export class StateService {
       filter(filterDiffs(['geo'])),
     );
     this.filterChanges = this.state.pipe(
-      filter(filterDiffs(['responseId', 'situations'])),
+      filter(filterDiffs(['responseId', 'situations', 'orgId'])),
     );
     this.responseChanges = this.state.pipe(
       filter(filterDiffs(['responseId'])),
+    );
+    this.orgChanges = this.state.pipe(
+      filter(filterDiffs(['orgId'])),
     );
     this.situationChanges = this.state.pipe(
       filter(filterDiffs(['situations'])),
@@ -140,10 +145,11 @@ export class StateService {
       map(() => activatedRoute.snapshot),
       switchMap((sn) => {
         const responseId = sn.params.response || null;
+        const orgId = sn.params.org || null;
         const placeId = sn.params.place || null;
         const cardId = sn.params.card || null;
         const state = sn.queryParams.v || '';
-        return this.processPaths(responseId, placeId, cardId, state);
+        return this.processPaths(responseId, placeId, cardId, orgId, state);
       }),
       map((state) => {
         const decoded = this.urlEncoderDecoder.decode(state);
@@ -185,8 +191,8 @@ export class StateService {
     }
   }
 
-  processPaths(responseId: string, placeId: string, cardId: string, encoded: string): Observable<string> {
-    if (!!responseId || !!placeId || !!cardId) {
+  processPaths(responseId: string, placeId: string, cardId: string, orgId: string, encoded: string): Observable<string> {
+    if (!!responseId || !!placeId || !!cardId || !!orgId) {
       const decoded = this.urlEncoderDecoder.decode(encoded);
       let obs: Observable<State> = from([]);
       if (!!responseId) {
@@ -194,6 +200,7 @@ export class StateService {
           map((response) => {
             decoded.responseId = responseId;
             decoded.searchBoxTitle = response.name;
+            decoded.orgId = null;
             decoded.cardId = null;
             decoded.placeId = null;
             this.seo.setTitle(`כל שירות - חיפוש ${response.name}`);
@@ -207,6 +214,7 @@ export class StateService {
           map((place) => {
             decoded.geo = [[place.bounds[0], place.bounds[1]], [place.bounds[2], place.bounds[3]]];
             decoded.searchBoxTitle = place.name[0];
+            decoded.orgId = null;
             decoded.cardId = null;
             decoded.placeId = placeId;
             decoded.responseId = null;
@@ -225,6 +233,21 @@ export class StateService {
         obs = from([
           decoded          
         ]);
+      } else if (!!orgId) {
+        console.log('OOOO', orgId);
+        obs = this.api.getOrganization(orgId).pipe(
+          map((org) => {
+            decoded.orgId = orgId;
+            decoded.searchBoxTitle = org.name;
+            decoded.responseId = null;
+            decoded.cardId = null;
+            decoded.placeId = null;
+            this.seo.setTitle(`כל שירות - חיפוש מענים של ${org.name}`);
+            this.seo.setDescription(`כל שירות - חיפוש שירותים ומענים חברתיים המסופקים על ידי ${org.name}`);
+            this.seo.setUrl(`https://www.kolsherut.org.il/o/${orgId}`);
+            return decoded;
+          })
+        );
       }
       return obs.pipe(
         map((state) => {
@@ -265,6 +288,14 @@ export class StateService {
 
   get responseFilter() {
     return this._state.responseId ? this._state.responseId : null;
+  }
+
+  set orgId(orgId: string | null) {
+    this.updateState({orgId});
+  }
+
+  get orgId() {
+    return this._state.orgId || null;
   }
 
   set situations(situations: string[][] | null) {

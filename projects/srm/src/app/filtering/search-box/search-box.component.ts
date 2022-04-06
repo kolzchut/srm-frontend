@@ -78,6 +78,7 @@ export class SearchBoxComponent implements OnInit, OnChanges {
     }
     this.query = '';
     this.state.responseFilter = null;
+    this.state.orgId = null;
     if (currentValue.length === 0 || !this.active) {
       this.active = false;
     } else {

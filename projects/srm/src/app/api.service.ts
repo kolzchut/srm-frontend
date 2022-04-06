@@ -6,7 +6,7 @@ import { State } from './state.service';
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Card, Response, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryPresetResult, QueryResponsesResult, Point } from './common/datatypes';
+import { Card, Response, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryPresetResult, QueryResponsesResult, Point, Organization } from './common/datatypes';
 import { CATEGORY_COLORS, SITUATIONS_PREFIX } from './common/consts';
 import { LngLatBounds } from 'mapbox-gl';
 import { makeStateKey, TransferState} from '@angular/platform-browser';
@@ -99,6 +99,14 @@ export class ApiService {
     ));
   }
 
+  getOrganization(id: string): Observable<Organization> {
+    return this.innerCache(`org-${id}`, this.http.get(environment.itemURL + id, {params: {type: 'orgs'}}).pipe(
+      map((res: any) => {
+        return res as Organization;
+      })
+    ));
+  }
+
   setParams(params: any, state: State, bounds?: LngLatBounds): any {
     const baseFilter: any = {};
     if (bounds) {
@@ -106,6 +114,9 @@ export class ApiService {
     }
     if (state.responseId) {
       baseFilter.response_ids = state.responseId;
+    }
+    if (state.orgId) {
+      baseFilter.organization_id = state.orgId;
     }
     const filter: any[] = [];
     filter.push(baseFilter);

@@ -15,6 +15,11 @@ export class AnalyticsService {
         this.sendEvent('search', 'responses', state.responseId);
       }
     });
+    this.state.orgChanges.subscribe((state: State) => {
+      if (state.orgId) {
+        this.sendEvent('search', 'org', state.orgId);
+      }
+    });
     this.state.selectedCard.subscribe(({card}) => {
       if (card) {
         this.sendEvent('view_service', 'services', card.service_name);

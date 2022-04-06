@@ -14,6 +14,9 @@ const routes: Routes = [
     path: 'c/:card', component: MainComponent,
   },
   {
+    path: 'o/:org', component: MainComponent,
+  },
+  {
     path: '', component: MainComponent,
   },
   {
