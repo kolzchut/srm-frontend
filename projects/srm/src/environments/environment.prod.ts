@@ -11,6 +11,7 @@ export const environment = {
   clusterDataURL: '/clusters.json',
   placesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/places',
   responsesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/responses',
+  orgsURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/orgs',
   presetsURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/presets',
   itemURL: 'https://srm-production-api.whiletrue.industries/api/idx/get/',
   taxonomySituationsSourceURL: 'https://srm.datacity.org.il/dataset/6f1a45c6-c855-43c8-8a3f-acaad318581c/resource/ddafbcee-e35f-4db3-b07d-2acc4e9b65aa/download/situations_actual.json',

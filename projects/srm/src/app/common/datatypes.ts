@@ -160,6 +160,7 @@ export type QueryPointsResult = SearchResult<Point>;
 export type QueryCardsResult = SearchResult<Card>;
 export type QueryPlacesResult = SearchResult<Place>;
 export type QueryResponsesResult = SearchResult<Response>;
+export type QueryOrganizationResult = SearchResult<Organization>;
 export type QueryPresetResult = SearchResult<Preset>;
 
 export type TaxonomyGroup = {

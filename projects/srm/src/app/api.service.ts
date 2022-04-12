@@ -6,7 +6,7 @@ import { State } from './state.service';
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Card, Response, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryPresetResult, QueryResponsesResult, Point, Organization } from './common/datatypes';
+import { Card, Response, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryPresetResult, QueryResponsesResult, Point, Organization, QueryOrganizationResult } from './common/datatypes';
 import { CATEGORY_COLORS, SITUATIONS_PREFIX } from './common/consts';
 import { LngLatBounds } from 'mapbox-gl';
 import { makeStateKey, TransferState} from '@angular/platform-browser';
@@ -259,6 +259,10 @@ export class ApiService {
 
   queryResponses(query: any, offset=0) {
     return this.query<QueryResponsesResult>(query, environment.responsesURL, offset);
+  }
+
+  queryOrganizations(query: any, offset=0) {
+    return this.query<QueryOrganizationResult>(query, environment.orgsURL, offset);
   }
 
   getPresets(): Observable<Preset[]> {

@@ -9,6 +9,15 @@
             <div class='arrow'></div>
         </div>
     </ng-container>
+    <ng-container *ngIf="type === 'orgs'">
+        <div class='result org'>
+            <div class='count'>{{result.count}}</div>
+            <div class='name-container'>
+                <span class='name' [innerHtml]='highlight(result.name)'></span>
+            </div>
+            <div class='arrow'></div>
+        </div>
+    </ng-container>
     <ng-container *ngIf="type === 'places'">
         <div class='result place'>
             <div class='location'></div>

@@ -1,4 +1,5 @@
 <app-preset-strip *ngIf='showPresets' (clicked)='selected.emit()'></app-preset-strip>
 <app-autocomplete-section type='responses' typeName='סוגי מענה' i18n-type-name (selected)='selected.emit()' [intersectionObserver]='intersectionObserver'></app-autocomplete-section>
+<app-autocomplete-section type='orgs' typeName='ארגונים' i18n-type-name (selected)='selected.emit()' [intersectionObserver]='intersectionObserver'></app-autocomplete-section>
 <app-autocomplete-section type='places' typeName='מקומות' i18n-type-name (selected)='selected.emit()' [intersectionObserver]='intersectionObserver'></app-autocomplete-section>
 <app-autocomplete-section type='cards' typeName='תוצאות חיפוש' i18n-type-name (selected)='selected.emit()' [intersectionObserver]='intersectionObserver'></app-autocomplete-section>

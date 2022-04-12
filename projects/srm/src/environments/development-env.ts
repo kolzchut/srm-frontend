@@ -10,6 +10,7 @@ export const devEnv: any = {
   clusterDataURL: 'https://srm-staging.datacity.org.il/dataset/2902488f-da99-4836-9a90-1582958cfba4/resource/4c5ea1c5-af92-4930-914e-4c835ab25fb7/download/geo_data.geojson',
   placesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/places',
   responsesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/responses',
+  orgsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/orgs',
   presetsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/presets',
   itemURL: 'https://srm-staging-api.whiletrue.industries/api/idx/get/',
   taxonomySituationsURL: 'https://srm-staging.datacity.org.il/dataset/657a1b09-2474-4309-aac8-381d41e115d8/resource/7503fb96-380c-4e5c-a428-53c6105b083e/download/situations_actual.json',

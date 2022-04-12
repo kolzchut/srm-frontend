@@ -4,7 +4,7 @@ import { LngLatBounds } from 'mapbox-gl';
 import { BehaviorSubject, from, merge, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, delay, pairwise, tap, debounceTime } from 'rxjs/operators';
 import { ApiService } from './api.service';
-import { Card } from './common/datatypes';
+import { Card, Organization } from './common/datatypes';
 import { ResponsesService } from './responses.service';
 import { Location } from '@angular/common';
 import { SeoSocialShareService } from 'ngx-seo';
@@ -288,6 +288,12 @@ export class StateService {
 
   get responseFilter() {
     return this._state.responseId ? this._state.responseId : null;
+  }
+
+  set orgFilter(org: Organization) {
+    const orgId = org.id;
+    const searchBoxTitle = org.name;
+    this.updateState({orgId, searchBoxTitle});
   }
 
   set orgId(orgId: string | null) {

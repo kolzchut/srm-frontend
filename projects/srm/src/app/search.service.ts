@@ -3,7 +3,7 @@ import { forkJoin, from, merge, Observable, ReplaySubject, Subject } from 'rxjs'
 import { distinctUntilChanged, throttleTime, switchMap, filter, first, tap, mergeAll } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { getResponseCategoryColor } from './common/consts';
-import { Card, CategoryCountsResult, Place, Preset, QueryCardsResult, QueryPlacesResult, QueryPointsResult, QueryResponsesResult, Response, SearchResult } from './common/datatypes';
+import { Card, CategoryCountsResult, Place, Preset, QueryCardsResult, QueryOrganizationResult, QueryPlacesResult, QueryPointsResult, QueryResponsesResult, Response, SearchResult } from './common/datatypes';
 import { PlatformService } from './platform.service';
 import { ResponsesService } from './responses.service';
 import { State, StateService } from './state.service';
@@ -19,6 +19,7 @@ export class SearchService {
   cards = new ReplaySubject<QueryCardsResult | null>(1);
   places = new ReplaySubject<QueryPlacesResult | null>(1);
   responses = new ReplaySubject<QueryResponsesResult | null>(1);
+  orgs = new ReplaySubject<QueryOrganizationResult | null>(1);
   presets = new ReplaySubject<Preset[]>(1);
   closeFilter = new Subject<void>();
   searchQuery: string = '';
@@ -26,7 +27,8 @@ export class SearchService {
   latestQuery: {[key: string]: number} = {
     cards: -1,
     places: -1,
-    responses: -1
+    responses: -1,
+    orgs: -1
   };
   latestSearchResults: {[key: string]: (SearchResult<any> | null)} = {
   };
@@ -55,7 +57,8 @@ export class SearchService {
             from([query]),
             this.api.queryCards(query),
             this.api.queryPlaces(query),
-            this.api.queryResponses(query)
+            this.api.queryResponses(query),
+            this.api.queryOrganizations(query),
           ]);
         } else {
           return forkJoin([
@@ -63,16 +66,18 @@ export class SearchService {
             from([null]),
             from([null]),
             from([null]),
+            from([null]),
           ]);
         }
       })
-    ).subscribe(([query, cards, places, responses]) => {
+    ).subscribe(([query, cards, places, responses, orgs]) => {
       this.loading = false;
       this.searchQuery = query;
-      this.latestSearchResults = {cards, places, responses};
+      this.latestSearchResults = {cards, places, responses, orgs};
       this.cards.next(cards);
       this.places.next(places);
       this.responses.next(responses);
+      this.orgs.next(orgs);
     });
     this.platform.browser(() => {
       merge(
@@ -163,6 +168,7 @@ export class SearchService {
       cards: (q: string, o: number) => this.api.queryCards(q, o),
       places: (q: string, o: number) => this.api.queryPlaces(q, o),
       responses: (q: string, o: number) => this.api.queryResponses(q, o),
+      orgs: (q: string, o: number) => this.api.queryOrganizations(q, o),
     };
     this.query.pipe(
       first(),
