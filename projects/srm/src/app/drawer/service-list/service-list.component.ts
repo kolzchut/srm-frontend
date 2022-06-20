@@ -14,7 +14,7 @@ export class ServiceListComponent implements OnInit, AfterViewInit {
   @Input() cardList: Card[] | null;
   @Output() selected = new EventEmitter<any>();
   @Output() click = new EventEmitter<void>();
-  @Output() hover = new EventEmitter<Card | null>();
+  @Output() hover = new EventEmitter<string | null>();
 
   @ViewChild('more') more: ElementRef;
   observer: IntersectionObserver;

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, NavigationStart, Router, Event } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LngLatBounds } from 'mapbox-gl';
 import { BehaviorSubject, from, merge, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, delay, pairwise, tap, debounceTime } from 'rxjs/operators';
 import { ApiService } from './api.service';
-import { Card, Organization } from './common/datatypes';
+import { Card, Organization, Point } from './common/datatypes';
 import { ResponsesService } from './responses.service';
 import { Location } from '@angular/common';
 import { SeoSocialShareService } from 'ngx-seo';
@@ -68,15 +68,15 @@ export class StateService {
   filterChanges: Observable<State>;
   queryChanges: Observable<State>;
   cardChanges: Observable<State>;
-  pointIdChanges: Observable<State>;
+  pointChanges: Observable<State>;
 
   placeNames = new Subject<string>();
 
-  selectedCard = new ReplaySubject<{card: Card | null}>(1);
-  selectedCards = new ReplaySubject<{cards: Card[] | null}>(1);
+  selectedCard = new ReplaySubject<Card | null>(1);
+  selectedPoint = new ReplaySubject<Point | null>(1);
   
   cardCache: {[key: string]: Card} = {};
-  cardsCache: {[key: string]: Card[]} = {};
+  pointCache: {[key: string]: Point} = {};
 
   // savedGeo: CenterZoomType | null;
   latestBounds: LngLatBounds;
@@ -119,15 +119,15 @@ export class StateService {
       filter(filterDiffs(['searchBoxTitle'])),
     );
     this.cardChanges = this.state.pipe(
-      filter(filterDiffs(['cardId'])), // TODO, 'card-id')),
+      filter(filterDiffs(['cardId'])),
     );
-    this.pointIdChanges = this.state.pipe(
-      filter(filterDiffs(['pointId'])), // TODO , 'point-id')),
+    this.pointChanges = this.state.pipe(
+      filter(filterDiffs(['pointId'])),
     );
     
-    // Select card / cards when the cardId/pointId changes
-    this.pointIdChanges.subscribe((state) => {
-      this.selectCardsByPointId(state.pointId || null);
+    // Select card/point when the cardId/pointId changes
+    this.pointChanges.subscribe((state) => {
+      this.selectPointById(state.pointId || null);
     });
     this.cardChanges.subscribe((state) => {
       this.selectCardById(state.cardId || null);
@@ -171,7 +171,6 @@ export class StateService {
       while (incomingUpdates.length > 0) {
         Object.assign(update, incomingUpdates.shift());
       }
-      // update['__kind'] = kind;
       this.newState(Object.assign({}, this._state, update), Object.keys(update));
     });
   }
@@ -234,7 +233,6 @@ export class StateService {
           decoded          
         ]);
       } else if (!!orgId) {
-        console.log('OOOO', orgId);
         obs = this.api.getOrganization(orgId).pipe(
           map((org) => {
             decoded.orgId = orgId;
@@ -322,45 +320,40 @@ export class StateService {
 
   set card(card: Card | null) {
     if (card) {
+      console.log('SET CARD', card.card_id);
       this.cardCache[card.card_id] = card;
+      this.pointId = card.point_id;
       this.cardId = card.card_id;  
     } else {
       this.cardId = null;
     }
   }
 
-  set cards(cards: Card[] | null) {
-    if (cards) {
-      const pointId = cards[0].point_id;
-      this.cardsCache[pointId] = cards;
-      if (this._state.pointId !== pointId) {
-        this.card = null;
-      }
-      this.pointId = pointId;
+  set point(point: Point | null) {
+    if (point) {
+      this.pointCache[point.point_id] = point;
+      this.pointId = point.point_id;
     } else {
-      this.card = null;
       this.pointId = null;
     }
   }
 
   // Select point / cards / card 
   // (by id, fetch if needed)
-  selectCardsByPointId(pointId: string | null) {
+  selectPointById(pointId: string | null) {
     if (pointId) {
-      const cards = this.cardsCache[pointId];
-      let source = from([cards]).pipe(
+      const point = this.pointCache[pointId];
+      let source = from([point]).pipe(
         delay(0)
       );
-      if (!cards) {
-        source = this.api.getGeoData(pointId).pipe(
-          map((point) => point.records)
-        );
+      if (!point) {
+        source = this.api.getGeoData(pointId);
       }
-      source.subscribe((cards) => {
-        this.selectCards(cards);
+      source.subscribe((point) => {
+        this.selectPoint(point);
       });
     } else {
-      this.selectCards(null);
+      this.selectPoint(null);
     }
   }
 
@@ -380,11 +373,11 @@ export class StateService {
   }
   
   // By value
-  selectCards(cards: Card[] | null) {
-    if (cards) {
-      this.cardsCache[cards[0].point_id] = cards;
+  selectPoint(point: Point | null) {
+    if (point) {
+      this.pointCache[point.point_id] = point;
     }
-    this.selectedCards.next({cards});
+    this.selectedPoint.next(point);
   }
 
   selectCard(card: Card | null) { // replaceCenterZoom
@@ -394,7 +387,7 @@ export class StateService {
       this.seo.setDescription(`${card.branch_name} - ${card.service_description || card.branch_description}`);
       this.seo.setUrl(`https://www.kolsherut.org.il/c/${card.card_id}`);  
     }
-    this.selectedCard.next({card});
+    this.selectedCard.next(card);
   }
 
   // Apply state from url (for presets)

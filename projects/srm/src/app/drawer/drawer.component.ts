@@ -145,7 +145,7 @@ export class DrawerComponent implements OnInit, OnChanges, AfterViewInit {
         throttleTime(0, animationFrameScheduler),
       ).subscribe((ev) => {
         this.handleGestureMove(ev as TouchEvent);
-        console.log('MOVE', this.moveDiff);
+        // console.log('MOVE', this.moveDiff);
       });
     }
   }

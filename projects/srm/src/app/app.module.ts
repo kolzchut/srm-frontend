@@ -21,7 +21,7 @@ import { CardWhatComponent } from './common/card-what/card-what.component';
 import { CardWhereComponent } from './common/card-where/card-where.component';
 import { CardTagsComponent } from './common/card-tags/card-tags.component';
 import { CardButtonComponent } from './common/card-button/card-button.component';
-import { SingleComponent } from './drawer/strip/single/single.component';
+import { StripSingleComponent } from './drawer/strip/single/strip-single.component';
 import { SearchAutocompleteComponent } from './filtering/search-autocomplete/search-autocomplete.component';
 import { FilteringConfigComponent } from './filtering/filtering-config/filtering-config.component';
 import { FormsModule } from '@angular/forms';
@@ -65,7 +65,7 @@ import { DisclaimerContentsComponent } from './disclaimer/disclaimer-contents/di
     CardWhereComponent,
     CardTagsComponent,
     CardButtonComponent,
-    SingleComponent,
+    StripSingleComponent,
     SearchAutocompleteComponent,
     FilteringConfigComponent,
     AutocompleteSectionComponent,

@@ -20,7 +20,7 @@ export class AnalyticsService {
         this.sendEvent('search', 'org', state.orgId);
       }
     });
-    this.state.selectedCard.subscribe(({card}) => {
+    this.state.selectedCard.subscribe((card) => {
       if (card) {
         this.sendEvent('view_service', 'services', card.service_name);
       }

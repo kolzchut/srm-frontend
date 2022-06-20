@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { fromEvent } from 'rxjs';
-import { Card } from '../../../common/datatypes';
+import { Card, Point } from '../../../common/datatypes';
 
 @Component({
   selector: 'app-strip-multiple',
@@ -14,7 +14,7 @@ export class StripMultipleComponent implements OnInit, AfterViewInit {
   leftPossible = true;
   rightPossible = false;
 
-  @Input() cards: Card[] | null;
+  @Input() point: Point | null;
   @Output() selected = new EventEmitter<Card>();
   @Output() closed = new EventEmitter<void>();
   @ViewChild('container') container: ElementRef;

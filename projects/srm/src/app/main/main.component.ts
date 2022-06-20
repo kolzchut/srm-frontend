@@ -1,18 +1,18 @@
-import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReplaySubject, Subject, timer } from 'rxjs';
-import { debounceTime, delay, distinctUntilChanged, filter, switchMap, tap } from 'rxjs/operators';
-import { Card, CategoryCountsResult, DrawerState, HeaderState, CardState, MultiState } from '../common/datatypes';
+import { from, ReplaySubject, Subject, timer } from 'rxjs';
+import { debounceTime, delay, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import { ApiService } from '../api.service';
+import { Card, CategoryCountsResult, DrawerState, HeaderState, CardState, MultiState, Point } from '../common/datatypes';
 import { DrawerComponent } from '../drawer/drawer.component';
 import { LayoutService } from '../layout.service';
 import { MapComponent } from '../map/map.component';
 import { PlatformService } from '../platform.service';
 import { SearchService } from '../search.service';
 import { SituationsService } from '../situations.service';
-import { CenterZoomType, GeoType, StateService } from '../state.service';
+import { GeoType, StateService } from '../state.service';
 import { WindowService } from '../window.service';
 
-// import * as mapboxgl from 'mapbox-gl';
 declare var mapboxgl: any;
 @Component({
   selector: 'app-main',
@@ -39,11 +39,9 @@ export class MainComponent implements OnInit {
 
   loaded = new ReplaySubject(1);
 
-  selectedCard: Card | null = null;
-  selectedMulti: Card[] | null = null;
-
-  hoverCard: Card | null = null;
-  hoverMulti: Card[] | null = null;
+  selectedPoint: Point | null = null;
+  hoverPoint: Point | null = null;
+  focusedCard: Card | null = null;
 
   _headerActive = false;
   drawerScrolled = false;
@@ -55,7 +53,7 @@ export class MainComponent implements OnInit {
 
   activePopup: mapboxgl.Popup | null = null;
   currentPopup: string | null = null;
-  mapHoverPointsStream = new Subject<Card[]>();
+  mapHoverPointsStream = new Subject<string | null>();
 
   counts: CategoryCountsResult[] = [];
   collapseCounts = 1000;
@@ -72,37 +70,45 @@ export class MainComponent implements OnInit {
   
   constructor(
         public state: StateService, public search: SearchService,
+        public api: ApiService,
         private situations: SituationsService, public layout: LayoutService,
         private router: Router, private activatedRoute: ActivatedRoute,
         private window: WindowService, private platform: PlatformService,
   ) {
-    // After loading, start tracking URL, selected card/cards/hovers
+    // After loading, start tracking URL, selected card/point/hovers
     this.loaded.subscribe(() => {
-      this.state.selectedCards.subscribe(({cards}) => {
-        if (cards) {
-          if (cards.length > 1) {
-            this.selectMulti(cards);
+      this.state.selectedPoint.subscribe((point) => {
+        if (point) {
+          if (point.records.length > 1) {
+            this.selectMulti(point);
           } else {
-            this.selectCard(cards[0]);
+            this.state.card = point.records[0];
           }
         } else {
-          this.selectMulti(cards);
+          this.selectCard(null);
+          this.selectMulti(null);
         }
+        this.selectedPoint = point;
       });
-      this.state.selectedCard.subscribe(({card}) => {
+      this.state.selectedCard.subscribe((card) => {
         this.selectCard(card);
       });
       this.mapHoverPointsStream.pipe(
         debounceTime(250),
-        distinctUntilChanged((x, y) => !!x && !!y && x.length === y.length && x.length > 0 && x[0].point_id === y[0].point_id),
-      ).subscribe(cards => {
+        distinctUntilChanged(),
+        switchMap((pointId) => !!pointId ? this.api.getGeoData(pointId as string) : from([{records: []} as any])),
+      ).subscribe(point => {
         this.clearHovers();
-        if (this.cardState === CardState.None && this.multiState === MultiState.None) {
+        if (!!point && this.cardState === CardState.None && this.multiState === MultiState.None) {
+          const cards = [
+            ...point.records.filter((card: Card) => this.situations.shouldFilter(card.situation_ids)),
+            ...point.records.filter((card: Card) => !this.situations.shouldFilter(card.situation_ids)),
+          ];
+
+          this.hoverPoint = point;
           if (cards.length > 1) {
-            this.hoverMulti = cards;
             this.popup(cards[0], true);
           } else if (cards.length === 1) {
-            this.hoverCard = cards[0];
             this.popup(cards[0], false);
           } else {
             this.popup(null, false);
@@ -256,41 +262,35 @@ export class MainComponent implements OnInit {
 
   clearCardSelections() {
     this.state.card = null;
-    this.state.cards = null;
+    this.state.point = null;
   }
 
   clearHovers() {
-    this.hoverMulti = this.hoverCard = null;
+    this.hoverPoint = null;
   }
 
   // Event handling
-  mapSelectedPoints(cards: Card[]) {
-    if (cards.length > 0) {
-      if (cards.length === 1) {
-        this.waitPreview = cards[0].card_id;
-        this.state.card =  cards[0];
-      } else {
-        this.state.cards = cards;
-      }
+  mapSelectedPoints(point: Point | null) {
+    if (point) {
+      this.state.pointId = point.point_id;
     } else {
       this.handleEvent('map-click');
     }
   }
 
-  mapHoverPoints(cards: Card[]) {
-    cards = [
-      ...cards.filter(card => this.situations.shouldFilter(card.situation_ids)),
-      ...cards.filter(card => !this.situations.shouldFilter(card.situation_ids)),
-    ];
-    this.mapHoverPointsStream.next(cards);
+  mapHoverPoints(point_id: string | null) {
+    if (point_id) {
+      this.mapHoverPointsStream.next(point_id);
+    } else {
+      this.mapHoverPointsStream.next(null);
+    }
   }
 
-  selectMulti(cards: Card[] | null) {
-    console.log('MAIN SELECT MULTI',this.multiState, cards && cards.length ? cards[0].point_id : 'pointless');
-    const hasCards = !!cards && cards.length > 0;
+  selectMulti(point: Point | null) {
+    const _cards = point ? point.records : [];
+    const hasCards = !!_cards && _cards.length > 0;
     if (hasCards) {
-      const _cards = cards as Card[];
-      cards = [
+      const cards = [
         ..._cards.filter(card => this.situations.shouldFilter(card.situation_ids)),
         ..._cards.filter(card => !this.situations.shouldFilter(card.situation_ids)),
       ];
@@ -310,20 +310,17 @@ export class MainComponent implements OnInit {
       // });
       this.popup(card, true);
       this.search.closeFilter.next();
-      this.selectedMulti = cards;
     } else {
       if (this.multiState !== MultiState.None) {
         this.popView();
         this.multiState = MultiState.None;
         this.popup(null);
       }
-      this.selectedMulti = null;
     }
     this.setLabelsFilter();
   }
 
   selectCard(card: Card | null) {
-    console.log('MAIN SELECT CARD', this.cardState, card?.card_id, this.waitPreview);
     if (card) {
       this.clearHovers();
       if (this.cardState === CardState.None) {
@@ -354,6 +351,7 @@ export class MainComponent implements OnInit {
       this.drawerComponent?.scrollToTop();
       this.search.closeFilter.next();
       this.waitPreview = null;
+      this.state.pointId = card?.point_id;
     } else {
       if (this.multiState === MultiState.None) {
         this.popView();
@@ -364,17 +362,15 @@ export class MainComponent implements OnInit {
       }
       this.cardState = CardState.None;
     }
-    this.selectedCard = card;
+    this.focusedCard = card;
     this.setLabelsFilter();
   }
 
   setLabelsFilter() { //TODO: Needs fixing, as it overrides the filter set in another location
     const non_existent = 'nonexistent';
     let record_id = non_existent;
-    if (this.selectedMulti) {
-      record_id = this.selectedMulti[0].point_id
-    } else if (this.selectedCard) {
-      record_id = this.selectedCard.point_id
+    if (this.selectedPoint) {
+      record_id = this.selectedPoint.point_id
     }
     if (this.layout.desktop) {
       this.map?.setFilter('labels-active', ['==', ['get', 'point_id'], non_existent]);
@@ -478,4 +474,32 @@ export class MainComponent implements OnInit {
     }
   }
 
+  // Utility Functions
+  get selectedPointIsCard(): Card | null {
+    if (this.selectedPoint && this.selectedPoint.records.length === 1) {
+      return this.selectedPoint.records[0];
+    }
+    return null;
+  }
+
+  get selectedPointIsMulti(): Card[] | null {
+    if (this.selectedPoint && this.selectedPoint.records.length > 1) {
+      return this.selectedPoint.records;
+    }
+    return null;
+  }
+
+  get hoverCard(): Card | null {
+    if (this.hoverPoint && this.hoverPoint.records.length === 1) {
+      return this.hoverPoint.records[0];
+    }
+    return null;
+  }
+
+  get hoverMulti(): Card[] | null {
+    if (this.hoverPoint && this.hoverPoint.records.length > 1) {
+      return this.hoverPoint.records;
+    }
+    return null;
+  }
 }

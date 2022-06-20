@@ -9,12 +9,12 @@
                 (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
                 [class.away]='disclaimerVisible || infoPage'>
         <ng-container ngProjectAs='strip'>
-            <app-strip-single *ngIf='selectedCard && cardState === CardState.Preview' 
-                [card]='selectedCard' (selected)='state.card = $event'
+            <app-strip-single *ngIf='selectedPointIsCard && cardState === CardState.Preview' 
+                [card]='selectedPointIsCard' (selected)='state.card = $event'
                 (closed)='handleEvent("map-click")'
             ></app-strip-single>
-            <app-strip-multiple *ngIf='selectedMulti && drawerState === DrawerState.Peek'
-                [cards]='selectedMulti' (selected)='state.card = $event'
+            <app-strip-multiple *ngIf='selectedPointIsMulti && drawerState === DrawerState.Peek'
+                [point]='selectedPoint' (selected)='state.card = $event'
                 (closed)='handleEvent("map-click")'
             ></app-strip-multiple>
         </ng-container>
@@ -41,9 +41,9 @@
                 <app-preset-strip></app-preset-strip>
             </ng-container>
             <ng-container *ngIf='drawerState !== DrawerState.Presets'>
-                <app-service-list *ngIf='cardState !== CardState.Full' (selected)='state.card = $event' [cardList]='selectedMulti'></app-service-list>
-                <div class='single-service'>
-                    <app-single-service *ngIf='cardState === CardState.Full && selectedCard' [card]='selectedCard'></app-single-service>        
+                <app-service-list *ngIf='cardState !== CardState.Full' (selected)='state.card = $event' [cardList]='selectedPointIsMulti'></app-service-list>
+                <div class='single-service' *ngIf='cardState === CardState.Full && !!focusedCard' >
+                    <app-single-service [card]='focusedCard'></app-single-service>
                 </div>
             </ng-container>
         </ng-container>
@@ -56,13 +56,13 @@
 
 <!-- Desktop -->
 <div class='sidebar layout-desktop'>
-    <div class='header' [class.hidden]='!!selectedCard' [class.active]='headerVisible()'>
+    <div class='header' [class.hidden]='!!focusedCard' [class.active]='headerVisible()'>
         <app-filtering (activated)='headerActive = $event' (menu)='menu=true'></app-filtering>
     </div>
     <app-drawer [state]='DrawerState.Full' (handle)='handleEvent($event)' [class.display-none]='!!headerActive' #drawer>
         <ng-container ngProjectAs='content-footer'>
             <ng-container *ngIf='drawerState !== DrawerState.Presets'>
-                <div *ngIf='!selectedCard' class='counts' (click)='$event.stopPropagation()'>
+                <div *ngIf='!selectedPoint' class='counts' (click)='$event.stopPropagation()'>
                     <ng-container *ngIf='search.loading'>
                         <div class='loading'></div>
                         <div class='loading'></div>
@@ -83,10 +83,10 @@
                 <app-preset-strip></app-preset-strip>
             </ng-container> 
             <ng-container *ngIf='drawerState !== DrawerState.Presets'>
-                <app-service-list *ngIf='!selectedCard' (selected)='state.card = $event' [cardList]='selectedMulti' (hover)='mapHoverPoints($event ? [$event] : [])'></app-service-list>
-                <div class='single-service' *ngIf='!!selectedCard'>
+                <app-service-list *ngIf='!focusedCard' (selected)='state.card = $event' [cardList]='selectedPointIsMulti' (hover)='mapHoverPoints($event)'></app-service-list>
+                <div class='single-service' *ngIf='!!focusedCard'>
                     <div class='close-button' (click)='$event.stopPropagation(); handleEvent("close-card")'></div>
-                    <app-single-service *ngIf='!!selectedCard' [card]='selectedCard'></app-single-service>                            
+                    <app-single-service *ngIf='!!focusedCard' [card]='focusedCard'></app-single-service>
                 </div>
             </ng-container>
         </ng-container>
@@ -98,28 +98,28 @@
     <div *ngIf='!disclaimerVisible' class='disclaimer' [class.fade]='miniDisclaimerHidden'></div>
     <app-disclaimer *ngIf='disclaimerVisible' (closed)='closeDisclaimer($event)'></app-disclaimer>
 </div>
-<div class='display-none' #mapPopup *ngIf='layout.desktop && !!currentPopup && (selectedCard || selectedMulti || hoverCard || hoverMulti)'>
+<div class='display-none' #mapPopup *ngIf='layout.desktop && !!currentPopup && (selectedPoint || hoverCard || hoverMulti)'>
     <div class='map-popup'>
-        <app-strip-single *ngIf='selectedCard && !selectedMulti'
-            [card]='selectedCard'
+        <app-strip-single *ngIf='selectedPoint && selectedPointIsCard'
+            [card]='selectedPointIsCard'
             (closed)='handleEvent("map-click")'
         ></app-strip-single>
-        <app-popup-multiple *ngIf='selectedMulti'
-            [cards]='selectedMulti'
+        <app-popup-multiple *ngIf='selectedPoint && selectedPointIsMulti'
+            [point]='selectedPoint'
             (selected)='state.card = $event'
             (closed)='handleEvent("map-click")'
         ></app-popup-multiple>
-        <app-strip-single *ngIf='hoverCard'
+        <app-strip-single *ngIf='hoverPoint && hoverCard'
             class='hover'
             [card]='hoverCard'
             (selected)='state.card = $event'
             (hover)='mapHoverPoints($event)'
         ></app-strip-single>
-        <app-popup-multiple *ngIf='hoverMulti'
+        <app-popup-multiple *ngIf='hoverPoint && hoverMulti'
             (hover)='mapHoverPoints($event)'
             (selectMulti)='mapSelectedPoints($event)'
-            (selected)='mapSelectedPoints(hoverMulti); state.card = $event'
-            [cards]='hoverMulti'
+            (selected)='mapSelectedPoints(hoverPoint); state.card = $event'
+            [point]='hoverPoint'
         ></app-popup-multiple>
     </div>
 </div>

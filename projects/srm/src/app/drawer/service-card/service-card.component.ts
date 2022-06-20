@@ -19,7 +19,7 @@ export class ServiceCardComponent implements OnInit {
   @Input() closeable = false;
   @Input() clickable = true;
   @Output() closed = new EventEmitter<void>();
-  @Output() hover = new EventEmitter<Card | null>();
+  @Output() hover = new EventEmitter<string | null>();
 
   constructor() { }
 
@@ -27,7 +27,7 @@ export class ServiceCardComponent implements OnInit {
   }
 
   onMouseEnter() {
-    this.hover.emit(this.card);
+    this.hover.emit(this.card.point_id);
   }
 
   onMouseOut() {

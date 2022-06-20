@@ -1,3 +1,3 @@
 <div class='container' #container>
-    <app-service-card *ngFor='let card of cards' [card]='card' [closeable]='true' (closed)='closed.emit()' (click)='selected.emit(card)'></app-service-card>
+    <app-service-card *ngFor='let card of point?.records' [card]='card' [closeable]='true' (closed)='closed.emit()' (click)='selected.emit(card)'></app-service-card>
 </div>

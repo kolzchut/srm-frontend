@@ -5,7 +5,7 @@ import { ReplaySubject, Subject, timer } from 'rxjs';
 import { throttleTime, filter } from 'rxjs/operators';
 import { StateService, CenterZoomType } from '../state.service';
 import { ALL_CATEGORIES, CATEGORY_COLORS } from '../common/consts';
-import { Card } from '../common/datatypes';
+import { Card, Point as SRMPoint } from '../common/datatypes';
 import { Point } from 'geojson';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -29,8 +29,8 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   STYLE = environment.mapStyle;
 
-  @Output('points') points = new EventEmitter<Card[]>();
-  @Output('hover') pointsHover = new EventEmitter<Card[]>();
+  @Output('points') points = new EventEmitter<SRMPoint | null>();
+  @Output('hover') pointsHover = new EventEmitter<string | null>();
   @Output('map') newMap = new EventEmitter<MapComponent>();
   @ViewChild('map') mapEl: ElementRef;
 
@@ -278,31 +278,26 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.map.on('click', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
               if (e.features && e.features.length > 0) {
                 const props: any = e.features[0].properties;
-                const records = JSON.parse(props.records) as Card[];
-                this.points.next(records);
+                props.records = JSON.parse(props.records) as Card[];
+                this.points.next(props as SRMPoint);
               }
               e.preventDefault();
             });
             this.map.on('mouseenter', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
               if (e.features && e.features.length > 0) {
                 const props: any = e.features[0].properties;
-                const records = JSON.parse(props.records) as Card[];
-                const coords = (e.features[0].geometry as any)?.coordinates?.slice();
-                if (coords) {
-                  records[0].branch_geometry = coords;
-                }
-                this.pointsHover.next(records);
+                this.pointsHover.next(props.point_id || null);
               }
               this.map.getCanvas().style.cursor = 'pointer';
             });
             this.map.on('mouseout', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
-              this.pointsHover.next([]);
+              this.pointsHover.next(null);
               this.map.getCanvas().style.cursor = '';
             });
           });
           this.map.on('click', (e: mapboxgl.MapLayerMouseEvent) => {
             if (!e.defaultPrevented) {
-              this.points.next([]);  
+              this.points.next(null);
             }
           });
           this.map.on('moveend', (event: DragEvent) => {

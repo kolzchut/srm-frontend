@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Card } from '../../../common/datatypes';
+import { Card, Point } from '../../../common/datatypes';
 import { StripMultipleComponent } from '../strip-multiple/strip-multiple.component';
 
 @Component({
@@ -13,11 +13,11 @@ import { StripMultipleComponent } from '../strip-multiple/strip-multiple.compone
 })
 export class PopupMultipleComponent implements OnInit {
 
-  @Input() cards: Card[] | null;
+  @Input() point: Point;
   @Output() selected = new EventEmitter<Card>();
-  @Output() selectMulti = new EventEmitter<Card[]>();
+  @Output() selectMulti = new EventEmitter<Point>();
   @Output() closed = new EventEmitter<void>();
-  @Output() hover = new EventEmitter<Card[]>();
+  @Output() hover = new EventEmitter<string | null>();
 
   @ViewChild(StripMultipleComponent) strip: StripMultipleComponent;
 
@@ -43,10 +43,10 @@ export class PopupMultipleComponent implements OnInit {
   }
 
   onMouseEnter() {
-    this.hover.emit(this.cards || []);
+    this.hover.emit(this.point?.point_id || null);
   }
 
   onMouseOut() {
-    this.hover.emit([]);
+    this.hover.emit(null);
   }
 }
