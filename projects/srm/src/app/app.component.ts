@@ -12,7 +12,11 @@ import { PlatformService } from './platform.service';
 })
 export class AppComponent {
 
-  constructor(private analytics: AnalyticsService, private router: Router, private platform: PlatformService, private seo: SeoSocialShareService) {
+  constructor(
+      // private analytics: AnalyticsService, 
+      private router: Router,
+      private platform: PlatformService, 
+      private seo: SeoSocialShareService) {
     if (environment.gaTag) {
       this.router.events.subscribe(event => {
         if(event instanceof NavigationEnd) {

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { environment } from '../environments/environment';
-import { Response } from './common/datatypes';
+import { Response } from './_prev/common/datatypes';
 import { PlatformService } from './platform.service';
 
 type ResponseMap = {[key: string]: Response};

@@ -1,23 +1,32 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MainComponent } from './main/main.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { PageComponent } from './page/page.component';
 
 const routes: Routes = [
   {
-    path: 'p/:place', component: MainComponent,
+    path: 'about', component: PageComponent, data: {group: 'flow', stage: 'about'},
   },
   {
-    path: 'r/:response', component: MainComponent,
+    path: 'about/:about', component: PageComponent, data: {group: 'flow', stage: 'about'},
   },
   {
-    path: 'c/:card', component: MainComponent,
+    path: 'q', component: PageComponent, data: {group: 'flow', stage: 'search'},
   },
   {
-    path: 'o/:org', component: MainComponent,
+    path: 's/:query', component: PageComponent, data: {group: 'flow', stage: 'search-results'},
   },
   {
-    path: '', component: MainComponent,
+    path: 's', component: PageComponent, data: {group: 'flow', stage: 'search-results'},
+  },
+  {
+    path: 'p/:point', component: PageComponent, data: {group: 'flow', stage: 'point'},
+  },
+  {
+    path: 'c/:card', component: PageComponent, data: {group: 'flow', stage: 'card'},
+  },
+  {
+    path: '', component: PageComponent, data: {group: 'flow', stage: 'homepage'},
   },
   {
     path: '**', component: PageNotFoundComponent,
@@ -27,7 +36,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
-    initialNavigation: 'enabled'
+    initialNavigation: 'enabled',
+    enableTracing: true
 })],
   exports: [RouterModule]
 })

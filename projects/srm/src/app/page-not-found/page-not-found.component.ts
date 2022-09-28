@@ -10,6 +10,8 @@ import { Request } from 'express';
 })
 export class PageNotFoundComponent implements OnInit {
 
+  src = '';
+
   constructor(
     private platform: PlatformService,
     @Optional() @Inject(REQUEST) private request: Request
@@ -20,7 +22,8 @@ export class PageNotFoundComponent implements OnInit {
       if (this.request.res) {
         this.request.res.status(404);
       }
-    })
+    });
+    this.src = 'assets/img/404/' + Math.ceil(Math.random()*4) + '.png';
   }
 
 }

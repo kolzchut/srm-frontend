@@ -1,0 +1,19 @@
+<div class='search-bar'>
+    <button class='back-button' (click)='location.back()'></button>
+    <input type='search' placeholder='ניתן לחפש לפי שם, סוג מענה, מיקום...' [(ngModel)]='query' enterkeyhint='חיפוש' #input>
+    <button class='clear-button' (click)='query=""' *ngIf='!!query'></button>
+</div>
+<div class='results'>
+    <div class='result' *ngFor='let result of (query ? results : presets)'>
+        <a class='result-title' [routerLink]='result.link' [queryParams]='result.linkParams'>
+            <span class='result-icon'>
+            </span>
+            <span class='text' [innerHtml]='result.display'></span>
+        </a>
+        <a class='result-arrow' [class.direct]='result.direct' 
+                                [routerLink]='result.direct ? result.link : null'
+                                [queryParams]='result.direct ? result.linkParams : null'
+                                (click)='!result.direct && result.query && query = result.query'
+        ></a>
+    </div>
+</div>

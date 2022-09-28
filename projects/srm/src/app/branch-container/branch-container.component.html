@@ -1,0 +1,18 @@
+<div class='map-window'></div>
+<div class='content'>
+    <a class='header'>
+        <div class='branch-details'>
+            <h2 class='branch-name'>{{card.branch_name}}</h2>
+            <div class='address'>{{card.branch_address}}</div>
+        </div>
+        <button class='control-icon'></button>
+    </a>
+    <ng-content></ng-content>
+</div>
+<div class='controls'>
+    <button class='back' (click)='location.back()'></button>
+    <a class='search' [routerLink]='["/q"]'></a>
+</div>
+<div class='quick-actions' [style.bottom]='actionsBottom + "px"'>
+    actions
+</div>

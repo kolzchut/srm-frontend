@@ -1,0 +1,4 @@
+<p>search-results works!</p>
+<div class='trigger' [class.visible]='triggerVisible'></div>
+<p *ngFor='let result of results'>{{result.service_name}}, {{result.branch_name}}</p>
+<div class='trigger' [class.visible]='triggerVisible' #trigger></div>

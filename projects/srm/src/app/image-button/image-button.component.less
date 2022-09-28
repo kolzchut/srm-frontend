@@ -1,0 +1,21 @@
+@import '../../common.less';
+
+:host {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    button {
+        .button-image;
+        .background-image;    
+        width: 100%;
+        height: 100%;
+        display: block;
+
+        &.disabled {
+            cursor: inherit;
+        }
+        margin: 0;
+        padding: 0;    
+    }
+}

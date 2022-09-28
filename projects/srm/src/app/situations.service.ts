@@ -4,8 +4,8 @@ import { from, ReplaySubject, timer } from 'rxjs';
 import { filter, first, switchMap } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { ApiService } from './api.service';
-import { SITUATIONS_PREFIX } from './common/consts';
-import { TaxonomyGroup } from './common/datatypes';
+import { SITUATIONS_PREFIX } from './_prev/common/consts';
+import { TaxonomyGroup } from './_prev/common/datatypes';
 import { PlatformService } from './platform.service';
 import { State, StateService } from './state.service';
 

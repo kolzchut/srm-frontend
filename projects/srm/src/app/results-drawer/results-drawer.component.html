@@ -1,0 +1,18 @@
+<div class='content' #handleEl 
+    [class.gesture]='gesture'
+    [style.max-height]="calcHeight() + 'px'"
+    [style.top]="calcTop() + 'px'"
+>
+    <div class='handle layout-mobile' (click)='$event.stopPropagation()'>
+        <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
+    </div>
+    <div class='non-scrollable' *ngIf='layout.mobile'>
+        <ng-content select='content-header'></ng-content>
+    </div>
+    <div class='scrollable' #scrollable>
+        <ng-content select='content'></ng-content>
+    </div>
+    <div class='non-scrollable' *ngIf='layout.desktop'>
+        <ng-content select='content-footer'></ng-content>
+    </div>
+</div>
