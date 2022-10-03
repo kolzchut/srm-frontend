@@ -1,0 +1,14 @@
+@import '../../common.less';
+
+:host {
+    display: flex;
+    flex-flow: row;
+    align-items: flex-start;
+    gap: 2px;
+    overflow-y: scroll;
+    .no-scrollbars;
+
+    app-result-card {
+        flex: 0 0 100%;
+    }
+}

@@ -33,21 +33,41 @@
             gap: 12px;
             overflow: hidden;
 
-            &, &:hover, &:visited {
-                color: inherit;
-                text-decoration: none;
-            }
+            // &, &:hover, &:visited {
+            //     color: inherit;
+            //     text-decoration: none;
+            // }
 
-            .query {
+            .search-params {
                 flex: 0 1 100%;
+                display: flex;
+                flex-flow: column;
+                align-items: flex-start;
                 overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
 
-                .font-rag-sans;
-                font-weight: 600;
-                font-size: 20px;
-                color: @color-gray-1;
+                .query {
+                    width: 100%;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+
+                    .font-rag-sans;
+                    font-weight: 600;
+                    font-size: 20px;
+                    color: @color-gray-1;
+    
+                    &.dim {
+                        color: @color-gray-4;
+                    }
+                }
+
+                .extra-values {
+                    .font-rag-sans;
+                    font-weight: 400;
+                    font-size: 13px;
+                    line-height: 17px;
+                    color: @color-gray-3;
+                }
             }
         }
 

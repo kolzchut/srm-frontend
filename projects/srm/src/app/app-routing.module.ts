@@ -23,6 +23,9 @@ const routes: Routes = [
     path: 'p/:point', component: PageComponent, data: {group: 'flow', stage: 'point'},
   },
   {
+    path: 'c/:card/p/:point', component: PageComponent, data: {group: 'flow', stage: 'point'},
+  },
+  {
     path: 'c/:card', component: PageComponent, data: {group: 'flow', stage: 'card'},
   },
   {
@@ -37,7 +40,7 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
     initialNavigation: 'enabled',
-    enableTracing: true
+    // enableTracing: true
 })],
   exports: [RouterModule]
 })

@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subject, timer } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
@@ -31,7 +31,7 @@ export class SearchComponent implements OnInit {
   queries = new Subject<string>();
   noResults = false;
 
-  constructor(private api: ApiService, public location: Location, private route: ActivatedRoute) {
+  constructor(private api: ApiService, public location: Location, private route: ActivatedRoute, private router: Router) {
     console.log('LOADING PRESETS');
     api.getPresets().subscribe(presets => {
       console.log('PRESETS', presets);
@@ -113,5 +113,11 @@ export class SearchComponent implements OnInit {
       }];
     }
     return this.results_;
+  }
+
+  changed(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.router.navigate(['/s'], {queryParams: {q: this.query}});
+    }
   }
 }

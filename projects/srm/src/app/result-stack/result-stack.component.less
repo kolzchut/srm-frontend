@@ -1,0 +1,37 @@
+@import '../../common.less';
+
+.branch {
+    display: flex;
+    flex-flow: column;
+    padding: 2px;
+    background: @color-gray-7;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.16), 0px 4px 12px rgba(0, 0, 0, 0.08);
+
+
+    .branch-headers {
+        display: block;
+        padding: 5px 10px;
+        .org, .city {
+            display: inline;
+            .font-rag-sans;
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 13px;
+            color: @color-gray-2;
+        }
+
+        .city {
+            font-weight: 400;
+        }
+    }
+    .cards {
+        display: flex;
+        flex-flow: row;
+        align-items: flex-start;
+        width: 100%;
+
+        app-result-card {
+            width: 100%;
+        }
+    }
+}

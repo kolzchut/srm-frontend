@@ -1,9 +1,13 @@
 @import '../../common.less';
 
 :host {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+
     .main-content {
-        flex: 1 1 auto;
-        min-height: calc(100vh ~'-' 100px + 500px);
+        flex: 1 0 calc(100% ~'+' 100px);
+        // min-height: 100vh;
 
         background: @color-white;
         border: 1px solid @color-gray-5;

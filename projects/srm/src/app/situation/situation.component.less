@@ -1,6 +1,6 @@
 @import '../../common.less';
 
-:host {
+.situation {
     height: 32px;
     background: @color-white;
     border: 1px solid @color-gray-5;
@@ -14,4 +14,9 @@
     font-weight: 300;
     font-size: 16px;
     color: @color-gray-1;
+
+    &.small {
+        height: 24px;
+        font-size: 13px;
+    }
 }

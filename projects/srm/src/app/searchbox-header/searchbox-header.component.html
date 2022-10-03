@@ -1,7 +1,21 @@
 <div class='searchbox'>
     <button class='menu-icon'></button>
     <a class='clickable' [routerLink]='["/q"]' [queryParams]='{q: query}' [title]='query'>
-        <span class='query'>{{query}}</span>
+        <div class='search-params' *ngIf='searchParams'>
+            <ng-container *ngIf='searchParams.query'>
+                <span class='query'>{{searchParams.query}}</span>
+            </ng-container>
+            <ng-container *ngIf='!searchParams.query'>
+                <span class='query' *ngIf='responseDisplay'>{{responseDisplay}}</span>
+                <span class='query dim' *ngIf='!responseDisplay'>כל שירות</span>
+                <div class='extra-values'>
+                    <ng-container *ngIf='situationDisplay'>
+                        <span>{{situationDisplay}}</span>
+                        <span class='separator'></span>
+                    </ng-container>
+                </div>
+            </ng-container>    
+        </div>
         <div class='search-icon'></div>    
     </a>
 </div>

@@ -4,7 +4,7 @@ import { catchError, delay, finalize, map, tap } from 'rxjs/operators';
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult } from './consts';
+import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult, CARD_SNIPPET_FIELDS, TaxonomyItem, SearchParams } from './consts';
 import { makeStateKey, TransferState} from '@angular/platform-browser';
 import { PlatformService } from './platform.service';
 import * as memoryCache from 'memory-cache';
@@ -73,14 +73,6 @@ export class ApiService {
   //     ]
   //   ];
   // }
-
-  getCard(id: string): Observable<Card> {
-    return this.innerCache(`card-${id}`, this.http.get(environment.itemURL + id).pipe(
-      map((res: any) => {
-        return res as Card;
-      })
-    ));
-  }
 
   // getGeoData(pointId: string): Observable<Point> {
   //   return this.innerCache(`point-${pointId}`, this.http.get(environment.itemURL + pointId, {params: {type: 'geo_data'}}).pipe(
@@ -325,18 +317,32 @@ export class ApiService {
     );
   }
 
-  getCards(query: string | null, response: string | null, situation: string | null, offset=0): Observable<Card[]> {
-    const params: any = {size: 10, offset: offset, order: '-_score'};
-    if (query) {
-      params.q = query;
+  getCard(id: string): Observable<Card> {
+    return this.innerCache(`card-${id}`, this.http.get(environment.itemURL + id).pipe(
+      map((res: any) => {
+        return res as Card;
+      })
+    ));
+  }
+
+  getCards(searchParams: SearchParams, offset=0): Observable<Card[]> {
+    const params: any = {
+      size: 10,
+      offset: offset,
+      order: '-_score'
+    };
+    if (searchParams.query) {
+      params.q = searchParams.query;
+      params.highlight = 'service_name,service_name.hebrew';
+      params.snippets = CARD_SNIPPET_FIELDS.join(',');
     }
-    if (response || situation) {
+    if (searchParams.response || searchParams.situation) {
       const filter: any = {};
-      if (response) {
-        filter['response_ids'] = response;
+      if (searchParams.response) {
+        filter['response_ids'] = searchParams.response;
       }
-      if (situation) {
-        filter['situation_ids'] = situation;
+      if (searchParams.situation) {
+        filter['situation_ids'] = searchParams.situation;
       }
       params.filter = JSON.stringify([filter]);
     }
@@ -348,10 +354,54 @@ export class ApiService {
     );
   }
 
+  getCardForPoint(id: string): Observable<Card> {
+    const params: any = {
+      size: 1,
+      filter: JSON.stringify([{point_id: id}])
+    };
+    return this.innerCache(`cfp-${id}`, this.http.get(environment.cardsURL, {params}).pipe(
+      map((res: any) => {
+        const results = (res as QueryCardResult).search_results;
+        return results?.[0].source || null;
+      })
+    ));
+  }
+
+  getPoint(searchParams: SearchParams, pointId: string): Observable<Card[]> {
+    const params: any = {
+      size: 100,
+      offset: 0,
+      order: '-_score'
+    };
+    if (searchParams.query) {
+      params.q = searchParams.query;
+      params.highlight = 'service_name,service_name.hebrew';
+      params.snippets = CARD_SNIPPET_FIELDS.join(',');
+    }
+    const filter: any = {
+      point_id: pointId,
+    };
+    if (searchParams.response || searchParams.situation) {
+      if (searchParams.response) {
+        filter['response_ids'] = searchParams.response;
+      }
+      if (searchParams.situation) {
+        filter['situation_ids'] = searchParams.situation;
+      }
+    }
+    params.filter = JSON.stringify([filter]);
+    return this.http.get(environment.cardsURL, {params}).pipe(
+      map((res: any) => {
+        const results = (res as QueryCardResult).search_results;
+        return results.map((r: any) => r.source);
+      })
+    );
+  }
+
   getTopCards(query: string): Observable<Card[]> {
     const params = {
       size: 3,
-      q: query,
+      q: query.replace(/ עבור /g, ' '),
       highlight: 'branch_name,branch_name.hebrew,service_name,service_name.hebrew',
       match_operator: 'or',
       match_type: 'best_fields'
@@ -379,4 +429,25 @@ export class ApiService {
     );
   }
 
+  getResponse(id: string): Observable<TaxonomyItem> {
+    return this.innerCache(
+      `response-${id}`,
+      this.http.get(environment.itemURL + id, {params: {type: 'responses'}}).pipe(
+        map((res: any) => {
+          return res as TaxonomyItem;
+        })
+      )
+    );
+  }
+
+  getSituation(id: string): Observable<TaxonomyItem> {
+    return this.innerCache(
+      `situation-${id}`,
+      this.http.get(environment.itemURL + id, {params: {type: 'situations'}}).pipe(
+        map((res: any) => {
+          return res as TaxonomyItem;
+        })
+      )
+    );
+  }
 }

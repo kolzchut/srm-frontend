@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { from, Subject } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { AutoComplete, DrawerState } from '../consts';
+import { AutoComplete, DrawerState, SearchParams } from '../consts';
 
 @Component({
   selector: 'app-page',
@@ -18,9 +18,9 @@ export class PageComponent implements OnInit {
   query = '';
   queryP_ = '';
   queryQP_ = '';
-  searchQuery: string | null = null;
-  searchResponse: string | null = null;
-  searchSituation: string | null = null;
+  searchParams: SearchParams;
+
+  DrawerState = DrawerState;
   drawerState = DrawerState.Half;
   
   searchParamsCalc = new Subject(); 
@@ -42,13 +42,17 @@ export class PageComponent implements OnInit {
     ).subscribe((res: AutoComplete | null) => {
       console.log('new search params', res);
       if (res) {
-        this.searchQuery = null;
-        this.searchResponse = res.response;
-        this.searchSituation = res.situation;
+        this.searchParams = {
+          query: null,
+          response: res.response,
+          situation: res.situation,
+        };
       } else {
-        this.searchQuery = this.query;
-        this.searchResponse = null;
-        this.searchSituation = null;
+        this.searchParams = {
+          query: this.query,
+          response: null,
+          situation: null,
+        };
       }
     });
     route.params.subscribe(params => {
@@ -59,6 +63,7 @@ export class PageComponent implements OnInit {
     });
     route.data.subscribe(data => {
       this.stage = data.stage;
+      this.drawerState = DrawerState.Half;
       console.log('STAGE', this.stage);
     });
     route.queryParams.subscribe(params => {
@@ -68,5 +73,17 @@ export class PageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  handleDrawer(drawerEvent: string) {
+    const map: {[key: string]: DrawerState} = {
+      'full:down': DrawerState.Half,
+      'full:click': DrawerState.Half,
+      'half:down': DrawerState.Peek,
+      'half:up': DrawerState.Full,
+      'peek:up': DrawerState.Half,
+      'peek:click': DrawerState.Half,
+    };
+    this.drawerState = map[this.drawerState + ':' + drawerEvent] || this.drawerState;
   }
 }

@@ -1,5 +1,7 @@
-<span class='point'>
-    <span></span>
-</span>
-<span class='name'>{{response.name}}</span>
-<span class='link'>←</span>
+<div class='response'>
+    <span class='point'>
+        <span></span>
+    </span>
+    <span class='name'>{{response.name}}</span>
+    <span class='link' *ngIf='link'>←</span>
+</div>

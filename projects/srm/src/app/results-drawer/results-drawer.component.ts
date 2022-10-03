@@ -58,7 +58,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     } else if (this.state === DrawerState.Most) {
       ret = 0.8 * hostHeight;
     } else if (this.state === DrawerState.Full) {
-      ret = hostHeight;
+      ret = hostHeight - 64;
     }
     ret -= this.moveDiff;
     return ret > hostHeight ? hostHeight : ret;

@@ -1,0 +1,35 @@
+@import '../../common.less';
+
+:host {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    padding: 8px 6px;
+    position: sticky;
+    top: 0;
+    background: @color-white;
+    box-shadow: 0px 0px 12px rgba(171, 199, 255, 0.5);
+
+
+    .open-modal {
+        .button-image;
+        .background-image;
+        background-image: url(../../assets/img/icon-filter-gray-3.svg);
+        background-position: right 8px center;
+        background-size: 24px;
+
+        .font-rag-sans;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 21px;
+        color: @color-gray-3;
+
+        height: 32px;
+        padding-left: 12px;
+        padding-right: 36px;
+
+        border: 1px solid @color-gray-5;
+        border-radius: 16px;
+    }
+}

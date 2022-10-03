@@ -1,4 +1,7 @@
-<p>search-results works!</p>
 <div class='trigger' [class.visible]='triggerVisible'></div>
-<p *ngFor='let result of results'>{{result.service_name}}, {{result.branch_name}}</p>
+<ng-container *ngFor='let result of results'>
+    <a [routerLink]='["/c", result.card_id]'>
+        <app-result-stack [results]='[[result]]'></app-result-stack>
+    </a>
+</ng-container>
 <div class='trigger' [class.visible]='triggerVisible' #trigger></div>

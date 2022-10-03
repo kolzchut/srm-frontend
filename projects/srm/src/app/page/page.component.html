@@ -2,13 +2,20 @@
 <div class='page-container' [class]='"stage-" + stage'>
     <app-homepage *ngIf='stage === "homepage"'></app-homepage>
     <app-search *ngIf='stage === "search"'></app-search>
-    <app-branch-container *ngIf='stage === "point" || stage === "card"' [cardId]='card' [pointId]='point'>
-        <app-card *ngIf='stage === "card"' [cardId]='card'></app-card>
+    <app-branch-container *ngIf='stage === "point" || stage === "card"' [cardId]='card' [pointId]='point' [stage]='stage'>
     </app-branch-container>
-    <app-searchbox-header *ngIf='stage === "search-results"' [query]='query'></app-searchbox-header>
-    <app-results-drawer [state]='drawerState' *ngIf='stage === "point" || stage === "search-results"'>
-        <ng-container ngProjectAs='content'>
-            <app-search-results [query]='searchQuery' [response]='searchResponse' [situation]='searchSituation'></app-search-results>
+    <app-searchbox-header *ngIf='stage === "search-results"' 
+            [query]='query'
+            [searchParams]='searchParams'        
+    ></app-searchbox-header>
+    <app-results-drawer
+        [state]='stage === "point" ? DrawerState.Peek : drawerState'
+        *ngIf='stage === "point" || stage === "search-results"'
+        (handle)='handleDrawer($event)'
+    >
+        <ng-container ngProjectAs='content' *ngIf='stage === "search-results"'>
+            <app-search-filters></app-search-filters>
+            <app-search-results [searchParams]='searchParams'></app-search-results>
         </ng-container>
 <!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
                     [class.away]='disclaimerVisible || infoPage'> -->

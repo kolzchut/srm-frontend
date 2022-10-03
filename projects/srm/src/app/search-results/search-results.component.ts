@@ -1,68 +1,90 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { from } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { from, Subject, Subscription, throwError } from 'rxjs';
+import { catchError, concatMap, filter, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { Card } from '../consts';
+import { Card, SearchParams } from '../consts';
+
+
+export type SearchParamsOffset = {
+  p: SearchParams,
+  offset: number,
+};
 
 @Component({
   selector: 'app-search-results',
   templateUrl: './search-results.component.html',
-  styleUrls: ['./search-results.component.less']
+  styleUrls: ['./search-results.component.less'],
+  host: {
+    '[class.empty]' : 'results.length === 0',
+  }
 })
 export class SearchResultsComponent implements OnChanges, AfterViewInit {
 
-  @Input() query: string | null = '';
-  @Input() response: string | null = '';
-  @Input() situation: string | null = '';
+  @Input() searchParams: SearchParams;
 
   @ViewChild('trigger') trigger: ElementRef;
 
   offset = 0;
-  fetching = false;
-  done = false;
+  fetchedOffset = -1;
+  // fetching = false;
+  // done = false;
   triggerVisible = false;
 
   results: Card[] = [];
   obs: IntersectionObserver;
+  fetchQueue = new Subject<SearchParamsOffset>();
+  resultsSubscription: Subscription | null = null;
 
-  constructor(private api: ApiService, private el: ElementRef) { }
+  constructor(private api: ApiService, private el: ElementRef) {
+  }
 
   ngOnChanges(): void {
     if (this.hasParams()) {
       this.offset = 0;
-      this.done = false;
-      this.fetching = false;
-      console.log('SEARCH PARAMS', this.query, this.response, this.situation);
-      this.fetch(this.query, this.response, this.situation, this.offset);
+      this.fetchedOffset = -1;
+      this.results = [];
+      console.log('SEARCH PARAMS', this.searchParams);
+      if (this.resultsSubscription !== null) {
+        this.resultsSubscription.unsubscribe();
+        this.resultsSubscription = null;
+      }
+      this.fetchQueue = new Subject<SearchParamsOffset>();
+      this.resultsSubscription = this.fetchQueue.pipe(
+        filter((params) => {
+          return params.offset > this.fetchedOffset;
+        }),
+        tap((params) => {
+          this.fetchedOffset = params.offset;
+        }),
+        concatMap((params) => {
+          return this.api.getCards(params.p, params.offset);
+        }),
+        catchError((err) => {
+          return from([]);
+        })
+      ).subscribe((results) => {
+        this.results = this.results.concat(results);
+        this.offset = this.results.length;        
+      });
+      this.fetch();
     }
   }
 
   hasParams() {
-    return this.query || this.response || this.situation;
+    return this.searchParams;
   }
 
-  fetch(query: string | null, response: string | null, situation: string | null, offset=0) {
-    if (this.fetching) {
-      return;
-    }
-    this.fetching = false;
-    this.api.getCards(query, response, situation, offset).pipe(
-      catchError((err) => {
-        this.fetching = false;
-        return from([]);
-      })
-    ).subscribe((results) => {
-      this.fetching = false;
-      console.log('SEARCH RESULTS', results);
-      this.results = this.offset === 0 ? results : this.results.concat(results);
-      this.offset = this.results.length;
+  fetch() {
+    this.fetchQueue.next({
+      p: this.searchParams,
+      offset: this.offset,
     });
   }
 
   ngAfterViewInit(): void {
     this.obs = new IntersectionObserver((entries) => {
       if (this.hasParams() && entries[0].isIntersecting) {
-        this.fetch(this.query, this.response, this.situation, this.offset);
+        this.fetch();
       }
     }, {});
     this.obs.observe(this.trigger.nativeElement);

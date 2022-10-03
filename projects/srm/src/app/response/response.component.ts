@@ -9,6 +9,7 @@ import { TaxonomyItem } from '../consts';
 export class ResponseComponent implements OnInit {
 
   @Input() response: TaxonomyItem = {};
+  @Input() link = true;
 
   constructor() { }
 

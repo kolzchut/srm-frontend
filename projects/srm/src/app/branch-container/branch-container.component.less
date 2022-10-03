@@ -14,51 +14,77 @@
         height: 100px;
         background: transparent;
         flex: 0 0 auto;
+
     }
 
     .content {
+        flex: 0 0 auto;
         width: 100%;
         background-color: @color-white;
+        flex-grow: 1;
+        display: flex;
+        flex-flow: row;
+        align-items: stretch;
 
-        .header {
+        &.point-mode {
+            overflow-x: scroll;
+            .no-scrollbars;    
+        }
+        gap: 2px;
+
+        .branch {
+            // width: 100%;
+            // min-width: 100%;
+            flex: 0 0 100%;
             display: flex;
-            flex-flow: row;
-            align-items: center;
-            cursor: pointer;
-            height: 50px;
-            background: @color-gray-7;
-            box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px 8px 0px 0px; 
-            padding: 0 16px;
-
-            .branch-details {
-                flex: 1 1 auto;
+            flex-flow: column;    
+            .header {
                 display: flex;
-                flex-flow: column;
-                align-items: flex-start;
-
-                .font-rag-sans;
-                font-style: normal;
-                font-weight: 600;
-                color: @color-gray-2;
-
-                .branch-name {
-                    margin: 0;
-                    padding: 0;
-                    font-size: 16px;
-                    line-height: 21px;
+                flex-flow: row;
+                align-items: center;
+                cursor: pointer;
+                height: 50px;
+                background: @color-gray-7;
+                box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
+                border-radius: 8px 8px 0px 0px; 
+                padding: 0 16px;
+    
+                .branch-details {
+                    flex: 1 1 auto;
+                    display: flex;
+                    flex-flow: column;
+                    align-items: flex-start;
+    
+                    .font-rag-sans;
+                    font-style: normal;
+                    font-weight: 600;
+                    color: @color-gray-2;
+    
+                    .branch-name {
+                        margin: 0;
+                        padding: 0;
+                        font-size: 16px;
+                        line-height: 21px;
+                    }
+                    .address {
+                        font-size: 13px;
+                        line-height: 13px;                    
+                    }
                 }
-                .address {
-                    font-size: 13px;
-                    line-height: 13px;                    
+                .control-icon {
+                    .button-image;
+                    .background-image;
+                    background-image: url(../../assets/img/icon-chevron-down.svg);
+                    width: 16px;
+                    height: 16px;
                 }
             }
-            .control-icon {
-                .button-image;
-                .background-image;
-                background-image: url(../../assets/img/icon-chevron-down.svg);
-                width: 16px;
-                height: 16px;
+
+            app-point-result-stack {
+                height: 100%;
+                ::ng-deep app-result-card {
+                    height: 100%;
+                }
             }
         }
     }
@@ -91,6 +117,8 @@
                 background-image: url(../../assets/img/icon-search-gray-1.svg);
             }
             &.back {
+                transition: transform 0.2s ease-in-out;
+                transform: rotate(0deg);
                 background-image: url(../../assets/img/icon-arrow-right.svg);
             }
             background-color: @color-white;
@@ -107,5 +135,24 @@
         background: @color-gray-7;
         border-top: 1px solid @color-gray-5;
         box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);       
+    }
+
+    &.point-mode {
+        height: calc(100% ~'-' 56px);
+        .map-window {
+            flex: 1 1 100%;
+        }
+        .content {
+            .header {
+                .control-icon {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+        .controls {
+            button.back {
+                transform: rotate(-90deg);
+            }
+        }
     }
 }

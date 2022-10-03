@@ -1,6 +1,6 @@
 @import '../../common.less';
 
-:host {
+.response {
     display: flex;
     flex-flow: row;
     align-items: center;
@@ -8,6 +8,7 @@
     border: 1px solid #27AE6020; //TODO
     border-radius: 4px;
     overflow: hidden;
+    height: 24px;
 
     .name {
         .font-rag-sans;
@@ -19,6 +20,7 @@
     }
 
     .point, .link {
+        .font-rag-sans;
         flex: 0 0 auto;
         width: 16px;
         display: flex;

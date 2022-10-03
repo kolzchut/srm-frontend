@@ -23,16 +23,19 @@ export class Card {
     service_urls: {href: string, title: string}[];
     organization_id: string;
     organization_name: string;
+    organization_short_name: string;
     organization_description: string;
     organization_purpose: string;
     organization_kind: string;
     organization_urls: {href: string, title: string}[];
     branch_id: string;
     branch_name: string;
+    branch_short_name: string;
     branch_description: string;
     branch_urls: {href: string, title: string}[];
     branch_phone_numbers: string;
     branch_address: string;
+    branch_city: string;
     branch_geometry: [number, number];
     card_id: string;
     response_categories: string[];
@@ -41,7 +44,18 @@ export class Card {
     responses: TaxonomyItem[];
     response_category: string;
     point_id: string;
+    _snippets: {[key: string]: string[]};
 };
+
+export const CARD_SNIPPET_FIELDS = [
+    'service_description',
+    'service_description.hebrew',
+    'organization_purpose',
+    'organization_purpose.hebrew',
+    'service_details',
+    'service_details.hebrew',
+    'branch_address'
+];
 
 export type Point = {
     response_categories: string[],
@@ -85,3 +99,9 @@ export function _h(sr: any, f: string) {
 export type QueryPresetResult = SearchResult<Preset>;
 export type QueryAutoCompleteResult = SearchResult<AutoComplete>;
 export type QueryCardResult = SearchResult<Card>;
+
+export type SearchParams = {
+    query: string | null,
+    response: string | null,
+    situation: string | null,
+};

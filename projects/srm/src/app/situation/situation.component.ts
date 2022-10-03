@@ -9,6 +9,7 @@ import { TaxonomyItem } from '../consts';
 export class SituationComponent implements OnInit {
 
   @Input() situation: TaxonomyItem = {};
+  @Input() small = false;
 
   constructor() { }
 

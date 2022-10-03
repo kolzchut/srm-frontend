@@ -2,6 +2,7 @@ import { Location } from '@angular/common'
 import { AfterViewInit, Component, ElementRef, Input, OnInit } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
 import { ApiService } from '../api.service';
+import { Card } from '../consts';
 
 @Component({
   selector: 'app-card',
@@ -10,8 +11,7 @@ import { ApiService } from '../api.service';
 })
 export class CardComponent implements OnInit {
 
-  @Input() cardId = '';
-  card: any = {};
+  @Input() card: Card;
 
   constructor(private api: ApiService) { }
 
@@ -19,13 +19,5 @@ export class CardComponent implements OnInit {
   }
 
   ngOnChanges(): void {
-    if (this.cardId.length) {
-      this.api.getCard(this.cardId).subscribe(card => {
-        console.log('CARD', card);
-        this.card = card;
-      });
-    } else {
-      this.card = {};
-    }
   }
 }

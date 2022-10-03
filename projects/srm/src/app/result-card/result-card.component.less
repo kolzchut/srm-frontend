@@ -1,0 +1,49 @@
+@import '../../common.less';
+
+:host {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    background: @color-white;
+    border: 1px solid @color-gray-5;
+    box-shadow: inset 0px 0px 8px 8px @color-white;
+    border-radius: 4px;
+    min-height: 24px;
+    padding: 8px;
+    gap: 4px;
+
+    .title {
+        display: inline-block;
+
+        span {
+            .font-rag-sans;
+            font-weight: 400;
+            font-size: 20px;
+            color: @color-gray-1;
+            line-height: 26px;
+            vertical-align: middle;
+
+            em {
+                font-weight: 600;
+            }
+        }
+
+        app-response, app-situation {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        & > * {
+            margin-left: 4px;
+        }
+    }
+
+    .snippet {
+        .font-rag-sans;
+        font-weight: 400;
+        color: @color-gray-3;
+        line-height: 24px;
+        font-size: 13px;
+        line-height: 17px;
+    }
+}
