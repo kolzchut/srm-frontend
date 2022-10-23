@@ -23,6 +23,10 @@ import { ResultStackComponent } from './result-stack/result-stack.component';
 import { ResultCardComponent } from './result-card/result-card.component';
 import { SearchFiltersComponent } from './search-filters/search-filters.component';
 import { PointResultStackComponent } from './point-result-stack/point-result-stack.component';
+import { CardActionComponent } from './card-action/card-action.component';
+import { CardActionPhoneComponent } from './card-action-phone/card-action-phone.component';
+import { CardActionUrlComponent } from './card-action-url/card-action-url.component';
+import { CardActionNavComponent } from './card-action-nav/card-action-nav.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +46,11 @@ import { PointResultStackComponent } from './point-result-stack/point-result-sta
     ResultStackComponent,
     ResultCardComponent,
     SearchFiltersComponent,
-    PointResultStackComponent
+    PointResultStackComponent,
+    CardActionComponent,
+    CardActionPhoneComponent,
+    CardActionUrlComponent,
+    CardActionNavComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

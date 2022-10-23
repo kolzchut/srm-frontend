@@ -21,5 +21,15 @@
             <label i18n>השירות ניתן ע״י:</label>
             <div class='org_name'>{{card.organization_name}}</div>
             <div class='address'>{{card.branch_address}}</div>
+            <div class='actions' #orgActions [class.odd]='oddActions'>
+                <app-card-action-phone [card]='card' [org]='true'></app-card-action-phone>
+                <app-card-action-url [card]='card' [org]='true'></app-card-action-url>
+                <app-card-action-nav [card]='card'></app-card-action-nav>
+            </div>
+        </div>
+        <div class='data-sources'>
+            <ng-container *ngFor='let data_source of card.data_sources'>
+                <span class='data-source' [innerHtml]='data_source'></span>
+            </ng-container>
         </div>
 </div>

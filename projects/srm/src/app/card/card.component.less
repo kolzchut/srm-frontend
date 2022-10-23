@@ -63,6 +63,44 @@
             .address {
                 font-size: 13px;
             }
+            .actions {
+                display: flex;
+                flex-flow: row wrap;
+                gap: 8px;
+                padding: 16px 0;
+
+                & > * {
+                    flex: 0 1 auto;
+                }
+
+                &.odd > .active {
+                    width: 100%;
+                }
+                & > .active ~ .active {
+                    width: calc(50% ~'-' 4px);
+                }
+            }
+        }
+        .data-sources {
+            display: flex;
+            flex-flow: column;
+            align-items: flex-start;
+            gap: 8px;
+
+            .data-source {
+                .font-rag-sans;
+                font-weight: 400;
+                font-size: 13px;
+                line-height: 17px;
+                color: @color-gray-3;
+
+                ::ng-deep {
+                    a, a:hover, a:visited {
+                        color: @color-ios-link;
+                        text-decoration: underline;
+                    }
+                }
+            }
         }
     }
 }

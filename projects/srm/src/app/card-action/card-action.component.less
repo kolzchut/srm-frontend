@@ -1,0 +1,64 @@
+@import '../../common.less';
+
+:host {
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.button {
+    flex: 1 1 auto;
+    height: 40px;
+    background: @color-white;
+    border: 1px solid @color-ios-link;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.16), 0px 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    cursor: pointer;
+
+    .icon {
+        width: 24px;
+        height: 24px;
+        .background-image;
+        flex: 0 0 auto;
+    }
+
+    .label {
+        .font-rag-sans;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 21px;
+        color: @color-ios-link;
+    }
+
+    &.kind-url {
+        .icon {
+            background-image: url(../../assets/img/icon-globe-blue.svg);
+        }
+    }
+
+    &.kind-nav {
+        .icon {
+            background-image: url(../../assets/img/icon-nav-blue.svg);
+        }
+    }
+
+    &.kind-phone {
+        .icon {
+            background-image: url(../../assets/img/icon-call-blue.svg);
+        }
+    }
+
+    .desktop({
+        &:hover {
+            .card-hover-shadow;
+        }    
+    });
+}

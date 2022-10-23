@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { from, Subject } from 'rxjs';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { AutoComplete, DrawerState, SearchParams } from '../consts';
 
@@ -32,7 +32,10 @@ export class PageComponent implements OnInit {
         this.query = this.queryP_ || this.queryQP_ || '';
         return this.query;
       }),
+      filter(() => this.stage === 'search-results'),
+      distinctUntilChanged(),
       switchMap((query) => {
+        console.log('NEW QUERY', query);
         if (query !== '') {
           return this.api.getAutocompleteEntry(query);
         } else {
@@ -65,6 +68,7 @@ export class PageComponent implements OnInit {
       this.stage = data.stage;
       this.drawerState = DrawerState.Half;
       console.log('STAGE', this.stage);
+      this.searchParamsCalc.next();
     });
     route.queryParams.subscribe(params => {
       this.queryQP_ = params.q || '';

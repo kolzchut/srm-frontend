@@ -29,12 +29,14 @@ export class SearchComponent implements OnInit {
   results_: ResultType[] | null = null;
   query_ = '';
   queries = new Subject<string>();
+  typedQueries = new Subject<string>();
   noResults = false;
 
   constructor(private api: ApiService, public location: Location, private route: ActivatedRoute, private router: Router) {
     console.log('LOADING PRESETS');
     api.getPresets().subscribe(presets => {
-      console.log('PRESETS', presets);
+      console.log('PRESETS');
+      console.table(presets);
       this.presets = presets.map((preset) => {
         return {
           link: preset.link,
@@ -44,8 +46,12 @@ export class SearchComponent implements OnInit {
         };
       });
     });
-    this.queries.pipe(
+    this.typedQueries.pipe(
       debounceTime(500),
+    ).subscribe((query) => {
+      this.queries.next(query);
+    });
+    this.queries.pipe(
       switchMap(query => api.getAutoComplete(query)),
     ).subscribe(results => {
       this.autoCompleteResults = results.map((result) => {
@@ -60,7 +66,6 @@ export class SearchComponent implements OnInit {
       this.results_ = null;
     });
     this.queries.pipe(
-      debounceTime(500),
       switchMap(query => api.getTopCards(query)),
     ).subscribe(results => {
       this.topCards = results.map((result) => {
@@ -76,7 +81,8 @@ export class SearchComponent implements OnInit {
     route.queryParams.subscribe(params => {
       console.log('QUERY PARAMS', params);
       timer(0).subscribe(() => {
-        this.query = params.q || '';
+        this.query_ = params.q || '';
+        this.queries.next(this.query_);
       });
     });
   }
@@ -94,23 +100,38 @@ export class SearchComponent implements OnInit {
     }
     this.query_ = query;
     this.noResults = false;
-    if (query) {
-      this.queries.next(query);
-    }
+    this.router.navigate([], {
+      queryParams: {
+        q: query
+      }
+    });
   }
 
   get results(): ResultType[] {
     if (this.results_ === null) {
-      this.results_ = this.autoCompleteResults.slice(0, 5 - this.topCards.length).concat(this.topCards);
-    }
-    if (this.noResults && this.query?.length > 0) {
-      this.results_ = [{
-        link: ['/s'],
-        linkParams: {q: this.query},
-        display: `חיפוש ״${this.query}״`,
-        query: null,
-        direct: true,
-      }];
+      console.log('RESULTS', this.autoCompleteResults, this.topCards);
+      this.results_ = [
+        ...this.autoCompleteResults.slice(0, 5 - this.topCards.length),
+        ...this.topCards
+      ];
+      this.results_ = [
+        ...this.results_.filter(r => r.query !== this.query),
+        ...this.results_.filter(r => r.query === this.query)
+      ];
+      const lastPart = this.query.split(' ').slice(-1)[0];
+      this.results_.forEach((r) => {
+        r.display = r.display.replace(new RegExp(`^(${lastPart})`), '<em>$1</em>');
+        r.display = r.display.replace(new RegExp(`(\\s${lastPart})`), '<em>$1</em>');
+      });
+      if (this.noResults && this.query?.length > 0) {
+        this.results_.push({
+          link: ['/s'],
+          linkParams: {q: this.query},
+          display: `${this.query}`,
+          query: null,
+          direct: true,
+        });
+      }
     }
     return this.results_;
   }

@@ -20,24 +20,20 @@
     .content {
         flex: 0 0 auto;
         width: 100%;
-        background-color: @color-white;
         flex-grow: 1;
         display: flex;
         flex-flow: row;
         align-items: stretch;
-
-        &.point-mode {
-            overflow-x: scroll;
-            .no-scrollbars;    
-        }
-        gap: 2px;
-
+            
         .branch {
             // width: 100%;
             // min-width: 100%;
             flex: 0 0 100%;
             display: flex;
-            flex-flow: column;    
+            flex-flow: column;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+
             .header {
                 display: flex;
                 flex-flow: row;
@@ -86,6 +82,35 @@
                     height: 100%;
                 }
             }
+        }    
+        &.stage-point {
+            overflow-x: scroll;
+            .no-scrollbars;    
+            scroll-snap-type: x mandatory;
+            overscroll-behavior-x: none;
+            padding-bottom: 2px;
+            padding-left: 4px;
+            padding-right: 4px;
+            padding-top: 12px;
+            gap: 8px;
+            scroll-padding-inline: 4px;
+
+            .branch {
+                box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.16), 0px 4px 24px rgba(0, 0, 0, 0.08);
+                border-radius: 6px;
+                overflow: hidden;
+
+                .header {
+                    .control-icon {
+                        transform: rotate(180deg);
+                    }
+                }            
+            }
+        }
+        &.multiple {
+            .branch {
+                flex-basis: calc(100% ~'-' 56px);
+            }
         }
     }
 
@@ -131,28 +156,34 @@
         height: 56px;
         bottom: 0;
         left: 0;
+        padding: 8px 16px;
 
         background: @color-gray-7;
         border-top: 1px solid @color-gray-5;
-        box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);       
+        box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
+
+        display: flex;
+        flex-flow: row;
+        gap: 8px;
+
+        & > * {
+            flex-grow: 1;
+        }
     }
 
-    &.point-mode {
+    &.stage-point {
         height: calc(100% ~'-' 56px);
         .map-window {
             flex: 1 1 100%;
-        }
-        .content {
-            .header {
-                .control-icon {
-                    transform: rotate(180deg);
-                }
-            }
         }
         .controls {
             button.back {
                 transform: rotate(-90deg);
             }
+        }
+
+        .quick-actions {
+            transition: bottom 0.1s ease-in-out;
         }
     }
 }

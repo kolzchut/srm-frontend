@@ -5,7 +5,10 @@ import { Card, SearchParams } from '../consts';
 @Component({
   selector: 'app-point-result-stack',
   templateUrl: './point-result-stack.component.html',
-  styleUrls: ['./point-result-stack.component.less']
+  styleUrls: ['./point-result-stack.component.less'],
+  host: {
+    '[class.multiple]': 'cards?.length>1',
+  }
 })
 export class PointResultStackComponent implements OnChanges {
 

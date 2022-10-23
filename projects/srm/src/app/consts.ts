@@ -21,6 +21,8 @@ export class Card {
     service_payment_required: string;
     service_payment_details: string;
     service_urls: {href: string, title: string}[];
+    service_phone_numbers: string[];
+
     organization_id: string;
     organization_name: string;
     organization_short_name: string;
@@ -28,15 +30,20 @@ export class Card {
     organization_purpose: string;
     organization_kind: string;
     organization_urls: {href: string, title: string}[];
+    organization_phone_numbers: string[];
+
     branch_id: string;
     branch_name: string;
     branch_short_name: string;
     branch_description: string;
     branch_urls: {href: string, title: string}[];
-    branch_phone_numbers: string;
+    branch_phone_numbers: string[];
     branch_address: string;
     branch_city: string;
     branch_geometry: [number, number];
+
+    data_sources: string[];
+
     card_id: string;
     response_categories: string[];
     situations: TaxonomyItem[];

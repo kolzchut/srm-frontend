@@ -1,0 +1,6 @@
+<a class='button' [class]='"kind-" + kind' [href]='action'>
+    <span class='icon'></span>
+    <span class='label' i18n *ngIf='kind === "url"'>אתר</span>
+    <span class='label' i18n *ngIf='kind === "nav"'>ניווט</span>
+    <span class='label' i18n *ngIf='kind === "phone"'>{{display}}</span>
+</a>

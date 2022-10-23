@@ -10,16 +10,16 @@
     ></app-searchbox-header>
     <app-results-drawer
         [state]='stage === "point" ? DrawerState.Peek : drawerState'
-        *ngIf='stage === "point" || stage === "search-results"'
+        *ngIf='searchParams'
+        [class.visible]='stage === "point" || stage === "search-results"'
         (handle)='handleDrawer($event)'
     >
-        <ng-container ngProjectAs='content' *ngIf='stage === "search-results"'>
+        <div class='content' ngProjectAs='content' [class.visible]='stage === "search-results"'>
             <app-search-filters></app-search-filters>
             <app-search-results [searchParams]='searchParams'></app-search-results>
-        </ng-container>
+        </div>
 <!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
                     [class.away]='disclaimerVisible || infoPage'> -->
-
     </app-results-drawer>
 
 </div>

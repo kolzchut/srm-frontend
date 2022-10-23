@@ -3,5 +3,5 @@
         <span></span>
     </span>
     <span class='name'>{{response.name}}</span>
-    <span class='link' *ngIf='link'>←</span>
+    <a class='link' *ngIf='link' [routerLink]='["/s", response.name]'>←</a>
 </div>

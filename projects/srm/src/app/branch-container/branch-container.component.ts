@@ -10,8 +10,8 @@ import { Card } from '../consts';
   templateUrl: './branch-container.component.html',
   styleUrls: ['./branch-container.component.less'],
   host: {
-    '[class.point-mode]': '!!pointId',
-    '[class.card-mode]': '!!cardId',
+    '[class.stage-point]': '!!pointId',
+    '[class.stage-card]': '!!cardId',
   }
 })
 export class BranchContainerComponent implements OnChanges {
@@ -65,6 +65,7 @@ export class BranchContainerComponent implements OnChanges {
       this.cardBranch = [this.card];
       this.branches = [this.cardBranch];
     }
+    console.log('CARDID', this.cardId);
   }
 
 
