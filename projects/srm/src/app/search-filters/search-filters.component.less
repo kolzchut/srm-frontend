@@ -3,33 +3,158 @@
 :host {
     width: 100%;
     display: flex;
-    flex-flow: row;
-    align-items: center;
-    padding: 8px 6px;
-    position: sticky;
-    top: 0;
-    background: @color-white;
-    box-shadow: 0px 0px 12px rgba(171, 199, 255, 0.5);
 
+    &:not(.active) {
+        flex-flow: row;
+        align-items: center;
+        padding: 8px 6px;
+        background: @color-white;
+        box-shadow: 0px 0px 12px rgba(171, 199, 255, 0.5);
+    
+    
+        .open-modal {
+            .button-image;
+            .background-image;
+            background-image: url(../../assets/img/icon-filter-gray-3.svg);
+            background-position: right 8px center;
+            background-size: 24px;
+    
+            .font-rag-sans;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 21px;
+            color: @color-gray-3;
+    
+            height: 32px;
+            padding-left: 12px;
+            padding-right: 36px;
+    
+            border: 1px solid @color-gray-5;
+            border-radius: 16px;
+        }
+    }
 
-    .open-modal {
-        .button-image;
-        .background-image;
-        background-image: url(../../assets/img/icon-filter-gray-3.svg);
-        background-position: right 8px center;
-        background-size: 24px;
+    &.active {
+        height: 100%;
+        flex: 1 1 100%;
+        overflow-y: scroll;
+        .no-scrollbars;
 
-        .font-rag-sans;
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 21px;
-        color: @color-gray-3;
+        position: relative;
+        padding-bottom: 48px;
+        width: 100%;
+        display: flex;
+        flex-flow: column;
 
-        height: 32px;
-        padding-left: 12px;
-        padding-right: 36px;
+        .section {
+            padding: 0 16px;
 
-        border: 1px solid @color-gray-5;
-        border-radius: 16px;
+            .section-header {
+                display: flex;
+                flex-flow: row; 
+                align-items: center;
+                justify-content: space-between;
+                .title {
+                    .font-rag-sans;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 21px;
+                    color: @color-gray-1;
+                }
+                .clear {
+                    .font-rag-sans;
+                    font-weight: 400;
+                    font-size: 13px;
+                    line-height: 17px;
+                    color: @color-gray-3;
+                    cursor: pointer;
+                    margin: 0 8px;
+                }
+            }
+            .tags {
+                display: flex;
+                flex-flow: row wrap;
+                gap: 0px 8px;
+
+                app-response {
+                    cursor: pointer;
+                    margin: 4px 0;
+                }
+
+                &.responses {
+                    margin-top: 8px;
+                }
+            }
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid @color-gray-6;
+        }
+
+        .submit {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 48px;
+
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+
+            background-color: @color-white;
+            box-shadow: 0px 0px 12px #D9D9D9;
+
+            .main {
+                height: 32px;
+                flex: 1 1 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid @color-gray-1;
+                border-radius: 20px;
+                background-color: @color-white;
+                position: relative;
+
+                span, strong {
+                    .font-rag-sans;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 21px;
+                    color: @color-gray-1;
+                }
+
+                span {
+                    font-weight: 300;   
+                }
+                cursor: pointer;
+
+                .count {
+                    position: absolute;
+                    top: -2px;
+                    left: -2px;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+
+                    .font-rag-sans;
+                    font-weight: 400;
+                    font-size: 13px;
+                    line-height: 17px;
+                    color: @color-white;
+                    background: @color-gray-1;
+                }
+            }
+
+            .cancel {
+                .font-rag-sans;
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 21px;
+                color: @color-gray-3;
+                cursor: pointer;
+            }
+        }
     }
 }

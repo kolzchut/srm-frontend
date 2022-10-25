@@ -103,7 +103,8 @@ export class SearchComponent implements OnInit {
     this.router.navigate([], {
       queryParams: {
         q: query
-      }
+      },
+      replaceUrl: true,
     });
   }
 

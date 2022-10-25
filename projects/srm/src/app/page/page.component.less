@@ -45,7 +45,33 @@
                 display: none;
 
                 &.visible {
-                    display: block;
+                    display: flex;
+                    flex-flow: column;
+                    justify-content: flex-start;
+                    min-height: 100%;
+
+                    &:not(.filters) {
+                        background-color: @color-light-blue;
+                    }
+                }
+
+                app-search-filters {
+                    z-index: 1;
+                    position: sticky;
+                    top: 0;
+                }
+
+                app-search-results {
+                    transform: translateY(0%);
+                    animation: 0.2s ease-in-out 1 forwards;
+                    animation-fill-mode: forwards;
+                    transition: transform 0.2s ease-in-out;
+                    &.shown {
+                        animation-name: show-results;
+                    }
+                    &.hidden {
+                        animation-name: hide-results;
+                    }
                 }
             }
         }
@@ -72,4 +98,31 @@
             .no-scrollbars;
         }
     }
+}
+
+@keyframes hide-results {
+    from {
+        position: inherit; visibility: visible;
+        transform: translateY(0%);
+    }
+    99% {
+        transform: translateY(100%);
+        position: inherit; visibility: visible;
+    }
+    to {
+        transform: translateY(100%);
+        position: absolute; visibility: hidden;
+    }
+}
+
+@keyframes show-results {
+    from {
+        position: inherit; visibility: visible;
+    }
+    1% {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0%);
+    }    
 }

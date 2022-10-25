@@ -1,0 +1,5 @@
+<div class='control' [class.checked]='checked'>
+    <input [id]='item.id' type='checkbox' [(ngModel)]='checked'>
+    <span class="checkmark"></span>
+    <label [for]='item.id'>{{item.name}}</label>
+</div>

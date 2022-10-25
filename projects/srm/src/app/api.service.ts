@@ -4,10 +4,11 @@ import { catchError, delay, finalize, map, tap } from 'rxjs/operators';
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult, CARD_SNIPPET_FIELDS, TaxonomyItem, SearchParams } from './consts';
+import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult, CARD_SNIPPET_FIELDS, TaxonomyItem, SearchParams, DistinctItem, QueryTaxonomyItemResult } from './consts';
 import { makeStateKey, TransferState} from '@angular/platform-browser';
 import { PlatformService } from './platform.service';
 import * as memoryCache from 'memory-cache';
+import { response } from 'express';
 
 @Injectable({
   providedIn: 'root'
@@ -265,6 +266,36 @@ export class ApiService {
   //   return this.query<QueryOrganizationResult>(query, environment.orgsURL, offset);
   // }
 
+  _filter(searchParams: SearchParams): any | null {
+    let filter: any | null = null;
+    if (searchParams.response || searchParams.situation || searchParams.filter_responses || searchParams.filter_situations) {
+      filter = {};
+      if (searchParams.response || searchParams.filter_responses) {
+        const responses = searchParams.response ? [searchParams.response] : [];
+        if (searchParams.filter_responses) {
+          responses.push(...searchParams.filter_responses);
+        }
+        if (responses.length > 1) {
+          filter['response_ids__all'] = responses;
+        } else if (responses.length === 1) {
+          filter['response_ids'] = responses[0];
+        }
+      }
+      if (searchParams.situation || searchParams.filter_situations) {
+        const situations = searchParams.situation ? [searchParams.situation] : [];
+        if (searchParams.filter_situations) {
+          situations.push(...searchParams.filter_situations);
+        }
+        if (situations.length > 1) {
+          filter['situation_ids__all'] = situations;
+        } else if (situations.length === 1) {
+          filter['situation_ids'] = situations[0];
+        }
+      }
+    }
+    return filter;
+  }
+
   getPresets(): Observable<Preset[]> {
     const params = {size: 100, order: 'score'};
     return this.innerCache(
@@ -336,6 +367,51 @@ export class ApiService {
       params.highlight = 'service_name,service_name.hebrew';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
     }
+    if (offset === 0) {
+      params.extra = 'distinct-situations|distinct-responses';
+    }
+    const filter = this._filter(searchParams);
+    if (filter) {
+      params.filter = JSON.stringify(filter);
+    }
+    return this.http.get(environment.cardsURL, {params}).pipe(
+      map((res: any) => {
+        const qcr = res as QueryCardResult;
+        const results = qcr.search_results;
+        return results.map((r: any) => r.source);
+      })
+    );
+  }
+
+  getCounts(searchParams: SearchParams): Observable<QueryCardResult> {
+    const params: any = {
+      size: 1,
+      offset: 0,
+    };
+    if (searchParams.query) {
+      params.q = searchParams.query;
+    }
+    const filter = this._filter(searchParams);
+    if (filter) {
+      params.filter = JSON.stringify(filter);
+    }
+    console.log('PPP', params);
+    return this.http.get(environment.cardsURL, {params}).pipe(
+      map((res: any) => {
+        return res as QueryCardResult;
+      })
+    );
+  }
+
+  getDistinct(searchParams: SearchParams): Observable<QueryCardResult> {
+    const params: any = {
+      size: 1,
+      offset: 0,
+    };
+    if (searchParams.query) {
+      params.q = searchParams.query;
+    }
+    params.extra = 'distinct-situations|distinct-responses';
     if (searchParams.response || searchParams.situation) {
       const filter: any = {};
       if (searchParams.response) {
@@ -348,8 +424,7 @@ export class ApiService {
     }
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
-        const results = (res as QueryCardResult).search_results;
-        return results.map((r: any) => r.source);
+        return res as QueryCardResult;
       })
     );
   }
@@ -381,15 +456,11 @@ export class ApiService {
     const filter: any = {
       point_id: pointId,
     };
-    if (searchParams.response || searchParams.situation) {
-      if (searchParams.response) {
-        filter['response_ids'] = searchParams.response;
-      }
-      if (searchParams.situation) {
-        filter['situation_ids'] = searchParams.situation;
-      }
+    const srFilter = this._filter(searchParams);
+    if (srFilter) {
+      Object.apply(filter, srFilter);
     }
-    params.filter = JSON.stringify([filter]);
+    params.filter = JSON.stringify(filter);
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         const results = (res as QueryCardResult).search_results;
@@ -440,6 +511,17 @@ export class ApiService {
     );
   }
 
+  getResponses(): Observable<TaxonomyItem[]> {
+    return this.innerCache(
+      'responses',
+      this.http.get(environment.responsesURL, {params: {size: '1000'}}).pipe(
+        map((res: any) => {
+          return (res as QueryTaxonomyItemResult).search_results?.map((r: any) => r.source) || [];
+        })
+      )
+    );
+  }
+
   getSituation(id: string): Observable<TaxonomyItem> {
     return this.innerCache(
       `situation-${id}`,
@@ -450,4 +532,17 @@ export class ApiService {
       )
     );
   }
+
+  getSituations(): Observable<TaxonomyItem[]> {
+    return this.innerCache(
+      'situations',
+      this.http.get(environment.situationsURL, {params: {size: '1000'}}).pipe(
+        map((res: any) => {
+          console.log('RES', res);
+          return (res as QueryTaxonomyItemResult).search_results?.map((r: any) => r.source) || [];
+        })
+      )
+    );
+  }
+
 }

@@ -11,6 +11,10 @@ export class TaxonomyItem {
     synonyms?: string[];
     category?: string;
 };
+export class DistinctItem {
+    key?: string;
+    doc_count?: number;
+};
 
 
 export class Card {
@@ -96,7 +100,9 @@ export type SearchResult<T extends any> = {
     search_results: {
         score: number,
         source: T
-    }[]
+    }[],
+    situations: DistinctItem[],
+    responses: DistinctItem[],
 };
 
 export function _h(sr: any, f: string) {
@@ -106,9 +112,12 @@ export function _h(sr: any, f: string) {
 export type QueryPresetResult = SearchResult<Preset>;
 export type QueryAutoCompleteResult = SearchResult<AutoComplete>;
 export type QueryCardResult = SearchResult<Card>;
+export type QueryTaxonomyItemResult = SearchResult<TaxonomyItem>;
 
 export type SearchParams = {
     query: string | null,
     response: string | null,
     situation: string | null,
+    filter_situations?: string[],
+    filter_responses?: string[],
 };

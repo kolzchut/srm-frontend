@@ -14,9 +14,19 @@
         [class.visible]='stage === "point" || stage === "search-results"'
         (handle)='handleDrawer($event)'
     >
-        <div class='content' ngProjectAs='content' [class.visible]='stage === "search-results"'>
-            <app-search-filters></app-search-filters>
-            <app-search-results [searchParams]='searchParams'></app-search-results>
+        <div class='content' ngProjectAs='content' 
+             [class.visible]='stage === "search-results"'
+             [class.filters]='filtersVisible'
+        >
+            <app-search-filters 
+                [searchParams]='searchParams'
+                (params)='setSearchParams($event)'
+                (activate)='filtersVisible = !filtersVisible'
+            ></app-search-filters>
+            <app-search-results
+                [class.hidden]='filtersVisible === true' 
+                [class.shown]='filtersVisible === false' 
+                [searchParams]='searchParams'></app-search-results>
         </div>
 <!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
                     [class.away]='disclaimerVisible || infoPage'> -->
