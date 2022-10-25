@@ -1,10 +1,12 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { animationFrameScheduler, from, fromEvent, Subscription, timer } from 'rxjs';
 import { delay, distinctUntilChanged, first, map, tap, throttleTime } from 'rxjs/operators';
 import { DrawerState } from '../consts';
 import { LayoutService } from '../layout.service';
 import { WindowService } from '../window.service';
 
+@UntilDestroy()
 @Component({
   selector: 'app-results-drawer',
   templateUrl: './results-drawer.component.html',
@@ -75,7 +77,9 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
       const doc = this.window.D || {};
       if (this.layout.mobile) {
         if ('ontouchstart' in doc) {
-          fromEvent(el, 'touchstart').subscribe((ev) => {
+          fromEvent(el, 'touchstart').pipe(
+            untilDestroyed(this),
+          ).subscribe((ev) => {
             this.gesture = true;
             this.handleGestureStart(ev as TouchEvent);
             fromEvent(window, 'touchend').pipe(first()).subscribe((ev) => {
@@ -83,14 +87,18 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
             });
           });
         } else {
-          fromEvent(el, 'mousedown').subscribe((ev) => {
+          fromEvent(el, 'mousedown').pipe(
+            untilDestroyed(this),
+          ).subscribe((ev) => {
             this.handleGestureStart(ev as MouseEvent);
             fromEvent(window, 'mouseup').pipe(first()).subscribe((ev) => {
               this.handleGestureEnd(ev as MouseEvent);
             });
           });  
         }
-        fromEvent(el, 'transitionstart').subscribe((ev: Event) => {
+        fromEvent(el, 'transitionstart').pipe(
+          untilDestroyed(this),
+        ).subscribe((ev: Event) => {
           const height = this.calcHeight();
           if (height !== this.currentHeight) {
             this.currentHeight = height;
@@ -99,6 +107,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
         });
         const scrollableEl: HTMLElement = this.scrollable.nativeElement;
         fromEvent(scrollableEl, 'scroll').pipe(
+          untilDestroyed(this),
           throttleTime(0, animationFrameScheduler),
           tap(() => {
             if (this.gesture) {
@@ -136,6 +145,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     }
     if (this.moveSub === null) {
       this.moveSub = fromEvent(window, 'touchmove').pipe(
+        untilDestroyed(this),
         throttleTime(0, animationFrameScheduler),
       ).subscribe((ev) => {
         this.handleGestureMove(ev as TouchEvent);

@@ -3,6 +3,7 @@ import { from, Subject, Subscription, throwError } from 'rxjs';
 import { catchError, concatMap, filter, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams } from '../consts';
+import { PlatformService } from '../platform.service';
 
 
 export type SearchParamsOffset = {
@@ -35,7 +36,7 @@ export class SearchResultsComponent implements OnChanges, AfterViewInit {
   fetchQueue = new Subject<SearchParamsOffset>();
   resultsSubscription: Subscription | null = null;
 
-  constructor(private api: ApiService, private el: ElementRef) {
+  constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService) {
   }
 
   ngOnChanges(): void {
@@ -43,7 +44,6 @@ export class SearchResultsComponent implements OnChanges, AfterViewInit {
       this.offset = 0;
       this.fetchedOffset = -1;
       this.results = [];
-      console.log('SEARCH PARAMS', this.searchParams);
       if (this.resultsSubscription !== null) {
         this.resultsSubscription.unsubscribe();
         this.resultsSubscription = null;
@@ -82,11 +82,13 @@ export class SearchResultsComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.obs = new IntersectionObserver((entries) => {
-      if (this.hasParams() && entries[0].isIntersecting) {
-        this.fetch();
-      }
-    }, {});
-    this.obs.observe(this.trigger.nativeElement);
+    this.platform.browser(() => {
+      this.obs = new IntersectionObserver((entries) => {
+        if (this.hasParams() && entries[0].isIntersecting) {
+          this.fetch();
+        }
+      }, {});
+      this.obs.observe(this.trigger.nativeElement);
+    });
   }
 }

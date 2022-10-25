@@ -22,7 +22,6 @@ export class SearchFilterCheckboxComponent implements OnInit {
   }
   
   set checked(value: boolean) {
-    console.log('CHECKED', this.item.id, value);
     this.changed.emit(value);
   }
 }

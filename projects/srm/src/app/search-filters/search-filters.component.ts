@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { DistinctItem, SearchParams, TaxonomyItem } from '../consts';
 
+@UntilDestroy()
 @Component({
   selector: 'app-search-filters',
   templateUrl: './search-filters.component.html',
@@ -49,6 +51,7 @@ export class SearchFiltersComponent implements OnInit {
       });
     });
     this.internalSearchParams.pipe(
+      untilDestroyed(this),
       switchMap((params) => this.api.getCounts(params))
     ).subscribe((data) => {
       this.resultCount = data.search_counts.cards.total_overall;
@@ -124,7 +127,6 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   toggleResponse(item: TaxonomyItem) {
-    console.log('TOGGLE RESPONSE', item.id);
     const checked = !this.isResponseSelected(item);
     this.currentSearchParams.filter_responses = this.currentSearchParams.filter_responses || [];
     this.currentSearchParams.filter_responses = this.currentSearchParams.filter_responses.filter(x => x !== item.id);

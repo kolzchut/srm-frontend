@@ -56,7 +56,6 @@ export class ResponseComponent implements OnChanges {
   
   onClick() {
     if (!this.link) {
-      console.log('CLICKED', this.response);
       this.clicked.emit();
     }
   }

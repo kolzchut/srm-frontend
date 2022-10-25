@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject, timer } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
@@ -14,6 +15,8 @@ export type ResultType = {
   direct: boolean,
 };
 
+
+@UntilDestroy()
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -33,9 +36,7 @@ export class SearchComponent implements OnInit {
   noResults = false;
 
   constructor(private api: ApiService, public location: Location, private route: ActivatedRoute, private router: Router) {
-    console.log('LOADING PRESETS');
     api.getPresets().subscribe(presets => {
-      console.log('PRESETS');
       console.table(presets);
       this.presets = presets.map((preset) => {
         return {
@@ -48,11 +49,13 @@ export class SearchComponent implements OnInit {
       });
     });
     this.typedQueries.pipe(
+      untilDestroyed(this),
       debounceTime(500),
     ).subscribe((query) => {
       this.queries.next(query);
     });
     this.queries.pipe(
+      untilDestroyed(this),
       switchMap(query => api.getAutoComplete(query)),
     ).subscribe(results => {
       this.autoCompleteResults = results.map((result) => {
@@ -67,6 +70,7 @@ export class SearchComponent implements OnInit {
       this.results_ = null;
     });
     this.queries.pipe(
+      untilDestroyed(this),
       switchMap(query => api.getTopCards(query)),
     ).subscribe(results => {
       this.topCards = results.map((result) => {
@@ -80,7 +84,6 @@ export class SearchComponent implements OnInit {
       this.results_ = null;
     });
     route.queryParams.subscribe(params => {
-      console.log('QUERY PARAMS', params);
       timer(0).subscribe(() => {
         this.query_ = params.q || '';
         this.queries.next(this.query_);
@@ -111,7 +114,7 @@ export class SearchComponent implements OnInit {
 
   get results(): ResultType[] {
     if (this.results_ === null) {
-      console.log('RESULTS', this.autoCompleteResults, this.topCards);
+      // console.table('RESULTS', this.autoCompleteResults, this.topCards);
       this.results_ = [
         ...this.autoCompleteResults.slice(0, 5 - this.topCards.length),
         ...this.topCards

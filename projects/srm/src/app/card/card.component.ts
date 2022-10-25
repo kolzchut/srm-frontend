@@ -24,7 +24,6 @@ export class CardComponent implements OnInit {
 
   ngOnChanges(): void {
     timer(0).subscribe(() => {
-      console.log('ODD', (this.orgActions?.nativeElement as HTMLElement)?.querySelectorAll('.active').length);
       this.oddActions = (this.orgActions?.nativeElement as HTMLElement)?.querySelectorAll('.active').length % 2 === 1;
     });
   }

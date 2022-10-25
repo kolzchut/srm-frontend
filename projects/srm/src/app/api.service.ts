@@ -395,7 +395,6 @@ export class ApiService {
     if (filter) {
       params.filter = JSON.stringify(filter);
     }
-    console.log('PPP', params);
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         return res as QueryCardResult;
@@ -482,18 +481,18 @@ export class ApiService {
           let results = (res as QueryCardResult).search_results;
            const scores = results.map((r: any) => r.score);
           if (results.length === 1) {
-            console.log('GOT SINGLE CARD', results);
+            // console.log('GOT SINGLE CARD', results);
           } else if (results.length > 1 && results[0].score > 1.25*results[1].score) {
             results = results.slice(0, 1);
-            console.log('GOT TOP CARD', results, scores);
+            // console.log('GOT TOP CARD', results, scores);
           } else if (results.length === 2) {
-            console.log('GOT TWO CARDS', results);
+            // console.log('GOT TWO CARDS', results);
           } else if (results.length > 2 && results[1].score > 1.25*results[2].score) {
             results = results.slice(0, 2);
-            console.log('GOT TWO TOP CARDS', results, scores);
+            // console.log('GOT TWO TOP CARDS', results, scores);
           } else {
             results = [];
-            console.log('GOT NO TOP CARDS', results, scores);
+            // console.log('GOT NO TOP CARDS', results, scores);
           }
           return results.map((r: any) => r.source);
         })
@@ -538,7 +537,6 @@ export class ApiService {
       'situations',
       this.http.get(environment.situationsURL, {params: {size: '1000'}}).pipe(
         map((res: any) => {
-          console.log('RES', res);
           return (res as QueryTaxonomyItemResult).search_results?.map((r: any) => r.source) || [];
         })
       )

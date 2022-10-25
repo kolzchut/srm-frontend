@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { from, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
@@ -18,6 +19,8 @@ class SearchParamCalc {
   }
 };
 
+
+@UntilDestroy()
 @Component({
   selector: 'app-page',
   templateUrl: './page.component.html',
@@ -40,6 +43,7 @@ export class PageComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router) {
     this.searchParamsCalc.pipe(
+      untilDestroyed(this),
       debounceTime(100),
       map((spc) => {
         spc.query = spc.queryP || spc.queryQP || '';
@@ -84,19 +88,25 @@ export class PageComponent implements OnInit {
         };
       }
     });
-    route.params.subscribe(params => {
+    route.params.pipe(
+      untilDestroyed(this),
+    ).subscribe(params => {
       this.card = params.card || '';
       this.point = params.point || '';
       this.currentSearchParamCalc.queryP = params.query || '';
       this.pushSearchParamsCalc();
     });
-    route.data.subscribe(data => {
+    route.data.pipe(
+      untilDestroyed(this),
+    ).subscribe((data: any) => {
       this.stage = data.stage;
       this.drawerState = DrawerState.Half;
       console.log('STAGE', this.stage);
       this.pushSearchParamsCalc();
     });
-    route.queryParams.subscribe(params => {
+    route.queryParams.pipe(
+      untilDestroyed(this),
+    ).subscribe(params => {
       console.log('NEW QUERY PARAMS', params);
       this.currentSearchParamCalc.queryQP = params.q || '';
       this.currentSearchParamCalc.fs = params.fs;
@@ -136,7 +146,6 @@ export class PageComponent implements OnInit {
     const spc = this.currentSearchParamCalc;
     this.currentSearchParamCalc = new SearchParamCalc();
     Object.assign(this.currentSearchParamCalc, spc);
-    console.log('PUSHING SPC', this.currentSearchParamCalc);
     this.searchParamsCalc.next(spc);
   }
 }
