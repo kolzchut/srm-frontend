@@ -1,0 +1,189 @@
+@import '../../common.less';
+
+:host {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    overflow-y: scroll;
+    .no-scrollbars;
+    overscroll-behavior: none;
+
+    .map-window {
+        height: 100px;
+        background: transparent;
+        flex: 0 0 auto;
+
+    }
+
+    .content {
+        flex: 0 0 auto;
+        width: 100%;
+        flex-grow: 1;
+        display: flex;
+        flex-flow: row;
+        align-items: stretch;
+            
+        .branch {
+            // width: 100%;
+            // min-width: 100%;
+            flex: 0 0 100%;
+            display: flex;
+            flex-flow: column;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+
+            .header {
+                display: flex;
+                flex-flow: row;
+                align-items: center;
+                cursor: pointer;
+                height: 50px;
+                background: @color-gray-7;
+                box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
+                border-radius: 8px 8px 0px 0px; 
+                padding: 0 16px;
+    
+                .branch-details {
+                    flex: 1 1 auto;
+                    display: flex;
+                    flex-flow: column;
+                    align-items: flex-start;
+    
+                    .font-rag-sans;
+                    font-style: normal;
+                    font-weight: 600;
+                    color: @color-gray-2;
+    
+                    .branch-name {
+                        margin: 0;
+                        padding: 0;
+                        font-size: 16px;
+                        line-height: 21px;
+                    }
+                    .address {
+                        font-size: 13px;
+                        line-height: 13px;                    
+                    }
+                }
+                .control-icon {
+                    .button-image;
+                    .background-image;
+                    background-image: url(../../assets/img/icon-chevron-down.svg);
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+
+            app-point-result-stack {
+                height: 100%;
+                ::ng-deep app-result-card {
+                    height: 100%;
+                }
+            }
+        }    
+        &.stage-point {
+            overflow-x: scroll;
+            .no-scrollbars;    
+            scroll-snap-type: x mandatory;
+            overscroll-behavior-x: none;
+            padding-bottom: 2px;
+            padding-left: 4px;
+            padding-right: 4px;
+            padding-top: 12px;
+            gap: 8px;
+            scroll-padding-inline: 4px;
+
+            .branch {
+                box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.16), 0px 4px 24px rgba(0, 0, 0, 0.08);
+                border-radius: 6px;
+                overflow: hidden;
+
+                .header {
+                    .control-icon {
+                        transform: rotate(180deg);
+                    }
+                }            
+            }
+        }
+        &.multiple {
+            .branch {
+                flex-basis: calc(100% ~'-' 56px);
+            }
+        }
+    }
+
+    .controls {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        padding: 8px;
+        pointer-events: none;
+        & > * {
+            pointer-events: all;
+        }
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        align-items: center;
+
+        button, a {
+            width: 48px;
+            height: 48px;
+            border: 1px solid @color-gray-5;
+            box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 24px;
+            .button-image;
+            .background-image;
+            background-size: 24px;
+
+            &.search {
+                background-image: url(../../assets/img/icon-search-gray-1.svg);
+            }
+            &.back {
+                transition: transform 0.2s ease-in-out;
+                transform: rotate(0deg);
+                background-image: url(../../assets/img/icon-arrow-right.svg);
+            }
+            background-color: @color-white;
+        }
+    }
+
+    .quick-actions {
+        position: absolute;
+        width: 100%;
+        height: 56px;
+        bottom: 0;
+        left: 0;
+        padding: 8px 16px;
+
+        background: @color-gray-7;
+        border-top: 1px solid @color-gray-5;
+        box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
+
+        display: flex;
+        flex-flow: row;
+        gap: 8px;
+
+        & > * {
+            flex-grow: 1;
+        }
+    }
+
+    &.stage-point {
+        height: calc(100% ~'-' 56px);
+        .map-window {
+            flex: 1 1 100%;
+        }
+        .controls {
+            button.back {
+                transform: rotate(-90deg);
+            }
+        }
+
+        .quick-actions {
+            transition: bottom 0.1s ease-in-out;
+        }
+    }
+}

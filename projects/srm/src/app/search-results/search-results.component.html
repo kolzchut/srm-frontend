@@ -1,0 +1,7 @@
+<div class='trigger' [class.visible]='triggerVisible'></div>
+<ng-container *ngFor='let result of results'>
+    <a [routerLink]='["/c", result.card_id]'>
+        <app-result-stack [results]='[[result]]'></app-result-stack>
+    </a>
+</ng-container>
+<div class='trigger' [class.visible]='triggerVisible' #trigger></div>

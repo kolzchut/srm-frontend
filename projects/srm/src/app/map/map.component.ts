@@ -1,21 +1,18 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { MapboxService } from '../mapbox.service';
 
-import { ReplaySubject, Subject, timer } from 'rxjs';
+import { Subject, timer } from 'rxjs';
 import { throttleTime, filter } from 'rxjs/operators';
-import { StateService, CenterZoomType } from '../state.service';
-import { ALL_CATEGORIES, CATEGORY_COLORS } from '../common/consts';
-import { Card, Point as SRMPoint } from '../common/datatypes';
-import { Point } from 'geojson';
+import { StateService, CenterZoomType, GeoType } from '../state.service';
+import { ALL_CATEGORIES, CATEGORY_COLORS } from '../_prev/common/consts';
+import { Card, Point as SRMPoint } from '../consts';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { SearchService } from '../search.service';
 import { PlatformService } from '../platform.service';
 import { LayoutService } from '../layout.service';
-import { ApiService } from '../api.service';
 
-// import * as mapboxgl from 'mapbox-gl';
-declare var mapboxgl: any;
+import * as mapboxgl from 'mapbox-gl';
+// declare var mapboxgl: any;
+
 type MoveQueueItem = {
   action: (map: mapboxgl.Map) => void,
   description: string
@@ -38,28 +35,26 @@ export class MapComponent implements OnInit, AfterViewInit {
   moveEvents = new Subject<CenterZoomType>();
   markers: any = {};
   markersOnScreen: any = {};
-  clusterData = new ReplaySubject<any>(1);
+  // clusterData = new ReplaySubject<any>(1);
   addedImages: {[key: string]: boolean} = {};
   pointFilter: any = {};
 
   moveQueue: MoveQueueItem[] = [];
   expectedMoves = new Set();
+  geoChanges = new Subject<GeoType>();
 
   ZOOM_THRESHOLD = 10;
   ALL_CATEGORIES = ALL_CATEGORIES; 
 
-  constructor(private mapboxService: MapboxService, private state: StateService, 
-              private http: HttpClient, private search: SearchService, private api: ApiService,
+  constructor(private mapboxService: MapboxService, 
+              // private http: HttpClient, private search: SearchService, private api: ApiService,
               private platform: PlatformService, private layout: LayoutService) {
-    this.moveEvents.subscribe(centerZoom => {
-      state.updateCenterZoom(centerZoom);
-    });
-    this.platform.browser(() => {
-      this.http.get(environment.clusterDataURL).subscribe(data => {
-        this.clusterData.next(data);
-        this.clusterData.complete();
-      });  
-    });
+    // this.platform.browser(() => {
+    //   this.http.get(environment.clusterDataURL).subscribe(data => {
+    //     this.clusterData.next(data);
+    //     this.clusterData.complete();
+    //   });  
+    // });
   }
 
   ngOnInit(): void {
@@ -80,14 +75,13 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   initialize() {
     let first = true;
-    if (this.platform.browser() && this.mapEl && this.mapEl.nativeElement && this.mapboxService.init) {
+    if (this.platform.browser() && this.mapEl && this.mapEl.nativeElement) {
       try {
         const mapParams: any = {
           container: this.mapEl.nativeElement,
           style: this.STYLE,
           minZoom: 3,
           attributionControl: false,
-        
         };
         this.map = new mapboxgl.Map(mapParams);
         this.map.addControl(new mapboxgl.AttributionControl(), 'top-right');
@@ -99,11 +93,10 @@ export class MapComponent implements OnInit, AfterViewInit {
         this.map.touchPitch.disable();
         // Handle filter changes and apply on map
         // Listen for changes in geo view
-        this.state.geoChanges.pipe(
+        this.geoChanges.pipe(
           throttleTime(500, undefined, {leading: true, trailing: true}),
-        ).subscribe(state => {
+        ).subscribe(geo => {
           if (this.map) {
-            const geo = state.geo;
             if (!!geo) {
               if (geo.length === 3) {
                 console.log('CENTERING', geo);
@@ -173,105 +166,105 @@ export class MapComponent implements OnInit, AfterViewInit {
           this.map.setPaintProperty('points-on', 'circle-color', colorStyle);
           this.map.setPaintProperty('points-stroke-on', 'circle-stroke-color', colorStyle);
 
-          this.clusterData.subscribe(data => {
-            const clusterProperties: any = {};
-            CATEGORY_COLORS.forEach(cc => {
-              clusterProperties[cc.category] = ['+', ['case', ['in', cc.category, ['get', 'response_categories']], 1, 0]];
-            });
-            this.map.addSource('cluster_source', {
-              'type': 'geojson',
-              'data': environment.clusterDataURL,
-              'cluster': true,
-              'clusterRadius': 80,
-              'clusterProperties': clusterProperties,
-              'clusterMinPoints': 0,
-              'maxzoom': this.ZOOM_THRESHOLD,
-            });
-            this.map.addLayer({
-              'id': 'clusters',
-              'type': 'circle',
-              'source': 'cluster_source',
-              // 'filter': ['==', 'cluster', true],
-              'paint': {
-                'circle-color': '#000000',
-                'circle-opacity': 0,
-                'circle-radius': 12
-              },
-              maxzoom: 10
-            });            
-            this.map.on('render', () => {
-              if (!this.map.isSourceLoaded('cluster_source')) return;
-              const newMarkers: any = {};
-              const features = this.map.querySourceFeatures('cluster_source');
-              // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
-              // and add it to the map if it's not there already
-              for (const feature_ of features) {
-                const feature = JSON.parse(JSON.stringify(feature_));
-                const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
-                const props: any = feature.properties;
-                // if (!props.cluster) {
-                //   continue;
-                // }
-                const id = props.cluster_id;
+          // this.clusterData.subscribe(data => {
+          //   const clusterProperties: any = {};
+          //   CATEGORY_COLORS.forEach(cc => {
+          //     clusterProperties[cc.category] = ['+', ['case', ['in', cc.category, ['get', 'response_categories']], 1, 0]];
+          //   });
+          //   this.map.addSource('cluster_source', {
+          //     'type': 'geojson',
+          //     'data': environment.clusterDataURL,
+          //     'cluster': true,
+          //     'clusterRadius': 80,
+          //     'clusterProperties': clusterProperties,
+          //     'clusterMinPoints': 0,
+          //     'maxzoom': this.ZOOM_THRESHOLD,
+          //   });
+          //   this.map.addLayer({
+          //     'id': 'clusters',
+          //     'type': 'circle',
+          //     'source': 'cluster_source',
+          //     // 'filter': ['==', 'cluster', true],
+          //     'paint': {
+          //       'circle-color': '#000000',
+          //       'circle-opacity': 0,
+          //       'circle-radius': 12
+          //     },
+          //     maxzoom: 10
+          //   });            
+          //   this.map.on('render', () => {
+          //     if (!this.map.isSourceLoaded('cluster_source')) return;
+          //     const newMarkers: any = {};
+          //     const features = this.map.querySourceFeatures('cluster_source');
+          //     // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
+          //     // and add it to the map if it's not there already
+          //     for (const feature_ of features) {
+          //       const feature = JSON.parse(JSON.stringify(feature_));
+          //       const coords = (feature.geometry as Point).coordinates as mapboxgl.LngLatLike;
+          //       const props: any = feature.properties;
+          //       // if (!props.cluster) {
+          //       //   continue;
+          //       // }
+          //       const id = props.cluster_id;
                 
-                let marker = this.markers[id];
-                if (!marker) {
-                  const el = this.createDonutChart(props);
-                  marker = this.markers[id] = new mapboxgl.Marker({
-                    element: el
-                  }).setLngLat(coords);
-                }
-                newMarkers[id] = marker;
-                if (!this.markersOnScreen[id]) marker.addTo(this.map);
-              }
-              // for every marker we've added previously, remove those that are no longer visible
-              for (const id in this.markersOnScreen) {
-                if (!newMarkers[id]) this.markersOnScreen[id].remove();
-              }
-              this.markersOnScreen = newMarkers;            
-            });
-            this.map.on('click', 'clusters', (e: mapboxgl.MapLayerMouseEvent) => {
-              if (e.features && e.features.length > 0) {
-                const geometry: Point = e.features[0].geometry as Point;
-                const center = new mapboxgl.LngLat(geometry.coordinates[0], geometry.coordinates[1]);
-                this.queueAction((map) => map.flyTo({
-                    center: center,
-                    zoom: 10.5
-                  }
-                ), 'cluster-click-' + center);
-              }
-            });
-            this.search.point_ids.subscribe(ids => {
-              if (ids) {
-                this.pointFilter.searchPoints = ['in', ['get', 'point_id'], ['literal', [...ids]]];
-                for (const layer of ['points-on', 'points-stroke-on']) {
-                  this.map.setFilter(layer, this.pointFilter.searchPoints);
-                }  
-              } else {
-                this.pointFilter.searchPoints = null;
-                for (const layer of ['points-on', 'points-stroke-on']) {
-                  this.map.setFilter(layer, null);
-                }
-              }
-              this.setLabelsOffFilter();
-            });
-            this.search.card_ids.subscribe(ids => {
-              this.clusterData.subscribe(data => {
-                let features: any[] = data.features;
-                let newData: GeoJSON.FeatureCollection = data;
-                if (ids) {
-                  newData = {
-                    type: 'FeatureCollection',
-                    features: features.filter(f => ids.has(f.properties.card_id))
-                  };
-                  console.log('SET NEW DATA for SOURCE', newData.features.length, features[0].properties);
-                }
-                (this.map.getSource('cluster_source') as mapboxgl.GeoJSONSource).setData(newData);
-              });
+          //       let marker = this.markers[id];
+          //       if (!marker) {
+          //         const el = this.createDonutChart(props);
+          //         marker = this.markers[id] = new mapboxgl.Marker({
+          //           element: el
+          //         }).setLngLat(coords);
+          //       }
+          //       newMarkers[id] = marker;
+          //       if (!this.markersOnScreen[id]) marker.addTo(this.map);
+          //     }
+          //     // for every marker we've added previously, remove those that are no longer visible
+          //     for (const id in this.markersOnScreen) {
+          //       if (!newMarkers[id]) this.markersOnScreen[id].remove();
+          //     }
+          //     this.markersOnScreen = newMarkers;            
+          //   });
+          //   this.map.on('click', 'clusters', (e: mapboxgl.MapLayerMouseEvent) => {
+          //     if (e.features && e.features.length > 0) {
+          //       const geometry: Point = e.features[0].geometry as Point;
+          //       const center = new mapboxgl.LngLat(geometry.coordinates[0], geometry.coordinates[1]);
+          //       this.queueAction((map) => map.flyTo({
+          //           center: center,
+          //           zoom: 10.5
+          //         }
+          //       ), 'cluster-click-' + center);
+          //     }
+          //   });
+          //   this.search.point_ids.subscribe(ids => {
+          //     if (ids) {
+          //       this.pointFilter.searchPoints = ['in', ['get', 'point_id'], ['literal', [...ids]]];
+          //       for (const layer of ['points-on', 'points-stroke-on']) {
+          //         this.map.setFilter(layer, this.pointFilter.searchPoints);
+          //       }  
+          //     } else {
+          //       this.pointFilter.searchPoints = null;
+          //       for (const layer of ['points-on', 'points-stroke-on']) {
+          //         this.map.setFilter(layer, null);
+          //       }
+          //     }
+          //     this.setLabelsOffFilter();
+          //   });
+          //   this.search.card_ids.subscribe(ids => {
+          //     this.clusterData.subscribe(data => {
+          //       let features: any[] = data.features;
+          //       let newData: GeoJSON.FeatureCollection = data;
+          //       if (ids) {
+          //         newData = {
+          //           type: 'FeatureCollection',
+          //           features: features.filter(f => ids.has(f.properties.card_id))
+          //         };
+          //         console.log('SET NEW DATA for SOURCE', newData.features.length, features[0].properties);
+          //       }
+          //       (this.map.getSource('cluster_source') as mapboxgl.GeoJSONSource).setData(newData);
+          //     });
 
-            });
-            this.newMap.next(this);
-          });
+          //   });
+          //   this.newMap.next(this);
+          // });
 
           this.map.getStyle().layers?.filter((l) => ['points-stroke-on', 'labels-off'].indexOf(l.id) >= 0).forEach((layer) => {
             const layerName = layer.id;
@@ -301,15 +294,15 @@ export class MapComponent implements OnInit, AfterViewInit {
             }
           });
           this.map.on('moveend', (event: DragEvent) => {
-            const internal = (event as any).internal;
-            if (!internal) {
-              this.state.latestBounds = this.map?.getBounds();
-              let geo: CenterZoomType = [this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()];
-              geo = geo.map((x) => this.api.coord(x)) as CenterZoomType;
-              this.expectedMoves.add('internal-centering-' + geo);
-              // console.log('ACTION-INT', 'internal-centering-' + geo);
-              this.moveEvents.next(geo);
-            }
+            // const internal = (event as any).internal;
+            // if (!internal) {
+            //   this.state.latestBounds = this.map?.getBounds();
+            //   let geo: CenterZoomType = [this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()];
+            //   geo = geo.map((x) => this.api.coord(x)) as CenterZoomType;
+            //   this.expectedMoves.add('internal-centering-' + geo);
+            //   // console.log('ACTION-INT', 'internal-centering-' + geo);
+            //   this.moveEvents.next(geo);
+            // }
             if (this.moveQueue.length > 0) {
               const {action, description} = this.moveQueue.shift() as MoveQueueItem;
               if (!!action) {
@@ -318,9 +311,9 @@ export class MapComponent implements OnInit, AfterViewInit {
               }
             }
           });    
-          this.state.latestBounds = this.map.getBounds();
-          this.search.init();
-          this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
+          // this.state.latestBounds = this.map.getBounds();
+          // this.search.init();
+          // this.moveEvents.next([this.map.getCenter().lng, this.map.getCenter().lat, this.map.getZoom()]);
         });
       } catch (e) {
         console.log('FAILED TO LOAD', e)
@@ -349,72 +342,72 @@ export class MapComponent implements OnInit, AfterViewInit {
     return null;
   }
 
-  createDonutChart(props: any): HTMLElement {
-    const offsets = [];
-    const counts = [];
-    const clusterColors = CATEGORY_COLORS.map(cc => cc.color);
+  // createDonutChart(props: any): HTMLElement {
+  //   const offsets = [];
+  //   const counts = [];
+  //   const clusterColors = CATEGORY_COLORS.map(cc => cc.color);
 
-    if (!props.point_count) {
-      const cat = JSON.parse(props.response_categories)[0];
-      counts.push(...CATEGORY_COLORS.map(cc => cc.category === cat ? 1 : 0));
-    } else {
-      counts.push(...CATEGORY_COLORS.map(cc => props[cc.category]));
-    }
-    let total = 0;
-    for (const count of counts) {
-      offsets.push(total);
-      total += count;
-    }
-    const fontSize = 16;
-    const r = 39;
-    const r0 = Math.round(r * 0.6);
-    const w = r * 2;
+  //   if (!props.point_count) {
+  //     const cat = JSON.parse(props.response_categories)[0];
+  //     counts.push(...CATEGORY_COLORS.map(cc => cc.category === cat ? 1 : 0));
+  //   } else {
+  //     counts.push(...CATEGORY_COLORS.map(cc => props[cc.category]));
+  //   }
+  //   let total = 0;
+  //   for (const count of counts) {
+  //     offsets.push(total);
+  //     total += count;
+  //   }
+  //   const fontSize = 16;
+  //   const r = 39;
+  //   const r0 = Math.round(r * 0.6);
+  //   const w = r * 2;
      
-    let html = `<div>
-    <svg width="${w}" height="${w}" viewbox="0 0 ${w} ${w}" text-anchor="middle" style="font: ${fontSize}px sans-serif; display: block">`;
+  //   let html = `<div>
+  //   <svg width="${w}" height="${w}" viewbox="0 0 ${w} ${w}" text-anchor="middle" style="font: ${fontSize}px sans-serif; display: block">`;
      
-    for (let i = 0; i < counts.length; i++) {
-      if (counts[i]) {
-        html += this.donutSegment(
-          offsets[i] / total,
-          (offsets[i] + counts[i]) / total,
-          r,
-          r0,
-          clusterColors[i]
-        );  
-      }
-    }
-    html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />
-      <text dominant-baseline="central" x="${r}" y="${r}">
-      ${props.point_count?.toLocaleString() || 1}
-      </text>
-      </svg>
-      </div>`;
+  //   for (let i = 0; i < counts.length; i++) {
+  //     if (counts[i]) {
+  //       html += this.donutSegment(
+  //         offsets[i] / total,
+  //         (offsets[i] + counts[i]) / total,
+  //         r,
+  //         r0,
+  //         clusterColors[i]
+  //       );  
+  //     }
+  //   }
+  //   html += `<circle cx="${r}" cy="${r}" r="${r0}" fill="white" />
+  //     <text dominant-baseline="central" x="${r}" y="${r}">
+  //     ${props.point_count?.toLocaleString() || 1}
+  //     </text>
+  //     </svg>
+  //     </div>`;
      
-    const el = document.createElement('div');
-    el.innerHTML = html;
-    return el.firstChild as HTMLElement;
-  }
+  //   const el = document.createElement('div');
+  //   el.innerHTML = html;
+  //   return el.firstChild as HTMLElement;
+  // }
 
-  donutSegment(start: number, end: number, r: number, r0: number, color: string) {
-    if (end - start === 1) end -= 0.00001;
-    const a0 = 2 * Math.PI * (start - 0.25);
-    const a1 = 2 * Math.PI * (end - 0.25);
-    const x0 = Math.cos(a0),
-    y0 = Math.sin(a0);
-    const x1 = Math.cos(a1),
-    y1 = Math.sin(a1);
-    const largeArc = end - start > 0.5 ? 1 : 0;
+  // donutSegment(start: number, end: number, r: number, r0: number, color: string) {
+  //   if (end - start === 1) end -= 0.00001;
+  //   const a0 = 2 * Math.PI * (start - 0.25);
+  //   const a1 = 2 * Math.PI * (end - 0.25);
+  //   const x0 = Math.cos(a0),
+  //   y0 = Math.sin(a0);
+  //   const x1 = Math.cos(a1),
+  //   y1 = Math.sin(a1);
+  //   const largeArc = end - start > 0.5 ? 1 : 0;
      
-    // draw an SVG path
-    return `<path d="M ${r + r0 * x0} ${r + r0 * y0} L ${r + r * x0} ${
-      r + r * y0
-      } A ${r} ${r} 0 ${largeArc} 1 ${r + r * x1} ${r + r * y1} L ${
-      r + r0 * x1
-      } ${r + r0 * y1} A ${r0} ${r0} 0 ${largeArc} 0 ${r + r0 * x0} ${
-      r + r0 * y0
-      }" fill="${color}" />`;
-  }
+  //   // draw an SVG path
+  //   return `<path d="M ${r + r0 * x0} ${r + r0 * y0} L ${r + r * x0} ${
+  //     r + r * y0
+  //     } A ${r} ${r} 0 ${largeArc} 1 ${r + r * x1} ${r + r * y1} L ${
+  //     r + r0 * x1
+  //     } ${r + r0 * y1} A ${r0} ${r0} 0 ${largeArc} 0 ${r + r0 * x0} ${
+  //     r + r0 * y0
+  //     }" fill="${color}" />`;
+  // }
 
   queueAction(action: (map: mapboxgl.Map) => void, description: string) {
     if (this.expectedMoves.has(description)) {

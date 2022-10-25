@@ -1,0 +1,35 @@
+<app-map></app-map>
+<div class='page-container' [class]='"stage-" + stage'>
+    <app-homepage *ngIf='stage === "homepage"'></app-homepage>
+    <app-search *ngIf='stage === "search"'></app-search>
+    <app-branch-container *ngIf='stage === "point" || stage === "card"' [cardId]='card' [pointId]='point' [stage]='stage'>
+    </app-branch-container>
+    <app-searchbox-header *ngIf='stage === "search-results"' 
+            [query]='query'
+            [searchParams]='searchParams'        
+    ></app-searchbox-header>
+    <app-results-drawer
+        [state]='stage === "point" ? DrawerState.Peek : drawerState'
+        *ngIf='searchParams'
+        [class.visible]='stage === "point" || stage === "search-results"'
+        (handle)='handleDrawer($event)'
+    >
+        <div class='content' ngProjectAs='content' 
+             [class.visible]='stage === "search-results"'
+             [class.filters]='filtersVisible'
+        >
+            <app-search-filters 
+                [searchParams]='searchParams'
+                (params)='setSearchParams($event)'
+                (activate)='filtersVisible = !filtersVisible'
+            ></app-search-filters>
+            <app-search-results
+                [class.hidden]='filtersVisible === true' 
+                [class.shown]='filtersVisible === false' 
+                [searchParams]='searchParams'></app-search-results>
+        </div>
+<!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
+                    [class.away]='disclaimerVisible || infoPage'> -->
+    </app-results-drawer>
+
+</div>

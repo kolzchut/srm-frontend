@@ -1,0 +1,128 @@
+@import '../../common.less';
+
+:host {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-flow: column;
+    position: relative;
+    flex-grow: 1;
+
+    app-map {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .page-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        pointer-events: none;
+
+        & > * {
+            pointer-events: auto;
+        }
+
+        app-results-drawer {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;            
+            z-index: 1;
+            display: none;
+
+            &.visible {
+                display: block;
+            }
+
+            .content {
+                display: none;
+
+                &.visible {
+                    display: flex;
+                    flex-flow: column;
+                    justify-content: flex-start;
+                    min-height: 100%;
+
+                    &:not(.filters) {
+                        background-color: @color-light-blue;
+                    }
+                }
+
+                app-search-filters {
+                    z-index: 1;
+                    position: sticky;
+                    top: 0;
+                }
+
+                app-search-results {
+                    transform: translateY(0%);
+                    animation: 0.2s ease-in-out 1 forwards;
+                    animation-fill-mode: forwards;
+                    transition: transform 0.2s ease-in-out;
+                    &.shown {
+                        animation-name: show-results;
+                    }
+                    &.hidden {
+                        animation-name: hide-results;
+                    }
+                }
+            }
+        }
+
+        app-searchbox-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .branch-containers {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;            
+            z-index: 1;
+            display: flex;
+            flex-flow: row;
+            align-items: stretch;
+            overflow-x: scroll;
+            .no-scrollbars;
+        }
+    }
+}
+
+@keyframes hide-results {
+    from {
+        position: inherit; visibility: visible;
+        transform: translateY(0%);
+    }
+    99% {
+        transform: translateY(100%);
+        position: inherit; visibility: visible;
+    }
+    to {
+        transform: translateY(100%);
+        position: absolute; visibility: hidden;
+    }
+}
+
+@keyframes show-results {
+    from {
+        position: inherit; visibility: visible;
+    }
+    1% {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0%);
+    }    
+}

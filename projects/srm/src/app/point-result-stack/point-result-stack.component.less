@@ -1,0 +1,27 @@
+@import '../../common.less';
+
+:host {
+    display: flex;
+    flex-flow: row;
+    align-items: flex-start;
+    gap: 2px;
+    overflow-y: scroll;
+    .no-scrollbars;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: auto;
+    padding: 2px;
+    background: @color-gray-7;
+    scroll-padding-inline: 2px;
+
+    app-result-card {
+        flex: 0 0 100%;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+    }
+
+    &.multiple {
+        app-result-card {
+            flex-basis: calc(100% ~'-' 36px);
+        }
+    }
+}

@@ -1,0 +1,18 @@
+<div class='response'
+    [style.background]='bgColor'
+    [style.border-color]='borderColor'
+    (click)='onClick()'
+>
+    <span class='point'>
+        <span
+            [style.background]='pointBgColor'
+            [style.border-color]='pointBorderColor'
+        ></span>
+    </span>
+    <span class='name'
+        [style.font-weight]='fontWeight'
+    >{{response.name}}</span>
+    <a class='link' *ngIf='link' 
+        [style.background-color]='borderColor'
+        [routerLink]='["/s", response.name]'>←</a>
+</div>

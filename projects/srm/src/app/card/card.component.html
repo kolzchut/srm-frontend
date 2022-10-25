@@ -1,0 +1,35 @@
+<div class='main-content'>
+        <h1 class='name'>{{card.service_name}}</h1>
+        <div class='description' *ngIf='card.service_description'>{{card.service_description}}</div>
+        <div class='responses'>
+            <label i18n>מהות השירות:</label>
+            <div class='list'>
+                <app-response *ngFor='let response of card.responses' [response]='response'></app-response>
+            </div>
+        </div>
+        <div class='situations'>
+            <label i18n>השירות מתאים עבור:</label>
+            <div class='list'>
+                <app-situation *ngFor='let situation of card.situations' [situation]='situation'></app-situation>
+            </div>
+        </div>
+        <div class='terms' *ngIf='card.service_details'>
+            <label i18n>תנאים לקבלת השירות:</label>
+            {{card.service_details}}
+        </div>
+        <div class='org'>
+            <label i18n>השירות ניתן ע״י:</label>
+            <div class='org_name'>{{card.organization_name}}</div>
+            <div class='address'>{{card.branch_address}}</div>
+            <div class='actions' #orgActions [class.odd]='oddActions'>
+                <app-card-action-phone [card]='card' [org]='true'></app-card-action-phone>
+                <app-card-action-url [card]='card' [org]='true'></app-card-action-url>
+                <app-card-action-nav [card]='card'></app-card-action-nav>
+            </div>
+        </div>
+        <div class='data-sources'>
+            <ng-container *ngFor='let data_source of card.data_sources'>
+                <span class='data-source' [innerHtml]='data_source'></span>
+            </ng-container>
+        </div>
+</div>

@@ -1,0 +1,31 @@
+<div class='map-window' [class.point-mode]='!!pointId'></div>
+<div class='content'
+    [class.stage-point]='!!pointId'
+    [class.stage-card]='!!cardId'
+    [class.multiple]='stage==="point" && branches.length > 1'
+>
+    <ng-container *ngFor='let branch of branches'>
+        <div class='branch' *ngIf='stage==="point" || branch === cardBranch'>
+            <a class='header' *ngIf='branch.length > 0' [routerLink]='exitLink' (click)='!exitLink && location.back()'>
+                <div class='branch-details'>
+                    <h2 class='branch-name'>{{branch[0].branch_name}}</h2>
+                    <div class='address'>{{branch[0].branch_address}}</div>
+                </div>
+                <button class='control-icon'></button>
+            </a>
+            <app-card *ngIf='stage === "card" && card' [card]='card'></app-card>
+            <app-point-result-stack *ngIf='stage === "point"' [cards]='branch'></app-point-result-stack>    
+        </div>
+    </ng-container>
+</div>
+<div class='controls'>
+    <button class='back' (click)='location.back()'></button>
+    <a class='search' [routerLink]='["/q"]'></a>
+</div>
+<div class='quick-actions' [style.bottom]='(stage==="card" ? actionsBottom : 0) + "px"' *ngIf='cardId'>
+    <ng-container *ngIf='card'>
+        <app-card-action-phone [card]='card' [org]='false'></app-card-action-phone>
+        <app-card-action-url [card]='card' [org]='false'></app-card-action-url>
+        <app-card-action-nav [card]='card'></app-card-action-nav>    
+    </ng-container>
+</div>

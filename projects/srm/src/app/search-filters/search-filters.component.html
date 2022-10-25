@@ -1,0 +1,52 @@
+<ng-container *ngIf='!active'>
+    <button class='open-modal' (click)='active = true'>סינון</button>
+</ng-container>
+<ng-container *ngIf='active'>
+    <div class='situations'>
+        <div class='section'>
+            <div class='section-header'>
+                <div class='title' *ngIf='!searchParams.response'>סוגי שירות:</div>
+                <div class='title' *ngIf='!!searchParams.response'>סוגי שירות נוספים:</div>
+                <a class='clear' (click)='currentSearchParams.filter_responses = []; pushSearchParams()'>ניקוי</a>
+            </div>
+            <div class='tags responses'>
+                <app-response *ngFor='let response of responseItems' 
+                        [response]='response' 
+                        [selected]='isResponseSelected(response)'
+                        [link]='false'
+                        [selectable]='true'
+                        (clicked)='toggleResponse(response)'
+                ></app-response>
+            </div>
+        </div>
+        <div class='section'>
+            <div class='section-header'>
+                <div class='title' *ngIf='!searchParams.situation'>קהלי יעד:</div>
+                <div class='title' *ngIf='!!searchParams.situation'>קהלי יעד נוספים:</div>
+                <a class='clear' (click)='currentSearchParams.filter_situations = []; pushSearchParams()'>ניקוי</a>
+            </div>
+            <div class='tags'>
+                <div *ngFor='let situation of audiences'>
+                    <app-search-filter-checkbox
+                        [item]='situation'
+                        [current]='currentSearchParams.filter_situations || []'
+                        (changed)='onSituationChange($event, situation)'
+                    ></app-search-filter-checkbox>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='submit'>
+        <button class='main' (click)='closeWithParams()'>
+            <img src='assets/img/icon-filter-gray-1.svg' class='arrow'>
+            <strong>הפעל סינון</strong>&nbsp;
+            <span *ngIf='resultCount > 1'>({{resultCount}} תוצאות)</span>
+            <span *ngIf='resultCount === 1'>(תוצאה אחת)</span>
+            <span *ngIf='resultCount === 0'>(אין תוצאות)</span>
+            <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div>
+        </button>
+        <a class='cancel' (click)='active = false'>
+            ביטול
+        </a>
+    </div>
+</ng-container>

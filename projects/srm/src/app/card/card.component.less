@@ -1,0 +1,106 @@
+@import '../../common.less';
+
+:host {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+
+    .main-content {
+        flex: 1 0 calc(100% ~'+' 100px);
+        // min-height: 100vh;
+
+        background: @color-white;
+        border: 1px solid @color-gray-5;
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.16), 0px 4px 12px rgba(0, 0, 0, 0.08);
+        border-radius: 2px 2px 0px 0px;
+        padding: 8px 16px;
+
+        display: flex;
+        flex-flow: column;
+        gap: 8px;
+
+        color: @color-gray-1;
+        .font-rag-sans;
+        font-style: normal;
+
+        h1 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 24px;
+            line-height: 32px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 21px;
+            color: @color-gray-2;
+            margin: 0;
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        .description {
+            font-weight: 300;
+            font-size: 16px;
+            line-height: 21px;
+        }
+
+        .responses, .situations {
+            .list {
+                display: flex;
+                flex-flow: row wrap;
+                gap: 4px;
+            }
+        }
+        .org {
+            color: @color-gray-2;
+            font-weight: 600;
+            .org_name {
+                font-size: 16px;
+            }
+            .address {
+                font-size: 13px;
+            }
+            .actions {
+                display: flex;
+                flex-flow: row wrap;
+                gap: 8px;
+                padding: 16px 0;
+
+                & > * {
+                    flex: 0 1 auto;
+                }
+
+                &.odd > .active {
+                    width: 100%;
+                }
+                & > .active ~ .active {
+                    width: calc(50% ~'-' 4px);
+                }
+            }
+        }
+        .data-sources {
+            display: flex;
+            flex-flow: column;
+            align-items: flex-start;
+            gap: 8px;
+
+            .data-source {
+                .font-rag-sans;
+                font-weight: 400;
+                font-size: 13px;
+                line-height: 17px;
+                color: @color-gray-3;
+
+                ::ng-deep {
+                    a, a:hover, a:visited {
+                        color: @color-ios-link;
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
+}
