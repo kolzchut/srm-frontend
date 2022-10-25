@@ -39,7 +39,8 @@ export class SearchComponent implements OnInit {
       console.table(presets);
       this.presets = presets.map((preset) => {
         return {
-          link: preset.link,
+          link: ['/s'],
+          linkParams: {q: preset.title},
           display: `<em>${preset.title}</em>`,
           query: preset.title,
           direct: false,
