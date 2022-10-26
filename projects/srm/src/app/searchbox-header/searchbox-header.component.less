@@ -9,7 +9,7 @@
     background: @color-white;
     border-bottom: 1px solid @color-gray-6;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
-    padding: 8px;
+    padding: 8px;    
 
     .searchbox {
         height: 100%;
@@ -60,6 +60,11 @@
                         color: @color-gray-4;
                     }
                 }
+                .placeholder {
+                    .query;
+                    .dim;
+                    padding-right: 4px;
+                }
 
                 .extra-values {
                     .font-rag-sans;
@@ -71,20 +76,35 @@
             }
         }
 
-        .menu-icon, .search-icon {
+        .search-icon {
             .button-image;
             .background-image;
             width: 24px;
             height: 24px;
             flex: 0 0 auto;
         }
+        app-menu-icon {            
+            flex: 0 0 auto;
+        }
 
         .search-icon {
             background-image: url(../../assets/img/icon-search-gray-3.svg);
         }
+    }
 
-        .menu-icon {
-            background-image: url(../../assets/img/icon-hamburger-gray-3.svg);
+    &.homepage {
+        background: transparent;
+        border-bottom: none;
+        box-shadow: none;
+        padding: 0;
+        height: 48px;
+    
+        .searchbox {
+            background-color: @color-white;
+            border-color: @color-gray-4;
+            app-menu-icon {
+                display: none;
+            }    
         }
     }
 }

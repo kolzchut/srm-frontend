@@ -5,11 +5,16 @@ import { SearchParams, TaxonomyItem } from '../consts';
 @Component({
   selector: 'app-searchbox-header',
   templateUrl: './searchbox-header.component.html',
-  styleUrls: ['./searchbox-header.component.less']
+  styleUrls: ['./searchbox-header.component.less'],
+  host: {
+    '[class.homepage]' : 'homepage',
+  }
 })
 export class SearchboxHeaderComponent implements OnChanges {
 
   @Input() query: string | null = null;
+  @Input() placeholder: string | null = null;
+  @Input() homepage = false;
   @Input() searchParams: SearchParams;
 
   responseDisplay: string | null = null;

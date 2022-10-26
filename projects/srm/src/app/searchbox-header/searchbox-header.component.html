@@ -1,6 +1,9 @@
 <div class='searchbox'>
-    <button class='menu-icon'></button>
+    <app-menu-icon></app-menu-icon>
     <a class='clickable' [routerLink]='["/q"]' [queryParams]='{q: query}' [title]='query'>
+        <div class='search-params' *ngIf='placeholder'>
+            <span class='placeholder'>{{placeholder}}</span>
+        </div>
         <div class='search-params' *ngIf='searchParams'>
             <ng-container *ngIf='searchParams.query'>
                 <span class='query'>{{searchParams.query}}</span>

@@ -28,6 +28,8 @@ import { CardActionPhoneComponent } from './card-action-phone/card-action-phone.
 import { CardActionUrlComponent } from './card-action-url/card-action-url.component';
 import { CardActionNavComponent } from './card-action-nav/card-action-nav.component';
 import { SearchFilterCheckboxComponent } from './search-filter-checkbox/search-filter-checkbox.component';
+import { MenuIconComponent } from './menu-icon/menu-icon.component';
+import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,9 @@ import { SearchFilterCheckboxComponent } from './search-filter-checkbox/search-f
     CardActionPhoneComponent,
     CardActionUrlComponent,
     CardActionNavComponent,
-    SearchFilterCheckboxComponent
+    SearchFilterCheckboxComponent,
+    MenuIconComponent,
+    MenuComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

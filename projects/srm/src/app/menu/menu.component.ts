@@ -1,23 +1,40 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { timer } from 'rxjs';
+import { Component, EventEmitter, Injectable, Input, OnInit, Output } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ReplaySubject, timer } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MenuService {
+
+  public activated = new ReplaySubject<boolean>(1);
+
+  constructor(private router: Router) {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.active = false;
+    });
+  }
+
+  set active(value: boolean) {
+    this.activated.next(value);
+  }
+}
+
+
+@UntilDestroy()
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.less'],
-  host: {
-    '[class.enter]': 'active && init',
-    '[class.exit]': '!active && !info && init',
-    '[class.exit-info]': '!active && !!info && init',
-  }
 })
 export class MenuComponent implements OnInit {
 
-  @Input() active = false;
-  @Output() close = new EventEmitter<string | null>();
-
-  info = false;
-  init = false;
+  active = false;
 
   logoUrls: string[] = [
     'assets/img/logo-kolzchut.svg',
@@ -25,20 +42,21 @@ export class MenuComponent implements OnInit {
     'assets/img/logo-digital.svg',
   ];
 
-  constructor() { }
+  constructor(private menu: MenuService) {
+    this.menu.activated.pipe(
+      untilDestroyed(this),
+    ).subscribe((value) => {
+      this.active = value;
+    });
+  }
 
   ngOnInit(): void {
   }
 
   ngOnChanges() {
-    if (this.active) {
-      this.info = false;
-      this.init = true;
-    }
   }
 
   closeMe(selection: string | null) {
-    this.info = !!selection;
-    this.close.emit(selection);
+    this.menu.active = false;
   }
 }

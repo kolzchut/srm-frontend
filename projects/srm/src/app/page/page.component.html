@@ -1,4 +1,4 @@
-<app-map></app-map>
+<app-map *ngIf='stage !== "homepage"'></app-map>
 <div class='page-container' [class]='"stage-" + stage'>
     <app-homepage *ngIf='stage === "homepage"'></app-homepage>
     <app-search *ngIf='stage === "search"'></app-search>
@@ -31,5 +31,5 @@
 <!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
                     [class.away]='disclaimerVisible || infoPage'> -->
     </app-results-drawer>
-
+    <app-menu></app-menu>    
 </div>

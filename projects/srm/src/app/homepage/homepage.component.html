@@ -1,2 +1,47 @@
-<h1>עמוד הבית</h1>
-<a [routerLink]="['/q']">חיפוש</a>
+<div class='header'>
+    <app-menu-icon></app-menu-icon>
+</div>
+<div class='main'>
+    <div class='header'>
+        <div class='logo'></div>
+        <h1>כל השירותים והמענים החברתיים שניתן למצוא על מפה אחת</h1>
+    </div>
+    <div class='search'>
+        <app-searchbox-header [homepage]='true' [placeholder]='"כל שירות, כל מצב, כל מיקום"'></app-searchbox-header>
+        <div class='examples'>
+            <div class='title'>לדוגמה:</div>
+            <div class='example'>
+                <div class='label'>מה?</div>
+                <div class='value'>דיור</div>
+            </div>
+            <div class='example'>
+                <div class='label'>מי?</div>
+                <div class='value'>לבעלי מוגבלויות</div>
+            </div>
+            <div class='example'>
+                <div class='label'>איפה?</div>
+                <div class='value'>באיזור באר שבע</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class='disclaimer'>
+    <p i18n>
+        <strong>כל שירות</strong>&nbsp;ממפה מגוון של שירותים ומענים חברתיים שהמדינה, ארגונים וגופים  שונים מעמידים לרשותינו, האזרחים. בעזרת סינון, חיפוש ושיטוט במפה ניתן לגלות בדיוק מי יוכל לעזור לך.
+    </p>
+    <p i18n>
+        המערכת כרגע בגירסת בטא - חלק מהמידע יכול להיות חסר או לא מדויק.
+    </p>
+    <div class='link'>
+        <span i18n>כל שירות מופעל ע״י</span>
+        <a i18n class='style-kz' href='https://www.kolzchut.org.il/he/כל-זכות:אודות_המיזם' target='_blank'>כל זכות</a>
+        <br/>
+        <span i18n>בסיוע</span>
+        <a i18n class='style-il' href='https://www.gov.il/he/departments/ministry_of_justice/govil-landing-page' target='_blank'>משרד המשפטים ומערך הדיגיטל הלאומי</a>.
+    </div>
+    <p class='data-disclaimer' i18n>
+        המידע ב״כל שירות״ נאסף ממספר מקורות מידע
+        ואין לראות בכל זכות או במשרד המשפטים או במערך הדיגיטל
+        הלאומי אחראים עליו.
+    </p>
+</div>

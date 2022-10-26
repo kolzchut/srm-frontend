@@ -1,20 +1,24 @@
-<div class='container'>
-    <div class='logo'></div>
-    <div class='menu-item' (click)='closeMe("about")' i18n>אודות המפה</div>
-    <div class='menu-item' (click)='closeMe("partners")' i18n>שותפים</div>
-    <a class='menu-item' i18n  href='https://www.kolzchut.org.il/he/כל-זכות:כל-שירות_-_מדיניות_השימוש' target='_blank' (click)='closeMe(null)'>
-        מדיניות האתר
-    </a>
-    <div class='menu-item' (click)='closeMe("contact")' i18n>צרו קשר</div>
+<div class='backdrop' [class.active]='active' (click)='closeMe(null)'>
+
 </div>
-<a class='reset' href='/'>
-    <div class='reset-icon'></div>
-    <span i18n>איפוס הגדרות (התחלה מחדש)</span>
-</a>
-<div class='logos-strip'>
-    <div class='scroller'>
-        <div *ngFor='let url of logoUrls' class='logo-strip-item' [style.background-image]='"url(" + url + ")"'></div>
-        <div *ngFor='let url of logoUrls' class='logo-strip-item' [style.background-image]='"url(" + url + ")"'></div>    
+<div class='menu'
+    [class.enter]='active'
+    [class.exit]='!active'
+>
+    <div class='container'>
+        <a class='logo' [routerLink]='["/"]'></a>
+        <div class='menu-item' (click)='closeMe("about")' i18n>אודות המפה</div>
+        <div class='menu-item' (click)='closeMe("partners")' i18n>שותפים</div>
+        <a class='menu-item' i18n  href='https://www.kolzchut.org.il/he/כל-זכות:כל-שירות_-_מדיניות_השימוש' target='_blank' (click)='closeMe(null)'>
+            מדיניות האתר
+        </a>
+        <div class='menu-item' (click)='closeMe("contact")' i18n>צרו קשר</div>
     </div>
+    <div class='logos-strip'>
+        <div class='scroller'>
+            <div *ngFor='let url of logoUrls' class='logo-strip-item' [style.background-image]='"url(" + url + ")"'></div>
+            <div *ngFor='let url of logoUrls' class='logo-strip-item' [style.background-image]='"url(" + url + ")"'></div>    
+        </div>
+    </div>
+    <div class='closer' (click)='closeMe(null)'></div>
 </div>
-<div class='closer' (click)='closeMe(null)'></div>
