@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -24,6 +24,8 @@ export class SearchFiltersComponent implements OnInit {
   situations: DistinctItem[] = [];
   responses: DistinctItem[] = [];
   audiences: TaxonomyItem[] = [];
+  age_groups: TaxonomyItem[] = [];
+  languages: TaxonomyItem[] = [];
   responseItems: TaxonomyItem[];
   situationsMap: any = {};
   responsesMap: any = {};
@@ -77,6 +79,30 @@ export class SearchFiltersComponent implements OnInit {
           .filter(x => x.key !== this.searchParams.situation)
           .map(x => this.situationsMap[x.key || ''])
           .filter(x => !!x);
+        this.age_groups = this.situations
+          .filter(x => !!x && !!x.key)
+          .filter(x => 
+            x.key?.indexOf('human_situations:age_group') === 0
+          )
+          .map(x => this.situationsMap[x.key || ''])
+          .filter(x => !!x);
+        if (this.age_groups.length > 1) {
+          this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors'].map(x => this.situationsMap['human_situations:age_group:' + x]);
+        } else {
+          this.age_groups = [];
+        }
+  
+        this.languages = this.situations
+          .filter(x => !!x && !!x.key)
+          .filter(x => 
+            x.key?.indexOf('human_situations:language') === 0
+          )
+          .filter(x => 
+            x.key !== 'human_situations:language:hebrew_speaking'
+          )
+          .map(x => this.situationsMap[x.key || ''])
+          .filter(x => !!x);
+
         this.responseItems = this.responses
           .filter(x => x.key !== this.searchParams.response)
           .map(x => this.responsesMap[x.key || ''])
@@ -93,7 +119,10 @@ export class SearchFiltersComponent implements OnInit {
 
   get totalFilters(): number {
     return (this.currentSearchParams.filter_responses?.length || 0) + 
-           (this.currentSearchParams.filter_situations?.length || 0);
+           (this.currentSearchParams.filter_situations?.length || 0) +
+           (this.currentSearchParams.filter_age_groups?.length || 0) +
+           (this.currentSearchParams.filter_languages?.length || 0)
+    ;
   }
 
   _copySearchParams(sp: SearchParams): SearchParams {
@@ -102,27 +131,28 @@ export class SearchFiltersComponent implements OnInit {
       response: sp.response,
       situation: sp.situation,
       filter_situations: sp.filter_situations?.slice() || [],
+      filter_age_groups: sp.filter_age_groups?.slice() || [],
+      filter_languages: sp.filter_languages?.slice() || [],
       filter_responses: sp.filter_responses?.slice() || [],
     }
   }
   
   isResponseSelected(response: TaxonomyItem) {
     if (response.id && this.currentSearchParams?.filter_responses) {
-      if (response.id === 'human_services:care:support_network:mentoring') {
-        console.log('isResponseSelected', response.id, this.currentSearchParams.filter_responses.indexOf(response.id));
-      }
       return this.currentSearchParams.filter_responses.indexOf(response.id) !== -1;
     } else {
       return false;
     }
   }
 
-  onSituationChange(checked: boolean, item: TaxonomyItem) {
-    this.currentSearchParams.filter_situations = this.currentSearchParams.filter_situations || [];
-    this.currentSearchParams.filter_situations = this.currentSearchParams.filter_situations.filter(x => x !== item.id);
+  onSituationChange(checked: boolean, item: TaxonomyItem, field: string) {
+    const csp: any = this.currentSearchParams;
+    let sits: string[] = csp[field] || [];
+    sits = sits.filter(x => x !== item.id);
     if (checked && item.id) {
-      this.currentSearchParams.filter_situations.push(item.id);
+      sits.push(item.id);
     }
+    csp[field] = sits;
     this.pushSearchParams();
   }
 
@@ -136,14 +166,23 @@ export class SearchFiltersComponent implements OnInit {
     this.pushSearchParams();
   }
 
+  fixSearchParams(sp: SearchParams) {
+    if (sp.filter_age_groups?.length === this.age_groups.length) {
+      sp.filter_age_groups = [];
+    }
+  }
+
   pushSearchParams() {
     const sp = this.currentSearchParams;
     this.currentSearchParams = this._copySearchParams(sp);
+    this.fixSearchParams(sp);
     this.internalSearchParams.next(sp);
   }
 
   closeWithParams() {
-    this.params.emit(this.currentSearchParams);
+    const sp = this._copySearchParams(this.currentSearchParams);
+    this.fixSearchParams(sp);
+    this.params.emit(sp);
     this.active = false;
   }
 }

@@ -41,18 +41,19 @@
         right: 0;
         width: 80%;
         height: 100%;
-        transform: translateX(100%);
+        transform: translateX(110%);
+        transition: transform 250ms ease-out;
         pointer-events: all;
 
         &.enter {
-            animation: fly-in 250ms ease-out 0s 1 normal forwards;  
+            transform: translateX(0);
         }
-        &.exit {
-            animation: fly-out 250ms ease-out 0s 1 normal forwards;
-        }
-        &.exit-info {
-            animation: dissolve 250ms ease-out 0s 1 normal forwards;
-        }
+        // &.exit {
+        //     animation: fly-out 250ms ease-out 0s 1 normal forwards;
+        // }
+        // &.exit-info {
+        //     animation: dissolve 250ms ease-out 0s 1 normal forwards;
+        // }
     
         .container {
             display: flex;
@@ -139,7 +140,7 @@
 
 @keyframes fly-in {
     from {
-        transform: translateX(100%);
+        // transform: translateX(100%);
     }
     to {
         transform: translateX(0);
@@ -155,14 +156,14 @@
     }
 }
 
-@keyframes dissolve {
-    from {
-        opacity: 1;
-    }
-    99% {
-        opacity: 0;
-    }
-    to {
-        opacity: 0;
-    }
-}
+// @keyframes dissolve {
+//     from {
+//         opacity: 1;
+//     }
+//     99% {
+//         opacity: 0;
+//     }
+//     to {
+//         opacity: 0;
+//     }
+// }

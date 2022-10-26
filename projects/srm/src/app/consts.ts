@@ -119,5 +119,7 @@ export type SearchParams = {
     response: string | null,
     situation: string | null,
     filter_situations?: string[],
+    filter_age_groups?: string[],
+    filter_languages?: string[],
     filter_responses?: string[],
 };

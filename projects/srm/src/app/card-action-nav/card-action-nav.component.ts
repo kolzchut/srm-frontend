@@ -25,7 +25,6 @@ export class CardActionNavComponent implements OnChanges {
     if (latLng && latLng.length) {
       this.action = `https://www.google.com/maps/search/?api=1&query=${latLng}`;
       this.active = true;
-      console.log('NAV', this.action);
     }
   }
 }

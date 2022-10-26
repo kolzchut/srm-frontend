@@ -30,7 +30,37 @@
                     <app-search-filter-checkbox
                         [item]='situation'
                         [current]='currentSearchParams.filter_situations || []'
-                        (changed)='onSituationChange($event, situation)'
+                        (changed)='onSituationChange($event, situation, "filter_situations")'
+                    ></app-search-filter-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class='section' *ngIf='age_groups && age_groups.length'>
+            <div class='section-header'>
+                <div class='title'>קבוצות גיל:</div>
+                <a class='clear' (click)='currentSearchParams.filter_age_groups = []; pushSearchParams()'>ניקוי</a>
+            </div>
+            <div class='tags vertical'>
+                <div *ngFor='let situation of age_groups'>
+                    <app-search-filter-checkbox
+                        [item]='situation'
+                        [current]='currentSearchParams.filter_age_groups || []'
+                        (changed)='onSituationChange($event, situation, "filter_age_groups")'
+                    ></app-search-filter-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class='section' *ngIf='languages && languages.length'>
+            <div class='section-header'>
+                <div class='title'>לדוברי שפות (שאינן עברית):</div>
+                <a class='clear' (click)='currentSearchParams.filter_languages = []; pushSearchParams()'>ניקוי</a>
+            </div>
+            <div class='tags'>
+                <div *ngFor='let situation of languages'>
+                    <app-search-filter-checkbox
+                        [item]='situation'
+                        [current]='currentSearchParams.filter_languages || []'
+                        (changed)='onSituationChange($event, situation, "filter_languages")'
                     ></app-search-filter-checkbox>
                 </div>
             </div>

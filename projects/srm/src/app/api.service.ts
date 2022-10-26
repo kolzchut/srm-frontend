@@ -268,29 +268,26 @@ export class ApiService {
 
   _filter(searchParams: SearchParams): any | null {
     let filter: any | null = null;
-    if (searchParams.response || searchParams.situation || searchParams.filter_responses || searchParams.filter_situations) {
+    if (searchParams.response || searchParams.situation || searchParams.filter_responses || 
+        searchParams.filter_situations || searchParams.filter_age_groups || searchParams.filter_languages) {
       filter = {};
-      if (searchParams.response || searchParams.filter_responses) {
-        const responses = searchParams.response ? [searchParams.response] : [];
-        if (searchParams.filter_responses) {
-          responses.push(...searchParams.filter_responses);
-        }
-        if (responses.length > 1) {
-          filter['response_ids__all'] = responses;
-        } else if (responses.length === 1) {
-          filter['response_ids'] = responses[0];
-        }
+      if (searchParams.response) {
+        filter['response_ids'] = searchParams.response;
       }
-      if (searchParams.situation || searchParams.filter_situations) {
-        const situations = searchParams.situation ? [searchParams.situation] : [];
-        if (searchParams.filter_situations) {
-          situations.push(...searchParams.filter_situations);
-        }
-        if (situations.length > 1) {
-          filter['situation_ids__all'] = situations;
-        } else if (situations.length === 1) {
-          filter['situation_ids'] = situations[0];
-        }
+      if (searchParams.filter_responses?.length) {
+          filter['response_ids#1'] = searchParams.filter_responses;
+      }
+      if (searchParams.situation) {
+        filter['situation_ids'] = searchParams.situation;
+      }
+      if (searchParams.filter_situations?.length) {
+          filter['situation_ids#1'] = searchParams.filter_situations;
+      }
+      if (searchParams.filter_age_groups?.length) {
+          filter['situation_ids#2'] = searchParams.filter_age_groups;
+      }
+      if (searchParams.filter_languages?.length) {
+          filter['situation_ids#3'] = searchParams.filter_languages;
       }
     }
     return filter;

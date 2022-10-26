@@ -80,7 +80,6 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
           fromEvent(el, 'touchstart').pipe(
             untilDestroyed(this),
           ).subscribe((ev) => {
-            this.gesture = true;
             this.handleGestureStart(ev as TouchEvent);
             fromEvent(window, 'touchend').pipe(first()).subscribe((ev) => {
               this.handleGestureEnd(ev as TouchEvent);
@@ -149,7 +148,6 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
         throttleTime(0, animationFrameScheduler),
       ).subscribe((ev) => {
         this.handleGestureMove(ev as TouchEvent);
-        // console.log('MOVE', this.moveDiff);
       });
     }
   }
@@ -164,6 +162,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     }
     const diff = endY - this.startY;
     this.moveDiff = Math.abs(diff) < this.STICKINESS ? 0 : diff;
+    this.gesture = Math.abs(diff) > this.STICKINESS / 2;
   }
 
   handleGestureEnd(event: MouseEvent | TouchEvent): void {

@@ -12,10 +12,12 @@ class SearchParamCalc {
   queryQP?: string;
   fs?: string;
   fr?: string;
+  fag?: string;
+  fl?: string;
   ac?: AutoComplete | null;
 
   get hash(): string {
-    return [this.query, this.queryP, this.queryQP, this.fs, this.fr].map(x => x || '').join('|');
+    return [this.query, this.queryP, this.queryQP, this.fs, this.fag, this.fl, this.fr].map(x => x || '').join('|');
   }
 };
 
@@ -69,6 +71,8 @@ export class PageComponent implements OnInit {
     ).subscribe((spc) => {
       console.log('new search params', spc);
       const fs = spc.fs?.split('|').map(x => 'human_situations:' + x) || [];
+      const fag = spc.fag?.split('|').map(x => 'human_situations:age_group:' + x) || [];
+      const fl = spc.fl?.split('|').map(x => 'human_situations:language:' + x) || [];
       const fr = spc.fr?.split('|').map(x => 'human_services:' + x) || [];
       if (spc.ac) {
         this.searchParams = {
@@ -76,6 +80,8 @@ export class PageComponent implements OnInit {
           response: spc.ac.response,
           situation: spc.ac.situation,
           filter_situations: fs,
+          filter_age_groups: fag,
+          filter_languages: fl,
           filter_responses: fr,
         };
       } else {
@@ -84,6 +90,8 @@ export class PageComponent implements OnInit {
           response: null,
           situation: null,
           filter_situations: fs,
+          filter_age_groups: fag,
+          filter_languages: fl,
           filter_responses: fr,
         };
       }
@@ -110,6 +118,8 @@ export class PageComponent implements OnInit {
       console.log('NEW QUERY PARAMS', params);
       this.currentSearchParamCalc.queryQP = params.q || '';
       this.currentSearchParamCalc.fs = params.fs;
+      this.currentSearchParamCalc.fag = params.fag;
+      this.currentSearchParamCalc.fl = params.fl;
       this.currentSearchParamCalc.fr = params.fr;
       this.pushSearchParamsCalc();
     });
@@ -136,6 +146,8 @@ export class PageComponent implements OnInit {
       queryParams: {
         q: this.currentSearchParamCalc.queryQP || null,
         fs: searchParams.filter_situations?.map(x => x.slice('human_situations:'.length)).join('|') || null,
+        fag: searchParams.filter_age_groups?.map(x => x.slice('human_situations:age_group:'.length)).join('|') || null,
+        fl: searchParams.filter_languages?.map(x => x.slice('human_situations:language:'.length)).join('|') || null,
         fr: searchParams.filter_responses?.map(x => x.slice('human_services:'.length)).join('|') || null,
       },
       replaceUrl: true,
