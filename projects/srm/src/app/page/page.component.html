@@ -1,8 +1,14 @@
-<app-map *ngIf='stage !== "homepage"'></app-map>
+<app-map *ngIf='stage !== "homepage"' (map)='map = $event' [searchParams]='card || point ? null : searchParams' [cardId]='card' [pointId]='point'></app-map>
 <div class='page-container' [class]='"stage-" + stage'>
     <app-homepage *ngIf='stage === "homepage"'></app-homepage>
     <app-search *ngIf='stage === "search"'></app-search>
-    <app-branch-container *ngIf='stage === "point" || stage === "card"' [cardId]='card' [pointId]='point' [stage]='stage'>
+    <app-branch-container
+        *ngIf='stage === "point" || stage === "card"' 
+        [cardId]='card' 
+        [pointId]='point' 
+        [stage]='stage'
+        (size)='branchSize = $event'
+    >
     </app-branch-container>
     <app-searchbox-header *ngIf='stage === "search-results"' 
             [query]='query'
@@ -13,6 +19,7 @@
         *ngIf='searchParams'
         [class.visible]='stage === "point" || stage === "search-results"'
         (handle)='handleDrawer($event)'
+        (size)='drawerSize = $event'
     >
         <div class='content' ngProjectAs='content' 
              [class.visible]='stage === "search-results"'

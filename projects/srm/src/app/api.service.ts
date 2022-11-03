@@ -9,6 +9,7 @@ import { makeStateKey, TransferState} from '@angular/platform-browser';
 import { PlatformService } from './platform.service';
 import * as memoryCache from 'memory-cache';
 import { response } from 'express';
+import { LngLatBounds } from 'mapbox-gl';
 
 @Injectable({
   providedIn: 'root'
@@ -137,17 +138,6 @@ export class ApiService {
   //   return this.http.get(environment.cardsURL, {params}).pipe(
   //     map((res: any) => {
   //       const results = res as QueryCardsResult;
-  //       return results;
-  //     })
-  //   );
-  // }
-
-  // getPoints(state: State, bounds: LngLatBounds): Observable<QueryPointsResult | null> {
-  //   const params: any = {size: 10000, order: 'point_id'};
-  //   this.setParams(params, state, bounds);
-  //   return this.http.get(environment.pointsURL, {params}).pipe(
-  //     map((res: any) => {
-  //       const results = res as QueryPointsResult;
   //       return results;
   //     })
   //   );
@@ -537,6 +527,27 @@ export class ApiService {
           return (res as QueryTaxonomyItemResult).search_results?.map((r: any) => r.source) || [];
         })
       )
+    );
+  }
+
+  getPoints(searchParams: SearchParams, bounds: LngLatBounds): Observable<string[]> {
+    const params: any = {
+      size: 10000,
+    };
+    if (searchParams.query) {
+      params.q = searchParams.query;
+    }
+    params.extra = 'point-ids';
+    const filter = this._filter(searchParams);
+    if (filter) {
+      params.filter = JSON.stringify(filter);
+    }
+
+    return this.http.get(environment.cardsURL, {params}).pipe(
+      map((res: any) => {
+        const results = res as QueryCardResult;
+        return results.point_id.map((r: any) => r.key);
+      })
     );
   }
 

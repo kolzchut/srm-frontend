@@ -16,8 +16,8 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
 
   @Input() state: DrawerState = DrawerState.Half;
   @Output() handle = new EventEmitter<string>();
-  @Output() height = new EventEmitter<number>();
   @Output() scrollTop = new EventEmitter<boolean>();
+  @Output() size = new EventEmitter<number>();
   @ViewChild('handleEl') handleEl: ElementRef;
   @ViewChild('scrollable') scrollable: ElementRef;
   
@@ -101,7 +101,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
           const height = this.calcHeight();
           if (height !== this.currentHeight) {
             this.currentHeight = height;
-            this.height.emit(height);
+            this.size.next(height);
           }
         });
         const scrollableEl: HTMLElement = this.scrollable.nativeElement;
@@ -125,7 +125,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
         });
       }
       this.currentHeight = el.clientHeight;
-      this.height.emit(this.currentHeight);
+      this.size.emit(this.currentHeight);
     }
   }
 

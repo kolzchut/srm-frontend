@@ -3,6 +3,7 @@
     [class.stage-point]='!!pointId'
     [class.stage-card]='!!cardId'
     [class.multiple]='stage==="point" && branches.length > 1'
+    #content
 >
     <ng-container *ngFor='let branch of branches'>
         <div class='branch' *ngIf='stage==="point" || branch === cardBranch'>

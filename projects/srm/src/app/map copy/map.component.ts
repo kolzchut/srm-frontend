@@ -241,13 +241,14 @@ export class MapComponent implements OnInit, AfterViewInit {
                 ), 'cluster-click-' + center);
               }
             });
-            this.search.point_ids.subscribe(ids => {
-              if (ids) {
+            this.point_ids.subscribe(ids => {
+              if (ids?.length > 1) {
                 this.pointFilter.searchPoints = ['in', ['get', 'point_id'], ['literal', [...ids]]];
                 for (const layer of ['points-on', 'points-stroke-on']) {
                   this.map.setFilter(layer, this.pointFilter.searchPoints);
                 }  
-              } else {
+              } else if (ids?.length === 1) {
+              } else {}
                 this.pointFilter.searchPoints = null;
                 for (const layer of ['points-on', 'points-stroke-on']) {
                   this.map.setFilter(layer, null);

@@ -103,6 +103,7 @@ export type SearchResult<T extends any> = {
     }[],
     situations: DistinctItem[],
     responses: DistinctItem[],
+    point_id: DistinctItem[],
 };
 
 export function _h(sr: any, f: string) {

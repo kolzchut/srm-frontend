@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { from, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { AutoComplete, DrawerState, SearchParams } from '../consts';
+import { MapComponent } from '../map/map.component';
 
 class SearchParamCalc {
   query?: string;
@@ -15,6 +16,7 @@ class SearchParamCalc {
   fag?: string;
   fl?: string;
   ac?: AutoComplete | null;
+  geoValues: number[] = [];
 
   get hash(): string {
     return [this.query, this.queryP, this.queryQP, this.fs, this.fag, this.fl, this.fr].map(x => x || '').join('|');
@@ -35,6 +37,7 @@ export class PageComponent implements OnInit {
   point = '';
   query = '';
   searchParams: SearchParams;
+  map_: MapComponent;
 
   DrawerState = DrawerState;
   drawerState = DrawerState.Half;
@@ -42,6 +45,11 @@ export class PageComponent implements OnInit {
   
   searchParamsCalc = new Subject<SearchParamCalc>(); 
   currentSearchParamCalc: SearchParamCalc = new SearchParamCalc();
+  mapNeedsCentering = false;
+  
+  branchSize_ = 0;
+  drawerSize_ = 0;
+  padding = 0;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router) {
     this.searchParamsCalc.pipe(
@@ -53,9 +61,16 @@ export class PageComponent implements OnInit {
         return spc;
       }),
       filter(() => this.stage === 'search-results'),
-      distinctUntilChanged((x, y) => x.hash.localeCompare(y.hash) === 0),
+      tap((spc) => {
+        if (spc.geoValues?.length && this.mapNeedsCentering) {
+          this.map?.queueAction((map) => map.flyTo({center: [spc.geoValues[0], spc.geoValues[1]], zoom: spc.geoValues[2]}), 're-center');
+          this.mapNeedsCentering = false;
+        }  
+      }),
+      distinctUntilChanged((x, y) => {
+        return x.hash.localeCompare(y.hash) === 0
+      }),
       switchMap((spc) => {
-        console.log('NEW QUERY', spc);
         if (spc.query && spc.query !== '') {
           return this.api.getAutocompleteEntry(spc.query)
             .pipe(
@@ -69,7 +84,6 @@ export class PageComponent implements OnInit {
         }
       }),
     ).subscribe((spc) => {
-      console.log('new search params', spc);
       const fs = spc.fs?.split('|').map(x => 'human_situations:' + x) || [];
       const fag = spc.fag?.split('|').map(x => 'human_situations:age_group:' + x) || [];
       const fl = spc.fl?.split('|').map(x => 'human_situations:language:' + x) || [];
@@ -109,13 +123,13 @@ export class PageComponent implements OnInit {
     ).subscribe((data: any) => {
       this.stage = data.stage;
       this.drawerState = DrawerState.Half;
-      console.log('STAGE', this.stage);
+      this.mapNeedsCentering = true;
+      this.setPadding();
       this.pushSearchParamsCalc();
     });
     route.queryParams.pipe(
       untilDestroyed(this),
     ).subscribe(params => {
-      console.log('NEW QUERY PARAMS', params);
       this.currentSearchParamCalc.queryQP = params.q || '';
       this.currentSearchParamCalc.fs = params.fs;
       this.currentSearchParamCalc.fag = params.fag;
@@ -159,5 +173,62 @@ export class PageComponent implements OnInit {
     this.currentSearchParamCalc = new SearchParamCalc();
     Object.assign(this.currentSearchParamCalc, spc);
     this.searchParamsCalc.next(spc);
+  }
+
+  set map(map: MapComponent) {
+    if (!this.map_) {
+      this.route.fragment.pipe(
+        untilDestroyed(this)
+      ).subscribe((fragment) => {
+        if (fragment?.length && fragment[0] === 'g') {
+          const parts = fragment.slice(1).split('/');
+          if (parts.length === 3) {
+            this.currentSearchParamCalc.geoValues = parts.map((v) => parseFloat(v));
+            this.pushSearchParamsCalc();
+          }
+        } else {
+          this.currentSearchParamCalc.geoValues = [];
+        }
+      });
+    }
+    this.map_ = map;
+    this.setPadding();
+    this.pushSearchParamsCalc();
+  }
+
+  get map(): MapComponent {
+    return this.map_;
+  }
+
+  setPadding() {
+    const padding = this.branchSize + this.drawerSize;
+    if (this.map && padding !== this.padding) {
+      this.padding = padding;
+      this.map?.queueAction((map) => {
+        map.setPadding({top: 0, bottom: this.padding, left: 0, right: 0}, {ignore: true})
+      }, 'padding');
+    }
+  }
+
+  set branchSize(branchSize: number) {
+    if (this.branchSize_ !== branchSize) {
+      this.branchSize_ = branchSize;
+      this.setPadding();
+    }
+  }
+
+  get branchSize() {
+    return this.stage === 'point' || this.stage === 'card' ? this.branchSize_ : 0;
+  }
+
+  set drawerSize(drawerSize: number) {
+    if (this.drawerSize_ !== drawerSize) {
+      this.drawerSize_ = drawerSize;
+      this.setPadding();
+    }
+  }
+
+  get drawerSize() {
+    return this.stage === 'point' ? 64 : (this.stage === 'search-results' ? this.drawerSize_ : 0);
   }
 }

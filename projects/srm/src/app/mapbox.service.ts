@@ -26,6 +26,7 @@ export class MapboxService {
           true // Lazy load the plugin
         );  
         this.init.next();
+        this.init.complete();
       });
     });
   } 

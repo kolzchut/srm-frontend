@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
-import { Component, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
-import { from, fromEvent, Observable, Subscription } from 'rxjs';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { from, fromEvent, Observable, Subscription, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card } from '../consts';
@@ -19,6 +19,8 @@ export class BranchContainerComponent implements OnChanges {
   @Input() cardId = '';
   @Input() pointId = '';
   @Input() stage = '';
+  @Output() size = new EventEmitter<number>();
+  @ViewChild('content') content: ElementRef;
 
   actionsBottom = -56;
   exitLink: string[] | null = null;
@@ -65,7 +67,14 @@ export class BranchContainerComponent implements OnChanges {
       this.cardBranch = [this.card];
       this.branches = [this.cardBranch];
     }
-    console.log('CARDID', this.cardId);
+    // console.log('CARDID', this.cardId);
+    timer(0).subscribe(() => {    
+      const el = this.content?.nativeElement as HTMLElement;
+      if (el) {
+        const size = window.innerHeight - el.getBoundingClientRect().top;
+        this.size.emit(size);
+      }
+    });
   }
 
 
