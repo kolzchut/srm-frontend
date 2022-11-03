@@ -217,6 +217,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
               }
             }),
           ).subscribe(ids => {
+            console.log('POINTS', ids);
             this.processPointIds(ids);
           });        
           // this.map.on('click', (e: mapboxgl.MapLayerMouseEvent) => {
