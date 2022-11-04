@@ -9,12 +9,17 @@
     overflow-y: scroll;
     .no-scrollbars;
     overscroll-behavior: none;
+    pointer-events: none;
 
     .map-window {
         height: 100px;
         background: transparent;
         flex: 0 0 auto;
+        pointer-events: all;
 
+        &.point-mode {
+            pointer-events: none;
+        }
     }
 
     .content {
@@ -24,6 +29,7 @@
         display: flex;
         flex-flow: row;
         align-items: stretch;
+        pointer-events: all;
             
         .branch {
             // width: 100%;
@@ -157,6 +163,7 @@
         bottom: 0;
         left: 0;
         padding: 8px 16px;
+        pointer-events: all;
 
         background: @color-gray-7;
         border-top: 1px solid @color-gray-5;

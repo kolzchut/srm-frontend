@@ -13,14 +13,15 @@
     background: @color-gray-7;
     scroll-padding-inline: 2px;
 
-    app-result-card {
+    a {
         flex: 0 0 100%;
+        height: 100%;
         scroll-snap-align: start;
         scroll-snap-stop: always;
     }
 
     &.multiple {
-        app-result-card {
+        a {
             flex-basis: calc(100% ~'-' 36px);
         }
     }

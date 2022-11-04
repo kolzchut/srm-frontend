@@ -1,4 +1,6 @@
-<div class='map-window' [class.point-mode]='!!pointId'></div>
+<div class='map-window' [class.point-mode]='!!pointId' 
+            [routerLink]='stage==="card" ? exitLink : null' 
+            (click)='stage==="card" && !exitLink && location.back()'></div>
 <div class='content'
     [class.stage-point]='!!pointId'
     [class.stage-card]='!!cardId'

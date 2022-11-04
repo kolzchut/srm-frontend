@@ -92,11 +92,13 @@ export class MapComponent implements OnChanges, AfterViewInit {
     let first = true;
     if (this.platform.browser() && this.mapEl && this.mapEl.nativeElement) {
       try {
-        const mapParams: any = {
+        const mapParams: mapboxgl.MapboxOptions = {
           container: this.mapEl.nativeElement,
           style: this.STYLE,
           minZoom: 3,
           attributionControl: false,
+          center: [34.9, 32],
+          zoom: 8.5,
         };
         this.map = new mapboxgl.Map(mapParams);
         this.map.addControl(new mapboxgl.AttributionControl(), 'top-right');
