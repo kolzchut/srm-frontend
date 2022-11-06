@@ -123,4 +123,5 @@ export type SearchParams = {
     filter_age_groups?: string[],
     filter_languages?: string[],
     filter_responses?: string[],
+    bounds?: number[][];
 };

@@ -1,4 +1,10 @@
-<app-map *ngIf='stage !== "homepage"' (map)='map = $event' [searchParams]='card || point ? null : searchParams' [cardId]='card' [pointId]='point'></app-map>
+<app-map *ngIf='stage !== "homepage"' 
+        [searchParams]='card || point ? null : searchParams' 
+        [cardId]='card'
+        [pointId]='point'
+        (map)='map = $event'
+        (mapBounds)='bounds = $event'
+></app-map>
 <div class='page-container' [class]='"stage-" + stage'>
     <app-homepage *ngIf='stage === "homepage"'></app-homepage>
     <app-search *ngIf='stage === "search"'></app-search>

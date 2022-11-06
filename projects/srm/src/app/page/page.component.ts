@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { from, Subject } from 'rxjs';
+import { from, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { AutoComplete, DrawerState, SearchParams } from '../consts';
@@ -17,9 +17,11 @@ class SearchParamCalc {
   fl?: string;
   ac?: AutoComplete | null;
   geoValues: number[] = [];
+  bounds: number[][] = [];
 
   get hash(): string {
-    return [this.query, this.queryP, this.queryQP, this.fs, this.fag, this.fl, this.fr].map(x => x || '').join('|');
+    const boundsHash = this.bounds.map(b => b.map(bb => bb + '').join('|')).join('|')
+    return [this.query, this.queryP, this.queryQP, this.fs, this.fag, this.fl, this.fr, boundsHash].map(x => x || '').join('|');
   }
 };
 
@@ -51,6 +53,9 @@ export class PageComponent implements OnInit {
   drawerSize_ = 0;
   padding = 0;
 
+  acResult: any;
+  acQuery: string;
+
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router) {
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
@@ -63,6 +68,7 @@ export class PageComponent implements OnInit {
       filter(() => this.stage === 'search-results'),
       tap((spc) => {
         if (spc.geoValues?.length && this.mapNeedsCentering) {
+          // console.log('CENTERING MAP');
           this.map?.queueAction((map) => map.flyTo({center: [spc.geoValues[0], spc.geoValues[1]], zoom: spc.geoValues[2]}), 're-center');
           this.mapNeedsCentering = false;
         }  
@@ -72,13 +78,7 @@ export class PageComponent implements OnInit {
       }),
       switchMap((spc) => {
         if (spc.query && spc.query !== '') {
-          return this.api.getAutocompleteEntry(spc.query)
-            .pipe(
-              map((ac) => {
-                spc.ac = ac;
-                return spc;
-              })
-            );
+          return this.getAutocomplete(spc);
         } else {
           return from([])
         }
@@ -97,6 +97,7 @@ export class PageComponent implements OnInit {
           filter_age_groups: fag,
           filter_languages: fl,
           filter_responses: fr,
+          bounds: spc.bounds,
         };
       } else {
         this.searchParams = {
@@ -107,6 +108,7 @@ export class PageComponent implements OnInit {
           filter_age_groups: fag,
           filter_languages: fl,
           filter_responses: fr,
+          bounds: spc.bounds,
         };
       }
     });
@@ -230,5 +232,31 @@ export class PageComponent implements OnInit {
 
   get drawerSize() {
     return this.stage === 'point' ? 64 : (this.stage === 'search-results' ? this.drawerSize_ : 0);
+  }
+
+  set bounds(bounds: number[][]) {
+    this.currentSearchParamCalc.bounds = bounds;
+    this.pushSearchParamsCalc();
+  }
+
+  getAutocomplete(spc: SearchParamCalc) {
+    let obs: Observable<AutoComplete | null>;
+    const query = spc.query as string;
+    if (spc.query !== this.acQuery) {
+      obs = this.api.getAutocompleteEntry(query);
+    } else {
+      obs = from([this.acResult]);
+    }
+    return obs
+      .pipe(
+        tap((ac) => {
+          this.acQuery = query;
+          this.acResult = ac;
+        }),
+        map((ac) => {
+          spc.ac = ac;
+          return spc;
+        }),
+      );
   }
 }

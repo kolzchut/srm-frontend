@@ -64,17 +64,18 @@ export class ApiService {
   //   return Math.round(value * 10000) / 10000;
   // }
 
-  // boundsFilter(bounds: LngLatBounds) {
-  //   return [
-  //     [
-  //       this.coord(bounds.getWest()),
-  //       this.coord(bounds.getNorth()),
-  //     ], [
-  //       this.coord(bounds.getEast()),
-  //       this.coord(bounds.getSouth()),
-  //     ]
-  //   ];
-  // }
+  boundsFilter(bounds: number[][]) {
+    return bounds;
+    // return [
+    //   [
+    //     this.coord(bounds.getWest()),
+    //     this.coord(bounds.getNorth()),
+    //   ], [
+    //     this.coord(bounds.getEast()),
+    //     this.coord(bounds.getSouth()),
+    //   ]
+    // ];
+  }
 
   // getGeoData(pointId: string): Observable<Point> {
   //   return this.innerCache(`point-${pointId}`, this.http.get(environment.itemURL + pointId, {params: {type: 'geo_data'}}).pipe(
@@ -278,6 +279,9 @@ export class ApiService {
       }
       if (searchParams.filter_languages?.length) {
           filter['situation_ids#3'] = searchParams.filter_languages;
+      }
+      if (searchParams.bounds) {
+          filter['branch_geometry__bounded'] = this.boundsFilter(searchParams.bounds);
       }
     }
     return filter;

@@ -36,6 +36,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
   // @Output('points') points = new EventEmitter<SRMPoint | null>();
   // @Output('hover') pointsHover = new EventEmitter<string | null>();
   @Output('map') newMap = new EventEmitter<MapComponent>();
+  @Output('mapBounds') mapBounds = new EventEmitter<number[][]>();
   @ViewChild('map') mapEl: ElementRef;
 
   map: mapboxgl.Map;
@@ -64,10 +65,10 @@ export class MapComponent implements OnChanges, AfterViewInit {
       return;
     }
     if (this.pointId) {
-      this.processPointIds([this.pointId]);
+      this.processPointIds([this.pointId], true);
     } else if (this.cardId) {
       this.api.getCard(this.cardId).subscribe(card => {
-        this.processPointIds([card.point_id]);
+        this.processPointIds([card.point_id], true);
       });
     } else if (this.searchParams) {
       this.searchParamsQueue.next(this.searchParams);
@@ -110,31 +111,31 @@ export class MapComponent implements OnChanges, AfterViewInit {
         this.map.touchPitch.disable();
         // Handle filter changes and apply on map
         // Listen for changes in geo view
-        this.geoChanges.pipe(
-          untilDestroyed(this),
-          throttleTime(500, undefined, {leading: true, trailing: true}),
-        ).subscribe(geo => {
-          if (this.map) {
-            if (!!geo) {
-              if (geo.length === 3) {
-                console.log('CENTERING', geo);
-                this.queueAction((map) => map.flyTo({
-                    center: geo.slice(0, 2) as mapboxgl.LngLatLike,
-                    zoom: geo[2],
-                    animate: !first
-                  }, {internal: !first, kind: 'centering'}
-                ), 'internal-centering-' + geo);
-              } else if (geo.length === 2) {
-                console.log('FITTING BOUNDS', geo);
-                this.queueAction(
-                  (map) => map.fitBounds(geo as mapboxgl.LngLatBoundsLike, {},),
-                  'fit-bounds-' + geo
-                );
-              }
-            }
-            first = false;
-          }
-        });    
+        // this.geoChanges.pipe(
+        //   untilDestroyed(this),
+        //   throttleTime(500, undefined, {leading: true, trailing: true}),
+        // ).subscribe(geo => {
+        //   if (this.map) {
+        //     if (!!geo) {
+        //       if (geo.length === 3) {
+        //         console.log('CENTERING', geo);
+        //         this.queueAction((map) => map.flyTo({
+        //             center: geo.slice(0, 2) as mapboxgl.LngLatLike,
+        //             zoom: geo[2],
+        //             animate: !first
+        //           }, {internal: !first, kind: 'centering'}
+        //         ), 'internal-centering-' + geo);
+        //       } else if (geo.length === 2) {
+        //         console.log('FITTING BOUNDS', geo);
+        //         this.queueAction(
+        //           (map) => map.fitBounds(geo as mapboxgl.LngLatBoundsLike, {},),
+        //           'fit-bounds-' + geo
+        //         );
+        //       }
+        //     }
+        //     first = false;
+        //   }
+        // });    
         this.map.on('styleimagemissing', (e) => {
           const id: string = e.id;
           if (this.addedImages[id]) {
@@ -219,8 +220,8 @@ export class MapComponent implements OnChanges, AfterViewInit {
               }
             }),
           ).subscribe(ids => {
-            console.log('POINTS', ids);
-            this.processPointIds(ids);
+            // console.log('POINTS', ids);
+            this.processPointIds(ids, false);
           });        
           // this.map.on('click', (e: mapboxgl.MapLayerMouseEvent) => {
           //   if (!e.defaultPrevented) {
@@ -228,7 +229,18 @@ export class MapComponent implements OnChanges, AfterViewInit {
           //   }
           // });
           this.map.on('moveend', (event: mapboxgl.MapboxEvent<MouseEvent>) => {
+            // console.log('MOVEEND', event);
             this.bounds = this.map.getBounds();
+            this.mapBounds.next([
+              [
+                this.bounds.getWest(),
+                this.bounds.getNorth()
+              ],
+              [
+                this.bounds.getEast(),
+                this.bounds.getSouth()
+              ]
+            ]);
             if (!(event as any).ignore) {
               this.setCenter(this.map.getCenter(), this.map.getZoom());
             }
@@ -281,12 +293,12 @@ export class MapComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  processPointIds(ids: string[]) {
+  processPointIds(ids: string[], singlePoint: boolean) {
     // console.log('GOT POINTS', ids.length);
     const pointIds = ids || [];
-    const activeLabels = pointIds.length === 1 ? [pointIds[0]] : [];
-    const activePointId = pointIds.length === 1 ? pointIds[0] : null;
-    const inactiveLabels = pointIds.length > 1 ? pointIds : [];
+    const activeLabels = singlePoint ? [pointIds[0]] : [];
+    const activePointId = singlePoint ? pointIds[0] : null;
+    const inactiveLabels = !singlePoint ? pointIds : [];
     for (const layer of ['points-on', 'points-stroke-on']) {
       this.map.setFilter(layer, ['in', ['get', 'point_id'], ['literal', [...pointIds]]]);
     }
@@ -300,7 +312,9 @@ export class MapComponent implements OnChanges, AfterViewInit {
       const lon = activePointId.slice(0, 2) + '.' + activePointId.slice(2, 7);
       const lat = activePointId.slice(7, 9) + '.' + activePointId.slice(9, 14);
       // console.log('CENTERING', activePointId, lon, lat);
-      this.map.panTo([parseFloat(lon), parseFloat(lat)]);
+      this.queueAction((map) => {
+        map.panTo([parseFloat(lon), parseFloat(lat)]);
+      }, 'centering-to-active');
     }
   }
 
