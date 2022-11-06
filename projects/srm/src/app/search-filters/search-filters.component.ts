@@ -76,7 +76,7 @@ export class SearchFiltersComponent implements OnInit {
             x.key?.indexOf('human_situations:age_group') === -1 &&
             x.key?.indexOf('human_situations:language') === -1
           )
-          // .filter(x => x.key !== this.searchParams.situation)
+          .filter(x => x.key !== this.searchParams.situation)
           .map(x => this.situationsMap[x.key || ''])
           .filter(x => !!x);
         this.age_groups = this.situations
@@ -100,11 +100,12 @@ export class SearchFiltersComponent implements OnInit {
           .filter(x => 
             x.key !== 'human_situations:language:hebrew_speaking'
           )
+          .filter(x => x.key !== this.searchParams.situation)
           .map(x => this.situationsMap[x.key || ''])
           .filter(x => !!x);
 
         this.responseItems = this.responses
-          // .filter(x => x.key !== this.searchParams.response)
+          .filter(x => x.key !== this.searchParams.response)
           .map(x => this.responsesMap[x.key || ''])
           .filter(x => !!x);
       });
