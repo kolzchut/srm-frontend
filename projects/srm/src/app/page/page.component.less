@@ -28,7 +28,10 @@
         & > * {
             pointer-events: auto;
         }
-        & > app-menu, & > app-branch-container {
+        & > app-menu {
+            pointer-events: none;
+        }
+        &.stage-point > app-branch-container {
             pointer-events: none;
         }
 
