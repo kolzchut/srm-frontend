@@ -15,7 +15,7 @@
         </div>
         <div class='terms' *ngIf='card.service_details'>
             <label i18n>תנאים לקבלת השירות:</label>
-            {{card.service_details}}
+            <div [innerHTML]='card.service_details'></div>
         </div>
         <div class='org'>
             <label i18n>השירות ניתן ע״י:</label>
