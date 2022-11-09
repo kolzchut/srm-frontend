@@ -81,14 +81,14 @@
                     flex: 0 1 auto;
                 }
 
-                & > * {
-                    width: calc(50% ~'-' 4px);
-                }
-                &.odd > * {
+                & > app-card-action-phone {
                     width: 100%;
                 }
-                & > * ~ * {
+                & > :not(app-card-action-phone) {
                     width: calc(50% ~'-' 4px);
+                }
+                &.odd > :not(app-card-action-phone) {
+                    width: 100%;
                 }
             }
         }

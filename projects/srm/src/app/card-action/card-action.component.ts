@@ -10,6 +10,7 @@ export class CardActionComponent implements OnInit {
   @Input() kind: string;
   @Input() display: string;
   @Input() action: string;
+  @Input() primary = false;
   
   constructor() { }
 
