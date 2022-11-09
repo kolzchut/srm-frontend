@@ -94,6 +94,16 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  ngAfterViewInit() {
+    timer(0).subscribe(() => {
+      const el = this.inputEl.nativeElement as HTMLInputElement;
+      if (this.query_) {
+        el.setSelectionRange(0, this.query_.length);
+      }
+      el.focus();
+    });
+  }
+
   get query() {
     return this.query_;
   }
