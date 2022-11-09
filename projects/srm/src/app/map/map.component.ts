@@ -299,8 +299,10 @@ export class MapComponent implements OnChanges, AfterViewInit {
     const activeLabels = singlePoint ? [pointIds[0]] : [];
     const activePointId = singlePoint ? pointIds[0] : null;
     const inactiveLabels = !singlePoint ? pointIds : [];
-    for (const layer of ['points-on', 'points-stroke-on']) {
-      this.map.setFilter(layer, ['in', ['get', 'point_id'], ['literal', [...pointIds]]]);
+    if (!singlePoint) {
+      for (const layer of ['points-on', 'points-stroke-on']) {
+        this.map.setFilter(layer, ['in', ['get', 'point_id'], ['literal', [...pointIds]]]);
+      }
     }
     for (const layer of ['labels-active']) {
       this.map.setFilter(layer, ['in', ['get', 'point_id'], ['literal', [...activeLabels]]]);
