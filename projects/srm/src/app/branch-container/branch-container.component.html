@@ -11,8 +11,24 @@
         <div class='branch' *ngIf='stage==="point" || branch === cardBranch'>
             <a class='header' *ngIf='branch.length > 0' [routerLink]='exitLink' (click)='!exitLink && location.back()'>
                 <div class='branch-details'>
-                    <h2 class='branch-name'>{{branch[0].branch_name}}</h2>
-                    <div class='address'>{{branch[0].branch_address}}</div>
+                    <h2 class='branch-name'>
+                        <ng-container *ngIf='!branch[0].organization_name_parts'>
+                            <span class='primary'>{{branch[0].organization_name}}</span>
+                        </ng-container>
+                        <ng-container *ngIf='branch[0].organization_name_parts'>
+                            <span class='primary'>{{branch[0].organization_name_parts.primary}}</span>
+                            <span class='secondary' *ngIf='branch[0].organization_name_parts.secondary'> - {{branch[0].organization_name_parts.secondary}}</span>
+                        </ng-container>
+                    </h2>
+                    <div class='address'>
+                        <ng-container *ngIf='!branch[0].address_parts'>
+                            <span class='primary'>{{branch[0].branch_address}}</span>
+                        </ng-container>
+                        <ng-container *ngIf='branch[0].address_parts'>
+                            <span class='primary'>{{branch[0].address_parts.primary}}</span>
+                            <span class='secondary' *ngIf='branch[0].address_parts.secondary'> - {{branch[0].address_parts.secondary}}</span>
+                        </ng-container>
+                    </div>
                 </div>
                 <button class='control-icon'></button>
             </a>

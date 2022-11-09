@@ -9,6 +9,7 @@ import { Card, CARD_SNIPPET_FIELDS, _h } from '../consts';
 export class ResultCardComponent implements OnChanges {
 
   @Input() card: Card;
+  @Input() compact = false;
   _h = _h;
   snippet: string | null = null;
 

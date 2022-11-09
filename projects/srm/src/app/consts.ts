@@ -46,6 +46,9 @@ export class Card {
     branch_city: string;
     branch_geometry: [number, number];
 
+    address_parts: {primary: string, secondary: string};
+    organization_name_parts: {primary: string, secondary: string};
+
     data_sources: string[];
 
     card_id: string;

@@ -12,6 +12,7 @@ export class ResponseComponent implements OnChanges {
   @Input() link = true;
   @Input() selectable = false;
   @Input() selected = false;
+  @Input() small = false;
   @Output() clicked = new EventEmitter<void>();
 
   bgColor: string;

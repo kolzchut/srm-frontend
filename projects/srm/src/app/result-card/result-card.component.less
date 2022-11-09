@@ -14,9 +14,16 @@
 
     .title {
         display: inline-block;
+        width: 100%;
+        overflow: hidden;
 
         span {
             .font-rag-sans;
+            &.compact {
+                .ellipsis;
+            }
+            max-width: 100%;
+            display: inline-block;
             font-weight: 400;
             font-size: 20px;
             color: @color-gray-1;
