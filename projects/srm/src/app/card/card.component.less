@@ -73,10 +73,13 @@
                     flex: 0 1 auto;
                 }
 
-                &.odd > .active {
+                & > * {
+                    width: calc(50% ~'-' 4px);
+                }
+                &.odd > * {
                     width: 100%;
                 }
-                & > .active ~ .active {
+                & > * ~ * {
                     width: calc(50% ~'-' 4px);
                 }
             }
