@@ -1,5 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { SeoSocialShareService } from 'ngx-seo';
 import { from, fromEvent, Observable, Subscription, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
@@ -31,7 +32,7 @@ export class BranchContainerComponent implements OnChanges {
   cardBranch: Card[] | null = null;
   card: Card | null = null;
 
-  constructor(private api: ApiService, public location: Location, private el: ElementRef) { }
+  constructor(private api: ApiService, public location: Location, private el: ElementRef, private seo: SeoSocialShareService) { }
 
   ngOnChanges(): void {
     let pointObs: Observable<string> | null = null;
@@ -60,6 +61,12 @@ export class BranchContainerComponent implements OnChanges {
             this.card = card;
           }
         }
+        if (this.cardId && this.card) {
+          this.seo.setTitle(`כל שירות -  ${this.card.service_name}`);
+        } else {
+          this.seo.setTitle(`כל שירות`);
+        }
+        this.seo.setUrl(window.location.href);
         this.calculateExitLink();
       });
     } else {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { SeoSocialShareService } from 'ngx-seo';
 import { from, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
@@ -56,7 +57,7 @@ export class PageComponent implements OnInit {
   acResult: any;
   acQuery: string;
 
-  constructor(private route: ActivatedRoute, private api: ApiService, private router: Router) {
+  constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService) {
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
       debounceTime(100),
@@ -78,6 +79,8 @@ export class PageComponent implements OnInit {
       }),
       switchMap((spc) => {
         if (spc.query && spc.query !== '') {
+          this.seo.setTitle(`כל שירות - חיפוש ${spc.query}`)
+          this.seo.setUrl(window.location.href);
           return this.getAutocomplete(spc);
         } else {
           return from([])
@@ -128,6 +131,10 @@ export class PageComponent implements OnInit {
       this.mapNeedsCentering = true;
       this.setPadding();
       this.pushSearchParamsCalc();
+      if (['about', 'search', 'homepage'].indexOf(this.stage) >= 0) {
+        this.seo.setTitle(`כל שירות`);
+        this.seo.setUrl(window.location.href);
+      }
     });
     route.queryParams.pipe(
       untilDestroyed(this),
