@@ -24,6 +24,7 @@
         [state]='stage === "point" ? DrawerState.Peek : drawerState'
         *ngIf='searchParams'
         [class.visible]='stage === "point" || stage === "search-results"'
+        [scrollAll]='!!filtersVisible'
         (handle)='handleDrawer($event)'
         (size)='drawerSize = $event'
     >

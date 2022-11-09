@@ -15,6 +15,7 @@ import { WindowService } from '../window.service';
 export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit {
 
   @Input() state: DrawerState = DrawerState.Half;
+  @Input() scrollAll = false;
   @Output() handle = new EventEmitter<string>();
   @Output() scrollTop = new EventEmitter<boolean>();
   @Output() size = new EventEmitter<number>();
