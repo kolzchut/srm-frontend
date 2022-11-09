@@ -55,10 +55,11 @@
                     display: flex;
                     flex-flow: column;
                     justify-content: flex-start;
-                    min-height: 100%;
-
-                    &:not(.filters) {
-                        background-color: @color-light-blue;
+                    &.main {
+                        min-height: 100%;
+                        &:not(.filters) {
+                            background-color: @color-light-blue;
+                        }
                     }
                 }
 

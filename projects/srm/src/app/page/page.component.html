@@ -27,15 +27,21 @@
         (handle)='handleDrawer($event)'
         (size)='drawerSize = $event'
     >
-        <div class='content' ngProjectAs='content' 
+        <div class='content' ngProjectAs='content-header' 
              [class.visible]='stage === "search-results"'
              [class.filters]='filtersVisible'
         >
             <app-search-filters 
                 [searchParams]='searchParams'
                 (params)='setSearchParams($event)'
-                (activate)='filtersVisible = !filtersVisible'
+                (activate)='setFiltersVisible($event)'
+                #searchFilters
             ></app-search-filters>
+        </div>
+        <div class='content main' ngProjectAs='content' 
+             [class.visible]='stage === "search-results" && !filtersVisible'
+             [class.filters]='filtersVisible'
+        >
             <app-search-results
                 [class.hidden]='filtersVisible === true' 
                 [class.shown]='filtersVisible === false' 

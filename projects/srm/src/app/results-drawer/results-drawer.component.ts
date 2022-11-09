@@ -139,16 +139,16 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     const handleTop = this.handleEl.nativeElement.getBoundingClientRect().top;
     if (this.startY > handleTop && this.startY < handleTop + 56) {
       this.startTime = performance.now();
+      if (this.moveSub === null) {
+        this.moveSub = fromEvent(window, 'touchmove').pipe(
+          untilDestroyed(this),
+          throttleTime(0, animationFrameScheduler),
+        ).subscribe((ev) => {
+          this.handleGestureMove(ev as TouchEvent);
+        });
+      }
     } else {
       this.startTime = 0;
-    }
-    if (this.moveSub === null) {
-      this.moveSub = fromEvent(window, 'touchmove').pipe(
-        untilDestroyed(this),
-        throttleTime(0, animationFrameScheduler),
-      ).subscribe((ev) => {
-        this.handleGestureMove(ev as TouchEvent);
-      });
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
@@ -7,6 +7,7 @@ import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 
 import { ApiService } from '../api.service';
 import { AutoComplete, DrawerState, SearchParams } from '../consts';
 import { MapComponent } from '../map/map.component';
+import { SearchFiltersComponent } from '../search-filters/search-filters.component';
 
 class SearchParamCalc {
   query?: string;
@@ -44,6 +45,8 @@ export class PageComponent implements OnInit {
 
   DrawerState = DrawerState;
   drawerState = DrawerState.Half;
+  
+  @ViewChild('searchFilters') searchFilters: SearchFiltersComponent;
   filtersVisible: boolean | null = null;
   
   searchParamsCalc = new Subject<SearchParamCalc>(); 
@@ -134,6 +137,9 @@ export class PageComponent implements OnInit {
       if (['about', 'search', 'homepage'].indexOf(this.stage) >= 0) {
         this.seo.setTitle(`כל שירות`);
         this.seo.setUrl(window.location.href);
+      }
+      if (this.searchFilters) {
+        this.searchFilters.active = false;
       }
     });
     route.queryParams.pipe(
@@ -242,8 +248,10 @@ export class PageComponent implements OnInit {
   }
 
   set bounds(bounds: number[][]) {
-    this.currentSearchParamCalc.bounds = bounds;
-    this.pushSearchParamsCalc();
+    if (this.drawerState !== DrawerState.Full) {
+      this.currentSearchParamCalc.bounds = bounds;
+      this.pushSearchParamsCalc();
+    }
   }
 
   getAutocomplete(spc: SearchParamCalc) {
@@ -265,5 +273,14 @@ export class PageComponent implements OnInit {
           return spc;
         }),
       );
+  }
+
+  setFiltersVisible(visible: boolean) {
+    this.filtersVisible = visible;
+    if (visible) {
+      this.drawerState = DrawerState.Full;
+    } else {
+      this.drawerState = DrawerState.Half;
+    }
   }
 }
