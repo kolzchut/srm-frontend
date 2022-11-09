@@ -20,7 +20,15 @@
         <div class='org'>
             <label i18n>השירות ניתן ע״י:</label>
             <div class='org_name'>{{card.organization_name}}</div>
-            <div class='address'>{{card.branch_address}}</div>
+            <div class='address'>
+                <ng-container *ngIf='!card.address_parts'>
+                    <span class='primary'>{{card.branch_address}}</span>
+                </ng-container>
+                <ng-container *ngIf='card.address_parts'>
+                    <span class='primary'>{{card.address_parts.primary}}</span>
+                    <span class='secondary' *ngIf='card.address_parts.secondary'> - {{card.address_parts.secondary}}</span>
+                </ng-container>
+            </div>
             <div class='actions' #orgActions [class.odd]='oddActions'>
                 <app-card-action-phone [card]='card' [org]='true'></app-card-action-phone>
                 <app-card-action-url [card]='card' [org]='true'></app-card-action-url>
