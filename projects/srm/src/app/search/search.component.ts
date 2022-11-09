@@ -132,7 +132,7 @@ export class SearchComponent implements OnInit {
         this.results_.push({
           link: ['/s'],
           linkParams: {q: this.query},
-          display: `${this.query}`,
+          display: `<em>${this.query}</em>`,
           query: null,
           direct: true,
         });
