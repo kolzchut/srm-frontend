@@ -62,12 +62,12 @@ export class Card {
 };
 
 export const CARD_SNIPPET_FIELDS = [
-    'service_description',
     'service_description.hebrew',
-    'organization_purpose',
+    'service_description',
     'organization_purpose.hebrew',
-    'service_details',
+    'organization_purpose',
     'service_details.hebrew',
+    'service_details',
     'branch_address'
 ];
 

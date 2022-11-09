@@ -280,7 +280,7 @@ export class ApiService {
       if (searchParams.filter_languages?.length) {
           filter['situation_ids#3'] = searchParams.filter_languages;
       }
-      if (searchParams.bounds) {
+      if (searchParams.bounds && searchParams.bounds.length === 2) {
           filter['branch_geometry__bounded'] = this.boundsFilter(searchParams.bounds);
       }
     }
