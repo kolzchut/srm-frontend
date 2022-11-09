@@ -45,7 +45,7 @@
                 flex-flow: row;
                 align-items: center;
                 cursor: pointer;
-                height: 50px;
+                min-height: 50px;
                 background: @color-gray-7;
                 box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
                 border-radius: 8px 8px 0px 0px; 
@@ -69,7 +69,6 @@
                         font-size: 16px;
                         line-height: 21px;
                         max-width: 100%;
-                        .ellipsis;
                         
                         .primary {
                             font-weight: 600;
@@ -82,7 +81,6 @@
                         font-size: 13px;
                         line-height: 13px;
                         max-width: 100%;
-                        .ellipsis;
 
                         .primary {
                             font-weight: 600;
@@ -129,7 +127,12 @@
                     .control-icon {
                         transform: rotate(180deg);
                     }
-                }            
+                }
+                .branch-details {
+                    .branch-name, .address {
+                        .ellipsis;
+                    }
+                }
             }
         }
         &.multiple {
