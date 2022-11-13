@@ -1,5 +1,10 @@
 <ng-container *ngIf='!active'>
-    <button class='open-modal' (click)='active = true'>סינון</button>
+    <button class='open-modal' [class.active]='!!totalFilters' (click)='active = true'>
+        <img *ngIf='!totalFilters' src='assets/img/icon-filter-gray-3.svg' class='arrow'>
+        <img *ngIf='!!totalFilters' src='assets/img/icon-filter-gray-1.svg' class='arrow'>
+        <span>סינון</span>
+        <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div>
+    </button>
 </ng-container>
 <ng-container *ngIf='active'>
     <div class='situations'>

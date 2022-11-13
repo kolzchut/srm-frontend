@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { delay, switchMap, takeUntil } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { DistinctItem, SearchParams, TaxonomyItem } from '../consts';
 
@@ -61,56 +61,61 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.processSearchParams();
+  }
+
+  processSearchParams(): void {
+    this.api.getDistinct(this.searchParams).subscribe((data) => {
+      this.situations = data.situations;
+      this.responses = data.responses;
+      this.audiences = this.situations
+        .filter(x => !!x && !!x.key)
+        .filter(x => 
+          x.key?.indexOf('human_situations:age_group') === -1 &&
+          x.key?.indexOf('human_situations:language') === -1
+        )
+        .filter(x => x.key !== this.searchParams.situation)
+        .map(x => this.situationsMap[x.key || ''])
+        .filter(x => !!x);
+      this.age_groups = this.situations
+        .filter(x => !!x && !!x.key)
+        .filter(x => 
+          x.key?.indexOf('human_situations:age_group') === 0
+        )
+        .map(x => this.situationsMap[x.key || ''])
+        .filter(x => !!x);
+      if (this.age_groups.length > 1) {
+        this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors'].map(x => this.situationsMap['human_situations:age_group:' + x]);
+      } else {
+        this.age_groups = [];
+      }
+
+      this.languages = this.situations
+        .filter(x => !!x && !!x.key)
+        .filter(x => 
+          x.key?.indexOf('human_situations:language') === 0
+        )
+        .filter(x => 
+          x.key !== 'human_situations:language:hebrew_speaking'
+        )
+        .filter(x => x.key !== this.searchParams.situation)
+        .map(x => this.situationsMap[x.key || ''])
+        .filter(x => !!x);
+
+      this.responseItems = this.responses
+        .filter(x => x.key !== this.searchParams.response)
+        .map(x => this.responsesMap[x.key || ''])
+        .filter(x => !!x);
+    });
+    this.currentSearchParams = this.searchParams;
   }
 
   set active(value: boolean) {
     this.activate.emit(value);
     this.active_ = value;
     if (value) {
-      this.api.getDistinct(this.searchParams).subscribe((data) => {
-        this.situations = data.situations;
-        this.responses = data.responses;
-        this.audiences = this.situations
-          .filter(x => !!x && !!x.key)
-          .filter(x => 
-            x.key?.indexOf('human_situations:age_group') === -1 &&
-            x.key?.indexOf('human_situations:language') === -1
-          )
-          .filter(x => x.key !== this.searchParams.situation)
-          .map(x => this.situationsMap[x.key || ''])
-          .filter(x => !!x);
-        this.age_groups = this.situations
-          .filter(x => !!x && !!x.key)
-          .filter(x => 
-            x.key?.indexOf('human_situations:age_group') === 0
-          )
-          .map(x => this.situationsMap[x.key || ''])
-          .filter(x => !!x);
-        if (this.age_groups.length > 1) {
-          this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors'].map(x => this.situationsMap['human_situations:age_group:' + x]);
-        } else {
-          this.age_groups = [];
-        }
-  
-        this.languages = this.situations
-          .filter(x => !!x && !!x.key)
-          .filter(x => 
-            x.key?.indexOf('human_situations:language') === 0
-          )
-          .filter(x => 
-            x.key !== 'human_situations:language:hebrew_speaking'
-          )
-          .filter(x => x.key !== this.searchParams.situation)
-          .map(x => this.situationsMap[x.key || ''])
-          .filter(x => !!x);
-
-        this.responseItems = this.responses
-          .filter(x => x.key !== this.searchParams.response)
-          .map(x => this.responsesMap[x.key || ''])
-          .filter(x => !!x);
-      });
-      this.currentSearchParams = this.searchParams;
-      this.pushSearchParams();  
+      this.processSearchParams();
+      this.pushSearchParams();
     }
   }
 
@@ -119,10 +124,10 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   get totalFilters(): number {
-    return (this.currentSearchParams.filter_responses?.length || 0) + 
-           (this.currentSearchParams.filter_situations?.length || 0) +
-           (this.currentSearchParams.filter_age_groups?.length || 0) +
-           (this.currentSearchParams.filter_languages?.length || 0)
+    return (this.currentSearchParams?.filter_responses?.length || 0) + 
+           (this.currentSearchParams?.filter_situations?.length || 0) +
+           (this.currentSearchParams?.filter_age_groups?.length || 0) +
+           (this.currentSearchParams?.filter_languages?.length || 0)
     ;
   }
 
