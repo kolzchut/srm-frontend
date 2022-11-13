@@ -7,9 +7,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class MenuPopupAboutComponent implements OnInit {
 
-  @Input() active = false;
-  @Output() close = new EventEmitter<void>();
-  
   constructor() { }
 
   ngOnInit(): void {

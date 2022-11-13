@@ -7,12 +7,12 @@
 >
     <div class='container'>
         <a class='logo' [routerLink]='["/"]'></a>
-        <div class='menu-item' (click)='closeMe("about")' i18n>אודות המפה</div>
-        <div class='menu-item' (click)='closeMe("partners")' i18n>שותפים</div>
+        <a class='menu-item' [routerLink]='["/about", "kolsherut"]' i18n>אודות המפה</a>
+        <a class='menu-item' [routerLink]='["/about", "partners"]' i18n>שותפים</a>
         <a class='menu-item' i18n  href='https://www.kolzchut.org.il/he/כל-זכות:כל-שירות_-_מדיניות_השימוש' target='_blank' (click)='closeMe(null)'>
             מדיניות האתר
         </a>
-        <div class='menu-item' (click)='closeMe("contact")' i18n>צרו קשר</div>
+        <a class='menu-item' [routerLink]='["/about", "contact"]' i18n>צרו קשר</a>
     </div>
     <div class='logos-strip'>
         <div class='scroller'>

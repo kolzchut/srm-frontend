@@ -30,6 +30,10 @@ import { CardActionNavComponent } from './card-action-nav/card-action-nav.compon
 import { SearchFilterCheckboxComponent } from './search-filter-checkbox/search-filter-checkbox.component';
 import { MenuIconComponent } from './menu-icon/menu-icon.component';
 import { MenuComponent } from './menu/menu.component';
+import { MenuPopupContactComponent } from './menu/menu-popup/menu-popup-contact/menu-popup-contact.component';
+import { MenuPopupPartnersComponent } from './menu/menu-popup/menu-popup-partners/menu-popup-partners.component';
+import { MenuPopupAboutComponent } from './menu/menu-popup/menu-popup-about/menu-popup-about.component';
+import { MenuPopupComponent } from './menu/menu-popup/menu-popup.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +61,10 @@ import { MenuComponent } from './menu/menu.component';
     SearchFilterCheckboxComponent,
     MenuIconComponent,
     MenuComponent,
+    MenuPopupComponent,
+    MenuPopupContactComponent,
+    MenuPopupPartnersComponent,
+    MenuPopupAboutComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

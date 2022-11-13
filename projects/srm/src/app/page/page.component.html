@@ -51,5 +51,9 @@
 <!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
                     [class.away]='disclaimerVisible || infoPage'> -->
     </app-results-drawer>
-    <app-menu></app-menu>    
+    <app-menu></app-menu>
+    
+    <app-menu-popup-contact *ngIf='stage === "about:contact"'></app-menu-popup-contact>
+    <app-menu-popup-partners *ngIf='stage === "about:partners"'></app-menu-popup-partners>
+    <app-menu-popup-about *ngIf='stage === "about:about"'></app-menu-popup-about>
 </div>

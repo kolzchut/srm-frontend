@@ -8,7 +8,13 @@ const routes: Routes = [
     path: 'about', component: PageComponent, data: {group: 'flow', stage: 'about'},
   },
   {
-    path: 'about/:about', component: PageComponent, data: {group: 'flow', stage: 'about'},
+    path: 'about/kolsherut', component: PageComponent, data: {group: 'flow', stage: 'about:about'},
+  },
+  {
+    path: 'about/partners', component: PageComponent, data: {group: 'flow', stage: 'about:partners'},
+  },
+  {
+    path: 'about/contact', component: PageComponent, data: {group: 'flow', stage: 'about:contact'},
   },
   {
     path: 'q', component: PageComponent, data: {group: 'flow', stage: 'search'},
