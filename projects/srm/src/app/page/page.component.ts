@@ -66,6 +66,7 @@ export class PageComponent implements OnInit {
       debounceTime(100),
       map((spc) => {
         spc.query = spc.queryP || spc.queryQP || '';
+        spc.query = spc.query.split('_').join(' ');
         this.query = spc.query;
         return spc;
       }),

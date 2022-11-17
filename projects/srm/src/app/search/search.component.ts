@@ -41,7 +41,7 @@ export class SearchComponent implements OnInit {
       this.presets = presets.map((preset) => {
         return {
           link: ['/s'],
-          linkParams: {q: preset.title},
+          linkParams: {q: this.prepareQuery(preset.title)},
           display: `<em>${preset.title}</em>`,
           query: preset.title,
           direct: false,
@@ -60,7 +60,7 @@ export class SearchComponent implements OnInit {
     ).subscribe(results => {
       this.autoCompleteResults = results.map((result) => {
         return {
-          link: ['/s', result.query],
+          link: ['/s', this.prepareQuery(result.query)],
           display: _h(result, 'query'),
           query: result.query,
           direct: false,
@@ -93,6 +93,10 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  prepareQuery(query: string) {
+    return query.split(' ').join('_');
+  } 
 
   ngAfterViewInit() {
     timer(0).subscribe(() => {
@@ -141,7 +145,7 @@ export class SearchComponent implements OnInit {
       if (this.noResults && this.query?.length > 0) {
         this.results_.push({
           link: ['/s'],
-          linkParams: {q: this.query},
+          linkParams: {q: this.prepareQuery(this.query)},
           display: `<em>${this.query}</em>`,
           query: null,
           direct: true,
@@ -153,7 +157,7 @@ export class SearchComponent implements OnInit {
 
   changed(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      this.router.navigate(['/s'], {queryParams: {q: this.query}});
+      this.router.navigate(['/s'], {queryParams: {q: this.prepareQuery(this.query)}});
     }
   }
 }
