@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { from, Subject, Subscription, throwError } from 'rxjs';
-import { catchError, concatMap, filter, tap } from 'rxjs/operators';
+import { catchError, concatMap, debounceTime, filter, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams } from '../consts';
 import { PlatformService } from '../platform.service';
@@ -56,6 +56,7 @@ export class SearchResultsComponent implements OnChanges, AfterViewInit {
         tap((params) => {
           this.fetchedOffset = params.offset;
         }),
+        debounceTime(500),
         concatMap((params) => {
           return this.api.getCards(params.p, params.offset);
         }),

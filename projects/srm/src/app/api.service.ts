@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { from, Observable, ReplaySubject } from 'rxjs';
-import { catchError, delay, finalize, map, tap } from 'rxjs/operators';
+import { catchError, delay, finalize, map, switchMap, tap } from 'rxjs/operators';
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -18,10 +18,37 @@ export class ApiService {
 
   waiting: any = {};
 
+  MIN_SCORE = 20
+  situationsMap_: any = {};
+  responsesMap_: any = {};
+  situationsMap = new ReplaySubject<any>(1);
+  responsesMap = new ReplaySubject<any>(1);
+
   constructor(
     private http: HttpClient,
     private transferState: TransferState,
     private platform: PlatformService) {
+
+      this.getSituations().subscribe((data: TaxonomyItem[]) => {
+        this.situationsMap_ = {};
+        data.forEach((item) => {
+          if (item.id) {
+            this.situationsMap_[item.id] = item;
+          }
+        });
+        this.situationsMap.next(this.situationsMap_);
+        this.situationsMap.complete();
+      });
+      this.getResponses().subscribe((data: TaxonomyItem[]) => {
+        this.responsesMap_ = {};
+        data.forEach((item) => {
+          if (item.id) {
+            this.responsesMap_[item.id] = item;
+          }
+        });
+        this.responsesMap.next(this.responsesMap_);
+        this.responsesMap.complete();
+      });
   }
 
   innerCache<T>(key: string, fetcher: Observable<T>): Observable<T> {
@@ -257,7 +284,7 @@ export class ApiService {
   //   return this.query<QueryOrganizationResult>(query, environment.orgsURL, offset);
   // }
 
-  _filter(searchParams: SearchParams): any | null {
+  _filter(searchParams: SearchParams, bound=true): any | null {
     let filter: any | null = null;
     if (searchParams.response || searchParams.situation || searchParams.filter_responses || 
         searchParams.filter_situations || searchParams.filter_age_groups || searchParams.filter_languages) {
@@ -280,7 +307,7 @@ export class ApiService {
       if (searchParams.filter_languages?.length) {
           filter['situation_ids#3'] = searchParams.filter_languages;
       }
-      if (searchParams.bounds && searchParams.bounds.length === 2) {
+      if (searchParams.bounds && searchParams.bounds.length === 2 && bound) {
           filter['branch_geometry__bounded'] = this.boundsFilter(searchParams.bounds);
       }
     }
@@ -348,30 +375,53 @@ export class ApiService {
   }
 
   getCards(searchParams: SearchParams, offset=0): Observable<Card[]> {
-    const params: any = {
-      size: 10,
-      offset: offset,
-      order: '-_score'
-    };
-    if (searchParams.query) {
-      params.q = searchParams.query;
-      params.highlight = 'service_name,service_name.hebrew';
-      params.snippets = CARD_SNIPPET_FIELDS.join(',');
-    }
-    if (offset === 0) {
-      params.extra = 'distinct-situations|distinct-responses';
-    }
-    const filter = this._filter(searchParams);
-    if (filter) {
-      params.filter = JSON.stringify(filter);
-    }
-    return this.http.get(environment.cardsURL, {params}).pipe(
-      map((res: any) => {
-        const qcr = res as QueryCardResult;
-        const results = qcr.search_results;
-        return results.map((r: any) => r.source);
-      })
-    );
+    return this.responsesMap.pipe(
+      switchMap(() => this.situationsMap),
+      switchMap(() => {
+        const params: any = {
+          size: 10,
+          offset: offset,
+          order: '-_score'
+        };
+        if (searchParams.query) {
+          params.q = searchParams.query;
+          params.highlight = 'service_name,service_name.hebrew';
+          params.snippets = CARD_SNIPPET_FIELDS.join(',');
+          params.minscore = this.MIN_SCORE;
+        } else {
+          const q = [];
+          for (const term of [
+            searchParams.response,
+            searchParams.situation,
+            ...(searchParams?.filter_responses || []),
+            ...(searchParams?.filter_situations || []),
+          ]) {
+            if (term) {
+              console.log('PPP', this.responsesMap_[term] || this.situationsMap_[term]);
+              q.push(this.responsesMap_[term]?.name || this.situationsMap_[term]?.name || '');
+              q.push(...((this.responsesMap_[term]?.synonyms || this.situationsMap_[term]?.synonyms || '').split('\n')));
+            }
+          }
+          if (q.length) {
+            params.q = q.join(' ');
+          }
+        }
+        if (offset === 0) {
+          params.extra = 'distinct-situations|distinct-responses';
+        }
+        const filter = this._filter(searchParams);
+        if (filter) {
+          params.filter = JSON.stringify(filter);
+        }
+        return this.http.get(environment.cardsURL, {params}).pipe(
+          map((res: any) => {
+            const qcr = res as QueryCardResult;
+            const results = qcr.search_results;
+            return results.map((r: any) => r.source);
+          })
+        );
+      }
+    ));
   }
 
   getCounts(searchParams: SearchParams): Observable<QueryCardResult> {
@@ -381,8 +431,9 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
+      params.minscore = this.MIN_SCORE;
     }
-    const filter = this._filter(searchParams);
+    const filter = this._filter(searchParams, false);
     if (filter) {
       params.filter = JSON.stringify(filter);
     }
@@ -400,6 +451,7 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
+      params.minscore = this.MIN_SCORE;
     }
     params.extra = 'distinct-situations|distinct-responses';
     if (searchParams.response || searchParams.situation) {
@@ -442,6 +494,7 @@ export class ApiService {
       params.q = searchParams.query;
       params.highlight = 'service_name,service_name.hebrew';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
+      params.minscore = this.MIN_SCORE;
     }
     const filter: any = {
       point_id: pointId,
@@ -540,6 +593,7 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
+      params.minscore = this.MIN_SCORE;
     }
     params.extra = 'point-ids';
     const filter = this._filter(searchParams);

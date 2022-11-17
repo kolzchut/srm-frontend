@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, O
 import { MapboxService } from '../mapbox.service';
 
 import { from, ReplaySubject, Subject, timer } from 'rxjs';
-import { throttleTime, filter, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { throttleTime, filter, distinctUntilChanged, switchMap, debounceTime } from 'rxjs/operators';
 import { StateService, CenterZoomType, GeoType, BoundsType } from '../state.service';
 import { ALL_CATEGORIES, CATEGORY_COLORS } from '../_prev/common/consts';
 import { Card, Point as SRMPoint, SearchParams } from '../consts';
@@ -212,6 +212,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
           });
           this.searchParamsQueue.pipe(
             untilDestroyed(this),
+            debounceTime(500),
             switchMap((params) => {
               if (params) {
                 return this.api.getPoints(params, this.bounds);
