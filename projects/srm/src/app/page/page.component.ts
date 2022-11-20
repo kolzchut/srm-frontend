@@ -21,9 +21,16 @@ class SearchParamCalc {
   geoValues: number[] = [];
   bounds: number[][] = [];
 
-  get hash(): string {
-    const boundsHash = this.bounds.map(b => b.map(bb => bb + '').join('|')).join('|')
-    return [this.query, this.queryP, this.queryQP, this.fs, this.fag, this.fl, this.fr, boundsHash].map(x => x || '').join('|');
+  get geoHash(): string {
+    return this.bounds.map(b => b.map(bb => bb + '').join('|')).join('|')
+  }
+
+  get searchHash(): string {
+    return [this.query, this.queryP, this.queryQP, this.fs, this.fag, this.fl, this.fr].map(x => x || '').join('|');
+  }
+  
+  get cardsHash(): string {
+    return this.geoHash + this.searchHash
   }
 };
 
@@ -61,6 +68,21 @@ export class PageComponent implements OnInit {
   acQuery: string;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService) {
+
+    this.searchParamsCalc.pipe(
+      untilDestroyed(this),
+      debounceTime(100),
+      distinctUntilChanged((x, y) => {
+        return x.geoHash.localeCompare(y.geoHash) === 0
+      }),
+    ).subscribe((spc) => {
+      if (spc.geoValues?.length && this.mapNeedsCentering) {
+        console.log('CENTERING MAP');
+        this.map?.queueAction((map) => map.jumpTo({center: [spc.geoValues[0], spc.geoValues[1]], zoom: spc.geoValues[2]}), 're-center');
+        this.mapNeedsCentering = false;
+      }  
+    });
+
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
       debounceTime(100),
@@ -70,33 +92,29 @@ export class PageComponent implements OnInit {
         this.query = spc.query;
         return spc;
       }),
-      filter(() => this.stage === 'search-results'),
-      tap((spc) => {
-        if (spc.geoValues?.length && this.mapNeedsCentering) {
-          // console.log('CENTERING MAP');
-          this.map?.queueAction((map) => map.flyTo({center: [spc.geoValues[0], spc.geoValues[1]], zoom: spc.geoValues[2]}), 're-center');
-          this.mapNeedsCentering = false;
-        }  
-      }),
       distinctUntilChanged((x, y) => {
-        return x.hash.localeCompare(y.hash) === 0
+        return x.cardsHash.localeCompare(y.cardsHash) === 0
       }),
       switchMap((spc) => {
         if (spc.query && spc.query !== '') {
-          this.seo.setTitle(`כל שירות - חיפוש ${spc.query}`)
-          this.seo.setUrl(window.location.href);
+          if (this.stage === 'search-results') {
+            this.seo.setTitle(`כל שירות - חיפוש ${spc.query}`)
+            this.seo.setUrl(window.location.href);
+          }
           return this.getAutocomplete(spc);
         } else {
           return from([])
         }
       }),
     ).subscribe((spc) => {
+      console.log('SEARCH PARAMS CALC', spc);
       const fs = spc.fs?.split('|').map(x => 'human_situations:' + x) || [];
       const fag = spc.fag?.split('|').map(x => 'human_situations:age_group:' + x) || [];
       const fl = spc.fl?.split('|').map(x => 'human_situations:language:' + x) || [];
       const fr = spc.fr?.split('|').map(x => 'human_services:' + x) || [];
+      this.searchParams = new SearchParams();
       if (spc.ac) {
-        this.searchParams = {
+        Object.assign(this.searchParams, {
           query: null,
           response: spc.ac.response,
           situation: spc.ac.situation,
@@ -105,9 +123,9 @@ export class PageComponent implements OnInit {
           filter_languages: fl,
           filter_responses: fr,
           bounds: spc.bounds,
-        };
+        });
       } else {
-        this.searchParams = {
+        Object.assign(this.searchParams, {
           query: this.query,
           response: null,
           situation: null,
@@ -116,7 +134,7 @@ export class PageComponent implements OnInit {
           filter_languages: fl,
           filter_responses: fr,
           bounds: spc.bounds,
-        };
+        });
       }
     });
     route.params.pipe(

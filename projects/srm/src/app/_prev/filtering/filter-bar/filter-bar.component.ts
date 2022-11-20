@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { switchMap, tap } from 'rxjs/operators';
-import { getResponseIdColor } from '../../common/consts';
+import { getResponseIdColor } from '../../../colors';
 import { Response } from '../../common/datatypes';
 import { LayoutService } from '../../layout.service';
 import { ResponsesService } from '../../responses.service';

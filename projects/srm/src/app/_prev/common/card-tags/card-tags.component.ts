@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { StateService } from '../../../state.service';
-import { getResponseIdColor } from '../consts';
+import { getResponseIdColor } from '../../../colors';
 import { Card, CategoryCountsResult } from '../datatypes';
 
 @Component({

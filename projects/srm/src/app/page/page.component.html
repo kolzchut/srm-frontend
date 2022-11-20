@@ -1,5 +1,5 @@
 <app-map *ngIf='stage !== "homepage"' 
-        [searchParams]='card || point ? null : searchParams' 
+        [searchParams]='searchParams' 
         [cardId]='card'
         [pointId]='point'
         (map)='map = $event'
@@ -12,6 +12,7 @@
         *ngIf='stage === "point" || stage === "card"' 
         [cardId]='card' 
         [pointId]='point' 
+        [searchParams]='searchParams'
         [stage]='stage'
         (size)='branchSize = $event'
     >

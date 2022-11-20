@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { getResponseCategoryColor, getResponseIdColor } from '../consts';
+import { getResponseCategoryColor, getResponseIdColor } from '../../../colors';
 import { Card } from '../datatypes';
 
 @Component({

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { getResponseIdColor } from '../colors';
 import { TaxonomyItem } from '../consts';
 
 @Component({
@@ -15,6 +16,7 @@ export class ResponseComponent implements OnChanges {
   @Input() small = false;
   @Output() clicked = new EventEmitter<void>();
 
+  color: string;
   bgColor: string;
   borderColor: string;
   pointBorderColor: string;
@@ -24,35 +26,32 @@ export class ResponseComponent implements OnChanges {
   constructor() { }
 
   ngOnChanges(): void {
+    this.color = getResponseIdColor(this.response?.id || null);
     if (this.selectable) {
       if (this.selected) {
         this.bgColor = this.shade('40');
         this.borderColor = this.shade('00');
-        this.pointBgColor = this.color();
-        this.pointBorderColor = this.color();        
+        this.pointBgColor = this.color;
+        this.pointBorderColor = this.color;
         this.fontWeight = 600;
       } else {
         this.bgColor = '#F2F2F2';
         this.borderColor = '#F2F2F2';
-        this.pointBgColor = this.color();
-        this.pointBorderColor = this.color();        
+        this.pointBgColor = this.color;
+        this.pointBorderColor = this.color;
         this.fontWeight = 400;
       }
     } else {
       this.bgColor = this.shade('10');
       this.borderColor = this.shade('20');
-      this.pointBgColor = this.color();
+      this.pointBgColor = this.color;
       this.pointBorderColor = '#fff';
       this.fontWeight = 400;
     }
   }
 
-  color() {
-    return '#27AE60';
-  }
-
   shade(opacity: string) {
-    return this.color() + opacity;
+    return this.color + opacity;
   }
   
   onClick() {

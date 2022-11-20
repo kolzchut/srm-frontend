@@ -23,6 +23,21 @@ const routes: Routes = [
     path: 's/:query', component: PageComponent, data: {group: 'flow', stage: 'search-results'},
   },
   {
+    path: 's/:query/p/:point', component: PageComponent, data: {group: 'flow', stage: 'point'},
+  },
+  {
+    path: 's/:query/c/:card', component: PageComponent, data: {group: 'flow', stage: 'card'},
+  },
+  {
+    path: 's/c/:card', component: PageComponent, data: {group: 'flow', stage: 'card'},
+  },
+  {
+    path: 's/:query/c/:card/p/:point', component: PageComponent, data: {group: 'flow', stage: 'point'},
+  },
+  {
+    path: 's/c/:card/p/:point', component: PageComponent, data: {group: 'flow', stage: 'point'},
+  },
+  {
     path: 's', component: PageComponent, data: {group: 'flow', stage: 'search-results'},
   },
   {

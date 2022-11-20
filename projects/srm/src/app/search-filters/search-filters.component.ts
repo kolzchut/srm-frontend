@@ -132,7 +132,8 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   _copySearchParams(sp: SearchParams): SearchParams {
-    return {
+    const ret = new SearchParams();
+    Object.assign(ret, {
       query: sp.query,
       response: sp.response,
       situation: sp.situation,
@@ -140,7 +141,8 @@ export class SearchFiltersComponent implements OnInit {
       filter_age_groups: sp.filter_age_groups?.slice() || [],
       filter_languages: sp.filter_languages?.slice() || [],
       filter_responses: sp.filter_responses?.slice() || [],
-    }
+    });
+    return ret;
   }
   
   isResponseSelected(response: TaxonomyItem) {

@@ -118,13 +118,17 @@ export type QueryAutoCompleteResult = SearchResult<AutoComplete>;
 export type QueryCardResult = SearchResult<Card>;
 export type QueryTaxonomyItemResult = SearchResult<TaxonomyItem>;
 
-export type SearchParams = {
-    query: string | null,
-    response: string | null,
-    situation: string | null,
-    filter_situations?: string[],
-    filter_age_groups?: string[],
-    filter_languages?: string[],
-    filter_responses?: string[],
+export class SearchParams {
+    query: string | null;
+    response: string | null;
+    situation: string | null;
+    filter_situations?: string[];
+    filter_age_groups?: string[];
+    filter_languages?: string[];
+    filter_responses?: string[];
     bounds?: number[][];
+
+    get searchHash(): string {
+      return [this.query, this.response, this.situation, this.filter_situations, this.filter_age_groups, this.filter_languages, this.filter_responses].map(x => x || '').join('|');
+    }    
 };

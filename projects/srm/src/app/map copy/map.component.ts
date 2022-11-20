@@ -4,7 +4,7 @@ import { MapboxService } from '../mapbox.service';
 import { ReplaySubject, Subject, timer } from 'rxjs';
 import { throttleTime, filter } from 'rxjs/operators';
 import { StateService, CenterZoomType } from '../state.service';
-import { ALL_CATEGORIES, CATEGORY_COLORS } from '../_prev/common/consts';
+import { ALL_CATEGORIES, CATEGORY_COLORS } from '../colors';
 import { Card, Point as SRMPoint } from '../_prev/common/datatypes';
 import { Point } from 'geojson';
 import { environment } from '../../environments/environment';

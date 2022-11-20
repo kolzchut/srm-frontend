@@ -9,7 +9,7 @@
 >
     <ng-container *ngFor='let branch of branches'>
         <div class='branch' *ngIf='stage==="point" || branch === cardBranch'>
-            <a class='header' *ngIf='branch.length > 0' [routerLink]='exitLink' (click)='!exitLink && location.back()'>
+            <a class='header' *ngIf='branch.length > 0' [routerLink]='exitLink'>
                 <div class='branch-details'>
                     <h2 class='branch-name'>
                         <ng-container *ngIf='!branch[0].organization_name_parts'>
@@ -33,12 +33,12 @@
                 <button class='control-icon'></button>
             </a>
             <app-card *ngIf='stage === "card" && card' [card]='card'></app-card>
-            <app-point-result-stack *ngIf='stage === "point"' [cards]='branch'></app-point-result-stack>    
+            <app-point-result-stack *ngIf='stage === "point"' [cards]='branch' [searchParams]='searchParams'></app-point-result-stack>    
         </div>
     </ng-container>
 </div>
 <div class='controls'>
-    <button class='back' (click)='location.back()'></button>
+    <a class='back' [routerLink]='["../.."]'></a>
     <a class='search' [routerLink]='["/q"]'></a>
 </div>
 <div class='quick-actions' [style.bottom]='(stage==="card" ? actionsBottom : 0) + "px"' *ngIf='cardId'>

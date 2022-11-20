@@ -22,4 +22,11 @@ export class PointResultStackComponent implements OnChanges {
   ngOnChanges(): void {
   }
 
+  routerLink(card: Card): string[] {
+    if (this.searchParams?.query) {
+      return ['/s', this.searchParams?.query, 'c', card.card_id];
+    } else {
+      return ['/c', card.card_id];
+    }
+  }
 }

@@ -284,10 +284,10 @@ export class ApiService {
   //   return this.query<QueryOrganizationResult>(query, environment.orgsURL, offset);
   // }
 
-  _filter(searchParams: SearchParams, bound=true): any | null {
+  _filter(searchParams?: SearchParams | null, bound=true): any | null {
     let filter: any | null = null;
-    if (searchParams.response || searchParams.situation || searchParams.filter_responses || 
-        searchParams.filter_situations || searchParams.filter_age_groups || searchParams.filter_languages) {
+    if (searchParams && (searchParams.response || searchParams.situation || searchParams.filter_responses || 
+        searchParams.filter_situations || searchParams.filter_age_groups || searchParams.filter_languages)) {
       filter = {};
       if (searchParams.response) {
         filter['response_ids'] = searchParams.response;
@@ -315,7 +315,7 @@ export class ApiService {
   }
 
   getPresets(): Observable<Preset[]> {
-    const params = {size: 100, order: 'score'};
+    const params = {size: 17, order: 'score'};
     return this.innerCache(
       'presets',
       this.http.get(environment.presetsURL, {params}).pipe(
@@ -397,7 +397,6 @@ export class ApiService {
             ...(searchParams?.filter_situations || []),
           ]) {
             if (term) {
-              console.log('PPP', this.responsesMap_[term] || this.situationsMap_[term]);
               q.push(this.responsesMap_[term]?.name || this.situationsMap_[term]?.name || '');
               q.push(...((this.responsesMap_[term]?.synonyms || this.situationsMap_[term]?.synonyms || '').split('\n')));
             }
@@ -484,13 +483,13 @@ export class ApiService {
     ));
   }
 
-  getPoint(searchParams: SearchParams, pointId: string): Observable<Card[]> {
+  getPoint(pointId: string, searchParams?: SearchParams | null): Observable<Card[]> {
     const params: any = {
-      size: 100,
+      size: 70,
       offset: 0,
       order: '-_score'
     };
-    if (searchParams.query) {
+    if (searchParams?.query) {
       params.q = searchParams.query;
       params.highlight = 'service_name,service_name.hebrew';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
@@ -587,16 +586,17 @@ export class ApiService {
     );
   }
 
-  getPoints(searchParams: SearchParams, bounds: LngLatBounds): Observable<string[]> {
+  getPoints(searchParams: SearchParams): Observable<string[]> {
     const params: any = {
-      size: 10000,
+      size: 1,
     };
     if (searchParams.query) {
       params.q = searchParams.query;
       params.minscore = this.MIN_SCORE;
+      params.order = '-_score';
     }
     params.extra = 'point-ids';
-    const filter = this._filter(searchParams);
+    const filter = this._filter(searchParams, false);
     if (filter) {
       params.filter = JSON.stringify(filter);
     }

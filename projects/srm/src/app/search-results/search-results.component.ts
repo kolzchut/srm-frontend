@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { UntilDestroy } from '@ngneat/until-destroy';
 import { from, Subject, Subscription, throwError } from 'rxjs';
 import { catchError, concatMap, debounceTime, filter, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
@@ -11,6 +12,8 @@ export type SearchParamsOffset = {
   offset: number,
 };
 
+
+@UntilDestroy()
 @Component({
   selector: 'app-search-results',
   templateUrl: './search-results.component.html',
@@ -19,7 +22,7 @@ export type SearchParamsOffset = {
     '[class.empty]' : 'results.length === 0',
   }
 })
-export class SearchResultsComponent implements OnChanges, AfterViewInit {
+export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit {
 
   @Input() searchParams: SearchParams;
 
@@ -34,13 +37,17 @@ export class SearchResultsComponent implements OnChanges, AfterViewInit {
   results: Card[] = [];
   obs: IntersectionObserver;
   fetchQueue = new Subject<SearchParamsOffset>();
+  paramsQueue = new Subject<SearchParams>();
   resultsSubscription: Subscription | null = null;
 
   constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService) {
   }
 
-  ngOnChanges(): void {
-    if (this.hasParams()) {
+  ngOnInit(): void {
+    this.paramsQueue.pipe(
+      filter((params) => !!params),
+      debounceTime(500),
+    ).subscribe((params) => {
       this.offset = 0;
       this.fetchedOffset = -1;
       this.results = [];
@@ -56,7 +63,6 @@ export class SearchResultsComponent implements OnChanges, AfterViewInit {
         tap((params) => {
           this.fetchedOffset = params.offset;
         }),
-        debounceTime(500),
         concatMap((params) => {
           return this.api.getCards(params.p, params.offset);
         }),
@@ -68,11 +74,11 @@ export class SearchResultsComponent implements OnChanges, AfterViewInit {
         this.offset = this.results.length;        
       });
       this.fetch();
-    }
+    });       
   }
 
-  hasParams() {
-    return this.searchParams;
+  ngOnChanges(): void {
+    this.paramsQueue.next(this.searchParams);
   }
 
   fetch() {
@@ -85,7 +91,7 @@ export class SearchResultsComponent implements OnChanges, AfterViewInit {
   ngAfterViewInit(): void {
     this.platform.browser(() => {
       this.obs = new IntersectionObserver((entries) => {
-        if (this.hasParams() && entries[0].isIntersecting) {
+        if (this.searchParams && entries[0].isIntersecting) {
           this.fetch();
         }
       }, {});
