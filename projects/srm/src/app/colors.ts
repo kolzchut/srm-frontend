@@ -1,23 +1,22 @@
 export const CATEGORY_COLORS = [
     // categories: education, work, care, health, housing, legal, money, emergency, transit
-    {category: 'health', color: '#07B2EA'},
-    {category: 'care', color: '#27AE60'},
-    {category: 'education', color: '#BB6BD9'},
-    {category: 'legal', color: '#F2994A'},
-    {category: 'work', color: '#F2C94C'},
+    {category: 'health', color: '#069ed0'},
+    {category: 'care', color: '#2da961'},
+    {category: 'education', color: '#d067f7'},
+    {category: 'legal', color: '#e57410'},
+    {category: 'work', color: '#a89400'},
+    {category: 'housing', color: '#f84dc8'},
+    {category: 'community_services', color: '#e96d6d'},
 
-    {category: 'goods', color: '#9B51E0'},
-    {category: 'housing', color: '#EB3CBA'},
-    {category: 'community_services', color: '#EB5757'},
-
-    {category: 'money', color: '#a6761d'},
-    {category: 'emergency', color: '#a6761d'},
-    {category: 'culture_and_sports', color: '#a6761d'},
-    {category: 'food', color: '#a6761d'},
+    {category: 'goods', color: '#a98d6f'},
+    {category: 'money', color: '#a98d6f'},
+    {category: 'emergency', color: '#a98d6f'},
+    {category: 'culture_and_sports', color: '#a98d6f'},
+    {category: 'food', color: '#a98d6f'},
 ];
 
 export const MULTIPLE_CATEGORY_COLOR = [
-    {category: 'multiple', color: '#4F4F4F'},
+    {category: 'multiple', color: '#939393'},
 ];
 
 export const ALL_CATEGORIES = [...CATEGORY_COLORS, ...MULTIPLE_CATEGORY_COLOR];
