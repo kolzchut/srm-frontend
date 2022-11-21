@@ -31,7 +31,7 @@
                         </ng-container>
                     </div>
                 </div>
-                <button class='control-icon'></button>
+                <button class='control-icon' [class.card]='!!cardId'></button>
             </a>
             <app-card *ngIf='stage === "card" && card' [card]='card'></app-card>
             <app-point-result-stack *ngIf='stage === "point"' [cards]='branch.cards' [hiddenCards]='branch.hidden' [searchParams]='searchParams'></app-point-result-stack>    
