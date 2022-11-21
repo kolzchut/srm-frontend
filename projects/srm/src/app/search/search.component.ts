@@ -154,7 +154,7 @@ export class SearchComponent implements OnInit {
 
   changed(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      this.router.navigate(['/s'], {queryParams: {q: this.prepareQuery(this.query)}});
+      this.router.navigate(['/s', this.prepareQuery(this.query)]);
     }
   }
 }
