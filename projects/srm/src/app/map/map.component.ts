@@ -50,7 +50,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
   ZOOM_THRESHOLD = 10;
   ALL_CATEGORIES = ALL_CATEGORIES; 
   savedChanges: SimpleChanges = {};
-  singlePointMode = false;
   
   constructor(private mapboxService: MapboxService, 
               private api: ApiService,
@@ -81,7 +80,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
     }
     if (this.changed(changes, 'pointId')) {
       console.log('MAP CHANGED POINT', this.pointId);
-      this.singlePointMode = true;
       this.api.getPoint(this.pointId, this.searchParams || undefined).subscribe((cards) => {
         console.log('GOT POINT', this.pointId, this.searchParams, cards);
         if (cards.length > 0) {
@@ -96,7 +94,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
           if (titles.length > 1) {
             title += ' + ' + (titles.length - 1);
           }
-          this.processPointIds([this.pointId], {
+          this.processPointIds([this.pointId], true, {
             response_category: cards[0].response_category,
             title: title,
             coordinates: cards[0].branch_geometry
@@ -105,18 +103,16 @@ export class MapComponent implements OnChanges, AfterViewInit {
       });
     } else if (this.changed(changes, 'cardId')) {
       console.log('MAP CHANGED CARD', this.cardId);
-      this.singlePointMode = true;
       this.api.getCard(this.cardId).subscribe(card => {
         const title = this.getTitle(card);
-        this.processPointIds([card.point_id], {
+        this.processPointIds([card.point_id], true, {
           response_category: card.response_category,
           title: title,
           coordinates: card.branch_geometry
         });
       });
     }
-    if (!this.pointId && !this.cardId && this.singlePointMode) {
-      this.singlePointMode = false;
+    if (!this.pointId && !this.cardId) {
       (this.map.getSource('active-point') as mapboxgl.GeoJSONSource)?.setData({
         type: 'FeatureCollection',
         features: [{
@@ -226,8 +222,8 @@ export class MapComponent implements OnChanges, AfterViewInit {
                 const props: any = e.features[0].properties;
                 // console.log('CLICKED', props);
                 // props.records = JSON.parse(props.records) as Card[];
-                if (this.searchParams?.query) {
-                  this.router.navigate(['/s', this.searchParams?.query, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                if (this.searchParams?.acQuery) {
+                  this.router.navigate(['/s', this.searchParams?.acQuery, 'p', props.point_id], {queryParamsHandling: 'preserve'});
                 } else {
                   this.router.navigate(['/p', props.point_id], {queryParamsHandling: 'preserve'});
                 }
@@ -314,10 +310,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
   }
 
   updateActiveLabelLayer(map: mapboxgl.Map) {
-    const oldLayers = map.getStyle().layers || [];
-    const layerIndex = oldLayers.findIndex(l => l.id === 'labels-active');
-    const layerDef: any = oldLayers[layerIndex];
-    const before = oldLayers[layerIndex + 1] && oldLayers[layerIndex + 1].id;
+
     map.addSource('active-point', {
       type: 'geojson',
       data: {
@@ -334,15 +327,25 @@ export class MapComponent implements OnChanges, AfterViewInit {
         }]
       }
     });
-    map.removeLayer('labels-active');
-    map.addLayer({
-      id: 'labels-active',
-      type: 'symbol',
-      source: 'active-point',
-      layout: layerDef.layout,
-      paint: layerDef.paint
-    }, before);
-    map.setFilter('labels-active', null);
+
+
+    for (const layer of ['labels-active', 'points-active', 'points-stroke-active']) {
+      const oldLayers = map.getStyle().layers || [];
+      const layerIndex = oldLayers.findIndex(l => l.id === layer);
+      console.log('OLD LAYERS', layer, layerIndex, oldLayers);
+      const layerDef: any = oldLayers[layerIndex];
+      const before = oldLayers[layerIndex + 1] && oldLayers[layerIndex + 1].id;
+
+      map.removeLayer(layer);
+      map.addLayer({
+        id: layer,
+        type: layerDef.type,
+        source: 'active-point',
+        layout: layerDef.layout || {},
+        paint: layerDef.paint || {}
+      }, before);
+      map.setFilter(layer, null);
+    }
   }
 
   createLabelBg(id: string): HTMLImageElement | null {
@@ -366,11 +369,11 @@ export class MapComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  processPointIds(ids: string[], props: any | null = null) {
+  processPointIds(ids: string[], singlePointMode: boolean, props: any | null = null) {
     const pointIds = ids || [];
-    const activePointId = this.singlePointMode ? pointIds[0] : null;
-    const inactiveLabels = this.singlePointMode ? [] : pointIds;
-    if (!this.singlePointMode) {
+    const activePointId = singlePointMode ? pointIds[0] : null;
+    const inactiveLabels = singlePointMode ? [] : pointIds;
+    if (!singlePointMode) {
       for (const layer of ['points-on', 'points-stroke-on']) {
         this.map.setFilter(layer, ['in', ['get', 'point_id'], ['literal', [...pointIds]]]);
       }
@@ -398,7 +401,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
       // console.log('CENTERING', activePointId, lon, lat);
       this.queueAction((map) => {
         map.panTo([parseFloat(lon), parseFloat(lat)]);
-      }, 'centering-to-active');
+      }, 'centering-to-active-'+parseFloat(lon) + '-' + parseFloat(lat));
     }
   }
 

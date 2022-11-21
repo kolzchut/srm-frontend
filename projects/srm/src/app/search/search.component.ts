@@ -9,7 +9,6 @@ import { _h } from '../consts';
 
 export type ResultType = {
   link: string[] | string | null,
-  linkParams?: Params,
   display: string,
   query: string | null,
   direct: boolean,
@@ -40,8 +39,7 @@ export class SearchComponent implements OnInit {
       console.table(presets);
       this.presets = presets.map((preset) => {
         return {
-          link: ['/s'],
-          linkParams: {q: this.prepareQuery(preset.title)},
+          link: ['/s', this.prepareQuery(preset.title)],
           display: `<em>${preset.title}</em>`,
           query: preset.title,
           direct: false,
@@ -144,8 +142,7 @@ export class SearchComponent implements OnInit {
       });
       if (this.noResults && this.query?.length > 0) {
         this.results_.push({
-          link: ['/s'],
-          linkParams: {q: this.prepareQuery(this.query)},
+          link: ['/s', this.prepareQuery(this.query)],
           display: `<em>${this.query}</em>`,
           query: null,
           direct: true,

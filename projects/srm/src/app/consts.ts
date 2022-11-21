@@ -119,6 +119,7 @@ export type QueryCardResult = SearchResult<Card>;
 export type QueryTaxonomyItemResult = SearchResult<TaxonomyItem>;
 
 export class SearchParams {
+    acQuery: string | null;
     query: string | null;
     response: string | null;
     situation: string | null;

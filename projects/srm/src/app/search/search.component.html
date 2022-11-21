@@ -5,15 +5,14 @@
 </div>
 <div class='results'>
     <div class='result' *ngFor='let result of (query ? results : presets)'>
-        <a class='result-title' [routerLink]='result.link' [queryParams]='result.linkParams'>
+        <a class='result-title' [routerLink]='result.link'>
             <span class='result-icon'>
             </span>
             <span class='text' [innerHtml]='result.display'></span>
         </a>
         <a class='result-arrow direct'
            *ngIf='result.direct'
-           [routerLink]='result.link'
-           [queryParams]='result.linkParams'></a>
+           [routerLink]='result.link'></a>
         <a class='result-arrow'
            *ngIf='!result.direct'
            (click)='result.query && query = result.query'></a>

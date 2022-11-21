@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
 import { from, Observable, Subject, timer } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap, throttleTime } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, first, map, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { AutoComplete, DrawerState, SearchParams } from '../consts';
 import { MapComponent } from '../map/map.component';
@@ -78,7 +78,8 @@ export class PageComponent implements OnInit {
     ).subscribe((spc) => {
       if (spc.geoValues?.length && this.mapNeedsCentering) {
         console.log('CENTERING MAP', spc.geoValues);
-        this.map?.queueAction((map) => map.jumpTo({center: [spc.geoValues[0], spc.geoValues[1]], zoom: spc.geoValues[2]}), 're-center');
+        this.map?.queueAction((map) => map.jumpTo({center: [spc.geoValues[0], spc.geoValues[1]], zoom: spc.geoValues[2]}),
+                              're-center-' + spc.geoValues[0] + ',' + spc.geoValues[1]);
         this.mapNeedsCentering = false;
       }  
     });
@@ -115,6 +116,7 @@ export class PageComponent implements OnInit {
       this.searchParams = new SearchParams();
       if (spc.ac) {
         Object.assign(this.searchParams, {
+          acQuery: spc.query,
           query: null,
           response: spc.ac.response,
           situation: spc.ac.situation,
@@ -126,7 +128,8 @@ export class PageComponent implements OnInit {
         });
       } else {
         Object.assign(this.searchParams, {
-          query: this.query,
+          acQuery: spc.query,
+          query: spc.query,
           response: null,
           situation: null,
           filter_situations: fs,
@@ -150,8 +153,6 @@ export class PageComponent implements OnInit {
     ).subscribe((data: any) => {
       this.stage = data.stage;
       this.drawerState = DrawerState.Half;
-      this.mapNeedsCentering = true;
-      this.setPadding();
       this.pushSearchParamsCalc();
       if (['about', 'search', 'homepage'].indexOf(this.stage) >= 0) {
         this.seo.setTitle(`כל שירות`);
@@ -212,21 +213,25 @@ export class PageComponent implements OnInit {
   set map(map: MapComponent) {
     if (!this.map_) {
       this.route.fragment.pipe(
-        untilDestroyed(this)
-      ).subscribe((fragment) => {
-        if (fragment?.length && fragment[0] === 'g') {
-          const parts = fragment.slice(1).split('/');
-          if (parts.length === 3) {
-            this.currentSearchParamCalc.geoValues = parts.map((v) => parseFloat(v));
-            this.pushSearchParamsCalc();
+        untilDestroyed(this),
+        tap((fragment) => {
+          if (fragment?.length && fragment[0] === 'g') {
+            const parts = fragment.slice(1).split('/');
+            if (parts.length === 3) {
+              this.currentSearchParamCalc.geoValues = parts.map((v) => parseFloat(v));
+              this.pushSearchParamsCalc();
+            }
+          } else {
+            this.currentSearchParamCalc.geoValues = [];
           }
-        } else {
-          this.currentSearchParamCalc.geoValues = [];
-        }
-      });
+        }),
+        first(),
+      ).subscribe((fragment) => {
+        this.mapNeedsCentering = true;
+      });  
     }
     this.map_ = map;
-    timer(1000).subscribe(() => {
+    timer(500).subscribe(() => {
       this.setPadding();
     });
     this.pushSearchParamsCalc();
@@ -242,7 +247,7 @@ export class PageComponent implements OnInit {
       this.padding = padding;
       this.map?.queueAction((map) => {
         map.setPadding({top: 0, bottom: this.padding, left: 0, right: 0}, {ignore: true})
-      }, 'padding');
+      }, 'padding-' + this.padding);
     }
   }
 

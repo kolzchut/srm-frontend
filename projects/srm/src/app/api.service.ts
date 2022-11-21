@@ -498,7 +498,7 @@ export class ApiService {
     const filter: any = {
       point_id: pointId,
     };
-    const srFilter = this._filter(searchParams);
+    const srFilter = this._filter(searchParams, false);
     if (srFilter) {
       Object.assign(filter, srFilter);
     }
