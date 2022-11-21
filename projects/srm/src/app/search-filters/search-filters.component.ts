@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
-import { delay, switchMap, takeUntil } from 'rxjs/operators';
+import { delay, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { DistinctItem, SearchParams, TaxonomyItem } from '../consts';
 
@@ -54,6 +54,7 @@ export class SearchFiltersComponent implements OnInit {
     });
     this.internalSearchParams.pipe(
       untilDestroyed(this),
+      distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
       switchMap((params) => this.api.getCounts(params))
     ).subscribe((data) => {
       this.resultCount = data.search_counts.cards.total_overall;
@@ -61,7 +62,7 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.processSearchParams();
+    // this.processSearchParams();
   }
 
   processSearchParams(): void {
@@ -124,10 +125,11 @@ export class SearchFiltersComponent implements OnInit {
   }
 
   get totalFilters(): number {
-    return (this.currentSearchParams?.filter_responses?.length || 0) + 
-           (this.currentSearchParams?.filter_situations?.length || 0) +
-           (this.currentSearchParams?.filter_age_groups?.length || 0) +
-           (this.currentSearchParams?.filter_languages?.length || 0)
+    const sp = this.currentSearchParams || this.searchParams;
+    return (sp?.filter_responses?.length || 0) + 
+           (sp?.filter_situations?.length || 0) +
+           (sp?.filter_age_groups?.length || 0) +
+           (sp?.filter_languages?.length || 0)
     ;
   }
 

@@ -1,3 +1,12 @@
-<a *ngFor='let card of cards' [routerLink]='routerLink(card)'>
+<a class='card' *ngFor='let card of cards' [routerLink]='routerLink(card)' queryParamsHandling='preserve'>
+    <app-result-card [card]='card' [compact]='true'></app-result-card>
+</a>
+<a class='hidden-trigger' *ngIf='hidden_' (click)='hidden_ = false'>
+    <div class='bg-cards'>
+        <div class='bg-card' *ngFor='let _ of hiddenCards'></div>
+    </div>
+    <span class='number'>+ {{hiddenCards.length}}</span>
+</a>
+<a class='card' *ngFor='let card of hiddenCards' [routerLink]='routerLink(card)' [class.hidden]='hidden_'  queryParamsHandling='preserve'>
     <app-result-card [card]='card' [compact]='true'></app-result-card>
 </a>

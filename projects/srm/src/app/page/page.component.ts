@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
-import { from, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import { from, Observable, Subject, timer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { AutoComplete, DrawerState, SearchParams } from '../consts';
 import { MapComponent } from '../map/map.component';
@@ -71,13 +71,13 @@ export class PageComponent implements OnInit {
 
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
-      debounceTime(100),
+      throttleTime(100, undefined, {leading: true, trailing: true}),
       distinctUntilChanged((x, y) => {
         return x.geoHash.localeCompare(y.geoHash) === 0
       }),
     ).subscribe((spc) => {
       if (spc.geoValues?.length && this.mapNeedsCentering) {
-        console.log('CENTERING MAP');
+        console.log('CENTERING MAP', spc.geoValues);
         this.map?.queueAction((map) => map.jumpTo({center: [spc.geoValues[0], spc.geoValues[1]], zoom: spc.geoValues[2]}), 're-center');
         this.mapNeedsCentering = false;
       }  
@@ -103,7 +103,7 @@ export class PageComponent implements OnInit {
           }
           return this.getAutocomplete(spc);
         } else {
-          return from([])
+          return from([spc])
         }
       }),
     ).subscribe((spc) => {
@@ -226,7 +226,9 @@ export class PageComponent implements OnInit {
       });
     }
     this.map_ = map;
-    this.setPadding();
+    timer(1000).subscribe(() => {
+      this.setPadding();
+    });
     this.pushSearchParamsCalc();
   }
 

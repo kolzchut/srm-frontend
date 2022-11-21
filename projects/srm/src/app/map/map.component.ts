@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
 import { MapboxService } from '../mapbox.service';
 
 import { from, ReplaySubject, Subject, timer } from 'rxjs';
@@ -49,7 +49,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
 
   ZOOM_THRESHOLD = 10;
   ALL_CATEGORIES = ALL_CATEGORIES; 
-  savedChanges: SimpleChanges;
+  savedChanges: SimpleChanges = {};
   singlePointMode = false;
   
   constructor(private mapboxService: MapboxService, 
@@ -76,7 +76,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (!this.map) {
-      this.savedChanges = changes;
+      Object.assign(this.savedChanges, changes);
       return;
     }
     if (this.changed(changes, 'pointId')) {
@@ -104,7 +104,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
         }
       });
     } else if (this.changed(changes, 'cardId')) {
-      console.log('MAP CHANGED POINT', this.cardId);
+      console.log('MAP CHANGED CARD', this.cardId);
       this.singlePointMode = true;
       this.api.getCard(this.cardId).subscribe(card => {
         const title = this.getTitle(card);
@@ -227,9 +227,9 @@ export class MapComponent implements OnChanges, AfterViewInit {
                 // console.log('CLICKED', props);
                 // props.records = JSON.parse(props.records) as Card[];
                 if (this.searchParams?.query) {
-                  this.router.navigate(['/s', this.searchParams?.query, 'p', props.point_id]);
+                  this.router.navigate(['/s', this.searchParams?.query, 'p', props.point_id], {queryParamsHandling: 'preserve'});
                 } else {
-                  this.router.navigate(['/p', props.point_id]);
+                  this.router.navigate(['/p', props.point_id], {queryParamsHandling: 'preserve'});
                 }
                 // this.points.next(props as SRMPoint);
               }
@@ -288,7 +288,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
             if (this.moveQueue.length > 0) {
               const {action, description} = this.moveQueue.shift() as MoveQueueItem;
               if (!!action) {
-                // console.log('ACTION-QQ', description);
+                console.log('ACTION-QQ', description);
                 action(this.map);  
               }
             }
@@ -358,10 +358,10 @@ export class MapComponent implements OnChanges, AfterViewInit {
 
   queueAction(action: (map: mapboxgl.Map) => void, description: string) {
     if (this.moveQueue.length === 0 && !this.map.isMoving()) {
-      // console.log('ACTION-IMM', description);
+      console.log('ACTION-IMM', description);
       action(this.map);
     } else {
-      // console.log('ACTION-QUE', description);
+      console.log('ACTION-QUE', description);
       this.moveQueue.push({action, description});
     }
   }
@@ -406,7 +406,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
     const fragment = 'g' + center.lng.toFixed(5) + '/' + center.lat.toFixed(5) + '/' + zoom.toFixed(2);
     this.router.navigate([], {
       fragment,
-      queryParamsHandling: 'merge',
+      queryParamsHandling: 'preserve',
       replaceUrl: true,
     });
   }

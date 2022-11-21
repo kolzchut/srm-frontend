@@ -1,5 +1,6 @@
 <div class='map-window' [class.point-mode]='!!pointId' 
-            [routerLink]='stage==="card" ? exitLink : null' 
+            [routerLink]='stage==="card" ? exitLink : null'
+            queryParamsHandling='preserve'
             (click)='stage==="card" && !exitLink && location.back()'></div>
 <div class='content'
     [class.stage-point]='!!pointId'
@@ -9,37 +10,37 @@
 >
     <ng-container *ngFor='let branch of branches'>
         <div class='branch' *ngIf='stage==="point" || branch === cardBranch'>
-            <a class='header' *ngIf='branch.length > 0' [routerLink]='exitLink'>
+            <a class='header' *ngIf='branch.cards.length > 0' [routerLink]='exitLink' queryParamsHandling='preserve'>
                 <div class='branch-details'>
                     <h2 class='branch-name'>
-                        <ng-container *ngIf='!branch[0].organization_name_parts'>
-                            <span class='primary'>{{branch[0].organization_name}}</span>
+                        <ng-container *ngIf='!branch.cards[0].organization_name_parts'>
+                            <span class='primary'>{{branch.cards[0].organization_name}}</span>
                         </ng-container>
-                        <ng-container *ngIf='branch[0].organization_name_parts'>
-                            <span class='primary'>{{branch[0].organization_name_parts.primary}}</span>
-                            <span class='secondary' *ngIf='branch[0].organization_name_parts.secondary'> - {{branch[0].organization_name_parts.secondary}}</span>
+                        <ng-container *ngIf='branch.cards[0].organization_name_parts'>
+                            <span class='primary'>{{branch.cards[0].organization_name_parts.primary}}</span>
+                            <span class='secondary' *ngIf='branch.cards[0].organization_name_parts.secondary'> - {{branch.cards[0].organization_name_parts.secondary}}</span>
                         </ng-container>
                     </h2>
                     <div class='address'>
-                        <ng-container *ngIf='!branch[0].address_parts'>
-                            <span class='primary'>{{branch[0].branch_address}}</span>
+                        <ng-container *ngIf='!branch.cards[0].address_parts'>
+                            <span class='primary'>{{branch.cards[0].branch_address}}</span>
                         </ng-container>
-                        <ng-container *ngIf='branch[0].address_parts'>
-                            <span class='primary'>{{branch[0].address_parts.primary}}</span>
-                            <span class='secondary' *ngIf='branch[0].address_parts.secondary'> - {{branch[0].address_parts.secondary}}</span>
+                        <ng-container *ngIf='branch.cards[0].address_parts'>
+                            <span class='primary'>{{branch.cards[0].address_parts.primary}}</span>
+                            <span class='secondary' *ngIf='branch.cards[0].address_parts.secondary'> - {{branch.cards[0].address_parts.secondary}}</span>
                         </ng-container>
                     </div>
                 </div>
                 <button class='control-icon'></button>
             </a>
             <app-card *ngIf='stage === "card" && card' [card]='card'></app-card>
-            <app-point-result-stack *ngIf='stage === "point"' [cards]='branch' [searchParams]='searchParams'></app-point-result-stack>    
+            <app-point-result-stack *ngIf='stage === "point"' [cards]='branch.cards' [hiddenCards]='branch.hidden' [searchParams]='searchParams'></app-point-result-stack>    
         </div>
     </ng-container>
 </div>
 <div class='controls'>
-    <a class='back' [routerLink]='["../.."]'></a>
-    <a class='search' [routerLink]='["/q"]'></a>
+    <a class='back' [routerLink]='["../.."]' queryParamsHandling='preserve'></a>
+    <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.query ? {q: searchParams.query} : {}"></a>
 </div>
 <div class='quick-actions' [style.bottom]='(stage==="card" ? actionsBottom : 0) + "px"' *ngIf='cardId'>
     <ng-container *ngIf='card'>

@@ -2,11 +2,13 @@ import { Location } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
-import { EMPTY, from, fromEvent, Observable, ReplaySubject, Subject, Subscription, timer } from 'rxjs';
+import { EMPTY, forkJoin, from, fromEvent, Observable, ReplaySubject, Subject, Subscription, timer } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams } from '../consts';
 
+
+type BranchCards = {cards: Card[], hidden: Card[]};
 
 type AuxParams = {
   searchParams: SearchParams,
@@ -40,8 +42,8 @@ export class BranchContainerComponent implements OnInit, OnChanges {
 
   sub: Subscription | null = null;
 
-  branches: Card[][] = [];
-  cardBranch: Card[] | null = null;
+  branches: BranchCards[] = [];
+  cardBranch: BranchCards | null = null;
   card: Card | null = null;
 
   parametersQueue = new ReplaySubject<AuxParams>(1);
@@ -65,32 +67,48 @@ export class BranchContainerComponent implements OnInit, OnChanges {
           }));
         } else {
           this.card = new Card();
-          this.cardBranch = [this.card];
+          this.cardBranch = {cards: [this.card], hidden: []};
           this.branches = [this.cardBranch];    
           return EMPTY;
         }
       }),
       switchMap((ret) => {
-        return this.api.getPoint(ret.pid, ret.p.searchParams).pipe(
-          map((cards) => {
-            return {cards, p: ret.p};
+        console.log('GET POINT', ret.p.searchParams);
+        return forkJoin([
+          this.api.getPoint(ret.pid, ret.p.searchParams),
+          this.api.getPoint(ret.pid),
+        ]).pipe(
+          map(([cards, allCards]) => {
+            return {cards, allCards, p: ret.p};
           })
         );
       })
-    ).subscribe(({p, cards}) => {
+    ).subscribe(({p, cards, allCards}) => {
       cards = cards.sort((a, b) => a.branch_id.localeCompare(b.branch_id));
       this.branches = [];
-      let branch: Card[] = [];
+      let branch: BranchCards = {cards: [], hidden: []};
       for (const card of cards) {
-        if (branch.length === 0 || branch[0].branch_id !== card.branch_id) {
-          branch = [];
+        if (branch.cards.length === 0 || branch.cards[0].branch_id !== card.branch_id) {
+          branch = {cards: [], hidden: []}
           this.branches.push(branch);
         }
-        branch.push(card);
-        if (card.card_id === p.cardId) {
-          this.cardBranch = branch;
-          this.card = card;
+        branch.cards.push(card);
+      }
+      for (const branch of this.branches) {
+        const ids = branch.cards.map(c => c.card_id);
+        if (ids.length > 0) {
+          branch.hidden = allCards.filter(c => {
+            return !ids.includes(c.card_id) && c.branch_id === branch.cards[0].branch_id;
+          });
         }
+        for (const card of [...branch.cards, ...branch.hidden]) {
+          if (card.card_id === p.cardId) {
+            this.cardBranch = branch;
+            this.card = card;
+          }
+        }
+        console.log('CARDS', branch.cards[0].branch_id, cards.filter(c => c.branch_id === branch.cards[0].branch_id));
+        console.log('ALL CARDS', allCards.filter(c => c.branch_id === branch.cards[0].branch_id));
       }
       if (p.cardId && this.card) {
         this.seo.setTitle(`כל שירות -  ${this.card.service_name}`);
@@ -112,7 +130,6 @@ export class BranchContainerComponent implements OnInit, OnChanges {
       }
     });
   }
-
 
 
   calculateExitLink(): void {

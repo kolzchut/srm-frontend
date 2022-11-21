@@ -500,7 +500,7 @@ export class ApiService {
     };
     const srFilter = this._filter(searchParams);
     if (srFilter) {
-      Object.apply(filter, srFilter);
+      Object.assign(filter, srFilter);
     }
     params.filter = JSON.stringify(filter);
     return this.http.get(environment.cardsURL, {params}).pipe(
