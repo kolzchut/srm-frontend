@@ -189,6 +189,14 @@ export class SearchFiltersComponent implements OnInit {
     this.internalSearchParams.next(sp);
   }
 
+  clear() {
+    this.currentSearchParams.filter_age_groups = [];
+    this.currentSearchParams.filter_languages = [];
+    this.currentSearchParams.filter_responses = [];
+    this.currentSearchParams.filter_situations = [];
+    this.closeWithParams();
+  }
+
   closeWithParams() {
     const sp = this._copySearchParams(this.currentSearchParams);
     this.fixSearchParams(sp);

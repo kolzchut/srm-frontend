@@ -82,8 +82,8 @@
             <span *ngIf='resultCount === 0'>(אין תוצאות)</span>
             <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div>
         </button>
-        <a class='cancel' (click)='active = false'>
-            ביטול
+        <a class='cancel' (click)='clear()'>
+            ניקוי
         </a>
     </div>
 </ng-container>
