@@ -186,7 +186,9 @@ export class PageComponent implements OnInit {
       'peek:up': DrawerState.Half,
       'peek:click': DrawerState.Half,
     };
-    this.drawerState = map[this.drawerState + ':' + drawerEvent] || this.drawerState;
+    if (!this.filtersVisible) {
+      this.drawerState = map[this.drawerState + ':' + drawerEvent] || this.drawerState;
+    }
   }
 
   setSearchParams(searchParams: SearchParams) {
@@ -303,10 +305,6 @@ export class PageComponent implements OnInit {
 
   setFiltersVisible(visible: boolean) {
     this.filtersVisible = visible;
-    if (visible) {
-      this.drawerState = DrawerState.Full;
-    } else {
-      this.drawerState = DrawerState.Half;
-    }
+    this.drawerState = DrawerState.Half;
   }
 }

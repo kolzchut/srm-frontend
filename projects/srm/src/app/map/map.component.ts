@@ -126,7 +126,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
       });
     }
     if (this.changed(changes, 'searchParams')) {
-      console.log('MAP CHANGED SEARCH PARAMS', this.searchParams);
+      console.log('MAP CHANGED SEARCH PARAMS', changes?.searchParams?.currentValue);
       this.searchParamsQueue.next(changes?.searchParams?.currentValue);
     }
   }

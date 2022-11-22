@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
-import { delay, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, distinctUntilChanged, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { DistinctItem, SearchParams, TaxonomyItem } from '../consts';
 
@@ -14,7 +14,7 @@ import { DistinctItem, SearchParams, TaxonomyItem } from '../consts';
     '[class.active]' : 'active',
   }
 })
-export class SearchFiltersComponent implements OnInit {
+export class SearchFiltersComponent implements OnChanges {
 
   @Input() searchParams: SearchParams;
   @Output() params = new EventEmitter<SearchParams>();
@@ -33,6 +33,7 @@ export class SearchFiltersComponent implements OnInit {
   currentSearchParams: SearchParams;
   resultCount = -1;
 
+  incomingSearchParams = new Subject<SearchParams>();
   internalSearchParams = new Subject<SearchParams>();
   
   constructor(private api: ApiService) {
@@ -55,60 +56,72 @@ export class SearchFiltersComponent implements OnInit {
     this.internalSearchParams.pipe(
       untilDestroyed(this),
       distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
+      tap((params) => {
+        this.params.emit(this._copySearchParams(params));
+      }),
       switchMap((params) => this.api.getCounts(params))
     ).subscribe((data) => {
       this.resultCount = data.search_counts.cards.total_overall;
     });
-  }
-
-  ngOnInit(): void {
-    // this.processSearchParams();
-  }
-
-  processSearchParams(): void {
-    this.api.getDistinct(this.searchParams).subscribe((data) => {
-      this.situations = data.situations;
-      this.responses = data.responses;
-      this.audiences = this.situations
-        .filter(x => !!x && !!x.key)
-        .filter(x => 
-          x.key?.indexOf('human_situations:age_group') === -1 &&
-          x.key?.indexOf('human_situations:language') === -1
-        )
-        .filter(x => x.key !== this.searchParams.situation)
-        .map(x => this.situationsMap[x.key || ''])
-        .filter(x => !!x);
-      this.age_groups = this.situations
-        .filter(x => !!x && !!x.key)
-        .filter(x => 
-          x.key?.indexOf('human_situations:age_group') === 0
-        )
-        .map(x => this.situationsMap[x.key || ''])
-        .filter(x => !!x);
-      if (this.age_groups.length > 1) {
-        this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors'].map(x => this.situationsMap['human_situations:age_group:' + x]);
-      } else {
-        this.age_groups = [];
-      }
-
-      this.languages = this.situations
-        .filter(x => !!x && !!x.key)
-        .filter(x => 
-          x.key?.indexOf('human_situations:language') === 0
-        )
-        .filter(x => 
-          x.key !== 'human_situations:language:hebrew_speaking'
-        )
-        .filter(x => x.key !== this.searchParams.situation)
-        .map(x => this.situationsMap[x.key || ''])
-        .filter(x => !!x);
-
-      this.responseItems = this.responses
-        .filter(x => x.key !== this.searchParams.response)
-        .map(x => this.responsesMap[x.key || ''])
-        .filter(x => !!x);
+    this.incomingSearchParams.pipe(
+      untilDestroyed(this),
+      filter((params) => !!params),
+      distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
+    ).subscribe((params) => {
+      this.processSearchParams(params);
     });
-    this.currentSearchParams = this.searchParams;
+  }
+
+  ngOnChanges(): void {
+    this.incomingSearchParams.next(this.searchParams);
+  }
+
+  processSearchParams(params?: SearchParams): void {
+    if (this.active_) {
+      this.api.getDistinct(this.searchParams).subscribe((data) => {
+        this.situations = data.situations;
+        this.responses = data.responses;
+        this.audiences = this.situations
+          .filter(x => !!x && !!x.key)
+          .filter(x => 
+            x.key?.indexOf('human_situations:age_group') === -1 &&
+            x.key?.indexOf('human_situations:language') === -1
+          )
+          .filter(x => x.key !== this.searchParams.situation)
+          .map(x => this.situationsMap[x.key || ''])
+          .filter(x => !!x);
+        this.age_groups = this.situations
+          .filter(x => !!x && !!x.key)
+          .filter(x => 
+            x.key?.indexOf('human_situations:age_group') === 0
+          )
+          .map(x => this.situationsMap[x.key || ''])
+          .filter(x => !!x);
+        if (this.age_groups.length > 1) {
+          this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors'].map(x => this.situationsMap['human_situations:age_group:' + x]);
+        } else {
+          this.age_groups = [];
+        }
+
+        this.languages = this.situations
+          .filter(x => !!x && !!x.key)
+          .filter(x => 
+            x.key?.indexOf('human_situations:language') === 0
+          )
+          .filter(x => 
+            x.key !== 'human_situations:language:hebrew_speaking'
+          )
+          .filter(x => x.key !== this.searchParams.situation)
+          .map(x => this.situationsMap[x.key || ''])
+          .filter(x => !!x);
+
+        this.responseItems = this.responses
+          .filter(x => x.key !== this.searchParams.response)
+          .map(x => this.responsesMap[x.key || ''])
+          .filter(x => !!x);
+      });
+    }
+    this.currentSearchParams = this._copySearchParams(params || this.searchParams);
   }
 
   set active(value: boolean) {
