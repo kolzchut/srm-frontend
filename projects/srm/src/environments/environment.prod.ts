@@ -20,7 +20,7 @@ export const environment = {
   // taxonomySituationsURL: '/situations.json',
   // taxonomyResponsesSourceURL: 'https://srm.datacity.org.il/dataset/812345ae-521e-4171-9a91-d66d0fcf03df/resource/8f77667c-fb75-48ff-a696-093321ee3bda/download/responses.json',
   // taxonomyResponsesURL: '/responses.json',
-  // suggestChangesForm: 'https://airtable.com/shriuBukhE2B2Loy8',
+  suggestChangesForm: 'https://airtable.com/shriuBukhE2B2Loy8',
   mapStyle: 'mapbox://styles/srm-kolzchut/ckzwhyzwr000t14mkynmw94zw',
   gaTag: 'UA-16990732-9',
   // gaTag: 'G-0FXK63SSNX',

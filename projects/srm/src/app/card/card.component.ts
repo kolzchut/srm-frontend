@@ -1,6 +1,7 @@
 import { Location } from '@angular/common'
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { fromEvent, Subscription, timer } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { ApiService } from '../api.service';
 import { Card } from '../consts';
 
@@ -26,5 +27,9 @@ export class CardComponent implements OnInit {
     timer(0).subscribe(() => {
       this.oddActions = (this.orgActions?.nativeElement as HTMLElement)?.querySelectorAll('.active').length % 2 === 1;
     });
+  }
+
+  get suggestChangesForm() {
+    return environment.suggestChangesForm;
   }
 }
