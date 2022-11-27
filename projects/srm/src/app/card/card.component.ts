@@ -30,6 +30,6 @@ export class CardComponent implements OnInit {
   }
 
   get suggestChangesForm() {
-    return environment.suggestChangesForm;
+    return environment.suggestChangesForm + '?service_name=' + encodeURIComponent(this.card.service_name) + '&id=' + encodeURIComponent(this.card.card_id) + '&url=' + encodeURIComponent(window.location.href);
   }
 }
