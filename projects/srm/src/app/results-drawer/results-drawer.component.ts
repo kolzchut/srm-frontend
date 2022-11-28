@@ -54,6 +54,8 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     let ret = 0;
     if (this.layout.desktop) {
       ret = hostHeight;
+    } else if (this.state === DrawerState.Hidden) {
+      ret = 0;
     } else if (this.state === DrawerState.Peek) {
       ret = 56;
     } else if (this.state === DrawerState.Half) {
