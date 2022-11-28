@@ -457,13 +457,16 @@ export class ApiService {
       params.minscore = this.MIN_SCORE;
     }
     params.extra = 'distinct-situations|distinct-responses';
-    if (searchParams.response || searchParams.situation) {
+    if (searchParams.response || searchParams.situation || searchParams.org_id) {
       const filter: any = {};
       if (searchParams.response) {
         filter['response_ids'] = searchParams.response;
       }
       if (searchParams.situation) {
         filter['situation_ids'] = searchParams.situation;
+      }
+      if (searchParams.org_id) {
+        filter['organization_id'] = searchParams.org_id;
       }
       params.filter = JSON.stringify([filter]);
     }

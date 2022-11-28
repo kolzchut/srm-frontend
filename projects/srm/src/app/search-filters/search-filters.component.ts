@@ -152,6 +152,8 @@ export class SearchFiltersComponent implements OnChanges {
       query: sp.query,
       response: sp.response,
       situation: sp.situation,
+      org_id: sp.org_id,
+      org_name: sp.org_name,
       filter_situations: sp.filter_situations?.slice() || [],
       filter_age_groups: sp.filter_age_groups?.slice() || [],
       filter_languages: sp.filter_languages?.slice() || [],
