@@ -55,6 +55,7 @@ export class PageComponent implements OnInit {
   
   @ViewChild('searchFilters') searchFilters: SearchFiltersComponent;
   filtersVisible: boolean | null = null;
+  markerProps: any;
   
   searchParamsCalc = new Subject<SearchParamCalc>(); 
   currentSearchParamCalc: SearchParamCalc = new SearchParamCalc();

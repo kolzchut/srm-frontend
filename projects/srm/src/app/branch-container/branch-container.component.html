@@ -1,7 +1,6 @@
-<div class='map-window' [class.point-mode]='!!pointId' 
-            [routerLink]='stage==="card" ? exitLink : null'
-            queryParamsHandling='preserve'
-            (click)='stage==="card" && !exitLink && location.back()'></div>
+<a class='map-window' [class.point-mode]='!!pointId' 
+   [routerLink]='branchLink'
+   queryParamsHandling='preserve'></a>
 <div class='content'
     [class.stage-point]='!!pointId'
     [class.stage-card]='!!cardId'
@@ -10,7 +9,7 @@
 >
     <ng-container *ngFor='let branch of branches'>
         <div class='branch' *ngIf='stage==="point" || branch === cardBranch'>
-            <a class='header' *ngIf='branch.cards.length > 0' [routerLink]='exitLink' queryParamsHandling='preserve'>
+            <a class='header' *ngIf='branch.cards.length > 0' [routerLink]='headerLink' queryParamsHandling='preserve'>
                 <div class='branch-details'>
                     <h2 class='branch-name'>
                         <ng-container *ngIf='!branch.cards[0].organization_name_parts'>

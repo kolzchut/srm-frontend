@@ -33,6 +33,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
   @Input() searchParams: SearchParams | null;
   @Input() pointId: string;
   @Input() cardId: string;
+  @Input() markerProps: any;
   // @Output('points') points = new EventEmitter<SRMPoint | null>();
   // @Output('hover') pointsHover = new EventEmitter<string | null>();
   @Output('map') newMap = new EventEmitter<MapComponent>();
@@ -46,6 +47,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
   geoChanges = new Subject<GeoType>();
   searchParamsQueue = new ReplaySubject<SearchParams>(1);
   bounds: mapboxgl.LngLatBounds;
+  lastProps: any = {};
 
   ZOOM_THRESHOLD = 10;
   ALL_CATEGORIES = ALL_CATEGORIES; 
@@ -70,7 +72,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
   }
 
   changed(changes: SimpleChanges, key: string) {
-    return (changes?.[key]?.currentValue !== changes?.[key]?.previousValue || changes?.[key]?.firstChange) && !!changes?.[key]?.currentValue;
+    return (changes?.[key]?.currentValue !== changes?.[key]?.previousValue || changes?.[key]?.firstChange || false);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -78,10 +80,10 @@ export class MapComponent implements OnChanges, AfterViewInit {
       Object.assign(this.savedChanges, changes);
       return;
     }
-    if (this.changed(changes, 'pointId')) {
-      console.log('MAP CHANGED POINT', this.pointId);
+    if (this.changed(changes, 'markerProps') && changes?.markerProps?.currentValue) {
+      this.updateMarkerProps(this.markerProps);
+    } else if (this.changed(changes, 'pointId') && changes?.pointId?.currentValue) {
       this.api.getPoint(this.pointId, this.searchParams || undefined).subscribe((cards) => {
-        console.log('GOT POINT', this.pointId, this.searchParams, cards);
         if (cards.length > 0) {
           const titles: string[] = [];
           cards.forEach(card => {
@@ -101,8 +103,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
           });  
         }
       });
-    } else if (this.changed(changes, 'cardId')) {
-      console.log('MAP CHANGED CARD', this.cardId);
+    } else if (this.changed(changes, 'cardId') || (this.changed(changes, 'pointId') && !this.pointId && this.cardId)) {
       this.api.getCard(this.cardId).subscribe(card => {
         const title = this.getTitle(card);
         this.processPointIds([card.point_id], true, {
@@ -125,8 +126,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
         }]
       });
     }
-    if (this.changed(changes, 'searchParams')) {
-      console.log('MAP CHANGED SEARCH PARAMS', changes?.searchParams?.currentValue);
+    if (this.changed(changes, 'searchParams') && changes?.searchParams?.currentValue) {
       this.searchParamsQueue.next(changes?.searchParams?.currentValue);
     }
   }
@@ -170,12 +170,10 @@ export class MapComponent implements OnChanges, AfterViewInit {
           if (this.addedImages[id]) {
             return;
           }
-          console.log('CREATING BG IMAGE for', id);
           this.addedImages[id] = true;
           this.map.addImage(id, {width: 0, height: 0, data: new Uint8Array()});
           const img: HTMLImageElement | null = this.createLabelBg(id);
           if (img) {
-            console.log('CREATED BG IMAGE for', img);
             img.onload = () => {
               this.map.setLayoutProperty('labels-active', 'visibility', 'none');
               this.map.removeImage(id);
@@ -188,7 +186,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
               timer(0).subscribe(() => {
                 this.map.setLayoutProperty('labels-active', 'visibility', 'visible');
               });
-              console.log('ADDED BG IMAGE for', id);
             };
           }
         });
@@ -222,10 +219,18 @@ export class MapComponent implements OnChanges, AfterViewInit {
                 const props: any = e.features[0].properties;
                 // console.log('CLICKED', props);
                 // props.records = JSON.parse(props.records) as Card[];
-                if (this.searchParams?.acQuery) {
-                  this.router.navigate(['/s', this.searchParams?.acQuery, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                if (this.cardId) {
+                  if (this.searchParams?.acQuery) {
+                    this.router.navigate(['/s', this.searchParams?.acQuery, 'c', this.cardId, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                  } else {
+                    this.router.navigate(['/c', this.cardId, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                  }  
                 } else {
-                  this.router.navigate(['/p', props.point_id], {queryParamsHandling: 'preserve'});
+                  if (this.searchParams?.acQuery) {
+                    this.router.navigate(['/s', this.searchParams?.acQuery, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                  } else {
+                    this.router.navigate(['/p', props.point_id], {queryParamsHandling: 'preserve'});
+                  }  
                 }
                 // this.points.next(props as SRMPoint);
               }
@@ -249,7 +254,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
             debounceTime(500),
             distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
             switchMap((params) => {
-              console.log('GETTING POINTS...');
               if (params) {
                 return this.api.getPoints(params);
               } else {
@@ -259,12 +263,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
           ).subscribe(ids => {
             // console.log('POINTS', ids);
             this.processPointIds(ids, false);
-          }, err => { console.log('SPQSPQSPQ', err); }, () => { console.log('SPQSPQSPQ COMPLETE'); });
-          // this.map.on('click', (e: mapboxgl.MapLayerMouseEvent) => {
-          //   if (!e.defaultPrevented) {
-          //     this.points.next(null);
-          //   }
-          // });
+          });
           this.map.on('moveend', (event: mapboxgl.MapboxEvent<MouseEvent>) => {
             // console.log('MOVEEND', event);
             this.bounds = this.map.getBounds();
@@ -284,7 +283,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
             if (this.moveQueue.length > 0) {
               const {action, description} = this.moveQueue.shift() as MoveQueueItem;
               if (!!action) {
-                console.log('ACTION-QQ', description);
+                // console.log('ACTION-QQ', description);
                 action(this.map);  
               }
             }
@@ -332,7 +331,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
     for (const layer of ['labels-active', 'points-active', 'points-stroke-active']) {
       const oldLayers = map.getStyle().layers || [];
       const layerIndex = oldLayers.findIndex(l => l.id === layer);
-      console.log('OLD LAYERS', layer, layerIndex, oldLayers);
       const layerDef: any = oldLayers[layerIndex];
       const before = oldLayers[layerIndex + 1] && oldLayers[layerIndex + 1].id;
 
@@ -361,10 +359,10 @@ export class MapComponent implements OnChanges, AfterViewInit {
 
   queueAction(action: (map: mapboxgl.Map) => void, description: string) {
     if (this.moveQueue.length === 0 && !this.map.isMoving()) {
-      console.log('ACTION-IMM', description);
+      // console.log('ACTION-IMM', description);
       action(this.map);
     } else {
-      console.log('ACTION-QUE', description);
+      // console.log('ACTION-QUE', description);
       this.moveQueue.push({action, description});
     }
   }
@@ -382,18 +380,8 @@ export class MapComponent implements OnChanges, AfterViewInit {
       }
     }
     if (activePointId && props) {
-      console.log('SETTING PROPS', activePointId, props);
-      (this.map.getSource('active-point') as mapboxgl.GeoJSONSource)?.setData({
-        type: 'FeatureCollection',
-        features: [{
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: props && props.coordinates || [0, 0]
-          },
-          properties: props
-        }]
-      });
+      this.lastProps = props;
+      this.updateMarkerProps({});
     } 
     if (activePointId) {
       const lon = activePointId.slice(0, 2) + '.' + activePointId.slice(2, 7);
@@ -411,6 +399,21 @@ export class MapComponent implements OnChanges, AfterViewInit {
       fragment,
       queryParamsHandling: 'preserve',
       replaceUrl: true,
+    });
+  }
+
+  updateMarkerProps(props: any) {
+    const overlaid = Object.assign({}, this.lastProps, props);
+    (this.map.getSource('active-point') as mapboxgl.GeoJSONSource)?.setData({
+      type: 'FeatureCollection',
+      features: [{
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: overlaid && overlaid.coordinates || [0, 0]
+        },
+        properties: overlaid
+      }]
     });
   }
 }

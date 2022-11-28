@@ -1,12 +1,18 @@
-<a class='card' *ngFor='let card of cards' [routerLink]='routerLink(card)' queryParamsHandling='preserve'>
+<a class='card' *ngFor='let card of cards' [routerLink]='routerLink(card)' queryParamsHandling='preserve'
+    [attr.data-title]='card.organization_name_parts?.primary || card.organization_name'
+    [attr.data-response-category]='card.response_category'
+>
     <app-result-card [card]='card' [compact]='true'></app-result-card>
 </a>
-<a class='hidden-trigger' *ngIf='hidden_' (click)='hidden_ = false'>
+<a class='hidden-trigger' *ngIf='hidden_' (click)='triggerClicked()'>
     <div class='bg-cards'>
         <div class='bg-card' *ngFor='let _ of hiddenCards'></div>
     </div>
     <span class='number'>+ {{hiddenCards.length}}</span>
 </a>
-<a class='card' *ngFor='let card of hiddenCards' [routerLink]='routerLink(card)' [class.hidden]='hidden_'  queryParamsHandling='preserve'>
+<a class='card' *ngFor='let card of hiddenCards' [routerLink]='routerLink(card)' [class.hidden]='hidden_'  queryParamsHandling='preserve'
+    [attr.data-title]='card.organization_name_parts?.primary || card.organization_name'
+    [attr.data-response-category]='card.response_category'
+>
     <app-result-card [card]='card' [compact]='true'></app-result-card>
 </a>

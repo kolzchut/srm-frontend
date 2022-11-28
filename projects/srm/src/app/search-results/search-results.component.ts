@@ -98,4 +98,10 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       this.obs.observe(this.trigger.nativeElement);
     });
   }
+
+  ngOnDestroy(): void {
+    if (this.obs) {
+      this.obs.disconnect();
+    }
+  }
 }

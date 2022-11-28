@@ -1,4 +1,5 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
+import { timer } from 'rxjs';
 import { ApiService } from '../api.service';
 import { Card, SearchParams } from '../consts';
 
@@ -19,17 +20,26 @@ export class PointResultStackComponent implements OnChanges {
 
   branches: Card[][] = [];
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService, private el: ElementRef) { }
 
   ngOnChanges(): void {
     this.hidden_ = this.hiddenCards.length > 0;;      
   }
 
   routerLink(card: Card): string[] {
-    if (this.searchParams?.query) {
-      return ['/s', this.searchParams?.query, 'c', card.card_id];
+    if (this.searchParams?.acQuery) {
+      return ['/s', this.searchParams?.acQuery, 'c', card.card_id];
     } else {
       return ['/c', card.card_id];
     }
   }
+
+  triggerClicked() {
+    this.hidden_ = false;
+    timer(500).subscribe(() => {
+      const el = this.el.nativeElement as HTMLDivElement;
+      el.querySelectorAll('.card')[this.cards.length]?.scrollIntoView({behavior: 'smooth'});
+    });
+  }
+
 }

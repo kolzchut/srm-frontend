@@ -2,6 +2,7 @@
         [searchParams]='searchParams' 
         [cardId]='card'
         [pointId]='point'
+        [markerProps]='markerProps'
         (map)='map = $event'
         (mapBounds)='bounds = $event'
 ></app-map>
@@ -15,6 +16,7 @@
         [searchParams]='searchParams'
         [stage]='stage'
         (size)='branchSize = $event'
+        (markerProps)='markerProps = $event'
     >
     </app-branch-container>
     <app-searchbox-header *ngIf='stage === "search-results"' 
