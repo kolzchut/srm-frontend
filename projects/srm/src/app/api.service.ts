@@ -310,6 +310,10 @@ export class ApiService {
       if (searchParams.bounds && searchParams.bounds.length === 2 && bound) {
           filter['branch_geometry__bounded'] = this.boundsFilter(searchParams.bounds);
       }
+      if (searchParams.org_id) {
+        filter['organization_id'] = searchParams.org_id;
+      }
+
     }
     return filter;
   }

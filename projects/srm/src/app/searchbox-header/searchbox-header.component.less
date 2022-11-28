@@ -67,11 +67,27 @@
                 }
 
                 .extra-values {
-                    .font-rag-sans;
-                    font-weight: 400;
-                    font-size: 13px;
-                    line-height: 17px;
-                    color: @color-gray-3;
+                    display: flex;
+                    flex-flow: row;
+                    align-items: center;
+                    gap: 6px;
+                    
+                    .text {
+                        .font-rag-sans;
+                        font-weight: 400;
+                        font-size: 13px;
+                        line-height: 17px;
+                        color: @color-gray-3;    
+                    }
+                    .separator {
+                        width: 4px;
+                        height: 4px;
+                        border-radius: 2px;
+                        background-color: @color-gray-1;
+                        &:first-child {
+                            display: none;
+                        }
+                    }
                 }
             }
         }

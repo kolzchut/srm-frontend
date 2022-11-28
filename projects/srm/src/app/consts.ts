@@ -93,6 +93,8 @@ export type AutoComplete = {
     response: string | null,
     situation: string | null,
     synonyms: string[],
+    org_name: string | null,
+    org_id: string | null
 };
 
 export type SearchResult<T extends any> = {
@@ -124,6 +126,8 @@ export class SearchParams {
     query: string | null;
     response: string | null;
     situation: string | null;
+    org_id: string | null;
+    org_name: string | null;
     filter_situations?: string[];
     filter_age_groups?: string[];
     filter_languages?: string[];

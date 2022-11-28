@@ -13,9 +13,13 @@
                 <span class='query dim' *ngIf='!responseDisplay'>כל שירות</span>
                 <div class='extra-values'>
                     <ng-container *ngIf='situationDisplay'>
-                        <span>{{situationDisplay}}</span>
-                        <span class='separator'></span>
+                        <span class='text'>{{situationDisplay}}</span>
                     </ng-container>
+                    <ng-container *ngIf='orgDisplay'>
+                        <span class='separator'></span>
+                        <span class='text'>{{orgDisplay}}</span>
+                    </ng-container>
+
                 </div>
             </ng-container>    
         </div>

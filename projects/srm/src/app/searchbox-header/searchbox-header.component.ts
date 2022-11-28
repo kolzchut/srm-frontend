@@ -19,6 +19,7 @@ export class SearchboxHeaderComponent implements OnChanges {
 
   responseDisplay: string | null = null;
   situationDisplay: string | null = null;
+  orgDisplay: string | null = null;
 
   constructor(private api: ApiService) { }
 
@@ -37,6 +38,7 @@ export class SearchboxHeaderComponent implements OnChanges {
     } else {
       this.situationDisplay = null;
     }
+    this.orgDisplay = this.searchParams?.org_name || null;
   }
 
 }
