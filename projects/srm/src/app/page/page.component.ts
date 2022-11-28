@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
 import { from, Observable, Subject, timer } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, first, map, switchMap, tap, throttleTime } from 'rxjs/operators';
+import { debounceTime, delay, distinctUntilChanged, filter, first, map, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { AutoComplete, DrawerState, SearchParams } from '../consts';
 import { MapComponent } from '../map/map.component';
@@ -306,6 +306,17 @@ export class PageComponent implements OnInit {
 
   setFiltersVisible(visible: boolean) {
     this.filtersVisible = visible;
-    this.drawerState = DrawerState.Half;
+    if (visible) {
+      this.drawerState = DrawerState.Half;
+    }
+    if (visible && this.point) {
+      timer(0).pipe(
+        switchMap(() => from(this.router.navigate(['/s', this.searchParams.acQuery], {queryParamsHandling: 'preserve'}))),
+        filter((x) => !!x),
+        delay(100),
+      ).subscribe(() => {
+        this.searchFilters.active = true;
+      });
+    }
   }
 }
