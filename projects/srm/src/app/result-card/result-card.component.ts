@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Card, CARD_SNIPPET_FIELDS, _h } from '../consts';
 
 @Component({
@@ -13,7 +14,7 @@ export class ResultCardComponent implements OnChanges {
   _h = _h;
   snippet: string | null = null;
 
-  constructor() { }
+  constructor(private sanitizer: DomSanitizer) { }
 
   ngOnChanges(): void {
     this.snippet = null;
@@ -23,10 +24,16 @@ export class ResultCardComponent implements OnChanges {
           const snippets = this.card._snippets[k];
           if (snippets.length > 0) {
             this.snippet = '&hellip; ' + snippets[0] + ' &hellip;';
+            this.snippet = this.snippet.replace(/<[^e>]*>/g, '');
+            this.snippet = this.sanitizer.sanitize(0, this.snippet);
             break;
           }
         }
       }  
     }
+  }
+
+  get showSnippet() {
+    return this.snippet && !this.compact;
   }
 }

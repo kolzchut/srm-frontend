@@ -1,6 +1,15 @@
 <div class='title'>
     <span [class.compact]='compact' [innerHtml]='_h(card, "service_name")'></span>
-    <app-response [response]='card.responses[0]' [small]='true' [link]='false' *ngIf='card.responses.length'></app-response>
-    <app-situation [situation]='card.situations[0]' [small]='true' *ngIf='card.situations.length'></app-situation>
+    <ng-container *ngIf='showSnippet'>
+        <app-response [response]='card.responses[0]' [small]='true' [link]='false' *ngIf='card.responses.length'></app-response>
+        <app-situation [situation]='card.situations[0]' [small]='true' *ngIf='card.situations.length'></app-situation>    
+    </ng-container>
 </div>
-<div class='snippet' [innerHtml]='snippet' *ngIf='snippet && !compact'></div>
+<ng-container *ngIf='!showSnippet'>
+    <div class='title'>
+        <app-response [response]='card.responses[0]' [small]='true' [link]='false' *ngIf='card.responses.length'></app-response>
+        <app-situation [situation]='card.situations[0]' [small]='true' *ngIf='card.situations.length'></app-situation>    
+    </div>
+</ng-container>
+
+<div class='snippet' [innerHtml]='snippet' *ngIf='showSnippet'></div>
