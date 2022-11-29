@@ -5,10 +5,11 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject, timer } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { _h } from '../consts';
+import { prepareQuery, _h } from '../consts';
 
 export type ResultType = {
   link: string[] | string | null,
+  linkParams?: Params,
   display: string,
   query: string | null,
   direct: boolean,
@@ -39,7 +40,7 @@ export class SearchComponent implements OnInit {
       console.table(presets);
       this.presets = presets.map((preset) => {
         return {
-          link: ['/s', this.prepareQuery(preset.title)],
+          link: ['/s', prepareQuery(preset.title)],
           display: `<em>${preset.title}</em>`,
           query: preset.title,
           direct: false,
@@ -58,7 +59,7 @@ export class SearchComponent implements OnInit {
     ).subscribe(results => {
       this.autoCompleteResults = results.map((result) => {
         return {
-          link: ['/s', this.prepareQuery(result.query)],
+          link: ['/s', result.id],
           display: _h(result, 'query'),
           query: result.query,
           direct: false,
@@ -91,10 +92,6 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-  prepareQuery(query: string) {
-    return query.split(' ').join('_');
-  } 
 
   ngAfterViewInit() {
     timer(0).subscribe(() => {
@@ -142,7 +139,8 @@ export class SearchComponent implements OnInit {
       });
       if (this.noResults && this.query?.length > 0) {
         this.results_.push({
-          link: ['/s', this.prepareQuery(this.query)],
+          link: ['/s', '_'],
+          linkParams: {q: prepareQuery(this.query)},
           display: `<em>${this.query}</em>`,
           query: null,
           direct: true,
@@ -154,7 +152,17 @@ export class SearchComponent implements OnInit {
 
   changed(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      this.router.navigate(['/s', this.prepareQuery(this.query)]);
+      let found = false;
+      for (const result of this.autoCompleteResults) {
+        if (result.query === this.query) {
+          this.router.navigate(result.link as string[], {queryParams: result.linkParams});
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        this.router.navigate(['/s', '_'], {queryParams: {q: prepareQuery(this.query)}});
+      }
     }
   }
 }

@@ -89,6 +89,7 @@ export type Preset = {
 };
 
 export type AutoComplete = {
+    id: string,
     query: string,
     response: string | null,
     situation: string | null,
@@ -116,6 +117,10 @@ export function _h(sr: any, f: string) {
     return sr._highlights?.[f] || sr[f];
 }
 
+export function prepareQuery(query: string) {
+    return query.split(' ').join('_');
+}
+
 export type QueryPresetResult = SearchResult<Preset>;
 export type QueryAutoCompleteResult = SearchResult<AutoComplete>;
 export type QueryCardResult = SearchResult<Card>;
@@ -124,6 +129,7 @@ export type QueryTaxonomyItemResult = SearchResult<TaxonomyItem>;
 export class SearchParams {
     acQuery: string | null;
     query: string | null;
+    originalQuery: string | null;
     response: string | null;
     situation: string | null;
     org_id: string | null;

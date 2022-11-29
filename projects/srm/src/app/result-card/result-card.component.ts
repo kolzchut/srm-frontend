@@ -5,7 +5,10 @@ import { Card, CARD_SNIPPET_FIELDS, _h } from '../consts';
 @Component({
   selector: 'app-result-card',
   templateUrl: './result-card.component.html',
-  styleUrls: ['./result-card.component.less']
+  styleUrls: ['./result-card.component.less'],
+  host: {
+    '[class.compact]' : 'compact',
+  }
 })
 export class ResultCardComponent implements OnChanges {
 

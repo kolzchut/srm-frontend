@@ -10,9 +10,9 @@ import { MapComponent } from '../map/map.component';
 import { SearchFiltersComponent } from '../search-filters/search-filters.component';
 
 class SearchParamCalc {
-  query?: string;
-  queryP?: string;
-  queryQP?: string;
+  acId: string;
+  ftQuery: string;
+  resolvedQuery: string;
   fs?: string;
   fr?: string;
   fag?: string;
@@ -26,7 +26,7 @@ class SearchParamCalc {
   }
 
   get searchHash(): string {
-    return [this.query, this.queryP, this.queryQP, this.fs, this.fag, this.fl, this.fr].map(x => x || '').join('|');
+    return [this.resolvedQuery, this.acId, this.ftQuery, this.fs, this.fag, this.fl, this.fr].map(x => x || '').join('|');
   }
   
   get cardsHash(): string {
@@ -89,25 +89,32 @@ export class PageComponent implements OnInit {
       untilDestroyed(this),
       debounceTime(100),
       map((spc) => {
-        spc.query = spc.queryP || spc.queryQP || '';
-        spc.query = spc.query.split('_').join(' ');
-        this.query = spc.query;
+        spc.resolvedQuery = spc.acId || spc.ftQuery || '';
+        spc.resolvedQuery = spc.resolvedQuery.split('_').join(' ');
+        this.query = spc.resolvedQuery;
         return spc;
       }),
       distinctUntilChanged((x, y) => {
         return x.cardsHash.localeCompare(y.cardsHash) === 0
       }),
       switchMap((spc) => {
-        if (spc.query && spc.query !== '') {
-          if (this.stage === 'search-results') {
-            this.seo.setTitle(`כל שירות - חיפוש ${spc.query}`)
-            this.seo.setUrl(window.location.href);
-          }
+        if (spc.acId && spc.acId !== '') {
           return this.getAutocomplete(spc);
         } else {
           return from([spc])
         }
       }),
+      tap((spc) => {
+        if (this.stage === 'search-results') {
+          if (spc.ac) {
+            this.seo.setTitle(`כל שירות - חיפוש ${spc.ac.query}`)
+            this.seo.setUrl(window.location.href);  
+          } else {
+            this.seo.setTitle(`כל שירות - חיפוש ${spc.ftQuery}`)
+            this.seo.setUrl(window.location.href);  
+          }
+        }
+      })
     ).subscribe((spc) => {
       console.log('SEARCH PARAMS CALC', spc);
       const fs = spc.fs?.split('|').map(x => 'human_situations:' + x) || [];
@@ -117,8 +124,9 @@ export class PageComponent implements OnInit {
       this.searchParams = new SearchParams();
       if (spc.ac) {
         Object.assign(this.searchParams, {
-          acQuery: spc.query,
+          acQuery: spc.ac.id || '_',
           query: null,
+          originalQuery: spc.ac.query,
           response: spc.ac.response,
           situation: spc.ac.situation,
           org_id: spc.ac.org_id,
@@ -131,8 +139,9 @@ export class PageComponent implements OnInit {
         });
       } else {
         Object.assign(this.searchParams, {
-          acQuery: spc.query,
-          query: spc.query,
+          acQuery: '_',
+          query: spc.resolvedQuery,
+          originalQuery: spc.resolvedQuery,
           response: null,
           situation: null,
           org_id: null,
@@ -150,7 +159,8 @@ export class PageComponent implements OnInit {
     ).subscribe(params => {
       this.card = params.card || '';
       this.point = params.point || '';
-      this.currentSearchParamCalc.queryP = params.query || '';
+      const q = (params.query || '_');
+      this.currentSearchParamCalc.acId = q === '_' ? '' : q;
       this.pushSearchParamsCalc();
     });
     route.data.pipe(
@@ -170,7 +180,7 @@ export class PageComponent implements OnInit {
     route.queryParams.pipe(
       untilDestroyed(this),
     ).subscribe(params => {
-      this.currentSearchParamCalc.queryQP = params.q || '';
+      this.currentSearchParamCalc.ftQuery = params.q || '';
       this.currentSearchParamCalc.fs = params.fs;
       this.currentSearchParamCalc.fag = params.fag;
       this.currentSearchParamCalc.fl = params.fl;
@@ -200,7 +210,7 @@ export class PageComponent implements OnInit {
     // this.searchParams = searchParams;
     this.router.navigate([], {
       queryParams: {
-        q: this.currentSearchParamCalc.queryQP || null,
+        q: this.currentSearchParamCalc.ftQuery || null,
         fs: searchParams.filter_situations?.map(x => x.slice('human_situations:'.length)).join('|') || null,
         fag: searchParams.filter_age_groups?.map(x => x.slice('human_situations:age_group:'.length)).join('|') || null,
         fl: searchParams.filter_languages?.map(x => x.slice('human_situations:language:'.length)).join('|') || null,
@@ -289,16 +299,15 @@ export class PageComponent implements OnInit {
 
   getAutocomplete(spc: SearchParamCalc) {
     let obs: Observable<AutoComplete | null>;
-    const query = spc.query as string;
-    if (spc.query !== this.acQuery) {
-      obs = this.api.getAutocompleteEntry(query);
+    if (spc.acId !== this.acQuery) {
+      obs = this.api.getAutocompleteEntry(spc.acId);
     } else {
       obs = from([this.acResult]);
     }
     return obs
       .pipe(
         tap((ac) => {
-          this.acQuery = query;
+          this.acQuery = spc.acId;
           this.acResult = ac;
         }),
         map((ac) => {

@@ -12,6 +12,10 @@
     padding: 8px;
     gap: 4px;
 
+    &.compact {
+        padding: 4px 8px;
+    }
+
     .title {
         display: inline-block;
         width: 100%;
@@ -19,9 +23,6 @@
 
         span {
             .font-rag-sans;
-            &.compact {
-                .ellipsis-2-line;
-            }
             max-width: 100%;
             display: inline-block;
             font-weight: 400;
@@ -29,6 +30,11 @@
             color: @color-gray-1;
             line-height: 26px;
             vertical-align: middle;
+
+            &.compact {
+                .ellipsis-2-line;
+                line-height: 20px;
+            }
 
             em {
                 font-weight: 600;

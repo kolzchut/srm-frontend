@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { getResponseIdColor } from '../colors';
-import { TaxonomyItem } from '../consts';
+import { prepareQuery, TaxonomyItem } from '../consts';
 
 @Component({
   selector: 'app-response',
@@ -58,5 +58,9 @@ export class ResponseComponent implements OnChanges {
     if (!this.link) {
       this.clicked.emit();
     }
+  }
+
+  get responseQuery() {
+    return prepareQuery(this.response.name || '');
   }
 }
