@@ -39,7 +39,7 @@
 </div>
 <div class='controls'>
     <a class='back' [routerLink]='["../.."]' queryParamsHandling='preserve'></a>
-    <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams.originalQuery ? {q: searchParams.originalQuery} : {}"></a>
+    <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.originalQuery ? {q: searchParams?.originalQuery} : {}"></a>
 </div>
 <div class='quick-actions' [style.bottom]='(stage==="card" ? actionsBottom : 0) + "px"' *ngIf='cardId'>
     <ng-container *ngIf='card'>
