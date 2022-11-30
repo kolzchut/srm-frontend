@@ -411,9 +411,9 @@ export class ApiService {
           }
         }
         if (offset === 0) {
-          params.extra = 'collapse';
-        } else {
           params.extra = 'collapse|collapse-collect';
+        } else {
+          params.extra = 'collapse';
         }
         const filter = this._filter(searchParams);
         if (filter) {
