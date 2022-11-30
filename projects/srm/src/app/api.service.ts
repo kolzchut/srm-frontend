@@ -23,6 +23,7 @@ export class ApiService {
   responsesMap_: any = {};
   situationsMap = new ReplaySubject<any>(1);
   responsesMap = new ReplaySubject<any>(1);
+  collapseCount: {[key: string]: number} = {};
 
   constructor(
     private http: HttpClient,
@@ -410,7 +411,9 @@ export class ApiService {
           }
         }
         if (offset === 0) {
-          params.extra = 'distinct-situations|distinct-responses';
+          params.extra = 'collapse';
+        } else {
+          params.extra = 'collapse|collapse-collect';
         }
         const filter = this._filter(searchParams);
         if (filter) {
@@ -419,8 +422,20 @@ export class ApiService {
         return this.http.get(environment.cardsURL, {params}).pipe(
           map((res: any) => {
             const qcr = res as QueryCardResult;
+            if (qcr.collapse_key) {
+              this.collapseCount = {};
+              qcr.collapse_key.forEach((c: DistinctItem) => {
+                if (c.key && c.doc_count) {
+                  this.collapseCount[c.key] = c.doc_count;
+                }
+              });
+            }
             const results = qcr.search_results;
-            return results.map((r: any) => r.source);
+            return results.map((r: any) => {
+              r = r.source;
+              r._collapse_count = (this.collapseCount[r.collapse_key] || 1) - 1;
+              return r;
+            });
           })
         );
       }

@@ -60,6 +60,8 @@ export class Card {
     response_category: string;
     point_id: string;
     _snippets: {[key: string]: string[]};
+
+    _collapse_count?: number;
 };
 
 export const CARD_SNIPPET_FIELDS = [
@@ -111,6 +113,7 @@ export type SearchResult<T extends any> = {
     situations: DistinctItem[],
     responses: DistinctItem[],
     point_id: DistinctItem[],
+    collapse_key: DistinctItem[],
 };
 
 export function _h(sr: any, f: string) {
