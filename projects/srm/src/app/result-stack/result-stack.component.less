@@ -1,37 +1,94 @@
 @import '../../common.less';
 
-.branch {
+:host {
     display: flex;
     flex-flow: column;
-    padding: 2px;
-    background: @color-gray-7;
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.16), 0px 4px 12px rgba(0, 0, 0, 0.08);
+    position: relative;
     border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.16), 0px 4px 12px rgba(0, 0, 0, 0.08);    
 
-    .branch-headers {
-        display: block;
-        padding: 5px 10px;
-        .org, .city {
-            display: inline;
-            .font-rag-sans;
-            font-weight: 600;
-            font-size: 13px;
-            line-height: 13px;
-            color: @color-gray-2;
+    .branch {
+        display: flex;
+        flex-flow: column;
+        padding: 2px;
+        background: @color-gray-7;
+        border-radius: 6px;
+        z-index: 1;
+    
+        .branch-headers {
+            display: block;
+            padding: 5px 10px;
+            .org, .city {
+                display: inline;
+                .font-rag-sans;
+                font-weight: 600;
+                font-size: 13px;
+                line-height: 13px;
+                color: @color-gray-2;
+            }
+    
+            .city {
+                font-weight: 400;
+            }
+        }
+        .cards {
+            display: flex;
+            flex-flow: row;
+            align-items: flex-start;
+            width: 100%;
+    
+            app-result-card {
+                width: 100%;
+            }
         }
 
-        .city {
-            font-weight: 400;
+        &.collapsible {
+            cursor: pointer;
+            border: 1px solid #e0e0e0;
         }
     }
-    .cards {
+
+    .bookends {
+        display: flex;
+        flex-flow: column-reverse;
+        border-bottom-right-radius: 6px;
+        border-bottom-left-radius: 6px;
+        overflow: hidden;
+        padding-top: 8px;
+        margin-top: -8px;
+    
+        .bookend {
+            width: 100%;
+            height: 10px;
+            flex: 0 0 auto;
+            margin-top: -8px;
+            background: @color-gray-7;
+            border-bottom-right-radius: 6px;
+            border-bottom-left-radius: 6px;
+            border: 1px solid @color-gray-5;
+            position: relative;
+        }
+    }
+
+    .count {
+        position: absolute;
+        bottom: 0px;
+        left: 2px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: @color-white;
+        border: 1px solid @color-gray-5;
         display: flex;
         flex-flow: row;
-        align-items: flex-start;
-        width: 100%;
-
-        app-result-card {
-            width: 100%;
-        }
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+        .font-rag-sans;
+        font-weight: 400;
+        font-size: 13px;
+        color: @color-gray-3;
+        cursor: pointer;
     }
 }

@@ -66,7 +66,7 @@ export class PageComponent implements OnInit {
   padding = 0;
 
   acResult: any;
-  acQuery: string;
+  ac_query: string;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService) {
 
@@ -124,13 +124,17 @@ export class PageComponent implements OnInit {
       this.searchParams = new SearchParams();
       if (spc.ac) {
         Object.assign(this.searchParams, {
-          acQuery: spc.ac.id || '_',
+          ac_query: spc.ac.id || '_',
           query: null,
-          originalQuery: spc.ac.query,
+          original_query: spc.ac.query,
           response: spc.ac.response,
+          response_name: spc.ac.response_name,
           situation: spc.ac.situation,
+          situation_name: spc.ac.situation_name,
           org_id: spc.ac.org_id,
           org_name: spc.ac.org_name,
+          city_name: spc.ac.city_name,
+          structured_query: spc.ac.structured_query,
           filter_situations: fs,
           filter_age_groups: fag,
           filter_languages: fl,
@@ -139,9 +143,9 @@ export class PageComponent implements OnInit {
         });
       } else {
         Object.assign(this.searchParams, {
-          acQuery: '_',
+          ac_query: '_',
           query: spc.resolvedQuery,
-          originalQuery: spc.resolvedQuery,
+          original_query: spc.resolvedQuery,
           response: null,
           situation: null,
           org_id: null,
@@ -176,6 +180,9 @@ export class PageComponent implements OnInit {
       if (this.searchFilters) {
         this.searchFilters.active = false;
       }
+      timer(500).subscribe(() => {
+        this.setPadding();
+      });
     });
     route.queryParams.pipe(
       untilDestroyed(this),
@@ -299,7 +306,7 @@ export class PageComponent implements OnInit {
 
   getAutocomplete(spc: SearchParamCalc) {
     let obs: Observable<AutoComplete | null>;
-    if (spc.acId !== this.acQuery) {
+    if (spc.acId !== this.ac_query) {
       obs = this.api.getAutocompleteEntry(spc.acId);
     } else {
       obs = from([this.acResult]);
@@ -307,7 +314,7 @@ export class PageComponent implements OnInit {
     return obs
       .pipe(
         tap((ac) => {
-          this.acQuery = spc.acId;
+          this.ac_query = spc.acId;
           this.acResult = ac;
         }),
         map((ac) => {
@@ -324,7 +331,7 @@ export class PageComponent implements OnInit {
     }
     if (visible && this.point) {
       timer(0).pipe(
-        switchMap(() => from(this.router.navigate(['/s', this.searchParams.acQuery], {queryParamsHandling: 'preserve'}))),
+        switchMap(() => from(this.router.navigate(['/s', this.searchParams.ac_query], {queryParamsHandling: 'preserve'}))),
         filter((x) => !!x),
         delay(100),
       ).subscribe(() => {

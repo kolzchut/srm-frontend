@@ -1,21 +1,35 @@
-<div class='branch' *ngFor='let branchCards of results'>
+<div class='branch' [class.collapsible]='collapsible'>
     <div class='branch-headers'>
-        <ng-container *ngIf='branchCards[0].branch_city'>
-            <ng-container *ngIf='branchCards[0].organization_short_name'>
-                <span class='org'>{{branchCards[0].organization_short_name}}&nbsp;/&nbsp;</span>
-                <span class='city'>{{branchCards[0].branch_city}}</span>
+        <ng-container *ngIf='result.branch_city'>
+            <ng-container *ngIf='result.organization_short_name'>
+                <span class='org'>{{result.organization_short_name}}&nbsp;/&nbsp;</span>
+                <span class='city'>{{result.branch_city}}</span>
             </ng-container>
-            <ng-container *ngIf='!branchCards[0].organization_short_name'>
-                <span class='org'>{{branchCards[0].organization_name}}&nbsp;/&nbsp;</span>
-                <span class='city'>{{branchCards[0].branch_city}}</span>
+            <ng-container *ngIf='!result.organization_short_name'>
+                <span class='org'>{{result.organization_name}}&nbsp;/&nbsp;</span>
+                <span class='city'>{{result.branch_city}}</span>
             </ng-container>
         </ng-container>
-        <ng-container *ngIf='!branchCards[0].branch_city'>
-            <span class='org'>{{branchCards[0].organization_name}}&nbsp;/&nbsp;</span>
-            <span class='city'>{{branchCards[0].branch_name}}</span>
+        <ng-container *ngIf='!result.branch_city'>
+            <span class='org'>{{result.organization_name}}&nbsp;/&nbsp;</span>
+            <span class='city'>{{result.branch_name}}</span>
         </ng-container>
+        <span class='city' *ngIf='collapsibleCount > 1'>
+            (+ {{result._collapse_count}} מיקומים נוספים)
+        </span>            
+        <span class='city' *ngIf='collapsibleCount === 1'>
+            (+ מיקום נוסף)
+        </span>
     </div>
     <div class='cards'>
-        <app-result-card *ngFor='let card of branchCards' [card]='card'></app-result-card>
+        <app-result-card [card]='result'></app-result-card>
     </div>
+</div>
+<div class='bookends' *ngIf='collapsible'>
+    <ng-container *ngFor='let _ of [].constructor(collapsibleCount)'>
+        <div class='bookend'></div>
+    </ng-container>
+</div>
+<div class='count' *ngIf='collapsible'>
+    + {{result._collapse_count}}
 </div>

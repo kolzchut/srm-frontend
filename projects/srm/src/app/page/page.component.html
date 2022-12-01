@@ -24,7 +24,7 @@
             [searchParams]='searchParams'        
     ></app-searchbox-header>
     <app-results-drawer
-        [state]='stage === "point" ? (searchParams?.acQuery && !card ? DrawerState.Peek : DrawerState.Hidden) : drawerState'
+        [state]='stage === "point" ? (searchParams?.ac_query && !card ? DrawerState.Peek : DrawerState.Hidden) : drawerState'
         *ngIf='searchParams'
         [class.visible]='stage === "point" || stage === "search-results"'
         [scrollAll]='!!filtersVisible'

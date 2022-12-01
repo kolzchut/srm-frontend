@@ -27,7 +27,7 @@ type AuxParams = {
   host: {
     '[class.stage-point]': '!!pointId',
     '[class.stage-card]': '!!cardId',
-    '[class.bare-point]': '!searchParams?.acQuery && !cardId',
+    '[class.bare-point]': '!searchParams?.ac_query && !cardId',
   }
 })
 export class BranchContainerComponent implements OnInit, OnChanges {

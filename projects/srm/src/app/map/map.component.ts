@@ -220,14 +220,14 @@ export class MapComponent implements OnChanges, AfterViewInit {
                 // console.log('CLICKED', props);
                 // props.records = JSON.parse(props.records) as Card[];
                 if (this.cardId) {
-                  if (this.searchParams?.acQuery) {
-                    this.router.navigate(['/s', this.searchParams?.acQuery, 'c', this.cardId, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                  if (this.searchParams?.ac_query) {
+                    this.router.navigate(['/s', this.searchParams?.ac_query, 'c', this.cardId, 'p', props.point_id], {queryParamsHandling: 'preserve'});
                   } else {
                     this.router.navigate(['/c', this.cardId, 'p', props.point_id], {queryParamsHandling: 'preserve'});
                   }  
                 } else {
-                  if (this.searchParams?.acQuery) {
-                    this.router.navigate(['/s', this.searchParams?.acQuery, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                  if (this.searchParams?.ac_query) {
+                    this.router.navigate(['/s', this.searchParams?.ac_query, 'p', props.point_id], {queryParamsHandling: 'preserve'});
                   } else {
                     this.router.navigate(['/p', props.point_id], {queryParamsHandling: 'preserve'});
                   }  

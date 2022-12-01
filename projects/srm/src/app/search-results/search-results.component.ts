@@ -34,7 +34,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   // done = false;
   triggerVisible = false;
 
-  results: Card[] = [];
+  results: (Card | null)[] = [];
   obs: IntersectionObserver;
   fetchQueue = new Subject<SearchParamsOffset>();
   paramsQueue = new Subject<SearchParams>();
@@ -44,13 +44,15 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   ngOnInit(): void {
+    const pending = true;
+
     this.paramsQueue.pipe(
       filter((params) => !!params),
       debounceTime(500),
     ).subscribe((params) => {
       this.offset = 0;
       this.fetchedOffset = -1;
-      this.results = [];
+      this.results = [null, null, null];
       if (this.resultsSubscription !== null) {
         this.resultsSubscription.unsubscribe();
         this.resultsSubscription = null;
@@ -70,7 +72,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           return from([]);
         })
       ).subscribe((results) => {
-        this.results = this.results.concat(results);
+        this.results = this.results.filter(x => !!x).concat(results);
         this.offset = this.results.length;        
       });
       this.fetch();
@@ -103,5 +105,16 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
     if (this.obs) {
       this.obs.disconnect();
     }
+  }
+  
+  expand(index: number) {
+    const res = this.results[index];
+    if (!!res) {
+      this.api.getCardsForCollapseKey(this.searchParams, res.collapse_key).subscribe((cards) => {
+        this.results = this.results.slice(0, index).concat(cards).concat(this.results.slice(index + 1));
+      });
+      this.results[index] = null;  
+    }
+    // console.log('EXPAND', index, this.results[index]);
   }
 }

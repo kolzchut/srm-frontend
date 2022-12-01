@@ -11,7 +11,4 @@
         <app-situation [situation]='card.situations[0]' [small]='true' *ngIf='card.situations.length'></app-situation>    
     </div>
 </ng-container>
-<div class='snippet' *ngIf='(card._collapse_count || 0) > 0'>
-    + {{card._collapse_count}} תוצאות דומות
-</div>
 <div class='snippet' [innerHtml]='snippet' *ngIf='showSnippet'></div>

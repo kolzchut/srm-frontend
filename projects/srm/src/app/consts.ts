@@ -62,6 +62,7 @@ export class Card {
     _snippets: {[key: string]: string[]};
 
     _collapse_count?: number;
+    collapse_key: string;
 };
 
 export const CARD_SNIPPET_FIELDS = [
@@ -94,10 +95,14 @@ export type AutoComplete = {
     id: string,
     query: string,
     response: string | null,
+    response_name: string | null,
     situation: string | null,
+    situation_name: string | null,
     synonyms: string[],
     org_name: string | null,
-    org_id: string | null
+    org_id: string | null,
+    city_name: string | null,
+    structured_query: string | null,
 };
 
 export type SearchResult<T extends any> = {
@@ -130,11 +135,14 @@ export type QueryCardResult = SearchResult<Card>;
 export type QueryTaxonomyItemResult = SearchResult<TaxonomyItem>;
 
 export class SearchParams {
-    acQuery: string | null;
+    ac_query: string | null;
     query: string | null;
-    originalQuery: string | null;
+    original_query: string | null;
+    structured_query: string | null;
     response: string | null;
+    response_name: string | null;
     situation: string | null;
+    situation_name: string | null;
     org_id: string | null;
     org_name: string | null;
     filter_situations?: string[];

@@ -24,17 +24,13 @@ export class SearchboxHeaderComponent implements OnChanges {
   constructor(private api: ApiService) { }
 
   ngOnChanges(): void {
-    if (this.searchParams?.response) {
-      this.api.getResponse(this.searchParams?.response).subscribe((item: TaxonomyItem) => {
-        this.responseDisplay = item?.name || null;
-      });
+    if (this.searchParams?.response_name) {
+      this.responseDisplay = this.searchParams.response_name;
     } else {
       this.responseDisplay = null;
     }
-    if (this.searchParams?.situation) {
-      this.api.getSituation(this.searchParams?.situation).subscribe((item: TaxonomyItem) => {
-        this.situationDisplay = item?.name || null;
-      });
+    if (this.searchParams?.situation_name) {
+      this.situationDisplay = this.searchParams.situation_name;
     } else {
       this.situationDisplay = null;
     }

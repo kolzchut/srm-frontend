@@ -21,8 +21,8 @@ export class ApiService {
   MIN_SCORE = 20
   situationsMap_: any = {};
   responsesMap_: any = {};
-  situationsMap = new ReplaySubject<any>(1);
-  responsesMap = new ReplaySubject<any>(1);
+  // situationsMap = new ReplaySubject<any>(1);
+  // responsesMap = new ReplaySubject<any>(1);
   collapseCount: {[key: string]: number} = {};
 
   constructor(
@@ -30,26 +30,26 @@ export class ApiService {
     private transferState: TransferState,
     private platform: PlatformService) {
 
-      this.getSituations().subscribe((data: TaxonomyItem[]) => {
-        this.situationsMap_ = {};
-        data.forEach((item) => {
-          if (item.id) {
-            this.situationsMap_[item.id] = item;
-          }
-        });
-        this.situationsMap.next(this.situationsMap_);
-        this.situationsMap.complete();
-      });
-      this.getResponses().subscribe((data: TaxonomyItem[]) => {
-        this.responsesMap_ = {};
-        data.forEach((item) => {
-          if (item.id) {
-            this.responsesMap_[item.id] = item;
-          }
-        });
-        this.responsesMap.next(this.responsesMap_);
-        this.responsesMap.complete();
-      });
+      // this.getSituations().subscribe((data: TaxonomyItem[]) => {
+      //   this.situationsMap_ = {};
+      //   data.forEach((item) => {
+      //     if (item.id) {
+      //       this.situationsMap_[item.id] = item;
+      //     }
+      //   });
+      //   this.situationsMap.next(this.situationsMap_);
+      //   this.situationsMap.complete();
+      // });
+      // this.getResponses().subscribe((data: TaxonomyItem[]) => {
+      //   this.responsesMap_ = {};
+      //   data.forEach((item) => {
+      //     if (item.id) {
+      //       this.responsesMap_[item.id] = item;
+      //     }
+      //   });
+      //   this.responsesMap.next(this.responsesMap_);
+      //   this.responsesMap.complete();
+      // });
   }
 
   innerCache<T>(key: string, fetcher: Observable<T>): Observable<T> {
@@ -380,68 +380,80 @@ export class ApiService {
   }
 
   getCards(searchParams: SearchParams, offset=0): Observable<Card[]> {
-    return this.responsesMap.pipe(
-      switchMap(() => this.situationsMap),
-      switchMap(() => {
-        const params: any = {
-          size: 10,
-          offset: offset,
-          order: '-_score'
-        };
-        if (searchParams.query) {
-          params.q = searchParams.query;
-          params.highlight = 'service_name,service_name.hebrew';
-          params.snippets = CARD_SNIPPET_FIELDS.join(',');
-          params.minscore = this.MIN_SCORE;
-        } else {
-          const q = [];
-          for (const term of [
-            searchParams.response,
-            searchParams.situation,
-            ...(searchParams?.filter_responses || []),
-            ...(searchParams?.filter_situations || []),
-          ]) {
-            if (term) {
-              q.push(this.responsesMap_[term]?.name || this.situationsMap_[term]?.name || '');
-              q.push(...((this.responsesMap_[term]?.synonyms || this.situationsMap_[term]?.synonyms || '').split('\n')));
+    const params: any = {
+      size: 10,
+      offset: offset,
+      order: '-_score'
+    };
+    if (searchParams.query) {
+      params.q = searchParams.query;
+      params.highlight = 'service_name,service_name.hebrew';
+      params.snippets = CARD_SNIPPET_FIELDS.join(',');
+      params.minscore = this.MIN_SCORE;
+    } else if (searchParams.structured_query) {
+      params.q = searchParams.structured_query;
+    }
+    if (offset === 0) {
+      params.extra = 'collapse|collapse-collect';
+    } else {
+      params.extra = 'collapse';
+    }
+    const filter = this._filter(searchParams);
+    if (filter) {
+      params.filter = JSON.stringify(filter);
+    }
+    return this.http.get(environment.cardsURL, {params}).pipe(
+      map((res: any) => {
+        const qcr = res as QueryCardResult;
+        if (qcr.collapse_key) {
+          this.collapseCount = {};
+          qcr.collapse_key.forEach((c: DistinctItem) => {
+            if (c.key && c.doc_count) {
+              this.collapseCount[c.key] = c.doc_count;
             }
-          }
-          if (q.length) {
-            params.q = q.join(' ');
-          }
+          });
         }
-        if (offset === 0) {
-          params.extra = 'collapse|collapse-collect';
-        } else {
-          params.extra = 'collapse';
-        }
-        const filter = this._filter(searchParams);
-        if (filter) {
-          params.filter = JSON.stringify(filter);
-        }
-        return this.http.get(environment.cardsURL, {params}).pipe(
-          map((res: any) => {
-            const qcr = res as QueryCardResult;
-            if (qcr.collapse_key) {
-              this.collapseCount = {};
-              qcr.collapse_key.forEach((c: DistinctItem) => {
-                if (c.key && c.doc_count) {
-                  this.collapseCount[c.key] = c.doc_count;
-                }
-              });
-            }
-            const results = qcr.search_results;
-            return results.map((r: any) => {
-              r = r.source;
-              r._collapse_count = (this.collapseCount[r.collapse_key] || 1) - 1;
-              return r;
-            });
-          })
-        );
-      }
-    ));
+        const results = qcr.search_results;
+        return results.map((r: any) => {
+          r = r.source;
+          r._collapse_count = (this.collapseCount[r.collapse_key] || 1) - 1;
+          return r;
+        });
+      })
+    );
   }
 
+  getCardsForCollapseKey(searchParams: SearchParams, collapse_key: string): Observable<Card[]> {
+    const params: any = {
+      size: 1000,
+      offset: 0,
+      order: '-_score'
+    };
+    if (searchParams.query) {
+      params.q = searchParams.query;
+      params.highlight = 'service_name,service_name.hebrew';
+      params.snippets = CARD_SNIPPET_FIELDS.join(',');
+      params.minscore = this.MIN_SCORE;
+    } else if (searchParams.structured_query) {
+      params.q = searchParams.structured_query;
+    }
+    const filter = this._filter(searchParams);
+    filter['collapse_key'] = collapse_key;
+    if (filter) {
+      params.filter = JSON.stringify(filter);
+    }
+    return this.http.get(environment.cardsURL, {params}).pipe(
+      map((res: any) => {
+        const qcr = res as QueryCardResult;
+        const results = qcr.search_results;
+        return results.map((r: any) => {
+          r = r.source;
+          return r;
+        });
+      })
+    );
+  }
+  
   getCounts(searchParams: SearchParams): Observable<QueryCardResult> {
     const params: any = {
       size: 1,
@@ -536,7 +548,7 @@ export class ApiService {
   getTopCards(query: string): Observable<Card[]> {
     const params = {
       size: 3,
-      q: query.replace(/ עבור /g, ' '),
+      q: query.replace(/ עבור /g, ' ').replace(/ של /g, ' ').replace(/ באיזור /g, ' '),
       highlight: 'branch_name,branch_name.hebrew,service_name,service_name.hebrew',
       match_operator: 'or',
       match_type: 'best_fields'
