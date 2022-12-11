@@ -20,6 +20,8 @@ export class SearchboxHeaderComponent implements OnChanges {
   responseDisplay: string | null = null;
   situationDisplay: string | null = null;
   orgDisplay: string | null = null;
+  didYouMean: string | null = null;
+  didYouMeanLink: string | null = null;
 
   constructor(private api: ApiService) { }
 
@@ -35,6 +37,18 @@ export class SearchboxHeaderComponent implements OnChanges {
       this.situationDisplay = null;
     }
     this.orgDisplay = this.searchParams?.org_name || null;
+    if (this.searchParams?.query) {
+      this.api.didYouMean(this.searchParams).subscribe((didYouMean: string | null) => {
+        this.didYouMean = didYouMean;
+        if (didYouMean) {
+          this.didYouMeanLink = didYouMean.split(' ').join('_');
+        }
+        console.log('DID YOU MEAN', didYouMean);
+      });
+    } else {
+      this.didYouMean = null;
+    }
+    console.log('DID YOU MEAN?', this.searchParams);
   }
 
 }

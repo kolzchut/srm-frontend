@@ -27,7 +27,7 @@ export class PointResultStackComponent implements OnChanges {
   }
 
   routerLink(card: Card): string[] {
-    if (this.searchParams.ac_query) {
+    if (this.searchParams?.ac_query) {
       return ['/s', this.searchParams.ac_query, 'c', card.card_id];
     } else {
       return ['/c', card.card_id];

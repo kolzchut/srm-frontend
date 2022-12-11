@@ -15,7 +15,24 @@ import { LngLatBounds } from 'mapbox-gl';
   providedIn: 'root'
 })
 export class ApiService {
-
+  //   data.forEach((item) => {
+  //     if (item.id) {
+  //       this.situationsMap_[item.id] = item;
+  //     }
+  //   });
+  //   this.situationsMap.next(this.situationsMap_);
+  //   this.situationsMap.complete();
+  // });
+  // this.getResponses().subscribe((data: TaxonomyItem[]) => {
+  //   this.responsesMap_ = {};
+  //   data.forEach((item) => {
+  //     if (item.id) {
+  //       this.responsesMap_[item.id] = item;
+  //     }
+  //   });
+  //   this.responsesMap.next(this.responsesMap_);
+  //   this.responsesMap.complete();
+  // });
   waiting: any = {};
 
   MIN_SCORE = 20
@@ -419,6 +436,36 @@ export class ApiService {
           r._collapse_count = (this.collapseCount[r.collapse_key] || 1) - 1;
           return r;
         });
+      })
+    );
+  }
+
+  didYouMean(searchParams: SearchParams): Observable<string | null> {
+    const SHARD_SIZE = 50;
+    const params: any = {
+      size: 1,
+      offset: 0,
+      extra: 'did-you-mean',
+      q: searchParams.query
+    };
+    const filter = this._filter(searchParams, false);
+    if (filter) {
+      params.filter = JSON.stringify(filter);
+    }
+    return this.http.get(environment.cardsURL, {params}).pipe(
+      map((res: any) => {
+        const qcr = res as QueryCardResult;
+        if (qcr.possible_autocomplete && qcr.possible_autocomplete.length) {
+          const best = qcr.possible_autocomplete[0];
+          const total = qcr.search_counts._current.total_overall || 0;
+          const best_doc_count = best.doc_count || 0;
+          const threshold = (total > SHARD_SIZE ? SHARD_SIZE : total) / 3;
+          console.log('did you mean', best.key, best_doc_count, total);
+          if (best_doc_count <= SHARD_SIZE && best_doc_count > threshold && best.key) {
+            return best.key;
+          }
+        }
+        return null;
       })
     );
   }

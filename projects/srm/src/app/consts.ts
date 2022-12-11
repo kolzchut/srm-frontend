@@ -119,6 +119,7 @@ export type SearchResult<T extends any> = {
     responses: DistinctItem[],
     point_id: DistinctItem[],
     collapse_key: DistinctItem[],
+    possible_autocomplete: DistinctItem[],
 };
 
 export function _h(sr: any, f: string) {

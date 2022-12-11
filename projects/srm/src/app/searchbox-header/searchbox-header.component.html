@@ -19,10 +19,15 @@
                         <span class='separator'></span>
                         <span class='text'>{{orgDisplay}}</span>
                     </ng-container>
-
                 </div>
             </ng-container>    
         </div>
         <div class='search-icon'></div>    
     </a>
+</div>
+<div *ngIf='didYouMean' class='did-you-mean'>
+    <span>האם התכוונת&nbsp;</span>
+    <a [routerLink]='["/s", didYouMeanLink]'>
+        {{didYouMean}}
+    </a><span>?</span>
 </div>

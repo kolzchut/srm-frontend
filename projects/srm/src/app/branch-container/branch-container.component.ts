@@ -1,9 +1,10 @@
 import { Location } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
 import { EMPTY, forkJoin, from, fromEvent, Observable, ReplaySubject, Subject, Subscription, timer } from 'rxjs';
-import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, switchMap, tap, withLatestFrom, zipWith } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams } from '../consts';
 import { PlatformService } from '../platform.service';
@@ -53,7 +54,8 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   parametersQueue = new ReplaySubject<AuxParams>(1);
   obs: IntersectionObserver | null = null;
 
-  constructor(private api: ApiService, public location: Location, private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService) { }
+  constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
+              private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService) { }
 
   ngOnInit(): void {
     this.parametersQueue.pipe(
@@ -154,6 +156,41 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   ngAfterViewInit(): void {
     this.sub = fromEvent(this.el.nativeElement, 'scroll').subscribe((e: any) => {
       this.actionsBottom = -56 + Math.min(56,  e.target.scrollTop);
+    });
+    fromEvent<TouchEvent>(this.content.nativeElement, 'touchstart')
+    .pipe(
+      switchMap((e: TouchEvent) => {
+        const contentTop = this.content.nativeElement?.getBoundingClientRect().top;
+        const startY = e.changedTouches[0].clientY;
+        if (startY > contentTop && startY < contentTop + 56) {
+          const startTimestamp = e.timeStamp;
+          console.log('GESTURE START', startY);
+          return fromEvent<TouchEvent>(document, 'touchend').pipe(
+            first(),
+            map((e: TouchEvent) => {
+              const endY = e.changedTouches[0].clientY;
+              const endTimestamp = e.timeStamp;
+              console.log('GESTURE END', endY);
+              if (endTimestamp - startTimestamp < 500 && Math.abs(endY - startY) > 100) {
+                return endY - startY;
+              } else {
+                return 0;
+              }
+            })
+          );
+        } else {
+          return EMPTY;
+        }
+      })
+    ).subscribe((diff) => {
+      if (Math.abs(diff) > 0.1 * document.body.clientHeight) {
+        if (diff > 0) {
+          console.log('down swipe');
+          if (this.stage === 'card' && this.branchLink) {
+            this.router.navigate(this.branchLink, {relativeTo: this.route, queryParamsHandling: 'preserve'});
+          }
+        }
+      }
     });
   }
 
