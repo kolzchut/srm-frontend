@@ -140,6 +140,7 @@ export class PageComponent implements OnInit {
           filter_languages: fl,
           filter_responses: fr,
           bounds: spc.bounds,
+          ac_bounds: spc.ac.bounds
         });
       } else {
         Object.assign(this.searchParams, {
@@ -155,6 +156,7 @@ export class PageComponent implements OnInit {
           filter_languages: fl,
           filter_responses: fr,
           bounds: spc.bounds,
+          ac_bounds: null
         });
       }
     });

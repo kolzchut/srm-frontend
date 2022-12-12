@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, O
 import { MapboxService } from '../mapbox.service';
 
 import { from, ReplaySubject, Subject, timer } from 'rxjs';
-import { throttleTime, filter, distinctUntilChanged, switchMap, debounceTime } from 'rxjs/operators';
+import { throttleTime, filter, distinctUntilChanged, switchMap, debounceTime, first, delay } from 'rxjs/operators';
 import { StateService, CenterZoomType, GeoType, BoundsType } from '../state.service';
 import { ALL_CATEGORIES, CATEGORY_COLORS } from '../colors';
 import { Card, Point as SRMPoint, SearchParams } from '../consts';
@@ -146,7 +146,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
 
   initialize() {
     console.log('INIT MAP');
-    let first = true;
+    // let first_ = true;
     if (this.platform.browser() && this.mapEl && this.mapEl.nativeElement) {
       try {
         const mapParams: mapboxgl.MapboxOptions = {
@@ -271,6 +271,18 @@ export class MapComponent implements OnChanges, AfterViewInit {
           ).subscribe(ids => {
             // console.log('POINTS', ids);
             this.processPointIds(ids, false);
+          });
+          this.searchParamsQueue.pipe(
+            untilDestroyed(this),
+            distinctUntilChanged((a, b) => a.original_query === b.original_query),
+            delay(1000),
+          ).subscribe((params) => {
+            if (params.ac_bounds) {
+              const bounds: mapboxgl.LngLatBoundsLike = params.ac_bounds;
+              this.queueAction((map) => {
+                map.fitBounds(bounds, {padding: {top: 100, bottom: 100, left: 0, right: 0}, maxZoom: 15});
+              }, 'SEARCH BY LOCATION');
+            }
           });
           this.map.on('moveend', (event: mapboxgl.MapboxEvent<MouseEvent>) => {
             // console.log('MOVEEND', event);

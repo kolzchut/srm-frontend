@@ -1,3 +1,5 @@
+import { LngLatBoundsLike } from "mapbox-gl";
+
 export enum DrawerState {
     Hidden = 'hidden',
     Peek = 'peek',
@@ -103,6 +105,7 @@ export type AutoComplete = {
     org_id: string | null,
     city_name: string | null,
     structured_query: string | null,
+    bounds: [number, number, number, number] | null,
 };
 
 export type SearchResult<T extends any> = {
@@ -151,6 +154,7 @@ export class SearchParams {
     filter_languages?: string[];
     filter_responses?: string[];
     bounds?: number[][];
+    ac_bounds?: LngLatBoundsLike;
 
     get searchHash(): string {
       return [this.query, this.response, this.situation, this.filter_situations, this.filter_age_groups, this.filter_languages, this.filter_responses].map(x => x || '').join('|');
