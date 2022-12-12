@@ -217,13 +217,21 @@ export class MapComponent implements OnChanges, AfterViewInit {
             this.map.on('click', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
               if (e.features && e.features.length > 0) {
                 const props: any = e.features[0].properties;
-                // console.log('CLICKED', props);
+                console.log('MAP CLICKED', this.searchParams?.ac_query, this.cardId, this.pointId, props.point_id);
                 // props.records = JSON.parse(props.records) as Card[];
                 if (this.cardId) {
                   if (this.searchParams?.ac_query) {
-                    this.router.navigate(['/s', this.searchParams?.ac_query, 'c', this.cardId, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                    if (this.pointId && this.pointId !== props.point_id) {
+                      this.router.navigate(['/s', this.searchParams?.ac_query, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                    } else {
+                      this.router.navigate(['/s', this.searchParams?.ac_query, 'c', this.cardId, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                    }
                   } else {
-                    this.router.navigate(['/c', this.cardId, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                    if (this.pointId && this.pointId !== props.point_id) {
+                      this.router.navigate(['/p', props.point_id], {queryParamsHandling: 'preserve'});
+                    } else {
+                      this.router.navigate(['/c', this.cardId, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                    }
                   }  
                 } else {
                   if (this.searchParams?.ac_query) {
