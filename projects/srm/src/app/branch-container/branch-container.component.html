@@ -43,9 +43,9 @@
     <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.original_query ? {q: searchParams?.original_query} : {}"></a>
 </div>
 <div class='quick-actions' [style.bottom]='(stage==="card" ? actionsBottom : 0) + "px"' *ngIf='cardId'>
-    <ng-container *ngIf='card'>
-        <app-card-action-phone [card]='card' [org]='false'></app-card-action-phone>
-        <app-card-action-url [card]='card' [org]='false'></app-card-action-url>
-        <app-card-action-nav [card]='card'></app-card-action-nav>    
+    <ng-container *ngIf='actionsCard'>
+        <app-card-action-phone [card]='actionsCard' [org]='false'></app-card-action-phone>
+        <app-card-action-url [card]='actionsCard' [org]='false'></app-card-action-url>
+        <app-card-action-nav [card]='actionsCard'></app-card-action-nav>    
     </ng-container>
 </div>

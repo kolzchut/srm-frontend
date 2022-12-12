@@ -50,6 +50,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   branches: BranchCards[] = [];
   cardBranch: BranchCards | null = null;
   card: Card | null = null;
+  visibleCard: Card | null = null;
 
   parametersQueue = new ReplaySubject<AuxParams>(1);
   obs: IntersectionObserver | null = null;
@@ -196,14 +197,17 @@ export class BranchContainerComponent implements OnInit, OnChanges {
 
   setupObserver(): void {
     this.platform.browser(() => {
+      this.visibleCard = null;
       this.obs?.disconnect();
       this.obs = null;
       this.obs = new IntersectionObserver((entries) => {
         const intersecting = entries.filter(e => e.isIntersecting);
         if (intersecting.length > 0) {
           const target = intersecting[0].target as HTMLElement;
-          const title = target.getAttribute('data-title');
-          const response_category = target.getAttribute('data-response-category');
+          const slideCard = JSON.parse(target.getAttribute('data-card') as string);
+          const title = slideCard.organization_name_parts?.primary || slideCard.organization_name;
+          const response_category = slideCard.response_category;
+          this.visibleCard = slideCard;
           this.markerProps.emit({title, response_category});
         }
       }, {threshold: 0.5});
@@ -220,4 +224,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
     this.obs = null;
   }
 
+  get actionsCard(): Card | null{
+    return this.visibleCard || this.card;
+  }
 }

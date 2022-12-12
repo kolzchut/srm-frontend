@@ -1,6 +1,5 @@
 <a class='card' *ngFor='let card of cards' [routerLink]='routerLink(card)' queryParamsHandling='preserve'
-    [attr.data-title]='card.organization_name_parts?.primary || card.organization_name'
-    [attr.data-response-category]='card.response_category'
+    [attr.data-card]='card | json'
 >
     <app-result-card [card]='card' [compact]='true'></app-result-card>
 </a>
@@ -11,8 +10,7 @@
     <span class='number'>+ {{hiddenCards.length}}</span>
 </a>
 <a class='card' *ngFor='let card of hiddenCards' [routerLink]='routerLink(card)' [class.hidden]='hidden_'  queryParamsHandling='preserve'
-    [attr.data-title]='card.organization_name_parts?.primary || card.organization_name'
-    [attr.data-response-category]='card.response_category'
+    [attr.data-card]='card | json'
 >
     <app-result-card [card]='card' [compact]='true'></app-result-card>
 </a>
