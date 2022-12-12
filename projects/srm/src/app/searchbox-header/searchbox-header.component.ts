@@ -37,7 +37,7 @@ export class SearchboxHeaderComponent implements OnChanges {
       this.situationDisplay = null;
     }
     this.orgDisplay = this.searchParams?.org_name || null;
-    if (this.searchParams?.query) {
+    if (!this.homepage && this.searchParams?.query && !this.searchParams?.filter_responses?.length && !this.searchParams?.filter_situations?.length) {
       this.api.didYouMean(this.searchParams).subscribe((didYouMean: string | null) => {
         this.didYouMean = didYouMean;
         if (didYouMean) {
