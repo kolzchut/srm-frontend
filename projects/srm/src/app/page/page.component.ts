@@ -59,7 +59,8 @@ export class PageComponent implements OnInit {
   
   searchParamsCalc = new Subject<SearchParamCalc>(); 
   currentSearchParamCalc: SearchParamCalc = new SearchParamCalc();
-  mapNeedsCentering = false;
+  // mapNeedsCentering = false;
+  mapMoved = false;
   
   branchSize_ = 0;
   drawerSize_ = 0;
@@ -68,21 +69,19 @@ export class PageComponent implements OnInit {
   acResult: any;
   ac_query: string;
 
+  pendingActions: {action: (map: mapboxgl.Map) => void, description: string}[] = [];
+
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService) {
 
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
-      throttleTime(100, undefined, {leading: true, trailing: true}),
+      // throttleTime(1000, undefined, {leading: false, trailing: true}),
       distinctUntilChanged((x, y) => {
         return x.geoHash.localeCompare(y.geoHash) === 0
       }),
     ).subscribe((spc) => {
-      if (spc.geoValues?.length && this.mapNeedsCentering) {
-        console.log('CENTERING MAP', spc.geoValues);
-        this.map?.queueAction((map) => map.jumpTo({center: [spc.geoValues[0], spc.geoValues[1]], zoom: spc.geoValues[2]}),
-                              're-center-' + spc.geoValues[0] + ',' + spc.geoValues[1]);
-        this.mapNeedsCentering = false;
-      }  
+      console.log('ACTION MAP MOVED', spc.geoValues, spc.ac?.bounds);
+      this.mapMoved = true;
     });
 
     this.searchParamsCalc.pipe(
@@ -114,51 +113,76 @@ export class PageComponent implements OnInit {
             this.seo.setUrl(window.location.href);  
           }
         }
-      })
-    ).subscribe((spc) => {
-      console.log('SEARCH PARAMS CALC', spc);
-      const fs = spc.fs?.split('|').map(x => 'human_situations:' + x) || [];
-      const fag = spc.fag?.split('|').map(x => 'human_situations:age_group:' + x) || [];
-      const fl = spc.fl?.split('|').map(x => 'human_situations:language:' + x) || [];
-      const fr = spc.fr?.split('|').map(x => 'human_services:' + x) || [];
-      this.searchParams = new SearchParams();
-      if (spc.ac) {
-        Object.assign(this.searchParams, {
-          ac_query: spc.ac.id || '_',
-          query: null,
-          original_query: spc.ac.query,
-          response: spc.ac.response,
-          response_name: spc.ac.response_name,
-          situation: spc.ac.situation,
-          situation_name: spc.ac.situation_name,
-          org_id: spc.ac.org_id,
-          org_name: spc.ac.org_name,
-          city_name: spc.ac.city_name,
-          structured_query: spc.ac.structured_query,
-          filter_situations: fs,
-          filter_age_groups: fag,
-          filter_languages: fl,
-          filter_responses: fr,
-          bounds: spc.bounds,
-          ac_bounds: spc.ac.bounds
-        });
-      } else {
-        Object.assign(this.searchParams, {
-          ac_query: '_',
-          query: spc.resolvedQuery,
-          original_query: spc.resolvedQuery,
-          response: null,
-          situation: null,
-          org_id: null,
-          org_name: null,
-          filter_situations: fs,
-          filter_age_groups: fag,
-          filter_languages: fl,
-          filter_responses: fr,
-          bounds: spc.bounds,
-          ac_bounds: null
-        });
-      }
+      }),
+      map((spc) => {
+        console.log('SEARCH PARAMS CALC', spc);
+        const fs = spc.fs?.split('|').map(x => 'human_situations:' + x) || [];
+        const fag = spc.fag?.split('|').map(x => 'human_situations:age_group:' + x) || [];
+        const fl = spc.fl?.split('|').map(x => 'human_situations:language:' + x) || [];
+        const fr = spc.fr?.split('|').map(x => 'human_services:' + x) || [];
+        const ret: SearchParams = new SearchParams();
+        if (spc.ac) {
+          Object.assign(ret, {
+            ac_query: spc.ac.id || '_',
+            query: null,
+            original_query: spc.ac.query,
+            response: spc.ac.response,
+            response_name: spc.ac.response_name,
+            situation: spc.ac.situation,
+            situation_name: spc.ac.situation_name,
+            org_id: spc.ac.org_id,
+            org_name: spc.ac.org_name,
+            city_name: spc.ac.city_name,
+            structured_query: spc.ac.structured_query,
+            filter_situations: fs,
+            filter_age_groups: fag,
+            filter_languages: fl,
+            filter_responses: fr,
+            bounds: spc.bounds,
+            ac_bounds: spc.ac.bounds,
+            requiredCenter: spc.geoValues
+          });
+        } else {
+          Object.assign(ret, {
+            ac_query: '_',
+            query: spc.resolvedQuery,
+            original_query: spc.resolvedQuery,
+            response: null,
+            situation: null,
+            org_id: null,
+            org_name: null,
+            city_name: null,
+            filter_situations: fs,
+            filter_age_groups: fag,
+            filter_languages: fl,
+            filter_responses: fr,
+            bounds: spc.bounds,
+            ac_bounds: null,
+            requiredCenter: spc.geoValues
+          });
+        }
+        this.searchParams = ret;
+        return ret;
+      }),
+      distinctUntilChanged((a, b) => {
+        return a.original_query === b.original_query;
+      }),
+      delay<SearchParams>(1000),
+    ).subscribe((params: SearchParams) => {
+      console.log('ACTION CHANGED TO', params.original_query, params.ac_bounds);
+      if (params.ac_bounds) {
+        const bounds: mapboxgl.LngLatBoundsLike = params.ac_bounds;
+        this.queueMapAction((map) => {
+          map.fitBounds(bounds, {padding: {top: 100, bottom: 100, left: 0, right: 0}, maxZoom: 15});
+        }, 'search-by-location-' + params.city_name);
+        this.queueMapAction((map) => {
+          this.mapMoved = false;
+          this.map.processAction();  
+        }, 'map-moved-reset');
+      } else if (params.requiredCenter) {
+        const rc = params.requiredCenter;
+        this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
+      } 
     });
     route.params.pipe(
       untilDestroyed(this),
@@ -182,7 +206,7 @@ export class PageComponent implements OnInit {
       if (this.searchFilters) {
         this.searchFilters.active = false;
       }
-      timer(500).subscribe(() => {
+      timer(100).subscribe(() => {
         this.setPadding();
       });
     });
@@ -195,6 +219,19 @@ export class PageComponent implements OnInit {
       this.currentSearchParamCalc.fl = params.fl;
       this.currentSearchParamCalc.fr = params.fr;
       this.pushSearchParamsCalc();
+    });
+    this.route.fragment.pipe(
+      first(),
+    ).subscribe((fragment) => {
+      if (fragment?.length && fragment[0] === 'g') {
+        const parts = fragment.slice(1).split('/');
+        if (parts.length === 3) {
+          this.currentSearchParamCalc.geoValues = parts.map((v) => parseFloat(v));
+          this.pushSearchParamsCalc();
+        }
+      } else {
+        this.currentSearchParamCalc.geoValues = [];
+      }
     });
   }
 
@@ -253,14 +290,21 @@ export class PageComponent implements OnInit {
         }),
         first(),
       ).subscribe((fragment) => {
-        this.mapNeedsCentering = true;
+        // this.mapNeedsCentering = true;
       });  
     }
     this.map_ = map;
-    timer(500).subscribe(() => {
-      this.setPadding();
-    });
+    // this.setPadding();
     this.pushSearchParamsCalc();
+    for (const {action, description} of this.pendingActions) {
+      this.map.queueAction(action, description);
+    }
+    this.pendingActions = [];
+    // timer(500).subscribe(() => {
+    //   this.queueMapAction((map) => {
+    //     this.mapMoved = false;
+    //   }, 'map-moved-reset');
+    // });
   }
 
   get map(): MapComponent {
@@ -269,15 +313,16 @@ export class PageComponent implements OnInit {
 
   setPadding() {
     const padding = this.branchSize + this.drawerSize;
-    if (this.map && padding !== this.padding) {
+    if (padding !== this.padding) {
       this.padding = padding;
-      this.map?.queueAction((map) => {
-        map.setPadding({top: 0, bottom: this.padding, left: 0, right: 0}, {ignore: true})
+      this.queueMapAction((map) => {
+        map.easeTo({padding: {top: 0, bottom: this.padding, left: 0, right: 0}}, {ignore: true})
       }, 'padding-' + this.padding);
     }
   }
 
   set branchSize(branchSize: number) {
+    console.log('PADDING BS', branchSize);
     if (this.branchSize_ !== branchSize) {
       this.branchSize_ = branchSize;
       this.setPadding();
@@ -289,6 +334,7 @@ export class PageComponent implements OnInit {
   }
 
   set drawerSize(drawerSize: number) {
+    console.log('PADDING DS', drawerSize);
     if (this.drawerSize_ !== drawerSize) {
       this.drawerSize_ = drawerSize;
       this.setPadding();
@@ -339,6 +385,15 @@ export class PageComponent implements OnInit {
       ).subscribe(() => {
         this.searchFilters.active = true;
       });
+    }
+  }
+
+  queueMapAction(action: (map: mapboxgl.Map) => void, description: string) {
+    if (this.map) {
+      this.map.queueAction(action, description);
+    } else {
+      // console.log('ACTION PENDING', description);
+      this.pendingActions.push({action, description});
     }
   }
 }

@@ -19,6 +19,15 @@
                         <span class='separator'></span>
                         <span class='text'>{{orgDisplay}}</span>
                     </ng-container>
+                    <ng-container *ngIf='searchParams.city_name'>
+                        <span class='separator'></span>
+                        <ng-container *ngIf='showCity'>
+                            <span class='text'>{{searchParams.city_name}}</span>
+                        </ng-container>
+                        <ng-container *ngIf='!showCity'>
+                            <span class='text'>באיזור המפה</span>
+                        </ng-container>
+                    </ng-container>
                 </div>
             </ng-container>    
         </div>

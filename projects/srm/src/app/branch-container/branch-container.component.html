@@ -38,8 +38,8 @@
     </ng-container>
 </div>
 <div class='controls'>
-    <a class='back' [routerLink]='["../.."]' queryParamsHandling='preserve' *ngIf='searchParams?.original_query'></a>
-    <div class='menu-icon' *ngIf='!searchParams?.original_query'><app-menu-icon [dark]='true'></app-menu-icon></div>
+    <a class='back' [routerLink]='["../.."]' queryParamsHandling='preserve' *ngIf='!landingPage'></a>
+    <div class='menu-icon' *ngIf='landingPage'><app-menu-icon [dark]='true'></app-menu-icon></div>
     <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.original_query ? {q: searchParams?.original_query} : {}"></a>
 </div>
 <div class='quick-actions' [style.bottom]='(stage==="card" ? actionsBottom : 0) + "px"' *ngIf='cardId'>

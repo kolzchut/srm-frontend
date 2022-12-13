@@ -272,18 +272,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
             // console.log('POINTS', ids);
             this.processPointIds(ids, false);
           });
-          this.searchParamsQueue.pipe(
-            untilDestroyed(this),
-            distinctUntilChanged((a, b) => a.original_query === b.original_query),
-            delay(1000),
-          ).subscribe((params) => {
-            if (params.ac_bounds) {
-              const bounds: mapboxgl.LngLatBoundsLike = params.ac_bounds;
-              this.queueAction((map) => {
-                map.fitBounds(bounds, {padding: {top: 100, bottom: 100, left: 0, right: 0}, maxZoom: 15});
-              }, 'SEARCH BY LOCATION');
-            }
-          });
           this.map.on('moveend', (event: mapboxgl.MapboxEvent<MouseEvent>) => {
             // console.log('MOVEEND', event);
             this.bounds = this.map.getBounds();
@@ -300,13 +288,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
             if (!(event as any).ignore) {
               this.setCenter(this.map.getCenter(), this.map.getZoom());
             }
-            if (this.moveQueue.length > 0) {
-              const {action, description} = this.moveQueue.shift() as MoveQueueItem;
-              if (!!action) {
-                // console.log('ACTION-QQ', description);
-                action(this.map);  
-              }
-            }
+            this.processAction();
           });
           this.bounds = this.map.getBounds();
           this.newMap.next(this);
@@ -314,6 +296,16 @@ export class MapComponent implements OnChanges, AfterViewInit {
         });
       } catch (e) {
         console.log('FAILED TO LOAD', e)
+      }
+    }
+  }
+
+  processAction() {
+    if (this.moveQueue.length > 0) {
+      const {action, description} = this.moveQueue.shift() as MoveQueueItem;
+      if (!!action) {
+        console.log('ACTION-QQ', description);
+        action(this.map);  
       }
     }
   }
@@ -379,7 +371,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
 
   queueAction(action: (map: mapboxgl.Map) => void, description: string) {
     if (this.moveQueue.length === 0 && !this.map.isMoving()) {
-      // console.log('ACTION-IMM', description);
+      console.log('ACTION-IMM', description);
       action(this.map);
     } else {
       // console.log('ACTION-QUE', description);

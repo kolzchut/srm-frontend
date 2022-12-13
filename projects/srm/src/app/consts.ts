@@ -149,12 +149,14 @@ export class SearchParams {
     situation_name: string | null;
     org_id: string | null;
     org_name: string | null;
+    city_name: string | null;
     filter_situations?: string[];
     filter_age_groups?: string[];
     filter_languages?: string[];
     filter_responses?: string[];
     bounds?: number[][];
     ac_bounds?: LngLatBoundsLike;
+    requiredCenter?: number[];
 
     get searchHash(): string {
       return [this.query, this.response, this.situation, this.filter_situations, this.filter_age_groups, this.filter_languages, this.filter_responses].map(x => x || '').join('|');

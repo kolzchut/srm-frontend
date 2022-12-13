@@ -227,4 +227,8 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   get actionsCard(): Card | null{
     return this.visibleCard || this.card;
   }
+
+  landingPage(): boolean {
+    return !!this.searchParams?.original_query && !this.pointId;
+  }
 }

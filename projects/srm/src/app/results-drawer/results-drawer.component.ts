@@ -104,7 +104,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
           const height = this.calcHeight();
           if (height !== this.currentHeight) {
             this.currentHeight = height;
-            this.size.next(height);
+            this.size.emit(height);
           }
         });
         const scrollableEl: HTMLElement = this.scrollable.nativeElement;

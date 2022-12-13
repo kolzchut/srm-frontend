@@ -21,6 +21,7 @@
     </app-branch-container>
     <app-searchbox-header *ngIf='stage === "search-results"' 
             [query]='query'
+            [showCity]='!mapMoved'
             [searchParams]='searchParams'        
     ></app-searchbox-header>
     <app-results-drawer
