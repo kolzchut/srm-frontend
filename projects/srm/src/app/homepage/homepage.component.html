@@ -1,27 +1,74 @@
-<div class='header'>
-    <app-menu-icon></app-menu-icon>
-</div>
 <div class='main'>
     <div class='header'>
-        <div class='logo'></div>
-        <h1>כל השירותים והמענים החברתיים שניתן למצוא על מפה אחת</h1>
+        <div class='menu-button'>
+            <app-menu-icon></app-menu-icon>
+        </div>
+        <div>
+            <div class='logo'></div>
+            <h2 class='tagline'>
+                <span>כל השירותים והמענים החברתיים</span>
+                <span>שניתן למצוא על מפה אחת</span>
+            </h2>
+        </div>
+    </div>    
+    <div class='search' [class.cta]='slide === 3'>
+        <a class='searchbox' [routerLink]='["/q"]' [class.cta]='slide === 3'>
+            <h1 [class.active]='slide === 0'>כל שירות</h1>
+            <div class='subtitle'>
+                <span [class.active]='slide === 1' class='situation'>לכל מצב</span>
+                <span class='separator'></span>
+                <span [class.active]='slide === 2' class='situation'>לכל מקום</span>
+            </div>
+        </a>
+        <div class='slides'>
+            <div class='slide' data-slide='0'>
+                <h3><strong>{{numResponses}} סוגי שירותים</strong> כמו למשל:</h3>
+                <div class='staggered' [class.seen-once]='!!seenOnce[0]'>
+                    <app-response *ngFor='let r of responses' [response]='r' [small]='true' [link]='false'></app-response>
+                </div>
+            </div>
+            <div class='slide' data-slide='1'>
+                <h3><strong>{{numSituations}} מצבי חיים</strong> כמו למשל:</h3>
+                <div class='staggered' [class.seen-once]='!!seenOnce[1]'>
+                    <app-situation *ngFor='let s of situations' [situation]='s' [small]='true'></app-situation>
+                </div>
+            </div>
+            <div class='slide' data-slide='2' [class.seen-once]='!!seenOnce[2]'>
+                <h3><strong>בכל הארץ:</strong></h3>
+                <div class='staggered' [class.seen-once]='!!seenOnce[2]'>
+                    <div class='place' *ngFor='let p of PLACES'>{{p}}</div>
+                </div>
+            </div>
+            <div class='slide' data-slide='3' [class.seen-once]='!!seenOnce[3]'>
+                <p>
+                    <strong>יש לנו {{totalServices.toLocaleString()}} שירותים חברתיים</strong> שאספנו וסיווגנו מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים.
+                    <br/><br/>
+                    אנחנו בטוחים שנמצא גם משהו בשבילך.<br/>
+                    <strong>בואו נתחיל!</strong>
+                </p>
+            </div>
+        </div>
+        <div class='pager'>
+            <a class='chevron right' [class.active]='slide > 0' (click)='slide = slide > 0 ? slide-1 : slide'></a>
+            <div class='dots'>
+                <div class='dot' [class.active]='slide === 0' data-slide='0'></div>
+                <div class='dot' [class.active]='slide === 1' data-slide='1'></div>
+                <div class='dot' [class.active]='slide === 2' data-slide='2'></div>
+                <div class='dot' [class.active]='slide === 3' data-slide='3'></div>    
+            </div>
+            <a class='chevron left' [class.active]='slide < 3' (click)='slide = slide < 3 ? slide+1 : slide'></a>
+        </div>
     </div>
-    <div class='search'>
-        <app-searchbox-header [homepage]='true' [placeholder]='"כל שירות, כל מצב, כל מיקום"'></app-searchbox-header>
-        <div class='examples'>
-            <div class='title'>לדוגמה:</div>
-            <div class='example'>
-                <div class='label'>מה?</div>
-                <div class='value'>דיור</div>
-            </div>
-            <div class='example'>
-                <div class='label'>מי?</div>
-                <div class='value'>לבעלי מוגבלויות</div>
-            </div>
-            <div class='example'>
-                <div class='label'>איפה?</div>
-                <div class='value'>באיזור באר שבע</div>
-            </div>
+    <div class='logos'>
+        <div class='logo-block'>
+            <a class='kolzchut'></a>
+            <a class='moj'></a>
+            <a class='digital-israel'></a>    
+        </div>
+        <div class='logo-block'>
+            <a class='kolzchut'></a>
+            <a class='moj'></a>
+            <a class='digital-israel'></a>    
         </div>
     </div>
 </div>

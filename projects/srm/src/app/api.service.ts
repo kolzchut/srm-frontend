@@ -694,4 +694,19 @@ export class ApiService {
     );
   }
 
+  getTotalServices(): Observable<number> {
+    const params: any = {
+      size: 1,
+      offset: 0,
+    };
+    return this.innerCache(
+      'total-services',
+      this.http.get(environment.cardsURL, {params}).pipe(
+        map((res: any) => {
+          const qcr = res as QueryCardResult;
+          return qcr.search_counts._current.total_overall;
+        })
+      )
+    );
+  }
 }
