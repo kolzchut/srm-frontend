@@ -7,8 +7,8 @@
     padding: 8px 16px;
 
     &.empty {
-        padding: 0;
-        gap: 0;
+        // padding: 0;
+        // gap: 0;
         background-color: transparent;
     }
 
@@ -20,6 +20,7 @@
         &.visible {
             background-color: red;
         }
+        margin-bottom: -8px;
     }
 
     & > a {
@@ -34,5 +35,34 @@
 
     .placeholder {
         height: 103px;
+    }
+
+    .counts {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+
+        .line {
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            gap: 4px;
+        }
+
+        span {
+            .font-rag-sans;
+            color: @color-blue-1;
+            font-weight: 400;
+            font-size: 13px;
+            line-height: 17px;
+
+            &.strong {
+                font-weight: 700;
+            }
+        }
+        a {
+            cursor: pointer;
+            text-decoration: underline;
+        }
     }
 }

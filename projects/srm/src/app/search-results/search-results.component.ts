@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { from, Subject, Subscription, throwError } from 'rxjs';
-import { catchError, concatMap, debounceTime, filter, tap } from 'rxjs/operators';
+import { catchError, concatMap, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams } from '../consts';
 import { PlatformService } from '../platform.service';
@@ -25,6 +25,7 @@ export type SearchParamsOffset = {
 export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit {
 
   @Input() searchParams: SearchParams;
+  @Output() zoomout = new EventEmitter<void>();
 
   @ViewChild('trigger') trigger: ElementRef;
 
@@ -33,12 +34,17 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   // fetching = false;
   // done = false;
   triggerVisible = false;
+  searchHash: string | null = null;
 
   results: (Card | null)[] = [];
   obs: IntersectionObserver;
   fetchQueue = new Subject<SearchParamsOffset>();
   paramsQueue = new Subject<SearchParams>();
   resultsSubscription: Subscription | null = null;
+
+  hasCounts = false;
+  visibleCount = 0;
+  totalCount = 0;
 
   constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService) {
   }
@@ -48,11 +54,28 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
 
     this.paramsQueue.pipe(
       filter((params) => !!params),
+      switchMap((params) => {
+        if (params.searchHash === this.searchHash) {
+          return from([params]);
+        } else {
+          return this.api.getCounts(params).pipe(
+            tap((counts) => {
+              this.totalCount = counts.search_counts._current.total_overall || 0;
+              this.searchHash = params.searchHash;
+              console.log('COUNTS T', this.totalCount);
+            }),
+            map(() => {
+              return params;
+            })
+          );
+        }
+      }),
       debounceTime(500),
     ).subscribe((params) => {
       this.offset = 0;
       this.fetchedOffset = -1;
       this.results = [null, null, null];
+      this.hasCounts = false;
       if (this.resultsSubscription !== null) {
         this.resultsSubscription.unsubscribe();
         this.resultsSubscription = null;
@@ -73,7 +96,14 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         })
       ).subscribe((results) => {
         this.results = this.results.filter(x => !!x).concat(results);
-        this.offset = this.results.length;        
+        this.offset = this.results.length;
+        this.hasCounts = true;
+        if (results.length > 0) {
+          this.visibleCount = (this.results[0] as any)['__counts']['total_overall'] || 0;
+          console.log('COUNTS V', this.visibleCount);
+        } else {
+          this.visibleCount = 0;
+        }
       });
       this.fetch();
     });       

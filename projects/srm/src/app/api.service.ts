@@ -431,11 +431,15 @@ export class ApiService {
           });
         }
         const results = qcr.search_results;
-        return results.map((r: any) => {
+        const ret = results.map((r: any) => {
           r = r.source;
           r._collapse_count = (this.collapseCount[r.collapse_key] || 1) - 1;
           return r;
         });
+        if (ret.length > 0) {
+          ret[0].__counts = qcr.search_counts._current;
+        }
+        return ret;
       })
     );
   }
@@ -503,7 +507,7 @@ export class ApiService {
   
   getCounts(searchParams: SearchParams): Observable<QueryCardResult> {
     const params: any = {
-      size: 1,
+      size: 2,
       offset: 0,
     };
     if (searchParams.query) {

@@ -15,6 +15,7 @@
         [pointId]='point' 
         [searchParams]='searchParams'
         [stage]='stage'
+        (center)='centerMap($event)'
         (size)='branchSize = $event'
         (markerProps)='markerProps = $event'
     >
@@ -50,7 +51,9 @@
             <app-search-results
                 [class.hidden]='filtersVisible === true' 
                 [class.shown]='filtersVisible === false' 
-                [searchParams]='searchParams'></app-search-results>
+                [searchParams]='searchParams'
+                (zoomout)='zoomOutMap()'
+            ></app-search-results>
         </div>
 <!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
                     [class.away]='disclaimerVisible || infoPage'> -->

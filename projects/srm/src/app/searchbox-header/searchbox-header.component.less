@@ -68,16 +68,20 @@
 
                 .extra-values {
                     display: flex;
-                    flex-flow: row;
+                    flex-flow: row wrap;
                     align-items: center;
-                    gap: 6px;
+                    gap: 0 6px;
                     
                     .text {
                         .font-rag-sans;
                         font-weight: 400;
                         font-size: 13px;
-                        line-height: 17px;
-                        color: @color-gray-3;    
+                        // line-height: 17px;
+                        color: @color-gray-2;    
+                        &.soft {
+                            color: @color-gray-3;
+                        }
+                        white-space: nowrap;
                     }
                     .separator {
                         width: 4px;

@@ -2,11 +2,13 @@ import { Location } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { LngLatLike } from 'mapbox-gl';
 import { SeoSocialShareService } from 'ngx-seo';
 import { EMPTY, forkJoin, from, fromEvent, Observable, ReplaySubject, Subject, Subscription, timer } from 'rxjs';
 import { distinctUntilChanged, first, map, switchMap, tap, withLatestFrom, zipWith } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams } from '../consts';
+import { MapComponent } from '../map/map.component';
 import { PlatformService } from '../platform.service';
 
 
@@ -37,6 +39,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   @Input() pointId = '';
   @Input() stage = '';
   @Input() searchParams: SearchParams;
+  @Output() center = new EventEmitter<LngLatLike>();
   @Output() size = new EventEmitter<number>();
   @Output() markerProps = new EventEmitter<any>();
   @ViewChild('content') content: ElementRef;
@@ -120,6 +123,10 @@ export class BranchContainerComponent implements OnInit, OnChanges {
         }
         // console.log('CARDS', branch.cards[0].branch_id, cards.filter(c => c.branch_id === branch.cards[0].branch_id));
         // console.log('ALL CARDS', allCards.filter(c => c.branch_id === branch.cards[0].branch_id));
+      }
+      if (p.cardId && !p.pointId && this.card) {
+        const geom: [number, number] = this.card.branch_geometry;
+        this.center.emit(geom);
       }
       if (p.cardId && this.card) {
         this.seo.setTitle(`כל שירות -  ${this.card.service_name}`);
@@ -247,7 +254,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
     return this.visibleCard || this.card;
   }
 
-  landingPage(): boolean {
-    return !!this.searchParams?.original_query && !this.pointId;
+  get landingPage(): boolean {
+    return !this.searchParams?.original_query && !this.pointId;
   }
 }

@@ -13,20 +13,26 @@
                 <span class='query dim' *ngIf='!responseDisplay'>כל שירות</span>
                 <div class='extra-values'>
                     <ng-container *ngIf='situationDisplay'>
-                        <span class='text'>{{situationDisplay}}</span>
+                        <span class='text'>עבור {{situationDisplay}}</span>
+                    </ng-container>
+                    <ng-container *ngIf='!situationDisplay'>
+                        <span class='text soft'>עבור כולם</span>
                     </ng-container>
                     <ng-container *ngIf='orgDisplay'>
                         <span class='separator'></span>
-                        <span class='text'>{{orgDisplay}}</span>
+                        <span class='text'>של {{orgDisplay}}</span>
                     </ng-container>
-                    <ng-container *ngIf='searchParams.city_name'>
+                    <ng-container *ngIf='!orgDisplay'>
                         <span class='separator'></span>
-                        <ng-container *ngIf='showCity'>
-                            <span class='text'>{{searchParams.city_name}}</span>
-                        </ng-container>
-                        <ng-container *ngIf='!showCity'>
-                            <span class='text'>באיזור המפה</span>
-                        </ng-container>
+                        <span class='text soft'>של כל ארגון</span>
+                    </ng-container>
+                    <ng-container *ngIf='searchParams.city_name && showCity'>
+                        <span class='separator'></span>
+                        <span class='text'>באיזור {{searchParams.city_name}}</span>
+                    </ng-container>
+                    <ng-container *ngIf='!searchParams.city_name || !showCity'>
+                        <span class='separator'></span>
+                        <span class='text soft'>באיזור המפה</span>
                     </ng-container>
                 </div>
             </ng-container>    

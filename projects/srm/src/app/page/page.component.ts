@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { LngLatLike } from 'mapbox-gl';
 import { SeoSocialShareService } from 'ngx-seo';
 import { from, Observable, Subject, timer } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, filter, first, map, switchMap, tap, throttleTime } from 'rxjs/operators';
@@ -70,6 +71,7 @@ export class PageComponent implements OnInit {
   ac_query: string;
 
   pendingActions: {action: (map: mapboxgl.Map) => void, description: string}[] = [];
+  savedState: {center: LngLatLike, zoom: number} | null = null;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService) {
 
@@ -192,6 +194,28 @@ export class PageComponent implements OnInit {
       const q = (params.query || '_');
       this.currentSearchParamCalc.acId = q === '_' ? '' : q;
       this.pushSearchParamsCalc();
+
+      if (this.card) {
+        this.queueMapAction((map) => {
+          if (!this.savedState) {
+            this.savedState = {
+              center: map.getCenter(),
+              zoom: map.getZoom()
+            };
+            this.map.processAction();
+          }
+        }, 'save-map-state');
+      } else if (!this.point) {
+        this.queueMapAction((map) => {
+          if (this.savedState) {
+            map.easeTo({center: this.savedState.center, zoom: this.savedState.zoom});
+            this.savedState = null;
+          } else {
+            this.map.processAction();
+          }
+        }, 'restore-map-state');
+      }
+
     });
     route.data.pipe(
       untilDestroyed(this),
@@ -396,4 +420,20 @@ export class PageComponent implements OnInit {
       this.pendingActions.push({action, description});
     }
   }
+
+  centerMap(center: LngLatLike) {
+    this.queueMapAction((map) => {
+      map.easeTo({center, zoom: 15});
+    }, 'center-map');
+  }
+
+  zoomOutMap() {
+    this.queueMapAction((map) => {
+      map.easeTo({
+        center: [34.75, 32.2],
+        zoom: 6.5,  
+      });
+    }, 'zoom-out-map');
+  }
 }
+

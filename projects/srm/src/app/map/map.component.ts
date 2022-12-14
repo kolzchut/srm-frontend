@@ -395,14 +395,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
       this.lastProps = props;
       this.updateMarkerProps({});
     } 
-    if (activePointId) {
-      const lon = activePointId.slice(0, 2) + '.' + activePointId.slice(2, 7);
-      const lat = activePointId.slice(7, 9) + '.' + activePointId.slice(9, 14);
-      // console.log('CENTERING', activePointId, lon, lat);
-      this.queueAction((map) => {
-        map.panTo([parseFloat(lon), parseFloat(lat)]);
-      }, 'centering-to-active-'+parseFloat(lon) + '-' + parseFloat(lat));
-    }
   }
 
   setCenter(center: mapboxgl.LngLat, zoom: number) {
