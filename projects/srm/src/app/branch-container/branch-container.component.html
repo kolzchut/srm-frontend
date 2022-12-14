@@ -49,3 +49,4 @@
         <app-card-action-nav [card]='actionsCard'></app-card-action-nav>    
     </ng-container>
 </div>
+<div class='back-to-search' [class.visible]='!cardId && !barePoint' #backToSearch [routerLink]='["../../"]'></div>

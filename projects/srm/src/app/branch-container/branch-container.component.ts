@@ -28,7 +28,7 @@ type AuxParams = {
   host: {
     '[class.stage-point]': '!!pointId',
     '[class.stage-card]': '!!cardId',
-    '[class.bare-point]': '!searchParams?.ac_query && !cardId',
+    '[class.bare-point]': 'barePoint',
   }
 })
 export class BranchContainerComponent implements OnInit, OnChanges {
@@ -40,6 +40,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   @Output() size = new EventEmitter<number>();
   @Output() markerProps = new EventEmitter<any>();
   @ViewChild('content') content: ElementRef;
+  @ViewChild('backToSearch') backToSearch: ElementRef;
 
   actionsBottom = -56;
   headerLink: string[] | null = null;
@@ -54,6 +55,8 @@ export class BranchContainerComponent implements OnInit, OnChanges {
 
   parametersQueue = new ReplaySubject<AuxParams>(1);
   obs: IntersectionObserver | null = null;
+
+  barePoint = false;
 
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
               private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService) { }
@@ -140,6 +143,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
     timer(100).subscribe(() => {
       this.setupObserver();
     });
+    this.barePoint = !this.searchParams?.ac_query && !this.cardId;
   }
 
 
@@ -154,35 +158,40 @@ export class BranchContainerComponent implements OnInit, OnChanges {
     }
   }
 
+  swipe(el: HTMLElement) {
+    return switchMap((e: TouchEvent) => {
+      const contentTop = el?.getBoundingClientRect().top;
+      const startY = e.changedTouches[0].clientY;
+      if (startY > contentTop && startY < contentTop + 56) {
+        const startTimestamp = e.timeStamp;
+        console.log('GESTURE START', startY);
+        return fromEvent<TouchEvent>(document, 'touchend').pipe(
+          first(),
+          map((e: TouchEvent) => {
+            const endY = e.changedTouches[0].clientY;
+            const endTimestamp = e.timeStamp;
+            console.log('GESTURE END', endY);
+            if (endTimestamp - startTimestamp < 500 && Math.abs(endY - startY) > 100) {
+              return endY - startY;
+            } else {
+              return 0;
+            }
+          })
+        );
+      } else {
+        return EMPTY;
+      }
+    });
+  }
+
   ngAfterViewInit(): void {
     this.sub = fromEvent(this.el.nativeElement, 'scroll').subscribe((e: any) => {
       this.actionsBottom = -56 + Math.min(56,  e.target.scrollTop);
     });
     fromEvent<TouchEvent>(this.content.nativeElement, 'touchstart')
     .pipe(
-      switchMap((e: TouchEvent) => {
-        const contentTop = this.content.nativeElement?.getBoundingClientRect().top;
-        const startY = e.changedTouches[0].clientY;
-        if (startY > contentTop && startY < contentTop + 56) {
-          const startTimestamp = e.timeStamp;
-          console.log('GESTURE START', startY);
-          return fromEvent<TouchEvent>(document, 'touchend').pipe(
-            first(),
-            map((e: TouchEvent) => {
-              const endY = e.changedTouches[0].clientY;
-              const endTimestamp = e.timeStamp;
-              console.log('GESTURE END', endY);
-              if (endTimestamp - startTimestamp < 500 && Math.abs(endY - startY) > 100) {
-                return endY - startY;
-              } else {
-                return 0;
-              }
-            })
-          );
-        } else {
-          return EMPTY;
-        }
-      })
+      untilDestroyed(this),
+      this.swipe(this.content.nativeElement)
     ).subscribe((diff) => {
       if (Math.abs(diff) > 0.1 * document.body.clientHeight) {
         if (diff > 0) {
@@ -191,6 +200,16 @@ export class BranchContainerComponent implements OnInit, OnChanges {
             this.router.navigate(this.branchLink, {relativeTo: this.route, queryParamsHandling: 'preserve'});
           }
         }
+      }
+    });
+    fromEvent<TouchEvent>(this.backToSearch.nativeElement, 'touchstart')
+    .pipe(
+      untilDestroyed(this),
+      this.swipe(this.backToSearch.nativeElement)
+    ).subscribe((diff) => {
+      console.log('back to search swipe', diff);
+      if (diff < -50) {
+        this.router.navigate(['../..'], {relativeTo: this.route, queryParamsHandling: 'preserve'});
       }
     });
   }

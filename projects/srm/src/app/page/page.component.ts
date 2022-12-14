@@ -179,7 +179,7 @@ export class PageComponent implements OnInit {
           this.mapMoved = false;
           this.map.processAction();  
         }, 'map-moved-reset');
-      } else if (params.requiredCenter) {
+      } else if (params.requiredCenter && params.requiredCenter.length === 3) {
         const rc = params.requiredCenter;
         this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
       } 
