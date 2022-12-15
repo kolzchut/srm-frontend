@@ -1,8 +1,8 @@
 <div class='trigger' [class.visible]='triggerVisible'></div>
 <div class='counts' *ngIf='hasCounts'>
     <div class='line' *ngIf='totalCount > 0'>
-        <span class='strong'>{{visibleCount}} תוצאות על המפה</span>
-        <span>מתוך {{totalCount}} <a (click)='zoomout.emit()'>בכל הארץ</a></span>    
+        <span class='strong'>{{visibleCount.toLocaleString()}} תוצאות על המפה</span>
+        <span>מתוך {{totalCount.toLocaleString()}} <a (click)='zoomout.emit()'>בכל הארץ</a></span>    
     </div>
     <span *ngIf='visibleCount === 0 && totalCount === 0'>לא נמצאו תוצאות בכל הארץ, מומלץ <a href="/q">לשנות את החיפוש</a></span>
 </div>

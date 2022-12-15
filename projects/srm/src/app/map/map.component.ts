@@ -52,6 +52,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
   ZOOM_THRESHOLD = 10;
   ALL_CATEGORIES = ALL_CATEGORIES; 
   savedChanges: SimpleChanges = {};
+  currentPointIds: string[];
   
   constructor(private mapboxService: MapboxService, 
               private api: ApiService,
@@ -383,13 +384,23 @@ export class MapComponent implements OnChanges, AfterViewInit {
     const pointIds = ids || [];
     const activePointId = singlePointMode ? pointIds[0] : null;
     const inactiveLabels = singlePointMode ? [] : pointIds;
-    if (!singlePointMode) {
+    if (singlePointMode) {
+      if (this.currentPointIds?.length) {
+        for (const layer of ['points-on', 'points-stroke-on']) {
+          this.map.setFilter(layer, ['in', ['get', 'point_id'], ['literal', [...this.currentPointIds.filter(id => id !== activePointId)]]]);
+        }
+        for (const layer of ['labels-off']) {
+          this.map.setFilter(layer, ['in', ['get', 'point_id'], ['literal', [...this.currentPointIds.filter(id => id !== activePointId)]]]);
+        }  
+      }
+    } else {
       for (const layer of ['points-on', 'points-stroke-on']) {
         this.map.setFilter(layer, ['in', ['get', 'point_id'], ['literal', [...pointIds]]]);
       }
       for (const layer of ['labels-off']) {
         this.map.setFilter(layer, ['in', ['get', 'point_id'], ['literal', [...inactiveLabels]]]);
       }
+      this.currentPointIds = pointIds;
     }
     if (activePointId && props) {
       this.lastProps = props;

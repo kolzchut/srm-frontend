@@ -11,7 +11,7 @@
         [class.small]='small'
         [style.font-weight]='fontWeight'
     >{{response.name}}</span>
-    <span class='link' 
+    <span class='link' *ngIf='suffix'
         [style.background-color]='borderColor'
     >←</span>
 </a>

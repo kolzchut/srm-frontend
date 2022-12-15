@@ -24,13 +24,13 @@
             <div class='slide' data-slide='0'>
                 <h3><strong>{{numResponses}} סוגי שירותים</strong> כמו למשל:</h3>
                 <div class='staggered' [class.seen-once]='!!seenOnce[0]'>
-                    <app-response *ngFor='let r of responses' [response]='r' [small]='true' [link]='false'></app-response>
+                    <app-response *ngFor='let r of responses' [response]='r' [suffix]='false' [link]='true'></app-response>
                 </div>
             </div>
             <div class='slide' data-slide='1'>
                 <h3><strong>{{numSituations}} מצבי חיים</strong> כמו למשל:</h3>
                 <div class='staggered' [class.seen-once]='!!seenOnce[1]'>
-                    <app-situation *ngFor='let s of situations' [situation]='s' [small]='true'></app-situation>
+                    <a class='situation' *ngFor='let s of situations' [routerLink]='["/s", prepare(s.name)]'>{{s.name}}</a>
                 </div>
             </div>
             <div class='slide' data-slide='2' [class.seen-once]='!!seenOnce[2]'>

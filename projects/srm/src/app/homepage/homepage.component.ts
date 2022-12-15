@@ -121,4 +121,8 @@ export class HomepageComponent implements OnInit, AfterViewInit {
       el.scrollIntoView({behavior: 'smooth', block: 'nearest', inline: 'nearest'});
     });
   }
+
+  prepare(s?: string) {
+    return s?.split(' ').join('_') || '_';
+  }
 }
