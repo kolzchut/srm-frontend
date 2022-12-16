@@ -51,7 +51,7 @@ export class HomepageComponent implements OnInit, AfterViewInit {
     'נצרת',
     'מודיעין עלית',
     'שלומי',
-    'אם אל פחם',
+    'אום אל פחם',
     'חיפה',
   ];
 
