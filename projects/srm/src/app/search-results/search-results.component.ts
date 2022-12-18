@@ -83,6 +83,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       this.fetchQueue = new Subject<SearchParamsOffset>();
       this.resultsSubscription = this.fetchQueue.pipe(
         filter((params) => {
+          console.log('MMM FETCH', JSON.stringify(params));
           return params.offset > this.fetchedOffset;
         }),
         tap((params) => {
@@ -95,10 +96,11 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           return from([]);
         })
       ).subscribe((results) => {
+        console.log('MMM got results', results);
         this.results = this.results.filter(x => !!x).concat(results);
         this.offset = this.results.length;
         this.hasCounts = true;
-        if (results.length > 0) {
+        if (this.results.length > 0) {
           this.visibleCount = (this.results[0] as any)['__counts']['total_overall'] || 0;
           console.log('COUNTS V', this.visibleCount);
         } else {

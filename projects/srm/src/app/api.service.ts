@@ -694,6 +694,36 @@ export class ApiService {
     );
   }
 
+  getInaccuratePoints(searchParams: SearchParams): Observable<any> {
+    const params: any = {
+      size: 1,
+    };
+    if (searchParams.query) {
+      params.q = searchParams.query;
+      params.minscore = this.MIN_SCORE;
+      params.order = '-_score';
+    }
+    params.extra = 'point-ids-extended';
+    const filter = this._filter(searchParams, false) || {};
+    filter.branch_location_accurate = false;
+    if (filter) {
+      params.filter = JSON.stringify(filter);
+    }
+    return this.http.get(environment.cardsURL, {params}).pipe(
+      map((res: any) => {
+        const results = res as QueryCardResult;
+        return results.point_id.map((r: any) => {
+          return {
+            point_id: r.key,
+            response_category: r.response_category?.buckets[0]?.key,
+            geometry: JSON.parse(r.branch_geometry?.buckets[0]?.key),
+            service_count: r.doc_count,
+          };
+        })
+      })
+    );
+  }
+
   getTotalServices(): Observable<number> {
     const params: any = {
       size: 1,

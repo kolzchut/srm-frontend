@@ -46,6 +46,7 @@ export class Card {
     branch_urls: {href: string, title: string}[];
     branch_phone_numbers: string[];
     branch_address: string;
+    branch_location_accurate: boolean;
     branch_city: string;
     branch_geometry: [number, number];
 
