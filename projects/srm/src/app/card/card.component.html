@@ -26,7 +26,7 @@
                 </ng-container>
                 <ng-container *ngIf='card.address_parts'>
                     <span class='primary'>{{card.address_parts.primary}}</span>
-                    <span class='secondary' *ngIf='card.address_parts.secondary'> - {{card.address_parts.secondary}}</span>
+                    <span class='secondary' *ngIf='card.address_parts.secondary'><ng-container *ngIf='card.branch_location_accurate'> - </ng-container>{{card.address_parts.secondary}}</span>
                 </ng-container>
             </div>
             <div class='actions' #orgActions [class.odd]='oddActions'>
