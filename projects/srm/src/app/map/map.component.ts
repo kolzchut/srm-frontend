@@ -141,10 +141,8 @@ export class MapComponent implements OnChanges, AfterViewInit {
       return;
     }
     if (this.changed(changes, 'markerProps') && changes?.markerProps?.currentValue) {
-      console.log('MMM F1');
       this.updateMarkerProps(this.markerProps);
     } else if (this.changed(changes, 'pointId') && changes?.pointId?.currentValue) {
-      console.log('MMM F2');
       this.api.getPoint(this.pointId, this.searchParams || undefined).subscribe((cards) => {
         if (cards.length > 0) {
           const titles: string[] = [];
@@ -169,7 +167,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
         }
       });
     } else if (this.changed(changes, 'cardId') || (this.changed(changes, 'pointId') && !this.pointId && this.cardId)) {
-      console.log('MMM F3');
       this.api.getCard(this.cardId).pipe(
         switchMap((card) => {
           if (card.branch_location_accurate) {
@@ -194,7 +191,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
           }
         })
       ).subscribe((props: any) => {
-        console.log('MMM F3.1', props);
         this.setActivePoint(props);
       });
     }
@@ -345,7 +341,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
               return this.api.getInaccuratePoints(params);
             }),
           ).subscribe((points) => {
-            console.log('INACCURATE POINTS', points);
             this.updateInaccuratePoints(points);
           });
           this.map.on('moveend', (event: mapboxgl.MapboxEvent<MouseEvent>) => {
@@ -455,13 +450,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
         layout: Object.assign(layerDef.layout || {}, {visibility: 'visible'}),
         paint: layerDef.paint || {}
       }, before);
-      console.log('PPP', before, BASE_FILTERS[layer], {
-        id: layer,
-        type: layerDef.type,
-        source: 'inaccurate-points',
-        layout: Object.assign(layerDef.layout || {}, {visibility: 'visible'}),
-        paint: layerDef.paint || {}
-      })
       map.setFilter(layer, BASE_FILTERS[layer] || null);
     }
   }
@@ -528,7 +516,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
       } else {
         layerFilters = null;
       }
-      console.log('MMM SET FILTER', layer, layerFilters);
       this.map.setFilter(layer, layerFilters);
     }
   }
@@ -586,7 +573,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
       },
       properties: p
     }));
-    console.log('MMM UPDATE SOURCE', source, data);
     source?.setData({
       type: 'FeatureCollection',
       features: data
@@ -595,7 +581,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
 
   updateMarkerProps(props: any) {
     const overlaid = Object.assign({}, this.lastProps, props);
-    console.log('MMM MARKER PROPS', overlaid);
     (this.map.getSource('active-point') as mapboxgl.GeoJSONSource)?.setData({
       type: 'FeatureCollection',
       features: [{
