@@ -26,7 +26,7 @@
                         </ng-container>
                         <ng-container *ngIf='branch.cards[0].address_parts'>
                             <span class='primary'>{{branch.cards[0].address_parts.primary}}</span>
-                            <span class='secondary' *ngIf='branch.cards[0].address_parts.secondary'><ng-container *ngIf='branch.cards[0].branch_location_accurate'> - </ng-container>{{branch.cards[0].address_parts.secondary}}</span>
+                            <span class='secondary' *ngIf='branch.cards[0].address_parts.secondary'><ng-container *ngIf='branch.cards[0].branch_location_accurate'> -</ng-container> {{branch.cards[0].address_parts.secondary}}</span>
                         </ng-container>
                     </div>
                 </div>
