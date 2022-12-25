@@ -122,13 +122,24 @@ export class MapComponent implements OnChanges, AfterViewInit {
       
   }
 
-  getTitle(card: Card) {
-    let title = (card.organization_short_name || card.organization_name);
-    const max_len = 40;
-    if (title && title.length > max_len) {
-      title = title.slice(0, max_len) + '…';
+  getTitle(card: Card, service_count: number) {
+    if (!card.branch_location_accurate && service_count > 1) {
+      return 'במיקום לא מדויק';
+    } else {
+      let title = (card.organization_short_name || card.organization_name);
+      const max_len = 40;
+      if (title && title.length > max_len) {
+        title = title.slice(0, max_len) + '…';
+      }
+      if (!card.branch_location_accurate) {
+        title += '*';
+      } else {
+        if (service_count > 1) {
+          title += ` +${service_count - 1}`;
+        }
+      }
+      return title;
     }
-    return title;
   }
 
   changed(changes: SimpleChanges, key: string) {
@@ -141,26 +152,25 @@ export class MapComponent implements OnChanges, AfterViewInit {
       return;
     }
     if (this.changed(changes, 'markerProps') && changes?.markerProps?.currentValue) {
+      if (this.pointId && !this.lastProps.branch_location_accurate) {
+        this.markerProps['title'] = 'מיקום לא מדויק';
+      }
       this.updateMarkerProps(this.markerProps);
     } else if (this.changed(changes, 'pointId') && changes?.pointId?.currentValue) {
       this.api.getPoint(this.pointId, this.searchParams || undefined).subscribe((cards) => {
         if (cards.length > 0) {
-          const titles: string[] = [];
+          const branchIds: string[] = [];
           cards.forEach(card => {
-            const title = this.getTitle(card);
-            if (titles.indexOf(title) === -1) {
-              titles.push(title);
+            if (branchIds.indexOf(card.branch_id) === -1) {
+              branchIds.push(card.branch_id);
             }
           });
-          let title = titles[0];
-          if (titles.length > 1) {
-            title += ' + ' + (titles.length - 1);
-          }
+          const title = this.getTitle(cards[0], branchIds.length);
           this.setActivePoint({
             point_id: this.pointId,
             response_category: cards[0].response_category,
             title: title,
-            service_count: cards.length,
+            service_count: branchIds.length,
             branch_location_accurate: cards[0].branch_location_accurate,
             coordinates: cards[0].branch_geometry
           });  
@@ -169,18 +179,24 @@ export class MapComponent implements OnChanges, AfterViewInit {
     } else if (this.changed(changes, 'cardId') || (this.changed(changes, 'pointId') && !this.pointId && this.cardId)) {
       this.api.getCard(this.cardId).pipe(
         switchMap((card) => {
-          if (card.branch_location_accurate) {
-            return from([{card, service_count: 1}]);
-          } else {
-            return this.api.getPoint(card.point_id, this.searchParams || undefined).pipe(
-              map((cards) => {
-                return {card, service_count: cards.length};
-              })
-            );
-          }
+          // if (card.branch_location_accurate) {
+          return from([{card, service_count: 1}]);
+          // } else {
+          //   return this.api.getPoint(card.point_id, this.searchParams || undefined).pipe(
+          //     map((cards) => {
+          //       const branchIds: string[] = [];
+          //       cards.forEach(card => {
+          //         if (branchIds.indexOf(card.branch_id) === -1) {
+          //           branchIds.push(card.branch_id);
+          //         }
+          //       });      
+          //       return {card, service_count: branchIds.length};
+          //     })
+          //   );
+          // }
         }),
         map(({card, service_count}) => {
-          const title = this.getTitle(card);
+          const title = this.getTitle(card, service_count);
           return {
             point_id: card.point_id,
             response_category: card.response_category,
