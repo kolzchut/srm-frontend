@@ -1,6 +1,9 @@
-<a class='map-window' [class.point-mode]='!!pointId' 
+<a class='map-window' [class.point-mode]='!!pointId' [class.inaccurate]='inaccurate' 
    [routerLink]='branchLink'
-   queryParamsHandling='preserve'></a>
+   queryParamsHandling='preserve'>
+    <div class='message-blur'>&nbsp;</div>
+    <div class='message'>*שימו לב: הכתובת שבידינו אינה מדויקת</div>
+</a>
 <div class='content'
     [class.stage-point]='!!pointId'
     [class.stage-card]='!!cardId'

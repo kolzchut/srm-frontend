@@ -257,4 +257,8 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   get landingPage(): boolean {
     return !this.searchParams?.original_query && !this.pointId;
   }
+
+  get inaccurate(): boolean {
+    return !this.actionsCard?.branch_location_accurate;
+  }
 }

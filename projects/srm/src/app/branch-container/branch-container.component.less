@@ -11,14 +11,51 @@
     overscroll-behavior: none;
 
     .map-window {
-        display: block;
+        display: flex;
         height: 100px;
         background: transparent;
         flex: 0 0 auto;
         pointer-events: all;
+        position: relative;
+        flex-flow: column;
+        align-items: center;
+
+        .message-blur {
+            position: absolute;
+            bottom: -10px;
+            height: 40px;
+            width: 100%;
+            display: none;
+            background: rgba(255, 255, 255, 0.5);
+            filter: blur(10px);
+            backdrop-filter: blur(2px);
+        }
+        .message {
+            position: absolute;
+            bottom: 4px;
+            text-align: center;
+            .font-rag-sans;
+            font-weight: 400;
+            font-size: 13px;
+            line-height: 16px;
+            color: @color-gray-2;
+            display: none;
+        }
+
+        &.inaccurate {
+            .message, .message-blur {
+                display: block;
+            }
+        }
 
         &.point-mode {
             pointer-events: none;
+            .message-blur {
+                bottom: -22px;
+            }
+            .message {
+                bottom: -8px;
+            }
         }
     }
 
@@ -114,7 +151,11 @@
                     height: 100%;
                 }
             }
-        }    
+        }
+        z-index: 1;
+        &.stage-card:not(.stage-point) {
+            box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
+        }
         &.stage-point {
             overflow-x: scroll;
             .no-scrollbars;    
