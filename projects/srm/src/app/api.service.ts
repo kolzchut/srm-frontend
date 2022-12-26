@@ -411,14 +411,21 @@ export class ApiService {
       params.q = searchParams.structured_query;
     }
     if (offset === 0) {
-      params.extra = 'collapse|collapse-collect';
+      params.extra = 'national-services|collapse|collapse-collect';
     } else {
-      params.extra = 'collapse';
+      params.extra = 'national-services|collapse';
     }
+    const filters = [];
     const filter = this._filter(searchParams);
     if (filter) {
-      params.filter = JSON.stringify(filter);
+      filters.push(filter);
     }
+    const filter2 = this._filter(searchParams, false);
+    if (filter2) {
+      filter2.national_service = true;
+      filters.push(filter2);
+    }
+    params.filter = JSON.stringify(filters);
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         const qcr = res as QueryCardResult;
@@ -689,7 +696,7 @@ export class ApiService {
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         const results = res as QueryCardResult;
-        return results.point_id.map((r: any) => r.key);
+        return results.point_id.map((r: any) => r.key).filter((r: any) => r !== 'national_service');
       })
     );
   }
@@ -716,10 +723,10 @@ export class ApiService {
           return {
             point_id: r.key,
             response_category: r.response_category?.buckets[0]?.key,
-            geometry: JSON.parse(r.branch_geometry?.buckets[0]?.key),
+            geometry: JSON.parse(r.branch_geometry?.buckets[0]?.key || 'null'),
             service_count: r.branch_id?.buckets.length || 1,
           };
-        })
+        }).filter((r: any) => r.point_id !== 'national_service');
       })
     );
   }

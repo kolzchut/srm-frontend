@@ -1,8 +1,9 @@
-<a class='map-window' [class.point-mode]='!!pointId' [class.inaccurate]='inaccurate' 
+<a class='map-window' [class.point-mode]='!!pointId' [class.inaccurate]='inaccurate' [class.national-service]='nationalService'
    [routerLink]='branchLink'
    queryParamsHandling='preserve'>
-    <div class='message-blur'>&nbsp;</div>
-    <div class='message'>*שימו לב: הכתובת שבידינו אינה מדויקת</div>
+    <div class='message-blur' *ngIf='inaccurate || nationalService'>&nbsp;</div>
+    <div class='message' *ngIf='inaccurate'>*שימו לב: הכתובת שבידינו אינה מדויקת</div>
+    <div class='message' *ngIf='nationalService'>השירות ניתן בכל הארץ</div>
 </a>
 <div class='content'
     [class.stage-point]='!!pointId'
@@ -24,12 +25,17 @@
                         </ng-container>
                     </h2>
                     <div class='address'>
-                        <ng-container *ngIf='!branch.cards[0].address_parts'>
-                            <span class='primary'>{{branch.cards[0].branch_address}}</span>
+                        <ng-container *ngIf='!branch.cards[0].national_service'>
+                            <ng-container *ngIf='!branch.cards[0].address_parts'>
+                                <span class='primary'>{{branch.cards[0].branch_address}}</span>
+                            </ng-container>
+                            <ng-container *ngIf='branch.cards[0].address_parts'>
+                                <span class='primary'>{{branch.cards[0].address_parts.primary}}</span>
+                                <span class='secondary' *ngIf='branch.cards[0].address_parts.secondary'><ng-container *ngIf='branch.cards[0].branch_location_accurate'> -</ng-container> {{branch.cards[0].address_parts.secondary}}</span>
+                            </ng-container>
                         </ng-container>
-                        <ng-container *ngIf='branch.cards[0].address_parts'>
-                            <span class='primary'>{{branch.cards[0].address_parts.primary}}</span>
-                            <span class='secondary' *ngIf='branch.cards[0].address_parts.secondary'><ng-container *ngIf='branch.cards[0].branch_location_accurate'> -</ng-container> {{branch.cards[0].address_parts.secondary}}</span>
+                        <ng-container *ngIf='branch.cards[0].national_service'>
+                            <span class='national-service'>השירות ניתן בכל הארץ</span>
                         </ng-container>
                     </div>
                 </div>

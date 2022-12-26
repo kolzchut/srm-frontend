@@ -176,7 +176,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
           });  
         }
       });
-    } else if (this.changed(changes, 'cardId') || (this.changed(changes, 'pointId') && !this.pointId && this.cardId)) {
+    } else if ((this.changed(changes, 'cardId') || this.changed(changes, 'pointId')) && !this.pointId?.length && this.cardId?.length) {
       this.api.getCard(this.cardId).pipe(
         switchMap((card) => {
           // if (card.branch_location_accurate) {
@@ -225,7 +225,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
   }
 
   initialize() {
-    console.log('INIT MAP');
+    console.log('INIT MAP', this.mapEl.nativeElement);
     // let first_ = true;
     if (this.platform.browser() && this.mapEl && this.mapEl.nativeElement) {
       try {
@@ -378,8 +378,10 @@ export class MapComponent implements OnChanges, AfterViewInit {
             this.processAction();
           });
           this.bounds = this.map.getBounds();
-          this.newMap.next(this);
-          this.ngOnChanges(this.savedChanges);
+          timer(100).subscribe(() => {
+            this.newMap.next(this);
+            this.ngOnChanges(this.savedChanges);
+          });
         });
       } catch (e) {
         console.log('FAILED TO LOAD', e)

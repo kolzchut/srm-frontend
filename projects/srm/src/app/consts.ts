@@ -50,6 +50,8 @@ export class Card {
     branch_city: string;
     branch_geometry: [number, number];
 
+    national_service: boolean;
+
     address_parts: {primary: string, secondary: string};
     organization_name_parts: {primary: string, secondary: string};
 

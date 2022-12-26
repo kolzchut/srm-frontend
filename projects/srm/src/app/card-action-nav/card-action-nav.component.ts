@@ -19,12 +19,14 @@ export class CardActionNavComponent implements OnChanges {
   constructor() { }
 
   ngOnChanges(): void {
-    const coords = [this.card?.branch_geometry?.[1], this.card?.branch_geometry?.[0]];
-    const latLng = coords.filter(x => !!x).join(',');
     this.active = false;
-    if (latLng && latLng.length) {
-      this.action = `https://www.google.com/maps/search/?api=1&query=${latLng}`;
-      this.active = true;
-    }
+    if (this.card?.branch_geometry) {
+      const coords = [this.card.branch_geometry[1], this.card?.branch_geometry[0]].filter(x => !!x);
+      const latLng = coords.join(',');
+      if (coords.length === 2 && latLng && latLng.length) {
+        this.action = `https://www.google.com/maps/search/?api=1&query=${latLng}`;
+        this.active = true;
+      }
+    }  
   }
 }

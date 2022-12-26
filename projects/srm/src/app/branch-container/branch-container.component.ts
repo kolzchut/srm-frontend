@@ -124,7 +124,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
         // console.log('CARDS', branch.cards[0].branch_id, cards.filter(c => c.branch_id === branch.cards[0].branch_id));
         // console.log('ALL CARDS', allCards.filter(c => c.branch_id === branch.cards[0].branch_id));
       }
-      if (p.cardId && !p.pointId && this.card) {
+      if (p.cardId && !p.pointId && this.card?.branch_geometry) {
         const geom: [number, number] = this.card.branch_geometry;
         this.center.emit(geom);
       }
@@ -159,7 +159,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
     this.headerLink = null;
     if (this.stage === 'point') {
       this.headerLink = ['../..'];
-    } else if (this.stage === 'card' && this.card?.point_id) {
+    } else if (this.stage === 'card' && this.card?.point_id && this.card?.point_id !== 'national_service') {
       this.branchLink = ['p', this.card.point_id];
       this.headerLink = this.branchLink;
     }
@@ -259,6 +259,10 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   }
 
   get inaccurate(): boolean {
-    return !this.actionsCard?.branch_location_accurate;
+    return !this.actionsCard?.branch_location_accurate && !this.nationalService;
+  }
+
+  get nationalService(): boolean {
+    return !!this.actionsCard?.national_service;
   }
 }
