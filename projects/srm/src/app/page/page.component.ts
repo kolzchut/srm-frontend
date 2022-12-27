@@ -242,7 +242,9 @@ export class PageComponent implements OnInit {
       this.currentSearchParamCalc.fag = params.fag;
       this.currentSearchParamCalc.fl = params.fl;
       this.currentSearchParamCalc.fr = params.fr;
-      this.pushSearchParamsCalc();
+      if (this.stage === 'search-results') {
+        this.pushSearchParamsCalc();
+      }
     });
     this.route.fragment.pipe(
       first(),

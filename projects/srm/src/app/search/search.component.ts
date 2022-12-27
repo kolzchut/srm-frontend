@@ -151,7 +151,7 @@ export class SearchComponent implements OnInit {
   }
 
   changed(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && this.query?.length > 0) {
       let found = false;
       for (const result of this.autoCompleteResults) {
         if (result.query === this.query) {

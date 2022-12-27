@@ -10,7 +10,11 @@ import { WindowService } from '../window.service';
 @Component({
   selector: 'app-results-drawer',
   templateUrl: './results-drawer.component.html',
-  styleUrls: ['./results-drawer.component.less']
+  styleUrls: ['./results-drawer.component.less'],
+  host: {
+    '[class.minimal]': 'state === DrawerState.Minimal',
+    '[class.hidden]': 'state === DrawerState.Hidden'
+  }
 })
 export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit {
 
@@ -32,6 +36,8 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
 
   STICKINESS = 50;
 
+  DrawerState = DrawerState;
+
   constructor(public layout: LayoutService, private window: WindowService, private host: ElementRef) { }
 
   ngOnInit(): void {
@@ -51,28 +57,31 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
 
   calcHeight(): number {
     const hostHeight = this.hostHeight;
-    let ret = 0;
+    let ret = hostHeight / 2;
     if (this.layout.desktop) {
       ret = hostHeight;
     } else if (this.state === DrawerState.Hidden) {
-      ret = 0;
+      ret = hostHeight;
     } else if (this.state === DrawerState.Peek) {
-      ret = 56;
+      ret = (hostHeight - 56);
     } else if (this.state === DrawerState.Half) {
-      ret = 0.5 * hostHeight;
+      ret = hostHeight/2;
     } else if (this.state === DrawerState.Most) {
-      ret = 0.8 * hostHeight;
+      ret = hostHeight*0.25;
     } else if (this.state === DrawerState.Full) {
-      ret = hostHeight - 64;
+      ret = 0;
     }
-    ret -= this.moveDiff;
-    return ret > hostHeight ? hostHeight : ret;
+    ret += this.moveDiff;
+    if (ret > hostHeight) {
+      ret = hostHeight;
+    }
+    return ret
   }
 
-  calcTop(): number {
-    const hostHeight = this.hostHeight;
-    return hostHeight - this.calcHeight();
-  }
+  // calcTop(): number {
+  //   const hostHeight = this.hostHeight;
+  //   return hostHeight - this.calcHeight();
+  // }
 
   ngAfterViewInit(): void {
     const el = this.handleEl.nativeElement as HTMLDivElement;

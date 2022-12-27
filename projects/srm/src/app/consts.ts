@@ -6,6 +6,7 @@ export enum DrawerState {
     Half = 'half',
     Most = 'most',
     Full = 'full',
+    Minimal = 'minimal',
 };
 
 export class TaxonomyItem {

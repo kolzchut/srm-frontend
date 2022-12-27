@@ -532,6 +532,25 @@ export class ApiService {
     );
   }
 
+  getNationalCounts(searchParams: SearchParams): Observable<QueryCardResult> {
+    const params: any = {
+      size: 2,
+      offset: 0,
+    };
+    if (searchParams.query) {
+      params.q = searchParams.query;
+      params.minscore = this.MIN_SCORE;
+    }
+    const filter = this._filter(searchParams, false) || {};
+    filter.national_service = true;
+    params.filter = JSON.stringify(filter);
+    return this.http.get(environment.cardsURL, {params}).pipe(
+      map((res: any) => {
+        return res as QueryCardResult;
+      })
+    );
+  }
+
   getDistinct(searchParams: SearchParams): Observable<QueryCardResult> {
     const params: any = {
       size: 1,

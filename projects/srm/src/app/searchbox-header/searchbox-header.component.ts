@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { debounceTime, filter, Subject, switchMap, tap, throttleTime } from 'rxjs';
 import { ApiService } from '../api.service';
 import { SearchParams, TaxonomyItem } from '../consts';
 
@@ -24,9 +25,33 @@ export class SearchboxHeaderComponent implements OnChanges {
   didYouMean: string | null = null;
   didYouMeanLink: string | null = null;
 
-  constructor(private api: ApiService) { }
+  searchParamQueue = new Subject<SearchParams>();
+
+  constructor(private api: ApiService) {
+    this.searchParamQueue.pipe(
+      debounceTime(500),
+      filter((searchParams: SearchParams) => {
+        console.log('DID YOU MEAN?', this.searchParams?.query, this.searchParams);
+         const ret = !this.homepage && !!searchParams?.query && !searchParams?.filter_responses?.length && !searchParams?.filter_situations?.length;
+         if (!ret) {
+          this.didYouMean = null;
+         }
+         return ret;
+      }),
+      switchMap((searchParams: SearchParams) => {
+        return this.api.didYouMean(searchParams);
+      })
+    ).subscribe((didYouMean: string | null) => {
+        this.didYouMean = didYouMean;
+        if (didYouMean) {
+          this.didYouMeanLink = didYouMean.split(' ').join('_');
+        }
+        console.log('DID YOU MEAN', didYouMean);
+    });
+  }
 
   ngOnChanges(): void {
+    this.searchParamQueue.next(this.searchParams);
     if (this.searchParams?.response_name) {
       this.responseDisplay = this.searchParams.response_name;
     } else {
@@ -38,18 +63,6 @@ export class SearchboxHeaderComponent implements OnChanges {
       this.situationDisplay = null;
     }
     this.orgDisplay = this.searchParams?.org_name || null;
-    if (!this.homepage && this.searchParams?.query && !this.searchParams?.filter_responses?.length && !this.searchParams?.filter_situations?.length) {
-      this.api.didYouMean(this.searchParams).subscribe((didYouMean: string | null) => {
-        this.didYouMean = didYouMean;
-        if (didYouMean) {
-          this.didYouMeanLink = didYouMean.split(' ').join('_');
-        }
-        console.log('DID YOU MEAN', didYouMean);
-      });
-    } else {
-      this.didYouMean = null;
-    }
-    console.log('DID YOU MEAN?', this.searchParams);
   }
 
 }

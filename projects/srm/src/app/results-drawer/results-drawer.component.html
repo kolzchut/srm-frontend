@@ -1,8 +1,8 @@
-<div class='content' #handleEl 
+<div class='map-window'
     [class.gesture]='gesture'
-    [style.max-height]="calcHeight() + 'px'"
-    [style.top]="calcTop() + 'px'"
->
+    [style.height]='calcHeight() + "px"'>
+</div>
+<div class='content' #handleEl>
     <div class='handle layout-mobile' (click)='$event.stopPropagation()'>
         <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
     </div>

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { from, Subject, Subscription, throwError } from 'rxjs';
+import { forkJoin, from, Subject, Subscription, throwError } from 'rxjs';
 import { catchError, concatMap, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams } from '../consts';
@@ -45,6 +45,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   hasCounts = false;
   visibleCount = 0;
   totalCount = 0;
+  totalNationalCount = 0;
 
   constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService) {
   }
@@ -58,9 +59,10 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         if (params.searchHash === this.searchHash) {
           return from([params]);
         } else {
-          return this.api.getCounts(params).pipe(
-            tap((counts) => {
+          return forkJoin([this.api.getCounts(params), this.api.getNationalCounts(params)]).pipe(
+            tap(([counts, nationalCounts]) => {
               this.totalCount = counts.search_counts._current.total_overall || 0;
+              this.totalNationalCount = nationalCounts.search_counts._current.total_overall || 0;
               this.searchHash = params.searchHash;
             }),
             map(() => {
@@ -98,7 +100,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         this.offset = this.results.length;
         this.hasCounts = true;
         if (this.results.length > 0) {
-          this.visibleCount = (this.results[0] as any)['__counts']['total_overall'] || 0;
+          this.visibleCount =  ((this.results[0] as any)['__counts']['total_overall'] - this.totalNationalCount) || 0;
         } else {
           this.visibleCount = 0;
         }

@@ -22,10 +22,6 @@
                         <span class='separator'></span>
                         <span class='text'>של {{orgDisplay}}</span>
                     </ng-container>
-                    <ng-container *ngIf='!orgDisplay'>
-                        <span class='separator'></span>
-                        <span class='text soft'>של כל ארגון</span>
-                    </ng-container>
                     <ng-container *ngIf='searchParams.city_name && showCity'>
                         <span class='separator'></span>
                         <span class='text'>באיזור {{searchParams.city_name}}</span>

@@ -12,7 +12,9 @@
         </a>
         <a class='result-arrow direct'
            *ngIf='result.direct'
-           [routerLink]='result.link'></a>
+           [routerLink]='result.link'
+           [queryParams]='result.linkParams'
+        ></a>
         <a class='result-arrow'
            *ngIf='!result.direct'
            (click)='result.query && query = result.query'></a>
