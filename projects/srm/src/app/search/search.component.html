@@ -5,7 +5,7 @@
 </div>
 <div class='results'>
     <div class='result' *ngFor='let result of (query ? results : presets)'>
-        <a class='result-title' [routerLink]='result.link'>
+        <a class='result-title' [routerLink]='result.link' [queryParams]='result.linkParams'>
             <span class='result-icon'>
             </span>
             <span class='text' [innerHtml]='result.display'></span>
