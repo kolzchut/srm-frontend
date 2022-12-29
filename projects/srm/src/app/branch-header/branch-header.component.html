@@ -1,0 +1,28 @@
+<a class='header' [routerLink]='link' queryParamsHandling='preserve' *ngIf='card' [class.point]='!!pointId'>
+    <div class='branch-details'>
+        <h2 class='branch-name'>
+            <ng-container *ngIf='!card.organization_name_parts'>
+                <span class='primary'>{{card.organization_name}}</span>
+            </ng-container>
+            <ng-container *ngIf='card.organization_name_parts'>
+                <span class='primary'>{{card.organization_name_parts.primary}}</span>
+                <span class='secondary' *ngIf='card.organization_name_parts.secondary'> - {{card.organization_name_parts.secondary}}</span>
+            </ng-container>
+        </h2>
+        <div class='address'>
+            <ng-container *ngIf='!card.national_service'>
+                <ng-container *ngIf='!card.address_parts'>
+                    <span class='primary'>{{card.branch_address}}</span>
+                </ng-container>
+                <ng-container *ngIf='card.address_parts'>
+                    <span class='primary'>{{card.address_parts.primary}}</span>
+                    <span class='secondary' *ngIf='card.address_parts.secondary'><ng-container *ngIf='card.branch_location_accurate'> -</ng-container> {{card.address_parts.secondary}}</span>
+                </ng-container>
+            </ng-container>
+            <ng-container *ngIf='card.national_service'>
+                <span class='national-service'>השירות ניתן בכל הארץ</span>
+            </ng-container>
+        </div>
+    </div>
+    <button class='control-icon' [class.card]='!!cardId' [class.point]='!!pointId'></button>
+</a>

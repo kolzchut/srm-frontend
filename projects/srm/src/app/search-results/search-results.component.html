@@ -15,7 +15,14 @@
             <app-result-stack [result]='result' *ngIf='!!result._collapse_count'></app-result-stack>
         </a>
     </ng-container>
-    <ng-container *ngIf='!result'>
+</ng-container>
+<ng-container *ngIf='loading'>
+    <ng-container *ngIf='!results.length'>
+        <div class='placeholder loading'></div>
+        <div class='placeholder loading'></div>
+        <div class='placeholder loading'></div>
+    </ng-container>
+    <ng-container *ngIf='results.length'>
         <div class='placeholder loading'></div>
     </ng-container>
 </ng-container>

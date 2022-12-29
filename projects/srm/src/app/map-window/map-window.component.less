@@ -1,0 +1,67 @@
+@import '../../common.less';
+
+.map-window {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    pointer-events: all;
+    position: relative;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+
+    &.inaccurate {
+        .message-blur {
+            position: absolute;
+            bottom: -10px;
+            height: 40px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            filter: blur(10px);
+            backdrop-filter: blur(2px);
+        }
+        .message {
+            position: absolute;
+            bottom: 4px;
+            text-align: center;
+            .font-rag-sans;
+            font-weight: 400;
+            font-size: 13px;
+            line-height: 16px;
+            color: @color-gray-2;
+        }
+    }
+
+    &.national-service {
+        .message-blur {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: fade(@color-blue-1, 55%);
+            mix-blend-mode: normal;
+            backdrop-filter: blur(4px);    
+        }
+        .message {
+            position: absolute;
+            color: @color-white;
+            .font-rag-sans;
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 16px;
+        }
+        pointer-events: none;
+    }
+
+    &.point-mode {
+        pointer-events: none;
+        .message-blur {
+            bottom: -22px;
+        }
+        .message {
+            bottom: -8px;
+        }
+    }
+}

@@ -1,0 +1,10 @@
+<a class='map-window' 
+        [class.point-mode]='mode === MapWindowMode.Point'
+        [class.inaccurate]='mode === MapWindowMode.Inaccurate'
+        [class.national-service]='mode === MapWindowMode.NationalService'
+        [routerLink]='link'
+        queryParamsHandling='preserve'>
+    <div class='message-blur' *ngIf='mode === MapWindowMode.Inaccurate || mode === MapWindowMode.NationalService'>&nbsp;</div>
+    <div class='message' *ngIf='mode === MapWindowMode.Inaccurate'>*שימו לב: הכתובת שבידינו אינה מדויקת</div>
+    <div class='message' *ngIf='mode === MapWindowMode.NationalService'>השירות ניתן בכל הארץ</div>
+</a>

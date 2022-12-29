@@ -34,6 +34,11 @@ import { MenuPopupContactComponent } from './menu/menu-popup/menu-popup-contact/
 import { MenuPopupPartnersComponent } from './menu/menu-popup/menu-popup-partners/menu-popup-partners.component';
 import { MenuPopupAboutComponent } from './menu/menu-popup/menu-popup-about/menu-popup-about.component';
 import { MenuPopupComponent } from './menu/menu-popup/menu-popup.component';
+import { BranchHeaderComponent } from './branch-header/branch-header.component';
+import { MapWindowComponent } from './map-window/map-window.component';
+import { CardContainerComponent } from './card-container/card-container.component';
+import { QuickActionsComponent } from './quick-actions/quick-actions.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -64,11 +69,16 @@ import { MenuPopupComponent } from './menu/menu-popup/menu-popup.component';
     MenuPopupComponent,
     MenuPopupContactComponent,
     MenuPopupPartnersComponent,
-    MenuPopupAboutComponent
+    MenuPopupAboutComponent,
+    BranchHeaderComponent,
+    MapWindowComponent,
+    CardContainerComponent,
+    QuickActionsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserTransferStateModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule

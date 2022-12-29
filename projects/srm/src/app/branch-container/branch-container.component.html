@@ -1,48 +1,15 @@
-<a class='map-window' [class.point-mode]='!!pointId' [class.inaccurate]='inaccurate' [class.national-service]='nationalService'
-   [routerLink]='branchLink'
-   queryParamsHandling='preserve'>
-    <div class='message-blur' *ngIf='inaccurate || nationalService'>&nbsp;</div>
-    <div class='message' *ngIf='inaccurate'>*שימו לב: הכתובת שבידינו אינה מדויקת</div>
-    <div class='message' *ngIf='nationalService'>השירות ניתן בכל הארץ</div>
-</a>
+<div class='map-window'>
+    <app-map-window [mode]='MWM.Point' [link]='null'></app-map-window>
+</div>
 <div class='content'
-    [class.stage-point]='!!pointId'
     [class.stage-card]='!!cardId'
-    [class.multiple]='stage==="point" && branches.length > 1'
+    [class.multiple]='branches.length > 1'
     #content
 >
     <ng-container *ngFor='let branch of branches'>
-        <div class='branch' *ngIf='stage==="point" || branch === cardBranch'>
-            <a class='header' *ngIf='branch.cards.length > 0' [routerLink]='headerLink' queryParamsHandling='preserve'>
-                <div class='branch-details'>
-                    <h2 class='branch-name'>
-                        <ng-container *ngIf='!branch.cards[0].organization_name_parts'>
-                            <span class='primary'>{{branch.cards[0].organization_name}}</span>
-                        </ng-container>
-                        <ng-container *ngIf='branch.cards[0].organization_name_parts'>
-                            <span class='primary'>{{branch.cards[0].organization_name_parts.primary}}</span>
-                            <span class='secondary' *ngIf='branch.cards[0].organization_name_parts.secondary'> - {{branch.cards[0].organization_name_parts.secondary}}</span>
-                        </ng-container>
-                    </h2>
-                    <div class='address'>
-                        <ng-container *ngIf='!branch.cards[0].national_service'>
-                            <ng-container *ngIf='!branch.cards[0].address_parts'>
-                                <span class='primary'>{{branch.cards[0].branch_address}}</span>
-                            </ng-container>
-                            <ng-container *ngIf='branch.cards[0].address_parts'>
-                                <span class='primary'>{{branch.cards[0].address_parts.primary}}</span>
-                                <span class='secondary' *ngIf='branch.cards[0].address_parts.secondary'><ng-container *ngIf='branch.cards[0].branch_location_accurate'> -</ng-container> {{branch.cards[0].address_parts.secondary}}</span>
-                            </ng-container>
-                        </ng-container>
-                        <ng-container *ngIf='branch.cards[0].national_service'>
-                            <span class='national-service'>השירות ניתן בכל הארץ</span>
-                        </ng-container>
-                    </div>
-                </div>
-                <button class='control-icon' [class.card]='!!cardId'></button>
-            </a>
-            <app-card *ngIf='stage === "card" && card' [card]='card'></app-card>
-            <app-point-result-stack *ngIf='stage === "point"' [cards]='branch.cards' [hiddenCards]='branch.hidden' [searchParams]='searchParams'></app-point-result-stack>    
+        <div class='branch'>
+            <app-branch-header *ngIf='branch.cards.length > 0' [card]='branch.cards[0]' [link]='headerLink' [cardId]='cardId' [pointId]='pointId'></app-branch-header>
+            <app-point-result-stack [cards]='branch.cards' [hiddenCards]='branch.hidden' [searchParams]='searchParams'></app-point-result-stack>    
         </div>
     </ng-container>
 </div>
@@ -51,11 +18,7 @@
     <div class='menu-icon' *ngIf='landingPage'><app-menu-icon [dark]='true'></app-menu-icon></div>
     <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.original_query ? {q: searchParams?.original_query} : {}"></a>
 </div>
-<div class='quick-actions' [style.bottom]='(stage==="card" ? actionsBottom : 0) + "px"' *ngIf='cardId'>
-    <ng-container *ngIf='actionsCard'>
-        <app-card-action-phone [card]='actionsCard' [org]='false'></app-card-action-phone>
-        <app-card-action-url [card]='actionsCard' [org]='false'></app-card-action-url>
-        <app-card-action-nav [card]='actionsCard'></app-card-action-nav>    
-    </ng-container>
+<div class='quick-actions' [style.bottom]='"0px"' *ngIf='actionsCard'>
+    <app-quick-actions [card]='actionsCard'></app-quick-actions>
 </div>
 <div class='back-to-search' [class.visible]='!cardId && !barePoint' #backToSearch [routerLink]='["../../"]'></div>

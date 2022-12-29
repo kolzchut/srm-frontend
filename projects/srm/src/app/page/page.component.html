@@ -9,55 +9,65 @@
 <div class='page-container' [class]='"stage-" + stage'>
     <app-homepage *ngIf='stage === "homepage"'></app-homepage>
     <app-search *ngIf='stage === "search"'></app-search>
-    <app-branch-container
-        *ngIf='stage === "point" || stage === "card"' 
-        [cardId]='card' 
-        [pointId]='point' 
-        [searchParams]='searchParams'
-        [stage]='stage'
-        (center)='centerMap($event)'
-        (size)='branchSize = $event'
-        (markerProps)='markerProps = $event'
-    >
-    </app-branch-container>
-    <app-searchbox-header *ngIf='stage === "search-results"' 
-            [query]='query'
-            [showCity]='!mapMoved'
-            [searchParams]='searchParams'        
-    ></app-searchbox-header>
-    <app-results-drawer
-        [state]='stage === "point" ? (searchParams?.ac_query && !card ? DrawerState.Minimal : DrawerState.Hidden) : drawerState'
-        *ngIf='searchParams'
-        [class.visible]='stage === "point" || stage === "search-results"'
-        [scrollAll]='!!filtersVisible'
-        (handle)='handleDrawer($event)'
-        (size)='drawerSize = $event'
-    >
-        <div class='content' ngProjectAs='content-header' 
-             [class.visible]='stage === "search-results" || (stage === "point" && !card)'
-             [class.filters]='filtersVisible'
-        >
-            <app-search-filters 
-                [searchParams]='searchParams'
-                (params)='setSearchParams($event)'
-                (activate)='setFiltersVisible($event)'
-                #searchFilters
-            ></app-search-filters>
+    <div class='main-content'>
+        <div class='search-results'>
+            <app-searchbox-header *ngIf='stage === "search-results"' 
+                    [query]='query'
+                    [showCity]='!mapMoved'
+                    [searchParams]='searchParams'        
+            ></app-searchbox-header>
+            <app-results-drawer
+                [state]='stage === "point" ? (searchParams?.ac_query && !card ? DrawerState.Minimal : DrawerState.Hidden) : drawerState'
+                *ngIf='searchParams'
+                [class.visible]='stage === "point" || stage === "search-results"'
+                [scrollAll]='!!filtersVisible'
+                (handle)='handleDrawer($event)'
+                (size)='drawerSize = $event'
+            >
+                <div class='content' ngProjectAs='content-header' 
+                    [class.visible]='stage === "search-results" || (stage === "point" && !card)'
+                    [class.filters]='filtersVisible'
+                >
+                    <app-search-filters 
+                        [searchParams]='searchParams'
+                        (params)='setSearchParams($event)'
+                        (activate)='setFiltersVisible($event)'
+                        #searchFilters
+                    ></app-search-filters>
+                </div>
+                <div class='content main' ngProjectAs='content' 
+                    [class.visible]='stage === "search-results" && !filtersVisible'
+                    [class.filters]='filtersVisible'
+                >
+                    <app-search-results
+                        [class.hidden]='filtersVisible === true' 
+                        [class.shown]='filtersVisible === false' 
+                        [searchParams]='searchParams'
+                        (zoomout)='zoomOutMap()'
+                    ></app-search-results>
+                </div>
+        <!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
+                            [class.away]='disclaimerVisible || infoPage'> -->
+            </app-results-drawer>
         </div>
-        <div class='content main' ngProjectAs='content' 
-             [class.visible]='stage === "search-results" && !filtersVisible'
-             [class.filters]='filtersVisible'
+        <app-branch-container
+            *ngIf='stage === "point"' 
+            [cardId]='card' 
+            [pointId]='point' 
+            [searchParams]='searchParams'
+            (size)='branchSize = $event'
+            (markerProps)='markerProps = $event'
         >
-            <app-search-results
-                [class.hidden]='filtersVisible === true' 
-                [class.shown]='filtersVisible === false' 
-                [searchParams]='searchParams'
-                (zoomout)='zoomOutMap()'
-            ></app-search-results>
-        </div>
-<!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
-                    [class.away]='disclaimerVisible || infoPage'> -->
-    </app-results-drawer>
+        </app-branch-container>
+        <app-card-container
+            *ngIf='stage === "card"' 
+            [cardId]='card' 
+            [searchParams]='searchParams'
+            (center)='centerMap($event)'
+            (size)='branchSize = $event'
+        >
+        </app-card-container>
+    </div>
     <app-menu></app-menu>
     
     <app-menu-popup-contact *ngIf='stage === "about:contact"'></app-menu-popup-contact>

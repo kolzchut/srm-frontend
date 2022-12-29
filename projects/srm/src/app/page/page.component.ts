@@ -61,6 +61,8 @@ export class PageComponent implements OnInit {
   searchParamsCalc = new Subject<SearchParamCalc>(); 
   currentSearchParamCalc: SearchParamCalc = new SearchParamCalc();
   // mapNeedsCentering = false;
+  easeToProps: any = {};
+  easeToQueue = new Subject<any>();
   mapMoved = false;
   
   branchSize_ = 0;
@@ -183,7 +185,8 @@ export class PageComponent implements OnInit {
         }, 'map-moved-reset');
       } else if (params.requiredCenter && params.requiredCenter.length === 3) {
         const rc = params.requiredCenter;
-        this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
+        this.easeTo({center: [rc[0], rc[1]], zoom: rc[2]});
+        // this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
       } 
     });
     route.params.pipe(
@@ -202,18 +205,22 @@ export class PageComponent implements OnInit {
               center: map.getCenter(),
               zoom: map.getZoom()
             };
-            this.map.processAction();
           }
+          this.map.processAction();
         }, 'save-map-state');
       } else if (!this.point) {
-        this.queueMapAction((map) => {
           if (this.savedState) {
-            map.easeTo({center: this.savedState.center, zoom: this.savedState.zoom});
+            this.easeTo({center: this.savedState.center, zoom: this.savedState.zoom});
             this.savedState = null;
-          } else {
-            this.map.processAction();
-          }
-        }, 'restore-map-state');
+          }    
+        // this.queueMapAction((map) => {
+        //   if (this.savedState) {
+        //     map.easeTo({center: this.savedState.center, zoom: this.savedState.zoom});
+        //     this.savedState = null;
+        //   } else {
+        //     this.map.processAction();
+        //   }
+        // }, 'restore-map-state');
       }
 
     });
@@ -258,6 +265,16 @@ export class PageComponent implements OnInit {
       } else {
         this.currentSearchParamCalc.geoValues = [];
       }
+    });
+    this.easeToQueue.pipe(
+      untilDestroyed(this),
+      debounceTime(100)
+    ).subscribe((params) => {
+      this.easeToProps = {};
+      this.queueMapAction((map) => {
+        // params.duration = 1000;
+        map.easeTo(params);
+      }, 'ease-to-' + JSON.stringify(params));
     });
   }
 
@@ -341,9 +358,10 @@ export class PageComponent implements OnInit {
     const padding = this.branchSize + this.drawerSize;
     if (padding !== this.padding) {
       this.padding = padding;
-      this.queueMapAction((map) => {
-        map.easeTo({padding: {top: 0, bottom: this.padding, left: 0, right: 0}}, {ignore: true})
-      }, 'padding-' + this.padding);
+      this.easeTo({padding: {top: 0, bottom: this.padding, left: 0, right: 0}});
+      // this.queueMapAction((map) => {
+      //   map.easeTo({padding: {top: 0, bottom: this.padding, left: 0, right: 0}}, {ignore: true})
+      // }, 'padding-' + this.padding);
     }
   }
 
@@ -424,18 +442,31 @@ export class PageComponent implements OnInit {
   }
 
   centerMap(center: LngLatLike) {
-    this.queueMapAction((map) => {
-      map.easeTo({center, zoom: 15});
-    }, 'center-map');
+    this.easeTo({center, zoom: 15});
+    // this.queueMapAction((map) => {
+    //   map.easeTo({center});
+    // }, 'center-map-1');
+    // this.queueMapAction((map) => {
+    //   map.easeTo({zoom: 15});
+    // }, 'center-map-2');
   }
 
   zoomOutMap() {
-    this.queueMapAction((map) => {
-      map.easeTo({
-        center: [34.75, 32.2],
-        zoom: 6.5,  
-      });
-    }, 'zoom-out-map');
+    this.easeTo({
+      center: [34.75, 32.2],
+      zoom: 6.5,  
+    });
+    // this.queueMapAction((map) => {
+    //   map.easeTo({
+    //     center: [34.75, 32.2],
+    //     zoom: 6.5,  
+    //   });
+    // }, 'zoom-out-map');
+  }
+
+  easeTo(props: any) {
+    this.easeToProps = Object.assign({}, this.easeToProps, props);
+    this.easeToQueue.next(this.easeToProps);
   }
 }
 

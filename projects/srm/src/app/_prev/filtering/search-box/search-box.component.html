@@ -1,7 +1,0 @@
-<div class='wrapper'>
-    <app-menu-button *ngIf='!active' (click)='menu.emit()'></app-menu-button>
-    <app-image-button class='back' *ngIf='active' imageUrl='assets/img/icon-right.svg' (clicked)='active = false'></app-image-button>
-    <input type='text' class='search-box' [class.has-value]='query && query.length' placeholder='ניתן לחפש לפי שם, סוג מענה, מיקום…' (focus)='active = true; focused = true' (blur) = 'focused = false' [(ngModel)]='query' #input/>
-    <app-image-button class='search' *ngIf='!closeable()' imageUrl='assets/img/icon-search.svg'></app-image-button>
-    <app-image-button class='search' *ngIf='closeable()' imageUrl='assets/img/icon-close.svg' (click)='clear()'></app-image-button>
-</div>

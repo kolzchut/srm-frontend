@@ -46,6 +46,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   visibleCount = 0;
   totalCount = 0;
   totalNationalCount = 0;
+  loading: boolean = true;
 
   constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService) {
   }
@@ -90,12 +91,14 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           this.fetchedOffset = params.offset;
         }),
         concatMap((params) => {
+          this.loading = true;
           return this.api.getCards(params.p, params.offset);
         }),
         catchError((err) => {
           return from([]);
         })
       ).subscribe((results) => {
+        this.loading = false;
         this.results = this.results.filter(x => !!x).concat(results);
         this.offset = this.results.length;
         this.hasCounts = true;

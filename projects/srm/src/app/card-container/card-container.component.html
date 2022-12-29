@@ -1,0 +1,21 @@
+<div class='scrolled' #scrolled>
+    <div class='map-window' [class.national-service]='nationalService' #mapWindow>
+        <app-map-window [mode]='inaccurate ? MWM.Inaccurate : (nationalService ? MWM.NationalService : MWM.Card)' [link]='branchLink'></app-map-window>
+    </div>
+    <div class='content'
+        #content
+    >
+        <div class='branch'>
+            <app-branch-header [card]='card' [link]='branchLink' [cardId]='cardId'></app-branch-header>
+            <app-card *ngIf='card' [card]='card'></app-card>
+        </div>
+    </div>
+    <div class='controls'>
+        <a class='back' [routerLink]='["../.."]' queryParamsHandling='preserve' *ngIf='!landingPage'></a>
+        <div class='menu-icon' *ngIf='landingPage'><app-menu-icon [dark]='true'></app-menu-icon></div>
+        <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.original_query ? {q: searchParams?.original_query} : {}"></a>
+    </div>    
+</div>
+<div class='quick-actions' [style.bottom]='actionsBottom + "px"' *ngIf='card'>
+    <app-quick-actions [card]='card'></app-quick-actions>
+</div>

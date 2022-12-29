@@ -361,17 +361,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
           });
           this.map.on('moveend', (event: mapboxgl.MapboxEvent<MouseEvent>) => {
             // console.log('MOVEEND', event);
-            this.bounds = this.map.getBounds();
-            this.mapBounds.next([
-              [
-                this.bounds.getWest(),
-                this.bounds.getNorth()
-              ],
-              [
-                this.bounds.getEast(),
-                this.bounds.getSouth()
-              ]
-            ]);
+            this.updateBounds();
             if (!(event as any).ignore) {
               this.setCenter(this.map.getCenter(), this.map.getZoom());
             }
@@ -381,6 +371,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
           timer(100).subscribe(() => {
             this.newMap.next(this);
             this.ngOnChanges(this.savedChanges);
+            this.updateBounds();
           });
         });
       } catch (e) {
@@ -389,6 +380,20 @@ export class MapComponent implements OnChanges, AfterViewInit {
     }
   }
   
+  updateBounds() {
+    this.bounds = this.map.getBounds();
+    this.mapBounds.next([
+      [
+        this.bounds.getWest(),
+        this.bounds.getNorth()
+      ],
+      [
+        this.bounds.getEast(),
+        this.bounds.getSouth()
+      ]
+    ]);
+  }
+
   processAction() {
     if (this.moveQueue.length > 0) {
       const {action, description} = this.moveQueue.shift() as MoveQueueItem;
@@ -505,12 +510,9 @@ export class MapComponent implements OnChanges, AfterViewInit {
   }
 
   queueAction(action: (map: mapboxgl.Map) => void, description: string) {
-    if (this.moveQueue.length === 0 && !this.map.isMoving()) {
-      // console.log('ACTION-IMM', description);
-      action(this.map);
-    } else {
-      // console.log('ACTION-QUE', description);
-      this.moveQueue.push({action, description});
+    this.moveQueue.push({action, description});
+    if (!this.map.isMoving()) {
+      this.processAction();
     }
   }
 

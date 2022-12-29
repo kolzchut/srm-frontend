@@ -29,77 +29,107 @@
         flex-flow: column;
         align-items: center;
 
-        & > * {
+        & > *, & > .main-content > *, & > .search-results > * {
             pointer-events: auto;
         }
         & > app-menu {
             pointer-events: none;
         }
-        &.stage-point > app-branch-container {
-            pointer-events: none;
-        }
 
-        app-searchbox-header {
-            width: 100%;
-            flex: 0 0 auto;
-        }
-
-        app-results-drawer {
+        .main-content {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            flex: 1 1 auto;
-            display: none;
+            pointer-events: none;
 
-            &.visible {
-                display: flex;
+            app-card-container, app-branch-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;    
             }
 
-            .content {
-                display: none;
-
-                &.visible {
-                    display: flex;
-                    flex-flow: column;
-                    justify-content: flex-start;
-                    &.main {
-                        min-height: 100%;
-                        &:not(.filters) {
-                            background-color: @color-light-blue;
+            .search-results {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;    
+                display: flex;
+                flex-flow: column;
+                align-items: center;
+                pointer-events: none;
+        
+                app-searchbox-header {
+                    width: 100%;
+                    flex: 0 0 auto;
+                    pointer-events: all;
+                }
+        
+                app-results-drawer {
+                    width: 100%;
+                    height: 100%;
+                    flex: 1 1 auto;
+                    display: none;
+                    pointer-events: all;
+        
+                    &.visible {
+                        display: flex;
+                    }
+        
+                    .content {
+                        display: none;
+        
+                        &.visible {
+                            display: flex;
+                            flex-flow: column;
+                            justify-content: flex-start;
+                            &.main {
+                                min-height: 100%;
+                                &:not(.filters) {
+                                    background-color: @color-light-blue;
+                                }
+                            }
+                        }
+        
+                        app-search-filters {
+                            z-index: 1;
+                            position: sticky;
+                            top: 0;
+                        }
+        
+                        app-search-results {
+                            transform: translateY(0%);
+                            animation: 0.2s ease-in-out 1 forwards;
+                            animation-fill-mode: forwards;
+                            transition: transform 0.2s ease-in-out;
+                            &.shown {
+                                animation-name: show-results;
+                            }
+                            &.hidden {
+                                animation-name: hide-results;
+                            }
                         }
                     }
-                }
-
-                app-search-filters {
-                    z-index: 1;
-                    position: sticky;
-                    top: 0;
-                }
-
-                app-search-results {
-                    transform: translateY(0%);
-                    animation: 0.2s ease-in-out 1 forwards;
-                    animation-fill-mode: forwards;
-                    transition: transform 0.2s ease-in-out;
-                    &.shown {
-                        animation-name: show-results;
-                    }
-                    &.hidden {
-                        animation-name: hide-results;
-                    }
-                }
+                }    
             }
+    
+            .branch-containers {
+                width: 100%;
+                height: 100%;            
+                z-index: 1;
+                display: flex;
+                flex-flow: row;
+                align-items: stretch;
+                overflow-x: scroll;
+                .no-scrollbars;
+            }            
         }
-
-
-        .branch-containers {
-            width: 100%;
-            height: 100%;            
-            z-index: 1;
-            display: flex;
-            flex-flow: row;
-            align-items: stretch;
-            overflow-x: scroll;
-            .no-scrollbars;
+        &.stage-point > app-branch-container {
+            pointer-events: none;
         }
     }
 }

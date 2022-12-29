@@ -2,7 +2,10 @@
 
 :host {
     width: 100%;
-    height: 100%;
+    height: calc(100% ~'-' 56px);
+    &.bare-point {
+        height: 100%;
+    }
     display: flex;
     flex-flow: column;
     align-items: stretch;
@@ -11,70 +14,8 @@
     overscroll-behavior: none;
 
     .map-window {
-        display: flex;
         height: 100px;
-        background: transparent;
-        flex: 0 0 auto;
-        pointer-events: all;
-        position: relative;
-        flex-flow: column;
-        align-items: center;
-        justify-content: center;
-
-        &.inaccurate {
-            .message-blur {
-                position: absolute;
-                bottom: -10px;
-                height: 40px;
-                width: 100%;
-                background: rgba(255, 255, 255, 0.5);
-                filter: blur(10px);
-                backdrop-filter: blur(2px);
-            }
-            .message {
-                position: absolute;
-                bottom: 4px;
-                text-align: center;
-                .font-rag-sans;
-                font-weight: 400;
-                font-size: 13px;
-                line-height: 16px;
-                color: @color-gray-2;
-            }
-        }
-
-        &.national-service {
-            height: 64px;
-            .message-blur {
-                position: absolute;
-                top: 0;
-                right: 0;
-                width: 100%;
-                height: 100%;
-                background: fade(@color-blue-1, 55%);
-                mix-blend-mode: normal;
-                backdrop-filter: blur(4px);    
-            }
-            .message {
-                position: absolute;
-                color: @color-white;
-                .font-rag-sans;
-                font-weight: 600;
-                font-size: 13px;
-                line-height: 16px;
-            }
-            pointer-events: none;
-        }
-
-        &.point-mode {
-            pointer-events: none;
-            .message-blur {
-                bottom: -22px;
-            }
-            .message {
-                bottom: -8px;
-            }
-        }
+        flex: 1 1 100%;
     }
 
     .content {
@@ -85,6 +26,16 @@
         flex-flow: row;
         align-items: stretch;
         pointer-events: all;
+        overflow-x: scroll;
+        .no-scrollbars;    
+        scroll-snap-type: x mandatory;
+        overscroll-behavior-x: none;
+        padding-bottom: 8px;
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-top: 12px;
+        gap: 8px;
+        scroll-padding-inline: 8px;
             
         .branch {
             // width: 100%;
@@ -96,120 +47,25 @@
             scroll-snap-align: start;
             scroll-snap-stop: always;
 
-            .header {
-                display: flex;
-                flex-flow: row;
-                align-items: center;
-                cursor: pointer;
-                min-height: 50px;
-                background: @color-gray-7;
-                box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
-                border-radius: 8px 8px 0px 0px; 
-                padding: 6px 10px;
-                padding-bottom: 8px;
-    
-                .branch-details {
-                    flex: 1 1 auto;
-                    display: flex;
-                    flex-flow: column;
-                    align-items: flex-start;
-                    overflow: hidden;
-    
-                    .font-rag-sans;
-                    font-style: normal;
-                    font-weight: 600;
-                    color: @color-gray-2;
-    
-                    .branch-name {
-                        margin: 0;
-                        padding: 0;
-                        font-size: 16px;
-                        line-height: 21px;
-                        max-width: 100%;
-                        
-                        .primary {
-                            font-weight: 600;
-                        }
-                        .secondary {
-                            font-weight: 400;
-                            color: @color-gray-3;
-                        }
-                    }
-                    .address {
-                        font-size: 13px;
-                        line-height: 13px;
-                        max-width: 100%;
-
-                        .primary {
-                            font-weight: 600;
-                        }
-                        .secondary {
-                            font-weight: 400;
-                            color: @color-gray-3;
-                        }      
-                        .national-service {
-                            font-weight: 600;
-                            color: @color-blue-1;
-                        }           
-                    }
-                }
-                .control-icon {
-                    .button-image;
-                    .background-image;
-                    background-image: url(../../assets/img/icon-close.svg);
-                    width: 12px;
-                    height: 12px;
-                    &.card {
-                        width: 16px;
-                        height: 16px;
-                        background-image: url(../../assets/img/icon-chevron-down.svg);
-                    }
-                }
-            }
-
             app-point-result-stack {
                 height: 100%;
                 ::ng-deep app-result-card {
                     height: 100%;
                 }
             }
-        }
-        z-index: 1;
-        &.stage-card:not(.stage-point) {
-            box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
-        }
-        &.stage-point {
-            overflow-x: scroll;
-            .no-scrollbars;    
-            scroll-snap-type: x mandatory;
-            overscroll-behavior-x: none;
-            padding-bottom: 8px;
-            padding-left: 8px;
-            padding-right: 8px;
-            padding-top: 12px;
-            gap: 8px;
-            scroll-padding-inline: 8px;
 
-            .branch {
-                box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.16), 0px 4px 24px rgba(0, 0, 0, 0.08);
-                border-radius: 6px;
-                overflow: hidden;
+            box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.16), 0px 4px 24px rgba(0, 0, 0, 0.08);
+            border-radius: 6px;
+            overflow: hidden;
 
-                .header {
-                    padding: 0 10px;
-                    min-height: 40px;
-                    height: 40px;
-                    .control-icon {
-                        transform: rotate(180deg);
-                    }
-                }
-                .branch-details {
-                    .branch-name, .address {
-                        .ellipsis;
-                    }
+            .branch-details {
+                .branch-name, .address {
+                    .ellipsis;
                 }
             }
         }
+        z-index: 1;
+
         &.multiple {
             .branch {
                 flex-basis: calc(100% ~'-' 56px);
@@ -250,7 +106,7 @@
             }
             &.back {
                 transition: transform 0.2s ease-in-out;
-                transform: rotate(0deg);
+                transform: rotate(-90deg);
                 background-image: url(../../assets/img/icon-arrow-right.svg);
             }
             background-color: @color-white;
@@ -258,27 +114,7 @@
     }
 
     .quick-actions {
-        position: absolute;
         width: 100%;
-        height: 56px;
-        bottom: 0;
-        left: 0;
-        padding: 8px 16px;
-        pointer-events: all;
-
-        background: @color-gray-7;
-        border-top: 1px solid @color-gray-5;
-        box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
-
-        display: flex;
-        flex-flow: row;
-        gap: 8px;
-
-        z-index: 1;
-
-        & > * {
-            flex-grow: 1;
-        }
     }
 
     .back-to-search {
@@ -293,26 +129,6 @@
         display: none;
         &.visible {
             display: flex;
-        }
-    }
-
-    &.stage-point {
-        height: calc(100% ~'-' 56px);
-        
-        &.bare-point {
-            height: 100%;
-        }
-        .map-window {
-            flex: 1 1 100%;
-        }
-        .controls {
-            a.back {
-                transform: rotate(-90deg);
-            }
-        }
-
-        .quick-actions {
-            transition: bottom 0.1s ease-in-out;
         }
     }
 }
