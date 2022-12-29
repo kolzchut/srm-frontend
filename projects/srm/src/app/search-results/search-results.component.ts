@@ -26,6 +26,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
 
   @Input() searchParams: SearchParams;
   @Output() zoomout = new EventEmitter<ViewPort>();
+  @Output() nationalCount = new EventEmitter<number>();
 
   @ViewChild('trigger') trigger: ElementRef;
 
@@ -61,11 +62,12 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         if (params.searchHash === this.searchHash) {
           return from([params]);
         } else {
-          return forkJoin([this.api.getCounts(params, true), this.api.getNationalCounts(params)]).pipe(
+          return forkJoin([this.api.getCounts(params, false), this.api.getNationalCounts(params)]).pipe(
             tap(([counts, nationalCounts]) => {
               this.totalCount = counts.search_counts?._current?.total_overall || 0;
               this.viewport = counts.viewport;
               this.totalNationalCount = nationalCounts.search_counts?._current?.total_overall || 0;
+              this.nationalCount.emit(this.totalNationalCount);
               this.searchHash = params.searchHash;
             }),
             map(() => {

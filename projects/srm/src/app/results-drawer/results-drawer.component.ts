@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { animationFrameScheduler, from, fromEvent, Subscription, timer } from 'rxjs';
-import { delay, distinctUntilChanged, first, map, tap, throttleTime } from 'rxjs/operators';
+import { delay, distinctUntilChanged, first, map, tap, throttleTime, filter } from 'rxjs/operators';
 import { DrawerState } from '../consts';
 import { LayoutService } from '../layout.service';
 import { WindowService } from '../window.service';
@@ -20,6 +20,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
 
   @Input() state: DrawerState = DrawerState.Half;
   @Input() scrollAll = false;
+  @Input() nationalCount = 0;
   @Output() handle = new EventEmitter<string>();
   @Output() scrollTop = new EventEmitter<boolean>();
   @Output() size = new EventEmitter<number>();
@@ -58,6 +59,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
   calcHeight(): number {
     const hostHeight = this.hostHeight;
     let ret = hostHeight / 2;
+    let moveDiff = this.moveDiff;
     if (this.layout.desktop) {
       ret = hostHeight;
     } else if (this.state === DrawerState.Hidden) {
@@ -70,8 +72,11 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
       ret = hostHeight*0.25;
     } else if (this.state === DrawerState.Full) {
       ret = 0;
+    } else if (this.state === DrawerState.National) {
+      ret = 50;
+      moveDiff = 0;
     }
-    ret += this.moveDiff;
+    ret += moveDiff;
     if (ret > hostHeight) {
       ret = hostHeight;
     }
@@ -91,6 +96,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
         if ('ontouchstart' in doc) {
           fromEvent(el, 'touchstart').pipe(
             untilDestroyed(this),
+            filter(() => this.state !== DrawerState.National),
           ).subscribe((ev) => {
             this.handleGestureStart(ev as TouchEvent);
             fromEvent(window, 'touchend').pipe(first()).subscribe((ev) => {
@@ -100,6 +106,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
         } else {
           fromEvent(el, 'mousedown').pipe(
             untilDestroyed(this),
+            filter(() => this.state !== DrawerState.National),
           ).subscribe((ev) => {
             this.handleGestureStart(ev as MouseEvent);
             fromEvent(window, 'mouseup').pipe(first()).subscribe((ev) => {

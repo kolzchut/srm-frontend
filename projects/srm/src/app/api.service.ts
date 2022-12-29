@@ -416,9 +416,11 @@ export class ApiService {
       params.extra = 'national-services|collapse';
     }
     const filters = [];
-    const filter = this._filter(searchParams);
-    if (filter) {
-      filters.push(filter);
+    if (!searchParams.national) {
+      const filter = this._filter(searchParams);
+      if (filter) {
+        filters.push(filter);
+      }  
     }
     const filter2 = this._filter(searchParams, false);
     if (filter2) {

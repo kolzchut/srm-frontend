@@ -21,13 +21,14 @@ class SearchParamCalc {
   ac?: AutoComplete | null;
   geoValues: number[] = [];
   bounds: number[][] = [];
+  national: boolean;
 
   get geoHash(): string {
     return this.bounds.map(b => b.map(bb => bb + '').join('|')).join('|')
   }
 
   get searchHash(): string {
-    return [this.resolvedQuery, this.acId, this.ftQuery, this.fs, this.fag, this.fl, this.fr].map(x => x || '').join('|');
+    return [this.resolvedQuery, this.acId, this.ftQuery, this.fs, this.fag, this.fl, this.fr, this.national].map(x => x || '').join('|');
   }
   
   get cardsHash(): string {
@@ -74,6 +75,8 @@ export class PageComponent implements OnInit {
 
   pendingActions: {action: (map: mapboxgl.Map) => void, description: string}[] = [];
   savedState: {center: LngLatLike, zoom: number} | null = null;
+
+  nationalCount = 0;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService) {
 
@@ -144,7 +147,8 @@ export class PageComponent implements OnInit {
             filter_responses: fr,
             bounds: spc.bounds,
             ac_bounds: spc.ac.bounds,
-            requiredCenter: spc.geoValues
+            requiredCenter: spc.geoValues,
+            national: spc.national
           });
         } else {
           Object.assign(ret, {
@@ -162,7 +166,8 @@ export class PageComponent implements OnInit {
             filter_responses: fr,
             bounds: spc.bounds,
             ac_bounds: null,
-            requiredCenter: spc.geoValues
+            requiredCenter: spc.geoValues,
+            national: spc.national
           });
         }
         this.searchParams = ret;
@@ -249,6 +254,7 @@ export class PageComponent implements OnInit {
       this.currentSearchParamCalc.fag = params.fag;
       this.currentSearchParamCalc.fl = params.fl;
       this.currentSearchParamCalc.fr = params.fr;
+      this.currentSearchParamCalc.national = params.national === 'yes';
       if (this.stage === 'search-results') {
         this.pushSearchParamsCalc();
       }
@@ -443,12 +449,6 @@ export class PageComponent implements OnInit {
 
   centerMap(center: LngLatLike) {
     this.easeTo({center, zoom: 15});
-    // this.queueMapAction((map) => {
-    //   map.easeTo({center});
-    // }, 'center-map-1');
-    // this.queueMapAction((map) => {
-    //   map.easeTo({zoom: 15});
-    // }, 'center-map-2');
   }
 
   zoomOutMap(viewport: ViewPort) {

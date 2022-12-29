@@ -1,6 +1,18 @@
 <div class='map-window'
     [class.gesture]='gesture'
+    [class.national]='state === DrawerState.National'
     [style.height]='calcHeight() + "px"'>
+
+    <ng-container *ngIf='nationalCount > 0'>
+        <a class='national-services' [routerLink]='["."]' [queryParams]="{national: 'yes'}" [queryParamsHandling]='"merge"' [preserveFragment]="true"
+        *ngIf='state !== DrawerState.National'>
+         <span>+ {{ nationalCount }} שירותים ארציים</span>
+     </a>
+     <div class='national-services' *ngIf='state === DrawerState.National'>
+         <span>+ {{ nationalCount }} שירותים ארציים</span>
+         <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true"></a>
+     </div> 
+    </ng-container>
 </div>
 <div class='content' #handleEl>
     <div class='handle layout-mobile' (click)='$event.stopPropagation()'>

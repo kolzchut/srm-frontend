@@ -1,0 +1,20 @@
+<svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g opacity="0.25">
+<rect x="2.33333" y="2.33333" width="15.3333" height="15.3333" rx="7.66667" fill="#A89400"/>
+<rect x="2.33333" y="2.33333" width="15.3333" height="15.3333" rx="7.66667" stroke="#2DA861" stroke-width="3.33333"/>
+</g>
+<rect x="6.5" y="6.5" width="7" height="7" rx="3.5" fill="#A89400"/>
+<rect x="6.5" y="6.5" width="7" height="7" rx="3.5" stroke="white"/>
+<g opacity="0.25">
+<rect x="8.33333" y="2.33333" width="15.3333" height="15.3333" rx="7.66667" fill="#2DA861"/>
+<rect x="8.33333" y="2.33333" width="15.3333" height="15.3333" rx="7.66667" stroke="#2DA861" stroke-width="3.33333"/>
+</g>
+<rect x="12.5" y="6.5" width="7" height="7" rx="3.5" fill="#2DA861"/>
+<rect x="12.5" y="6.5" width="7" height="7" rx="3.5" stroke="white"/>
+<g opacity="0.25">
+<rect x="14.3333" y="2.33333" width="15.3333" height="15.3333" rx="7.66667" fill="#2DA861"/>
+<rect x="14.3333" y="2.33333" width="15.3333" height="15.3333" rx="7.66667" stroke="#2DA861" stroke-width="3.33333"/>
+</g>
+<rect x="18.5" y="6.5" width="7" height="7" rx="3.5" fill="#2DA861"/>
+<rect x="18.5" y="6.5" width="7" height="7" rx="3.5" stroke="white"/>
+</svg>

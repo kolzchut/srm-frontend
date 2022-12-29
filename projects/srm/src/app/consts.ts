@@ -7,6 +7,7 @@ export enum DrawerState {
     Most = 'most',
     Full = 'full',
     Minimal = 'minimal',
+    National = 'national',
 };
 
 export class TaxonomyItem {
@@ -164,8 +165,9 @@ export class SearchParams {
     bounds?: number[][];
     ac_bounds?: LngLatBoundsLike;
     requiredCenter?: number[];
+    national?: boolean;
 
     get searchHash(): string {
-      return [this.query, this.response, this.situation, this.filter_situations, this.filter_age_groups, this.filter_languages, this.filter_responses].map(x => x || '').join('|');
+      return [this.query, this.response, this.situation, this.filter_situations, this.filter_age_groups, this.filter_languages, this.filter_responses, this.national].map(x => x || '').join('|');
     }    
 };
