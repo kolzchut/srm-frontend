@@ -77,10 +77,8 @@ export class CardContainerComponent implements OnInit, OnChanges {
   @ViewChild('scrolled') scrolled: ElementRef;
   @ViewChild('mapWindow') mapWindow: ElementRef;
 
-  actionsBottom = -56;
   branchLink: string[] | null = null;
 
-  sub: Subscription | null = null;
   card: Card | null = null;
   
   parametersQueue = new ReplaySubject<AuxParams>(1);
@@ -134,9 +132,6 @@ export class CardContainerComponent implements OnInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    this.sub = fromEvent(this.scrolled.nativeElement, 'scroll').subscribe((e: any) => {
-      this.actionsBottom = -56 + Math.min(56,  e.target.scrollTop);
-    });
     fromEvent<TouchEvent>(this.content.nativeElement, 'touchstart')
     .pipe(
       untilDestroyed(this),
@@ -153,11 +148,6 @@ export class CardContainerComponent implements OnInit, OnChanges {
     });
     const size = window.innerHeight - 100;
     this.size.emit(size);
-  }
-
-  ngOnDestroy(): void {
-    this.sub?.unsubscribe();
-    this.sub = null;
   }
 
   get landingPage(): boolean {

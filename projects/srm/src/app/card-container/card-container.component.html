@@ -16,6 +16,6 @@
         <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.original_query ? {q: searchParams?.original_query} : {}"></a>
     </div>    
 </div>
-<div class='quick-actions' [style.bottom]='actionsBottom + "px"' *ngIf='card'>
+<div class='quick-actions' *ngIf='card'>
     <app-quick-actions [card]='card'></app-quick-actions>
 </div>
