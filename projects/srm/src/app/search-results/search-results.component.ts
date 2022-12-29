@@ -3,7 +3,7 @@ import { UntilDestroy } from '@ngneat/until-destroy';
 import { forkJoin, from, Subject, Subscription, throwError } from 'rxjs';
 import { catchError, concatMap, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { Card, SearchParams } from '../consts';
+import { Card, SearchParams, ViewPort } from '../consts';
 import { PlatformService } from '../platform.service';
 
 
@@ -25,7 +25,7 @@ export type SearchParamsOffset = {
 export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit {
 
   @Input() searchParams: SearchParams;
-  @Output() zoomout = new EventEmitter<void>();
+  @Output() zoomout = new EventEmitter<ViewPort>();
 
   @ViewChild('trigger') trigger: ElementRef;
 
@@ -47,6 +47,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   totalCount = 0;
   totalNationalCount = 0;
   loading: boolean = true;
+  viewport: ViewPort;
 
   constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService) {
   }
@@ -60,10 +61,11 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         if (params.searchHash === this.searchHash) {
           return from([params]);
         } else {
-          return forkJoin([this.api.getCounts(params), this.api.getNationalCounts(params)]).pipe(
+          return forkJoin([this.api.getCounts(params, true), this.api.getNationalCounts(params)]).pipe(
             tap(([counts, nationalCounts]) => {
-              this.totalCount = counts.search_counts._current.total_overall || 0;
-              this.totalNationalCount = nationalCounts.search_counts._current.total_overall || 0;
+              this.totalCount = counts.search_counts?._current?.total_overall || 0;
+              this.viewport = counts.viewport;
+              this.totalNationalCount = nationalCounts.search_counts?._current?.total_overall || 0;
               this.searchHash = params.searchHash;
             }),
             map(() => {

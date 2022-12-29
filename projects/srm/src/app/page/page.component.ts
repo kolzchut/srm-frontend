@@ -6,7 +6,7 @@ import { SeoSocialShareService } from 'ngx-seo';
 import { from, Observable, Subject, timer } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, filter, first, map, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { AutoComplete, DrawerState, SearchParams } from '../consts';
+import { AutoComplete, DrawerState, SearchParams, ViewPort } from '../consts';
 import { MapComponent } from '../map/map.component';
 import { SearchFiltersComponent } from '../search-filters/search-filters.component';
 
@@ -451,17 +451,10 @@ export class PageComponent implements OnInit {
     // }, 'center-map-2');
   }
 
-  zoomOutMap() {
-    this.easeTo({
-      center: [34.75, 32.2],
-      zoom: 6.5,  
-    });
-    // this.queueMapAction((map) => {
-    //   map.easeTo({
-    //     center: [34.75, 32.2],
-    //     zoom: 6.5,  
-    //   });
-    // }, 'zoom-out-map');
+  zoomOutMap(viewport: ViewPort) {
+    this.queueMapAction((map) => {
+      map.fitBounds([viewport.top_left, viewport.bottom_right], {padding: {top: 70, bottom: 10, left: 10, right: 10}});
+    }, 'zoom-out-map');
   }
 
   easeTo(props: any) {

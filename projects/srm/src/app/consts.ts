@@ -112,6 +112,8 @@ export type AutoComplete = {
     bounds: [number, number, number, number] | null,
 };
 
+export type ViewPort = { top_left: { lat: number; lon: number; }; bottom_right: { lat: number; lon: number; }; }
+
 export type SearchResult<T extends any> = {
     search_counts: {
         [key: string]: {
@@ -127,6 +129,7 @@ export type SearchResult<T extends any> = {
     point_id: DistinctItem[],
     collapse_key: DistinctItem[],
     possible_autocomplete: DistinctItem[],
+    viewport: ViewPort,
 };
 
 export function _h(sr: any, f: string) {

@@ -43,7 +43,7 @@
                         [class.hidden]='filtersVisible === true' 
                         [class.shown]='filtersVisible === false' 
                         [searchParams]='searchParams'
-                        (zoomout)='zoomOutMap()'
+                        (zoomout)='zoomOutMap($event)'
                     ></app-search-results>
                 </div>
         <!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'

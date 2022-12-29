@@ -444,7 +444,7 @@ export class ApiService {
           return r;
         });
         if (ret.length > 0) {
-          ret[0].__counts = qcr.search_counts._current;
+          ret[0].__counts = qcr.search_counts?._current || 0;
         }
         return ret;
       })
@@ -468,7 +468,7 @@ export class ApiService {
         const qcr = res as QueryCardResult;
         if (qcr.possible_autocomplete && qcr.possible_autocomplete.length) {
           const best = qcr.possible_autocomplete[0];
-          const total = qcr.search_counts._current.total_overall || 0;
+          const total = qcr.search_counts?._current?.total_overall || 0;
           const best_doc_count = best.doc_count || 0;
           const threshold = (total > SHARD_SIZE ? SHARD_SIZE : total) / 3;
           console.log('did you mean', best.key, best_doc_count, total);
@@ -512,7 +512,7 @@ export class ApiService {
     );
   }
   
-  getCounts(searchParams: SearchParams): Observable<QueryCardResult> {
+  getCounts(searchParams: SearchParams, withBounds=false): Observable<QueryCardResult> {
     const params: any = {
       size: 2,
       offset: 0,
@@ -524,6 +524,9 @@ export class ApiService {
     const filter = this._filter(searchParams, false);
     if (filter) {
       params.filter = JSON.stringify(filter);
+    }
+    if (withBounds) {
+      params.extra = 'viewport';
     }
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
@@ -760,7 +763,7 @@ export class ApiService {
       this.http.get(environment.cardsURL, {params}).pipe(
         map((res: any) => {
           const qcr = res as QueryCardResult;
-          return qcr.search_counts._current.total_overall;
+          return qcr.search_counts?._current?.total_overall || 0;
         })
       )
     );
