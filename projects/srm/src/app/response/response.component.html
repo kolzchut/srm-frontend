@@ -1,6 +1,8 @@
 <a class='response' *ngIf='link' 
 [style.background-color]='borderColor'
-[routerLink]='["/s", responseQuery]'>
+[routerLink]='search ? ["/q"] : ["/s", responseQuery]'
+[queryParams]='search ? {q: response.name} : null'
+>
     <span class='point'>
         <span
             [style.background]='pointBgColor'

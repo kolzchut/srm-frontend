@@ -29,7 +29,7 @@
         flex-flow: column;
         align-items: center;
 
-        & > *, & > .main-content > *, & > .search-results > * {
+        & > *, & > .main-content > app-card-container, & > .search-results > * {
             pointer-events: auto;
         }
         & > app-menu {
@@ -128,9 +128,6 @@
                 overflow-x: scroll;
                 .no-scrollbars;
             }            
-        }
-        &.stage-point > app-branch-container {
-            pointer-events: none;
         }
     }
 }

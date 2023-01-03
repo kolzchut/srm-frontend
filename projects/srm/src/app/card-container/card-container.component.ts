@@ -69,7 +69,6 @@ type AuxParams = {
 export class CardContainerComponent implements OnInit, OnChanges {
 
   @Input() cardId = '';
-  @Input() stage = '';
   @Input() searchParams: SearchParams;
   @Output() center = new EventEmitter<LngLatLike>();
   @Output() size = new EventEmitter<number>();
@@ -139,8 +138,8 @@ export class CardContainerComponent implements OnInit, OnChanges {
     ).subscribe((diff) => {
       if (Math.abs(diff) > 0.1 * document.body.clientHeight) {
         if (diff > 0) {
-          console.log('down swipe');
-          if (this.stage === 'card' && this.branchLink) {
+          console.log('down swipe', this.branchLink);
+          if (this.branchLink) {
             this.router.navigate(this.branchLink, {relativeTo: this.route, queryParamsHandling: 'preserve'});
           }
         }

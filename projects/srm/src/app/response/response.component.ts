@@ -11,6 +11,7 @@ export class ResponseComponent implements OnChanges {
 
   @Input() response: TaxonomyItem = {};
   @Input() link = true;
+  @Input() search = false;
   @Input() suffix = true;
   @Input() selectable = false;
   @Input() selected = false;

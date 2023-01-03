@@ -24,19 +24,19 @@
             <div class='slide' data-slide='0'>
                 <h3><strong>{{numResponses}} סוגי שירותים</strong> כמו למשל:</h3>
                 <div class='staggered' [class.seen-once]='!!seenOnce[0]'>
-                    <app-response *ngFor='let r of responses' [response]='r' [suffix]='false' [link]='true'></app-response>
+                    <app-response *ngFor='let r of responses' [response]='r' [suffix]='false' [link]='true' [search]='true'></app-response>
                 </div>
             </div>
             <div class='slide' data-slide='1'>
                 <h3><strong>{{numSituations}} מצבי חיים</strong> כמו למשל:</h3>
                 <div class='staggered' [class.seen-once]='!!seenOnce[1]'>
-                    <a class='situation' *ngFor='let s of situations' [routerLink]='["/s", prepare(s.name)]'>{{s.name}}</a>
+                    <a class='situation' *ngFor='let s of situations' [routerLink]='["/q"]' [queryParams]='{q:s.name}'>{{s.name}}</a>
                 </div>
             </div>
             <div class='slide' data-slide='2' [class.seen-once]='!!seenOnce[2]'>
                 <h3><strong>בכל הארץ:</strong></h3>
                 <div class='staggered' [class.seen-once]='!!seenOnce[2]'>
-                    <div class='place' *ngFor='let p of PLACES'>{{p}}</div>
+                    <a class='place' *ngFor='let p of PLACES' [routerLink]='["/q"]' [queryParams]='{q:p}'>{{p}}</a>
                 </div>
             </div>
             <div class='slide' data-slide='3' [class.seen-once]='!!seenOnce[3]'>
