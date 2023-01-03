@@ -156,9 +156,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
       return;
     }
     if (this.changed(changes, 'markerProps') && changes?.markerProps?.currentValue) {
-      if (this.pointId && !this.lastProps.branch_location_accurate) {
-        this.markerProps['title'] = 'מיקום לא מדויק';
-      }
       this.updateMarkerProps(this.markerProps);
     } else if (this.changed(changes, 'pointId') && changes?.pointId?.currentValue) {
       this.api.getPoint(this.pointId, this.searchParams || undefined).subscribe((cards) => {
