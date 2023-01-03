@@ -523,7 +523,11 @@ export class ApiService {
       params.q = searchParams.query;
       params.minscore = this.MIN_SCORE;
     }
-    const filter = this._filter(searchParams, false);
+    let filter = this._filter(searchParams, false);
+    if (searchParams.national) {
+      filter = filter || {};
+      filter.national_service = true;
+    }
     if (filter) {
       params.filter = JSON.stringify(filter);
     }
@@ -566,7 +570,7 @@ export class ApiService {
       params.minscore = this.MIN_SCORE;
     }
     params.extra = 'distinct-situations|distinct-responses';
-    if (searchParams.response || searchParams.situation || searchParams.org_id) {
+    if (searchParams.response || searchParams.situation || searchParams.org_id || searchParams.national) {
       const filter: any = {};
       if (searchParams.response) {
         filter['response_ids'] = searchParams.response;
@@ -576,6 +580,9 @@ export class ApiService {
       }
       if (searchParams.org_id) {
         filter['organization_id'] = searchParams.org_id;
+      }
+      if (searchParams.national) {
+        filter['national_service'] = true;
       }
       params.filter = JSON.stringify([filter]);
     }

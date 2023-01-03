@@ -310,6 +310,7 @@ export class PageComponent implements OnInit {
         fag: searchParams.filter_age_groups?.map(x => x.slice('human_situations:age_group:'.length)).join('|') || null,
         fl: searchParams.filter_languages?.map(x => x.slice('human_situations:language:'.length)).join('|') || null,
         fr: searchParams.filter_responses?.map(x => x.slice('human_services:'.length)).join('|') || null,
+        national: searchParams.national ? 'yes' : null
       },
       replaceUrl: true,
     });
@@ -425,7 +426,9 @@ export class PageComponent implements OnInit {
   setFiltersVisible(visible: boolean) {
     this.filtersVisible = visible;
     if (visible) {
-      this.drawerState = DrawerState.Half;
+      if (!this.searchParams?.national) {
+        this.drawerState = DrawerState.Half;
+      }
     }
     if (visible && this.point) {
       timer(0).pipe(

@@ -158,6 +158,7 @@ export class SearchFiltersComponent implements OnChanges {
       filter_age_groups: sp.filter_age_groups?.slice() || [],
       filter_languages: sp.filter_languages?.slice() || [],
       filter_responses: sp.filter_responses?.slice() || [],
+      national: !!sp.national
     });
     return ret;
   }

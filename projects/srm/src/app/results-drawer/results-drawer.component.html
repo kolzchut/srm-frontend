@@ -10,7 +10,7 @@
      </a>
      <div class='national-services' *ngIf='state === DrawerState.National'>
          <span>+ {{ nationalCount }} שירותים ארציים</span>
-         <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true"></a>
+         <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" *ngIf='!scrollAll'></a>
      </div> 
     </ng-container>
 </div>
