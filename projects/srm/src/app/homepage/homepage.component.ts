@@ -57,7 +57,7 @@ export class HomepageComponent implements OnInit, AfterViewInit {
 
   constructor(private api: ApiService, private platform: PlatformService, private el: ElementRef) {
     api.getSituations().subscribe((situations) => {
-      console.log(situations);
+      // console.log(situations);
       this.numSituations = situations.length;
       for (const sid of this.SITUATION_IDS) {
         const situation = situations.find((s) => s.id === 'human_situations:' + sid);
@@ -65,7 +65,7 @@ export class HomepageComponent implements OnInit, AfterViewInit {
           this.situations.push(situation);
         }
       }
-      console.log(this.responses);
+      // console.log(this.responses);
     });
     api.getResponses().subscribe((responses) => {
       this.numResponses = responses.length;
@@ -75,10 +75,10 @@ export class HomepageComponent implements OnInit, AfterViewInit {
           this.responses.push(response);
         }
       }
-      console.log(this.responses);
+      // console.log(this.responses);
     });
     api.getTotalServices().subscribe((total) => {
-      console.log(total);
+      // console.log(total);
       this.totalServices = total;
     });
   }

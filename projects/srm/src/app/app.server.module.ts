@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NgZone } from '@angular/core';
 import { ServerModule, ServerTransferStateModule } from '@angular/platform-server';
 
 import { AppModule } from './app.module';

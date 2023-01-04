@@ -1,5 +1,5 @@
-import { Location } from '@angular/common'
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { DOCUMENT, Location } from '@angular/common'
+import { AfterViewInit, Component, ElementRef, Inject, Input, OnInit, ViewChild } from '@angular/core';
 import { fromEvent, Subscription, timer } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiService } from '../api.service';
@@ -18,7 +18,7 @@ export class CardComponent implements OnInit {
 
   oddActions = false;
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService, @Inject(DOCUMENT) private document: Document) { }
 
   ngOnInit(): void {
   }
@@ -30,6 +30,7 @@ export class CardComponent implements OnInit {
   }
 
   get suggestChangesForm() {
-    return environment.suggestChangesForm + '?service_name=' + encodeURIComponent(this.card.service_name) + '&id=' + encodeURIComponent(this.card.card_id) + '&url=' + encodeURIComponent(window.location.href);
+    return environment.suggestChangesForm + '?service_name=' + encodeURIComponent(this.card.service_name) + '&id=' + 
+           encodeURIComponent(this.card.card_id) + '&url=' + encodeURIComponent(this.document.location.href);
   }
 }

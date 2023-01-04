@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LngLatLike } from 'mapbox-gl';
@@ -9,6 +9,8 @@ import { ApiService } from '../api.service';
 import { AutoComplete, DrawerState, SearchParams, ViewPort } from '../consts';
 import { MapComponent } from '../map/map.component';
 import { SearchFiltersComponent } from '../search-filters/search-filters.component';
+import { DOCUMENT } from '@angular/common';
+import { PlatformService } from '../platform.service';
 
 class SearchParamCalc {
   acId: string;
@@ -78,7 +80,8 @@ export class PageComponent implements OnInit {
 
   nationalCount = 0;
 
-  constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService) {
+  constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService, private platform: PlatformService,
+              @Inject(DOCUMENT) private document: any) {
 
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
@@ -93,7 +96,7 @@ export class PageComponent implements OnInit {
 
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
-      debounceTime(100),
+      debounceTime(platform.server() ? 0 : 100),
       map((spc) => {
         spc.resolvedQuery = spc.acId || spc.ftQuery || '';
         spc.resolvedQuery = spc.resolvedQuery.split('_').join(' ');
@@ -114,10 +117,10 @@ export class PageComponent implements OnInit {
         if (this.stage === 'search-results') {
           if (spc.ac) {
             this.seo.setTitle(`כל שירות - חיפוש ${spc.ac.query}`)
-            this.seo.setUrl(window.location.href);  
+            this.seo.setUrl(this.document.location.href);
           } else {
             this.seo.setTitle(`כל שירות - חיפוש ${spc.ftQuery}`)
-            this.seo.setUrl(window.location.href);  
+            this.seo.setUrl(this.document.location.href);
           }
         }
       }),
@@ -176,9 +179,9 @@ export class PageComponent implements OnInit {
       distinctUntilChanged((a, b) => {
         return a.original_query === b.original_query;
       }),
-      delay<SearchParams>(1000),
+      delay<SearchParams>(platform.server() ? 0 : 1000),
     ).subscribe((params: SearchParams) => {
-      console.log('ACTION CHANGED TO', params.original_query, params.ac_bounds);
+      // console.log('ACTION CHANGED TO', params.original_query, params.ac_bounds);
       if (params.ac_bounds) {
         const bounds: mapboxgl.LngLatBoundsLike = params.ac_bounds;
         this.queueMapAction((map) => {
@@ -237,7 +240,7 @@ export class PageComponent implements OnInit {
       this.pushSearchParamsCalc();
       if (['about', 'search', 'homepage'].indexOf(this.stage) >= 0) {
         this.seo.setTitle(`כל שירות`);
-        this.seo.setUrl(window.location.href);
+        this.seo.setUrl(this.document.location.href);
       }
       if (this.searchFilters) {
         this.searchFilters.active = false;
@@ -274,7 +277,7 @@ export class PageComponent implements OnInit {
     });
     this.easeToQueue.pipe(
       untilDestroyed(this),
-      debounceTime(100)
+      debounceTime(platform.server() ? 0 : 100),
     ).subscribe((params) => {
       this.easeToProps = {};
       this.queueMapAction((map) => {
@@ -385,7 +388,7 @@ export class PageComponent implements OnInit {
   }
 
   set drawerSize(drawerSize: number) {
-    console.log('PADDING DS', drawerSize);
+    // console.log('PADDING DS', drawerSize);
     if (this.drawerSize_ !== drawerSize) {
       this.drawerSize_ = drawerSize;
       this.setPadding();
@@ -430,7 +433,7 @@ export class PageComponent implements OnInit {
         this.drawerState = DrawerState.Half;
       }
     }
-    if (visible && this.point) {
+    if (visible && this.point && this.platform.browser()) {
       timer(0).pipe(
         switchMap(() => from(this.router.navigate(['/s', this.searchParams.ac_query], {queryParamsHandling: 'preserve'}))),
         filter((x) => !!x),
@@ -438,7 +441,7 @@ export class PageComponent implements OnInit {
       ).subscribe(() => {
         this.searchFilters.active = true;
       });
-    }
+    }  
   }
 
   queueMapAction(action: (map: mapboxgl.Map) => void, description: string) {

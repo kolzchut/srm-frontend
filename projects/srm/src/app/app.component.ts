@@ -18,20 +18,22 @@ export class AppComponent {
       private router: Router,
       private platform: PlatformService, 
       private seo: SeoSocialShareService) {
-    if (environment.gaTag) {
-      this.router.events.pipe(
-        filter((event) => event instanceof NavigationEnd),
-        debounceTime(250)
-      ).subscribe((event_) => {
-        platform.browser(() => {
-          const event = event_ as NavigationEnd;
-          console.log('PAGE VIEW', event.urlAfterRedirects);
-          window.gtag && gtag('config', environment.gaTag, {
-            'page_path': event.urlAfterRedirects
-          });  
-        })
-      });
-    }
+    platform.browser(() => {
+      if (environment.gaTag) {
+        this.router.events.pipe(
+          filter((event) => event instanceof NavigationEnd),
+          debounceTime(250)
+        ).subscribe((event_) => {
+          platform.browser(() => {
+            const event = event_ as NavigationEnd;
+            console.log('PAGE VIEW', event.urlAfterRedirects);
+            window.gtag && gtag('config', environment.gaTag, {
+              'page_path': event.urlAfterRedirects
+            });  
+          })
+        });
+      }
+    });
     this.seo.setData({
       title: 'כל שירות',
       description: 'כל שירות - מפת מענים חברתיים המסופקים על ידי הממשלה, עמותות וחברות',

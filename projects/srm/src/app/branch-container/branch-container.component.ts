@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LngLatLike } from 'mapbox-gl';
@@ -12,6 +12,7 @@ import { MapWindowMode } from '../map-window/map-window.component';
 import { MapComponent } from '../map/map.component';
 import { PlatformService } from '../platform.service';
 import { swipe } from '../swipe';
+import { DOCUMENT } from '@angular/common';
 
 
 type BranchCards = {cards: Card[], hidden: Card[]};
@@ -60,7 +61,8 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   MWM = MapWindowMode;
 
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
-              private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService) { }
+              private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService,
+              @Inject(DOCUMENT) private document: any) { }
 
   ngOnInit(): void {
     this.parametersQueue.pipe(
@@ -112,7 +114,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
       } else {
         this.seo.setTitle(`כל שירות`);
       }
-      this.seo.setUrl(window.location.href);
+      this.seo.setUrl(this.document.location.href);
     });
   }
 

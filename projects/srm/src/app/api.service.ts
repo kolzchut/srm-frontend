@@ -69,21 +69,27 @@ export class ApiService {
       // });
   }
 
-  innerCache<T>(key: string, fetcher: Observable<T>): Observable<T> {
+  innerCache<T>(key: string, fetcher: Observable<T>, keep=false): Observable<T> {
     const stateKey = makeStateKey<T | null>(key);
     if (this.platform.server()) {
       const cached = memoryCache.get(stateKey);
+      // console.log('GOT MEM CACHED', !!cached, stateKey);
       if (cached) {
         this.transferState.set(stateKey, cached);
         return from([cached]);
       }
     }
     if (this.transferState.hasKey(stateKey)) {
+      // console.log('GOT CACHED', stateKey);
       const val: T | null = this.transferState.get<T | null>(stateKey, null);
-      this.transferState.remove(stateKey);
+      if (!keep) {
+        this.transferState.remove(stateKey);
+      }
       if (val !== null) {
         return from([val]);
       }
+    // } else {
+    //   console.log('MISS CACHED', stateKey);
     }
     if (this.waiting[key]) {
       return this.waiting[key];
@@ -92,8 +98,9 @@ export class ApiService {
     fetcher.pipe(
       tap(val => {
         this.platform.server(() => {
+          // console.log('SET CACHED', stateKey);
           this.transferState.set(stateKey, val);
-          memoryCache.put(stateKey, val);
+          memoryCache.put(stateKey, val, keep ? 3600000 : 60000);
         });
         this.waiting[key].next(val);
         this.waiting[key].complete();
@@ -345,7 +352,7 @@ export class ApiService {
           const results = res as QueryPresetResult;
           return results.search_results.map((r: any) => r.source);
         })
-      )
+      ), true
     );
   }
 
@@ -384,7 +391,7 @@ export class ApiService {
             return from([]);
           }
         }),
-      )
+      ), true
     );
   }
 
@@ -534,11 +541,11 @@ export class ApiService {
     if (withBounds) {
       params.extra = 'viewport';
     }
-    return this.http.get(environment.cardsURL, {params}).pipe(
+    return this.innerCache(`count-${params.filter}-${params.q}`, this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         return res as QueryCardResult;
       })
-    );
+    ));
   }
 
   getNationalCounts(searchParams: SearchParams): Observable<QueryCardResult> {
@@ -553,11 +560,11 @@ export class ApiService {
     const filter = this._filter(searchParams, false) || {};
     filter.national_service = true;
     params.filter = JSON.stringify(filter);
-    return this.http.get(environment.cardsURL, {params}).pipe(
+    return this.innerCache(`ncount-${params.filter}-${params.q}`, this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         return res as QueryCardResult;
       })
-    );
+    ));
   }
 
   getDistinct(searchParams: SearchParams): Observable<QueryCardResult> {
@@ -586,11 +593,11 @@ export class ApiService {
       }
       params.filter = JSON.stringify([filter]);
     }
-    return this.http.get(environment.cardsURL, {params}).pipe(
+    return this.innerCache(`distinct-${params.filter}-${params.q}`, this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         return res as QueryCardResult;
       })
-    );
+    ));
   }
 
   getCardForPoint(id: string): Observable<Card> {
@@ -683,7 +690,7 @@ export class ApiService {
         map((res: any) => {
           return (res as QueryTaxonomyItemResult).search_results?.map((r: any) => r.source) || [];
         })
-      )
+      ), true
     );
   }
 
@@ -705,7 +712,7 @@ export class ApiService {
         map((res: any) => {
           return (res as QueryTaxonomyItemResult).search_results?.map((r: any) => r.source) || [];
         })
-      )
+      ), true
     );
   }
 
@@ -774,7 +781,7 @@ export class ApiService {
           const qcr = res as QueryCardResult;
           return qcr.search_counts?._current?.total_overall || 0;
         })
-      )
+      ), true
     );
   }
 }

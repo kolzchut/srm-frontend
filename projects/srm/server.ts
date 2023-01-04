@@ -47,25 +47,6 @@ export function app(): express.Express {
     )
   });
 
-  for (const [path, url] of [
-    ['/clusters.json', environment.clusterDataSourceURL],
-    ['/situations.json', environment.taxonomySituationsSourceURL],
-    ['/responses.json', environment.taxonomyResponsesSourceURL],
-  ]) {
-    server.get(path, (req, res) => {
-      if (cache.has(path)) {
-        res.status(200).json(cache.get(path));
-      } else {
-        fetch(url)
-          .then(sm => sm.json())
-          .then((json) => {
-            cache.set(path, json);
-            res.status(200).json(json);
-          });
-      }
-    });
-  }
-
   // All regular routes use the Universal engine
   server.get('*', (req, res) => {
     res.render(indexHtml, {
