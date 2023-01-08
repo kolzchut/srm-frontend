@@ -538,7 +538,7 @@ export class ApiService {
     if (filter) {
       params.filter = JSON.stringify(filter);
     }
-    if (withBounds) {
+    if (!withBounds) {
       params.extra = 'viewport';
     }
     return this.innerCache(`count-${params.filter}-${params.q}`, this.http.get(environment.cardsURL, {params}).pipe(

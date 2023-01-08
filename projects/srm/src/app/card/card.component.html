@@ -19,25 +19,21 @@
         </div>
         <div class='org'>
             <label i18n>השירות ניתן ע״י:</label>
-            <div class='org_name'>{{card.organization_name}}</div>
-            <div class='address'>
-                <ng-container *ngIf='!card.national_service'>
-                    <ng-container *ngIf='!card.address_parts'>
-                        <span class='primary'>{{card.branch_address}}</span>
-                    </ng-container>
-                    <ng-container *ngIf='card.address_parts'>
-                        <span class='primary'>{{card.address_parts.primary}}</span>
-                        <span class='secondary' *ngIf='card.address_parts.secondary'><ng-container *ngIf='card.branch_location_accurate'> -</ng-container> {{card.address_parts.secondary}}</span>
-                    </ng-container>    
-                </ng-container>
-                <ng-container *ngIf='card.national_service'>
-                    <span class='national-service'>השירות ניתן בכל הארץ</span>
-                </ng-container>
+            <div class='org-name' *ngIf='card.organization_name_parts'>
+                <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name_parts.primary}}</a>
+                <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name_parts.primary}}</span>
+                <span *ngIf='card.organization_name_parts.secondary'> - {{card.organization_name_parts.secondary}}</span>
             </div>
-            <div class='actions' #orgActions [class.odd]='oddActions'>
+            <div class='org-name' *ngIf='!card.organization_name_parts'>
+                <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name}}</a>
+                <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name}}</span>
+            </div>
+            <div class='actions'>
                 <app-card-action-phone [card]='card' [org]='true'></app-card-action-phone>
-                <app-card-action-url [card]='card' [org]='true'></app-card-action-url>
-                <app-card-action-nav [card]='card'></app-card-action-nav>
+                <app-card-action-nav [card]='card' [org]='true'></app-card-action-nav>
+            </div>
+            <div class='org-branches' *ngIf='card.organization_branch_count > 1'>
+                <a [routerLink]='["/s", card.organization_id]'>{{card.organization_branch_count}} סניפים בארץ ←</a>
             </div>
         </div>
         <div class='data-sources'>

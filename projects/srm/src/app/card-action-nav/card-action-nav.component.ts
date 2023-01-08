@@ -12,9 +12,11 @@ import { Card } from '../consts';
 export class CardActionNavComponent implements OnChanges {
 
   @Input() card: Card;
+  @Input() org: boolean;
 
   action = '';
   active = false;
+  display = 'ניווט'
 
   constructor() { }
 
@@ -26,6 +28,9 @@ export class CardActionNavComponent implements OnChanges {
       if (coords.length === 2 && latLng && latLng.length) {
         this.action = `https://www.google.com/maps/search/?api=1&query=${latLng}`;
         this.active = true;
+        if (this.org) {
+          this.display = this.card.branch_address;
+        }
       }
     }  
   }

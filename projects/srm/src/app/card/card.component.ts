@@ -14,19 +14,9 @@ export class CardComponent implements OnInit {
 
   @Input() card: Card;
 
-  @ViewChild('orgActions') orgActions: ElementRef;
-
-  oddActions = false;
-
   constructor(private api: ApiService, @Inject(DOCUMENT) private document: Document) { }
 
   ngOnInit(): void {
-  }
-
-  ngOnChanges(): void {
-    timer(0).subscribe(() => {
-      this.oddActions = (this.orgActions?.nativeElement as HTMLElement)?.querySelectorAll('.active').length % 2 === 1;
-    });
   }
 
   get suggestChangesForm() {

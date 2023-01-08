@@ -11,6 +11,7 @@ export class CardActionComponent implements OnInit {
   @Input() display: string;
   @Input() action: string;
   @Input() primary = false;
+  @Input() org = false;
   
   constructor() { }
 

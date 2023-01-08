@@ -459,7 +459,7 @@ export class PageComponent implements OnInit {
 
   zoomOutMap(viewport: ViewPort) {
     this.queueMapAction((map) => {
-      map.fitBounds([viewport.top_left, viewport.bottom_right], {padding: {top: 70, bottom: 10, left: 10, right: 10}});
+      map.fitBounds([viewport.top_left, viewport.bottom_right], {padding: {top: 70, bottom: 10, left: 10, right: 10}, maxZoom: 15});
     }, 'zoom-out-map');
   }
 

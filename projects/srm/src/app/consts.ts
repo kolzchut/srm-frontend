@@ -40,6 +40,7 @@ export class Card {
     organization_kind: string;
     organization_urls: {href: string, title: string}[];
     organization_phone_numbers: string[];
+    organization_branch_count: number;
 
     branch_id: string;
     branch_name: string;
