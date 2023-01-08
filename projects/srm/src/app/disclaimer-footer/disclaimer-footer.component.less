@@ -1,0 +1,58 @@
+@import '../../common.less';
+
+.disclaimer {
+    background: @color-white;
+    padding: 24px;
+    .font-rag-sans;
+    font-size: 13px;
+    color: @color-gray-1;
+    display: flex;
+    flex-flow: column;
+    gap: 8px;
+
+    strong {
+        font-weight: 700;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    .link {
+        line-height: 16px;
+        a {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+
+    .style-kz {
+        // background: rgba(184, 202, 63, 0.15);
+        background-image: url(../../assets/img/icon-kz.svg);
+    }
+
+    .style-il {
+        // background: rgba(57, 138, 193, 0.1);
+        background-image: url(../../assets/img/icon-state-of-israel.svg);
+    }
+
+    .style-il, .style-kz {
+        &, &:hover, &:visited {
+            text-decoration: none;
+            color: inherit;    
+        }
+        border-radius: 4px;
+        padding: 4px;
+        padding-right: 24px;
+        padding-left: 0;
+        margin-right: 6px;
+        background-repeat: no-repeat;
+        background-position: right 4px center;
+        background-size: 16px 16px;
+    }
+    
+    .data-disclaimer {
+        margin-top: 8px;
+        color: @color-gray-3;
+    }
+}
