@@ -39,6 +39,7 @@ import { MapWindowComponent } from './map-window/map-window.component';
 import { CardContainerComponent } from './card-container/card-container.component';
 import { QuickActionsComponent } from './quick-actions/quick-actions.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DisclaimerFooterComponent } from './disclaimer-footer/disclaimer-footer.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BranchHeaderComponent,
     MapWindowComponent,
     CardContainerComponent,
-    QuickActionsComponent
+    QuickActionsComponent,
+    DisclaimerFooterComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
