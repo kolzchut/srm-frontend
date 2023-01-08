@@ -1,50 +1,51 @@
 <div class='main-content'>
-        <h1 class='name'>{{card.service_name}}</h1>
-        <div class='description' *ngIf='card.service_description'>{{card.service_description}}</div>
-        <div class='responses'>
-            <label i18n>מהות השירות:</label>
-            <div class='list'>
-                <app-response *ngFor='let response of card.responses' [response]='response'></app-response>
-            </div>
+    <h1 class='name'>{{card.service_name}}</h1>
+    <div class='description' *ngIf='card.service_description'>{{card.service_description}}</div>
+    <div class='responses'>
+        <label i18n>מהות השירות:</label>
+        <div class='list'>
+            <app-response *ngFor='let response of card.responses' [response]='response'></app-response>
         </div>
-        <div class='situations'>
-            <label i18n>השירות מתאים עבור:</label>
-            <div class='list'>
-                <app-situation *ngFor='let situation of card.situations' [situation]='situation'></app-situation>
-            </div>
+    </div>
+    <div class='situations'>
+        <label i18n>השירות מתאים עבור:</label>
+        <div class='list'>
+            <app-situation *ngFor='let situation of card.situations' [situation]='situation'></app-situation>
         </div>
-        <div class='terms' *ngIf='card.service_details'>
-            <label i18n>תנאים לקבלת השירות:</label>
-            <div [innerHTML]='card.service_details'></div>
+    </div>
+    <div class='terms' *ngIf='card.service_details'>
+        <label i18n>תנאים לקבלת השירות:</label>
+        <div [innerHTML]='card.service_details'></div>
+    </div>
+    <div class='org'>
+        <label i18n>השירות ניתן ע״י:</label>
+        <div class='org-name' *ngIf='card.organization_name_parts'>
+            <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name_parts.primary}}</a>
+            <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name_parts.primary}}</span>
+            <span *ngIf='card.organization_name_parts.secondary'> - {{card.organization_name_parts.secondary}}</span>
         </div>
-        <div class='org'>
-            <label i18n>השירות ניתן ע״י:</label>
-            <div class='org-name' *ngIf='card.organization_name_parts'>
-                <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name_parts.primary}}</a>
-                <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name_parts.primary}}</span>
-                <span *ngIf='card.organization_name_parts.secondary'> - {{card.organization_name_parts.secondary}}</span>
-            </div>
-            <div class='org-name' *ngIf='!card.organization_name_parts'>
-                <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name}}</a>
-                <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name}}</span>
-            </div>
-            <div class='actions'>
-                <app-card-action-phone [card]='card' [org]='true'></app-card-action-phone>
-                <app-card-action-nav [card]='card' [org]='true'></app-card-action-nav>
-            </div>
-            <div class='org-branches' *ngIf='card.organization_branch_count > 1'>
-                <a [routerLink]='["/s", card.organization_id]'>{{card.organization_branch_count}} סניפים בארץ ←</a>
-            </div>
+        <div class='org-name' *ngIf='!card.organization_name_parts'>
+            <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name}}</a>
+            <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name}}</span>
         </div>
-        <div class='data-sources'>
-            <ng-container *ngFor='let data_source of card.data_sources'>
-                <span class='data-source' [innerHtml]='data_source'></span>
-            </ng-container>
+        <div class='actions'>
+            <app-card-action-phone [card]='card' [org]='true'></app-card-action-phone>
+            <app-card-action-nav [card]='card' [org]='true'></app-card-action-nav>
         </div>
-        <div class='error-report'>
-            <a [href]='suggestChangesForm' target='_blank'>
-                <div class='icon'></div>
-                <span i18n>מצאתי טעות בנתונים</span>
-            </a>
+        <div class='org-branches' *ngIf='card.organization_branch_count > 1'>
+            <a [routerLink]='["/s", card.organization_id]'>{{card.organization_branch_count}} סניפים בארץ ←</a>
         </div>
+    </div>
+    <div class='data-sources'>
+        <ng-container *ngFor='let data_source of card.data_sources'>
+            <span class='data-source' [innerHtml]='data_source'></span>
+        </ng-container>
+    </div>
+    <div class='error-report'>
+        <a [href]='suggestChangesForm' target='_blank'>
+            <div class='icon'></div>
+            <span i18n>מצאתי טעות בנתונים</span>
+        </a>
+    </div>
 </div>
+<app-disclaimer-footer></app-disclaimer-footer>
