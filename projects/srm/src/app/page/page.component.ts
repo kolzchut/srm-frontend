@@ -11,6 +11,7 @@ import { MapComponent } from '../map/map.component';
 import { SearchFiltersComponent } from '../search-filters/search-filters.component';
 import { DOCUMENT } from '@angular/common';
 import { PlatformService } from '../platform.service';
+import { LayoutService } from '../layout.service';
 
 class SearchParamCalc {
   acId: string;
@@ -80,7 +81,8 @@ export class PageComponent implements OnInit {
 
   nationalCount = 0;
 
-  constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService, private platform: PlatformService,
+  constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
+              private platform: PlatformService, private layout: LayoutService,
               @Inject(DOCUMENT) private document: any) {
 
     this.searchParamsCalc.pipe(
@@ -365,13 +367,18 @@ export class PageComponent implements OnInit {
   }
 
   setPadding() {
-    const padding = this.branchSize + this.drawerSize;
-    if (padding !== this.padding) {
-      this.padding = padding;
-      this.easeTo({padding: {top: 0, bottom: this.padding, left: 0, right: 0}});
-      // this.queueMapAction((map) => {
-      //   map.easeTo({padding: {top: 0, bottom: this.padding, left: 0, right: 0}}, {ignore: true})
-      // }, 'padding-' + this.padding);
+    if (this.layout.mobile) {
+      const padding = this.branchSize + this.drawerSize;
+      if (padding !== this.padding) {
+        this.padding = padding;
+        this.easeTo({padding: {top: 0, bottom: this.padding, left: 0, right: 0}});
+      }  
+    } else {
+      const padding = window.innerWidth / 2;
+      if (padding !== this.padding) {
+        this.padding = padding;
+        this.easeTo({padding: {top: 0, right: this.padding, left: 0, bottom: 0}});
+      }  
     }
   }
 

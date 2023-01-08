@@ -6,13 +6,29 @@
     pointer-events: none !important;
     
     display: flex;
-    flex-flow: column;
     align-items: center;
     overflow: hidden;
 
+    .mobile({
+        flex-flow: column;
+    });
+    .desktop({
+        flex-flow: row-reverse;
+    });
+
     > .map-window {
-        width: 100%;
-        height: 50%;
+
+        .mobile({
+            width: 100%;
+            height: 50%;
+            max-height: 100% !important;    
+        });
+        .desktop({
+            height: 100%;
+            width: 50%;
+            flex: 0 0 auto;
+        });
+
         pointer-events: none;
         flex: 0 0 auto;
         position: relative;
@@ -26,8 +42,6 @@
             transition-duration: 250ms;
             transition-timing-function: ease-in-out;    
         }
-
-        max-height: 100% !important;
 
         .national-services {
             position: absolute;

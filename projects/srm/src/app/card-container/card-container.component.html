@@ -1,5 +1,8 @@
+<div class='map-window layout-desktop' [class.national-service]='nationalService' #mapWindow>
+    <app-map-window [mode]='inaccurate ? MWM.Inaccurate : (nationalService ? MWM.NationalService : MWM.Card)' [link]='branchLink'></app-map-window>
+</div>
 <div class='scrolled' #scrolled>
-    <div class='map-window' [class.national-service]='nationalService' #mapWindow>
+    <div class='map-window layout-mobile' [class.national-service]='nationalService' #mapWindow>
         <app-map-window [mode]='inaccurate ? MWM.Inaccurate : (nationalService ? MWM.NationalService : MWM.Card)' [link]='branchLink'></app-map-window>
     </div>
     <div class='content'
