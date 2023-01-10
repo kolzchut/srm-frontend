@@ -13,6 +13,7 @@ import { MapComponent } from '../map/map.component';
 import { PlatformService } from '../platform.service';
 import { swipe } from '../swipe';
 import { DOCUMENT } from '@angular/common';
+import { LayoutService } from '../layout.service';
 
 
 type BranchCards = {cards: Card[], hidden: Card[]};
@@ -61,7 +62,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   MWM = MapWindowMode;
 
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
-              private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService,
+              private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService, private layout: LayoutService,
               @Inject(DOCUMENT) private document: any) { }
 
   ngOnInit(): void {
@@ -134,6 +135,9 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
+    if (this.layout.desktop) {
+      this.router.navigate(['/'])
+    };
     fromEvent<TouchEvent>(this.backToSearch.nativeElement, 'touchstart')
     .pipe(
       untilDestroyed(this),

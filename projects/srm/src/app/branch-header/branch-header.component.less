@@ -5,7 +5,12 @@
     flex-flow: row;
     align-items: center;
     cursor: pointer;
-    min-height: 50px;
+    .mobile({
+        min-height: 50px;
+    });
+    .desktop({
+        min-height: 70px;
+    });
     background: @color-gray-7;
     box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px 8px 0px 0px; 
@@ -28,7 +33,7 @@
             margin: 0;
             padding: 0;
             font-size: 16px;
-            line-height: 21px;
+            line-height: 20px;
             max-width: 100%;
             
             .primary {
@@ -40,8 +45,14 @@
             }
         }
         .address {
-            font-size: 13px;
-            line-height: 13px;
+            .mobile({
+                font-size: 13px;
+                line-height: 13px;    
+            });
+            .desktop({
+                font-size: 16px;
+                line-height: 20px;    
+            });
             max-width: 100%;
 
             .primary {
@@ -71,6 +82,15 @@
         &.point {
             transform: rotate(180deg);
         }
+    }
+    .back-icon {
+        .button-image;
+        .background-image;
+        background-image: url(../../assets/img/icon-arrow-right-gray-4.svg);
+        width: 46px;
+        height: 24px;
+        background-size: 24px;
+        background-position: center right 12px;
     }
     &.point {
         .header {

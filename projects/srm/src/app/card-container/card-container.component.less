@@ -5,6 +5,7 @@
     height: 100%;
     display: flex;
     flex-flow: row-reverse;
+    pointer-events: none;
     > .map-window {
         flex: 0 0 50%;
     }
@@ -18,6 +19,8 @@
         overflow-y: scroll;
         .no-scrollbars;
         overscroll-behavior: none;
+        position: relative;
+        pointer-events: auto;
 
     
         .map-window {
@@ -101,10 +104,15 @@
 
     .quick-actions {
         position: fixed;
-        width: 100%;
+        .mobile({
+            width: 100%;
+        });
+        .desktop({
+            width: 50%;
+        });
         height: 56px;
         bottom: 0;
-        left: 0;
+        right: 0;
         z-index: 1;
         animation: slideIn;
         animation-delay: 2s;

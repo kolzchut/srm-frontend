@@ -1,5 +1,5 @@
 <div class='map-window layout-desktop' [class.national-service]='nationalService' #mapWindow>
-    <app-map-window [mode]='inaccurate ? MWM.Inaccurate : (nationalService ? MWM.NationalService : MWM.Card)' [link]='branchLink'></app-map-window>
+    <app-map-window [mode]='inaccurate ? MWM.Inaccurate : (nationalService ? MWM.NationalService : MWM.Card)'></app-map-window>
 </div>
 <div class='scrolled' #scrolled>
     <div class='map-window layout-mobile' [class.national-service]='nationalService' #mapWindow>
@@ -13,12 +13,12 @@
             <app-card *ngIf='card' [card]='card'></app-card>
         </div>
     </div>
-    <div class='controls'>
+    <div class='controls layout-mobile'>
         <a class='back' [routerLink]='["../.."]' queryParamsHandling='preserve' *ngIf='!landingPage'></a>
         <div class='menu-icon' *ngIf='landingPage'><app-menu-icon [dark]='true'></app-menu-icon></div>
         <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.original_query ? {q: searchParams?.original_query} : {}"></a>
     </div>    
-</div>
-<div class='quick-actions' *ngIf='card'>
-    <app-quick-actions [card]='card'></app-quick-actions>
+    <div class='quick-actions' *ngIf='card'>
+        <app-quick-actions [card]='card'></app-quick-actions>
+    </div>
 </div>

@@ -2,7 +2,12 @@
 
 .disclaimer {
     background: @color-white;
-    padding: 24px;
+    .mobile({
+        padding: 24px;
+    });
+    .desktop({
+        padding: 32px 56px;
+    });
     .font-rag-sans;
     font-size: 13px;
     color: @color-gray-1;

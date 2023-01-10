@@ -2,6 +2,7 @@
         [class.point-mode]='mode === MapWindowMode.Point'
         [class.inaccurate]='mode === MapWindowMode.Inaccurate'
         [class.national-service]='mode === MapWindowMode.NationalService'
+        [class.passthrough]='passthrough()'
         [routerLink]='link'
         queryParamsHandling='preserve'>
     <div class='message-blur' *ngIf='mode === MapWindowMode.Inaccurate || mode === MapWindowMode.NationalService'>&nbsp;</div>

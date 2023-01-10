@@ -5,7 +5,7 @@
     width: 100%;
     height: 100%;
     background: transparent;
-    pointer-events: all;
+    pointer-events: none;
     position: relative;
     flex-flow: column;
     align-items: center;
@@ -56,7 +56,6 @@
     }
 
     &.point-mode {
-        pointer-events: none;
         .message-blur {
             bottom: -22px;
         }
@@ -64,4 +63,10 @@
             bottom: -8px;
         }
     }
+
+    pointer-events: all;
+    &.passthrough {
+        pointer-events: none;
+    }
+
 }

@@ -24,4 +24,14 @@ export class MapWindowComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  passthrough() {
+    if (this.mode === MapWindowMode.NationalService) {
+      return false;
+    }
+    if (this.link) {
+      return false;
+    }
+    return true;
+  }
+
 }

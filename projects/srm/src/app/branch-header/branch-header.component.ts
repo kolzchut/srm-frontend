@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Card } from '../consts';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-branch-header',
@@ -13,7 +14,7 @@ export class BranchHeaderComponent implements OnInit {
   @Input() cardId: string;
   @Input() pointId: string;
 
-  constructor() { }
+  constructor(public layout: LayoutService) { }
 
   ngOnInit(): void {
   }

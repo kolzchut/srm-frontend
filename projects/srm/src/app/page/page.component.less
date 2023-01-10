@@ -29,7 +29,7 @@
         flex-flow: column;
         align-items: center;
 
-        & > *, & > .main-content > app-card-container, & > .search-results > * {
+        & > *, & > .search-results > * {
             pointer-events: auto;
         }
         & > app-menu {
@@ -94,6 +94,10 @@
                                     background-color: @color-light-blue;
                                 }
                             }
+                        }
+
+                        &.search-filters {
+                            height: 100%;
                         }
         
                         app-search-filters {

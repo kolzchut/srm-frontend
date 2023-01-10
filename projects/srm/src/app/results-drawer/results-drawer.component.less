@@ -156,7 +156,12 @@
             .no-scrollbars;
             flex: 0 1 auto;
             overscroll-behavior-x: none;
-            min-height: 48px;
+            .mobile({
+                min-height: 48px;
+            });
+            .desktop({
+                min-height: 60px;
+            });
 
             &.scrollable-anyway {
                 overflow-y: scroll;

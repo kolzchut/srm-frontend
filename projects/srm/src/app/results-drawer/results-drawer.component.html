@@ -18,7 +18,7 @@
     <div class='handle layout-mobile' (click)='$event.stopPropagation()'>
         <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
     </div>
-    <div class='non-scrollable' [class.scrollable-anyway]='scrollAll' *ngIf='layout.mobile'>
+    <div class='non-scrollable' [class.scrollable-anyway]='scrollAll'>
         <ng-content select='content-header'></ng-content>
     </div>
     <div class='scrollable' #scrollable>
