@@ -1,5 +1,6 @@
-<a class='header' [routerLink]='layout.mobile ? link : ["../.."]' queryParamsHandling='preserve' *ngIf='card' [class.point]='!!pointId'>
-    <button class='back-icon layout-desktop' [class.card]='!!cardId' [class.point]='!!pointId'></button>
+<a class='header' [routerLink]='layout.mobile ? link : (landingPage ? null : ["../.."])' queryParamsHandling='preserve' *ngIf='card' [class.point]='!!pointId'>
+    <button class='back-icon layout-desktop' [class.card]='!!cardId' [class.point]='!!pointId' *ngIf='!landingPage'></button>
+    <div class='spacer layout-desktop' *ngIf='landingPage'></div>
     <div class='branch-details'>
         <h2 class='branch-name'>
             <ng-container *ngIf='!card.organization_name_parts'>

@@ -40,6 +40,7 @@ import { CardContainerComponent } from './card-container/card-container.componen
 import { QuickActionsComponent } from './quick-actions/quick-actions.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DisclaimerFooterComponent } from './disclaimer-footer/disclaimer-footer.component';
+import { DesktopMenuLinksComponent } from './desktop-menu-links/desktop-menu-links.component';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { DisclaimerFooterComponent } from './disclaimer-footer/disclaimer-footer
     MapWindowComponent,
     CardContainerComponent,
     QuickActionsComponent,
-    DisclaimerFooterComponent
+    DisclaimerFooterComponent,
+    DesktopMenuLinksComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

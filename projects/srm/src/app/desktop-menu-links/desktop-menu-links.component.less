@@ -1,0 +1,20 @@
+@import '../../common.less';
+
+:host {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    gap: 32px;
+    padding: 0;
+    padding-right: 64px;
+
+    a {
+        .font-rag-sans;
+        font-weight: 300;
+        font-size: 20px;
+        line-height: 20px;
+        color: @color-blue-1;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+}

@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { debounceTime, filter, Subject, switchMap, tap, throttleTime } from 'rxjs';
 import { ApiService } from '../api.service';
 import { SearchParams, TaxonomyItem } from '../consts';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-searchbox-header',
@@ -27,7 +28,7 @@ export class SearchboxHeaderComponent implements OnChanges {
 
   searchParamQueue = new Subject<SearchParams>();
 
-  constructor(private api: ApiService) {
+  constructor(private api: ApiService, public layout: LayoutService) {
     this.searchParamQueue.pipe(
       debounceTime(500),
       filter((searchParams: SearchParams) => {

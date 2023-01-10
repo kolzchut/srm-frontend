@@ -1,5 +1,6 @@
+<a class='logo layout-desktop' [routerLink]='["/"]'></a>
 <div class='searchbox'>
-    <app-menu-icon></app-menu-icon>
+    <app-menu-icon *ngIf='layout.mobile'></app-menu-icon>
     <a class='clickable' [routerLink]='["/q"]' [queryParams]='{q: searchParams?.original_query}' [title]='searchParams?.original_query'>
         <div class='search-params' *ngIf='placeholder'>
             <span class='placeholder'>{{placeholder}}</span>
@@ -36,9 +37,10 @@
         <div class='search-icon'></div>    
     </a>
 </div>
-<div *ngIf='didYouMean' class='did-you-mean'>
+<div *ngIf='didYouMean' class='did-you-mean layout-mobile'>
     <span>האם התכוונת&nbsp;</span>
     <a [routerLink]='["/s", didYouMeanLink]'>
         {{didYouMean}}
     </a><span>?</span>
 </div>
+<app-desktop-menu-links></app-desktop-menu-links>

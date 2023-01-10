@@ -13,6 +13,7 @@ export class BranchHeaderComponent implements OnInit {
   @Input() link: string[] | null;
   @Input() cardId: string;
   @Input() pointId: string;
+  @Input() landingPage = false;
 
   constructor(public layout: LayoutService) { }
 
