@@ -136,7 +136,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
 
   ngAfterViewInit(): void {
     if (this.layout.desktop) {
-      this.router.navigate(['/'])
+      this.goUp();
     };
     fromEvent<TouchEvent>(this.backToSearch.nativeElement, 'touchstart')
     .pipe(
@@ -145,9 +145,13 @@ export class BranchContainerComponent implements OnInit, OnChanges {
     ).subscribe((diff) => {
       console.log('back to search swipe', diff);
       if (diff < -50) {
-        this.router.navigate(['../..'], {relativeTo: this.route, queryParamsHandling: 'preserve'});
+        this.goUp();
       }
     });
+  }
+
+  goUp(): void {
+    this.router.navigate(['../..'], {relativeTo: this.route, queryParamsHandling: 'preserve'});
   }
 
   setupObserver(): void {
