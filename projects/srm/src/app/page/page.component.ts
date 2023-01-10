@@ -82,7 +82,7 @@ export class PageComponent implements OnInit {
   nationalCount = 0;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
-              private platform: PlatformService, private layout: LayoutService,
+              private platform: PlatformService, public layout: LayoutService,
               @Inject(DOCUMENT) private document: any) {
 
     this.searchParamsCalc.pipe(

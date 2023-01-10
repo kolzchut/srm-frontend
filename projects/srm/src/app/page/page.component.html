@@ -9,9 +9,14 @@
 <div class='page-container' [class]='"stage-" + stage'>
     <app-homepage *ngIf='stage === "homepage"'></app-homepage>
     <app-search *ngIf='stage === "search"'></app-search>
+    <app-searchbox-header *ngIf='(stage === "search-results" || stage === "card") && layout.desktop' 
+        [query]='query'
+        [showCity]='!mapMoved'
+        [searchParams]='searchParams'        
+    ></app-searchbox-header>
     <div class='main-content'>
         <div class='search-results'>
-            <app-searchbox-header *ngIf='stage === "search-results"' 
+            <app-searchbox-header *ngIf='stage === "search-results" && layout.mobile' 
                     [query]='query'
                     [showCity]='!mapMoved'
                     [searchParams]='searchParams'        
