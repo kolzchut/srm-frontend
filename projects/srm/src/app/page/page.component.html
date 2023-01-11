@@ -10,7 +10,7 @@
 <div class='page-container' [class]='"stage-" + stage'>
     <app-homepage *ngIf='stage === "homepage"'></app-homepage>
     <app-search *ngIf='stage === "search"'></app-search>
-    <app-searchbox-header *ngIf='(stage === "search-results" || stage === "card") && layout.desktop' 
+    <app-searchbox-header *ngIf='(stage === "search-results" || stage === "card" || stage.indexOf("about:") === 0) && layout.desktop' 
         [query]='query'
         [showCity]='!mapMoved'
         [searchParams]='searchParams'        
