@@ -375,10 +375,10 @@ export class PageComponent implements OnInit {
       }  
     } else {
       const padding = window.innerWidth / 2;
-      if (padding !== this.padding) {
-        this.padding = padding;
-        this.easeTo({padding: {top: 0, right: this.padding, left: 0, bottom: 0}});
-      }  
+      // if (padding !== this.padding) {
+      this.padding = padding;
+      this.easeTo({padding: {top: 0, right: this.padding, left: 0, bottom: 0}});
+      // }  
     }
   }
 
