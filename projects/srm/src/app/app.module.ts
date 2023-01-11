@@ -41,6 +41,7 @@ import { QuickActionsComponent } from './quick-actions/quick-actions.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DisclaimerFooterComponent } from './disclaimer-footer/disclaimer-footer.component';
 import { DesktopMenuLinksComponent } from './desktop-menu-links/desktop-menu-links.component';
+import { ArrowToTabDirective } from './arrow-to-tab.directive';
 
 @NgModule({
   declarations: [
@@ -77,7 +78,8 @@ import { DesktopMenuLinksComponent } from './desktop-menu-links/desktop-menu-lin
     CardContainerComponent,
     QuickActionsComponent,
     DisclaimerFooterComponent,
-    DesktopMenuLinksComponent
+    DesktopMenuLinksComponent,
+    ArrowToTabDirective
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

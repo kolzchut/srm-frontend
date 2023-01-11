@@ -5,6 +5,7 @@
         [markerProps]='markerProps'
         (map)='map = $event'
         (mapBounds)='bounds = $event'
+        aria-hidden='true'
 ></app-map>
 <div class='page-container' [class]='"stage-" + stage'>
     <app-homepage *ngIf='stage === "homepage"'></app-homepage>

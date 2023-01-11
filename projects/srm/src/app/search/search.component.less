@@ -11,6 +11,11 @@
 
 :host {
     width: 100%;
+    height: 100%;    
+}
+
+.container {
+    width: 100%;
     height: 100%;
     display: flex;
     flex-flow: column;
@@ -193,5 +198,10 @@
                 }
             }
         }
+
+        .result:has(a:focus) {
+            background: @color-gray-6;
+        }
+
     }
 }
