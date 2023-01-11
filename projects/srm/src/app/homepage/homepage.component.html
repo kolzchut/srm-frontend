@@ -1,17 +1,21 @@
 <div class='main'>
     <div class='header'>
-        <div class='menu-button'>
+        <div class='menu-button layout-mobile'>
             <app-menu-icon></app-menu-icon>
         </div>
-        <div>
+        <div class='logo-tagline'>
             <div class='logo'></div>
             <h2 class='tagline'>
                 <span>כל השירותים והמענים החברתיים</span>
                 <span>שניתן למצוא על מפה אחת</span>
             </h2>
         </div>
+        <app-desktop-menu-links></app-desktop-menu-links>
     </div>    
     <div class='search' [class.cta]='slide === 3'>
+        <p class='layout-desktop'>
+            <strong>אספנו וסיווגנו {{totalServices.toLocaleString()}} שירותים חברתיים</strong> שאספנו וסיווגנו מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים.
+        </p>
         <a class='searchbox' [routerLink]='["/q"]' [class.cta]='slide === 3'>
             <h1 [class.active]='slide === 0'>כל שירות</h1>
             <div class='subtitle'>
@@ -40,15 +44,16 @@
                 </div>
             </div>
             <div class='slide' data-slide='3' [class.seen-once]='!!seenOnce[3]'>
+                <p class='layout-mobile'>
+                    <strong>אספנו וסיווגנו {{totalServices.toLocaleString()}} שירותים חברתיים</strong> שאספנו וסיווגנו מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים.
+                </p>
                 <p>
-                    <strong>יש לנו {{totalServices.toLocaleString()}} שירותים חברתיים</strong> שאספנו וסיווגנו מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים.
-                    <br/><br/>
                     אנחנו בטוחים שנמצא גם משהו בשבילך.<br/>
-                    <strong>בואו נתחיל!</strong>
+                    בואו נתחיל!
                 </p>
             </div>
         </div>
-        <div class='pager'>
+        <div class='pager' [class.cta]='slide === 3'>
             <a class='chevron right' [class.active]='slide > 0' (click)='slide = slide > 0 ? slide-1 : slide'></a>
             <div class='dots'>
                 <div class='dot' [class.active]='slide === 0' data-slide='0'></div>
@@ -65,7 +70,7 @@
             <a class='moj'></a>
             <a class='digital-israel'></a>    
         </div>
-        <div class='logo-block'>
+        <div class='logo-block layout-mobile'>
             <a class='kolzchut'></a>
             <a class='moj'></a>
             <a class='digital-israel'></a>    

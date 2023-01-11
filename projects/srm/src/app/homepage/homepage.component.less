@@ -32,10 +32,16 @@
         .header {
             display: flex;
             flex-flow: row;
-            align-items: flex-start;
             justify-content: flex-start;
             gap: 0px;
-            padding: 0 8px;
+            .mobile({
+                padding: 0 8px;
+                align-items: flex-start;
+            });
+            .desktop({
+                padding: 20px 24px;
+                align-items: center;
+            });
             
             .menu-button {
                 width: 32px;
@@ -45,11 +51,20 @@
                 align-items: center;
                 justify-content: center;
             }
-            > div {
+            div.logo-tagline {
                 display: flex;
-                flex-flow: column;
-                align-items: flex-start;
-                gap: 2px;
+                flex-flow: row;
+                align-items: flex-start;    
+                .mobile({
+                    flex-flow: column;
+                    align-items: flex-start;
+                    gap: 2px;    
+                });
+                .desktop({
+                    flex-flow: row;
+                    align-items: center;
+                    gap: 8px;
+                });
                 .logo {
                     .background-image;
                     background-image: url(../../assets/img/logo.svg);
@@ -69,6 +84,9 @@
                     margin: 0;
                 }
             }
+            app-desktop-menu-links {
+                margin-right: auto;
+            }
         }
         .search {
             padding: 0 8px;
@@ -81,11 +99,41 @@
             });
             gap: 20px;
 
-            &.cta {
-                .background-image;
-                background-image: url(../../assets/img/hp-cta.svg);
-                background-position: left 14px top 75px;
-                background-size: 78px 199px;
+            .mobile({
+                &.cta {
+                    .background-image;
+                    background-image: url(../../assets/img/hp-cta.svg);
+                    background-position: left 14px top 75px;
+                    background-size: 78px 199px;
+                }    
+            });
+
+            h3 {
+                .font-rag-sans;
+                font-size: 16px;
+                line-height: 20px;
+                margin: 0;
+                font-weight: 400;
+                color: @color-gray-3;
+                strong {
+                    font-weight: 700;
+                }
+            }
+
+            p {
+                .font-rag-sans;
+                font-size: 16px;
+                line-height: 20px;    
+                margin: 0;
+                color: @color-gray-1;
+                font-weight: 400;
+                strong {
+                    font-weight: 700;
+                }
+            }
+
+            h3, p {
+                padding: 0 8px;
             }
 
             .searchbox {
@@ -106,7 +154,7 @@
                 background-size: 24px;
                 &.cta {
                     background-image: url(../../assets/img/icon-search-black.svg);
-                }
+                }    
                 
                 h1 {
                     .font-rag-sans;
@@ -162,33 +210,6 @@
                     flex: 0 0 auto;
                     scroll-snap-align: center;
                     scroll-snap-stop: always;
-
-                    .font-rag-sans;
-                    h3 {
-                        font-size: 16px;
-                        line-height: 20px;
-                        margin: 0;
-                        font-weight: 400;
-                        color: @color-gray-3;
-                        strong {
-                            font-weight: 700;
-                        }
-                    }
-    
-                    p {
-                        font-size: 16px;
-                        line-height: 20px;    
-                        margin: 0;
-                        color: @color-gray-1;
-                        font-weight: 400;
-                        strong {
-                            font-weight: 700;
-                        }
-                    }
-    
-                    h3, p {
-                        padding: 0 8px;
-                    }
 
                     .place {
                         .font-rag-sans;
@@ -268,6 +289,12 @@
                 gap: 32px;
                 animation: show 0.5s both;
                 animation-delay: 20 * @staggering;
+                .desktop({
+                    &.cta {
+                        animation: hide 0.5s both;
+                        animation-delay: 0;
+                    }    
+                });
 
                 .chevron {
                     width: 32px;
@@ -317,7 +344,13 @@
         .logos {
             display: flex;
             flex-flow: row;
-            width: 100%;
+            .mobile({
+                width: 100%;
+            });
+            .desktop({
+                width: 50%;
+                align-self: center;
+            });
             overflow: hidden;
 
             .logo-block {
@@ -327,7 +360,9 @@
                 flex-flow: row;
                 align-items: center;
                 // justify-content: space-evenly;
-                animation: scroll 10s linear infinite;
+                .mobile({
+                    animation: scroll 10s linear infinite;
+                });
 
                 & > a {
                     flex: 1 1 100%;
@@ -336,15 +371,28 @@
                     .background-image;
                     background-size: 80px 40px;
 
-                    &.kolzchut {
-                        background-image: url(../../assets/img/logo-kolzchut-gray.svg);
-                    }
-                    &.moj {
-                        background-image: url(../../assets/img/logo-moj-gray.svg);
-                    }
-                    &.digital-israel {
-                        background-image: url(../../assets/img/logo-digital-israel-gray.svg);
-                    }
+                    .mobile({
+                        &.kolzchut {
+                            background-image: url(../../assets/img/logo-kolzchut-gray.svg);
+                        }
+                        &.moj {
+                            background-image: url(../../assets/img/logo-moj-gray.svg);
+                        }
+                        &.digital-israel {
+                            background-image: url(../../assets/img/logo-digital-israel-gray.svg);
+                        }    
+                    });
+                    .desktop({
+                        &.kolzchut {
+                            background-image: url(../../assets/img/logo-kolzchut.svg);
+                        }
+                        &.moj {
+                            background-image: url(../../assets/img/logo-moj.svg);
+                        }
+                        &.digital-israel {
+                            background-image: url(../../assets/img/logo-digital-israel.svg);
+                        }    
+                    })
                 }
             }
         }
@@ -366,5 +414,15 @@
     }
     to {
         opacity: 1;
+    }
+}
+
+@keyframes hide {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        pointer-events: none;
     }
 }
