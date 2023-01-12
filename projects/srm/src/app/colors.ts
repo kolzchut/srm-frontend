@@ -1,6 +1,6 @@
 export const CATEGORY_COLORS = [
     // categories: education, work, care, health, housing, legal, money, emergency, transit
-    {category: 'health', color: '#069ed0'},
+    {category: 'health', color: '#469EB1'},
     {category: 'care', color: '#2da961'},
     {category: 'education', color: '#d067f7'},
     {category: 'legal', color: '#e57410'},
