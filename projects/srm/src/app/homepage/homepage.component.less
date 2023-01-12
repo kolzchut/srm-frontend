@@ -27,6 +27,7 @@
             background-image: url(../../assets/img/hp-bg-desktop.jpg);
             background-size: contain;
             background-position: center right;
+            padding-bottom: 48px;
         });
 
         .header {
@@ -96,6 +97,7 @@
             .desktop({
                 align-self: center;
                 max-width: 376px;
+                margin-top: 48px;
             });
             gap: 20px;
 
@@ -348,7 +350,7 @@
                 width: 100%;
             });
             .desktop({
-                width: 50%;
+                width: auto;
                 align-self: center;
             });
             overflow: hidden;
@@ -363,13 +365,22 @@
                 .mobile({
                     animation: scroll 10s linear infinite;
                 });
+                .desktop({
+                    gap: 80px;
+                });
 
                 & > a {
                     flex: 1 1 100%;
                     display: block;
-                    height: 40px;
                     .background-image;
-                    background-size: 80px 40px;
+                    .mobile({
+                        height: 40px;
+                        background-size: 80px 40px;
+                    });
+                    .desktop({
+                        height: 30px;
+                        width: 100px;                    
+                    });
 
                     .mobile({
                         &.kolzchut {
