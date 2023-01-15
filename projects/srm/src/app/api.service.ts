@@ -762,7 +762,7 @@ export class ApiService {
             point_id: r.key,
             response_category: r.response_category?.buckets[0]?.key,
             geometry: JSON.parse(r.branch_geometry?.buckets[0]?.key || 'null'),
-            service_count: r.branch_id?.buckets.length || 1,
+            branch_count: r.branch_id?.buckets.length || 1,
           };
         }).filter((r: any) => r.point_id !== 'national_service');
       })

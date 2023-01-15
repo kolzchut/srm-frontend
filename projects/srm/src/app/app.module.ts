@@ -42,6 +42,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DisclaimerFooterComponent } from './disclaimer-footer/disclaimer-footer.component';
 import { DesktopMenuLinksComponent } from './desktop-menu-links/desktop-menu-links.component';
 import { ArrowToTabDirective } from './arrow-to-tab.directive';
+import { MapPopupHoverSingleComponent } from './map-popup-hover-single/map-popup-hover-single.component';
+import { MapPopupHoverMultipleComponent } from './map-popup-hover-multiple/map-popup-hover-multiple.component';
+import { MapPopupStableComponent } from './map-popup-stable/map-popup-stable.component';
+import { BranchDetailsComponent } from './branch-details/branch-details.component';
+import { BranchDetailsAddressComponent } from './branch-details-address/branch-details-address.component';
+import { BranchDetailsOrgComponent } from './branch-details-org/branch-details-org.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +85,13 @@ import { ArrowToTabDirective } from './arrow-to-tab.directive';
     QuickActionsComponent,
     DisclaimerFooterComponent,
     DesktopMenuLinksComponent,
-    ArrowToTabDirective
+    ArrowToTabDirective,
+    MapPopupHoverSingleComponent,
+    MapPopupHoverMultipleComponent,
+    MapPopupStableComponent,
+    BranchDetailsComponent,
+    BranchDetailsAddressComponent,
+    BranchDetailsOrgComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
 import { MapboxService } from '../mapbox.service';
 
-import { from, ReplaySubject, Subject, timer } from 'rxjs';
+import { from, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { throttleTime, filter, distinctUntilChanged, switchMap, debounceTime, first, delay, tap, map } from 'rxjs/operators';
 import { StateService, CenterZoomType, GeoType, BoundsType } from '../state.service';
 import { ALL_CATEGORIES, CATEGORY_COLORS } from '../colors';
@@ -60,10 +60,13 @@ const LAYERS_ACTIVE = [
 const LAYERS_CLICKABLE = [
   LAYER_POINTS_ON_CENTER,
   LAYER_POINTS_STROKE_ON,
-  LAYER_LABELS_OFF,
   LAYER_POINTS_INACCURATE_ON,
   LAYER_POINTS_INACCURATE_OUT,
   LAYER_CLUSTERS_INACCURATE_ON,
+];
+const LAYERS_FILTERABLE = [
+  ...LAYERS_CLICKABLE,
+  LAYER_LABELS_OFF,
   LAYER_LABELS_OFF_INACCURATE,
 ];
 const LAYERS_INACCURATE = [
@@ -73,13 +76,13 @@ const LAYERS_INACCURATE = [
 ];
 
 const BASE_FILTERS: any = {};
-BASE_FILTERS[LAYER_POINTS_INACCURATE_ACTIVE] = ['all', ['!', ['get', 'branch_location_accurate']], ['==', ['get', 'service_count'], ['number', 1]]];
-BASE_FILTERS[LAYER_CLUSTERS_INACCURATE_ACTIVE] = ['all', ['!', ['get', 'branch_location_accurate']], ['>', ['get', 'service_count'], ['number', 1]]];
+BASE_FILTERS[LAYER_POINTS_INACCURATE_ACTIVE] = ['all', ['!', ['get', 'branch_location_accurate']], ['==', ['get', 'branch_count'], ['number', 1]]];
+BASE_FILTERS[LAYER_CLUSTERS_INACCURATE_ACTIVE] = ['all', ['!', ['get', 'branch_location_accurate']], ['>', ['get', 'branch_count'], ['number', 1]]];
 // BASE_FILTERS[LAYER_LABELS_ACTIVE] = ['get', 'branch_location_accurate'];
 BASE_FILTERS[LAYER_POINTS_ACTIVE] = ['get', 'branch_location_accurate'];
 BASE_FILTERS[LAYER_POINTS_STROKE_ACTIVE] = ['get', 'branch_location_accurate'];
-BASE_FILTERS[LAYER_POINTS_INACCURATE_ON] = ['==', ['get', 'service_count'], ['number', 1]];
-BASE_FILTERS[LAYER_CLUSTERS_INACCURATE_ON] = ['>', ['get', 'service_count'], ['number', 1]];
+BASE_FILTERS[LAYER_POINTS_INACCURATE_ON] = ['==', ['get', 'branch_count'], ['number', 1]];
+BASE_FILTERS[LAYER_CLUSTERS_INACCURATE_ON] = ['>', ['get', 'branch_count'], ['number', 1]];
 
 @UntilDestroy()
 @Component({
@@ -99,7 +102,10 @@ export class MapComponent implements OnChanges, AfterViewInit {
   // @Output('hover') pointsHover = new EventEmitter<string | null>();
   @Output('map') newMap = new EventEmitter<MapComponent>();
   @Output('mapBounds') mapBounds = new EventEmitter<number[][]>();
+  
   @ViewChild('map') mapEl: ElementRef;
+  @ViewChild('stablePopup') stablePopupEl: ElementRef;
+  @ViewChild('hoverPopup') hoverPopupEl: ElementRef;
 
   map: mapboxgl.Map;
   addedImages: {[key: string]: boolean} = {};
@@ -116,6 +122,12 @@ export class MapComponent implements OnChanges, AfterViewInit {
   pointIdsFilter: any[] = [];
   activePointFilter: any[] = [];
   pointCountMapping: any = {};
+
+  stablePopup: mapboxgl.Popup | null = null;
+  hoverPopup: mapboxgl.Popup | null = null;
+  stablePopupProps: any = null;
+  hoverPopupProps: any = null;
+  pointsHover = new Subject<any>();
   
   constructor(private mapboxService: MapboxService, 
               private api: ApiService,
@@ -126,8 +138,8 @@ export class MapComponent implements OnChanges, AfterViewInit {
       
   }
 
-  getTitle(card: Card, service_count: number) {
-    if (!card.branch_location_accurate && service_count > 1) {
+  getTitle(card: Card, branch_count: number) {
+    if (!card.branch_location_accurate && branch_count > 1) {
       return 'במיקום לא מדויק';
     } else {
       let title = (card.organization_short_name || card.organization_name);
@@ -138,8 +150,8 @@ export class MapComponent implements OnChanges, AfterViewInit {
       if (!card.branch_location_accurate) {
         title += '*';
       } else {
-        if (service_count > 1) {
-          title += ` +${service_count - 1}`;
+        if (branch_count > 1) {
+          title += ` +${branch_count - 1}`;
         }
       }
       return title;
@@ -171,7 +183,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
             point_id: this.pointId,
             response_category: cards[0].response_category,
             title: title,
-            service_count: branchIds.length,
+            branch_count: branchIds.length,
             branch_location_accurate: cards[0].branch_location_accurate,
             coordinates: cards[0].branch_geometry
           });  
@@ -181,7 +193,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
       this.api.getCard(this.cardId).pipe(
         switchMap((card) => {
           // if (card.branch_location_accurate) {
-          return from([{card, service_count: 1}]);
+          return from([{card, branch_count: 1}]);
           // } else {
           //   return this.api.getPoint(card.point_id, this.searchParams || undefined).pipe(
           //     map((cards) => {
@@ -196,13 +208,13 @@ export class MapComponent implements OnChanges, AfterViewInit {
           //   );
           // }
         }),
-        map(({card, service_count}) => {
-          const title = this.getTitle(card, service_count);
+        map(({card, branch_count}) => {
+          const title = this.getTitle(card, branch_count);
           return {
             point_id: card.point_id,
             response_category: card.response_category,
             branch_location_accurate: card.branch_location_accurate,
-            service_count: service_count,
+            branch_count: branch_count,
             title: title,
             coordinates: card.branch_geometry
           }
@@ -217,6 +229,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
     if (this.changed(changes, 'searchParams') && changes?.searchParams?.currentValue) {
       this.searchParamsQueue.next(changes?.searchParams?.currentValue);
     }
+    this.setPopup(true, null);
   }
 
   ngAfterViewInit(): void {
@@ -295,47 +308,87 @@ export class MapComponent implements OnChanges, AfterViewInit {
           this.map.getStyle().layers?.filter((l) => LAYERS_CLICKABLE.indexOf(l.id) >= 0).forEach((layer) => {
             const layerName = layer.id;
             this.map.on('click', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
+              if (e.defaultPrevented) {
+                return;
+              }
               if (e.features && e.features.length > 0) {
                 const props: any = e.features[0].properties;
-                // console.log('MAP CLICKED', this.searchParams?.ac_query, this.cardId, this.pointId, props.point_id);
-                // props.records = JSON.parse(props.records) as Card[];
-                if (this.cardId) {
-                  if (this.searchParams?.ac_query) {
-                    if (this.pointId && this.pointId !== props.point_id) {
-                      this.router.navigate(['/s', this.searchParams?.ac_query, 'p', props.point_id], {queryParamsHandling: 'preserve'});
-                    } else {
-                      this.router.navigate(['/s', this.searchParams?.ac_query, 'c', this.cardId, 'p', props.point_id], {queryParamsHandling: 'preserve'});
-                    }
-                  } else {
-                    if (this.pointId && this.pointId !== props.point_id) {
-                      this.router.navigate(['/p', props.point_id], {queryParamsHandling: 'preserve'});
-                    } else {
-                      this.router.navigate(['/c', this.cardId, 'p', props.point_id], {queryParamsHandling: 'preserve'});
-                    }
-                  }  
+                props.branch_geometry = (e.features[0].geometry as any || {})['coordinates'];
+                console.log('CLICKED', props);
+                const newCardId = props.card_id;
+                const route = [];
+                let dontRoute = false;
+                console.log('CLICKED2', 's', this.searchParams?.ac_query, 'c', newCardId, 'p', props.point_id, 'l', this.layout.mobile, 'cp', this.pointId);
+                if (this.searchParams?.ac_query) {
+                  route.push('s', this.searchParams?.ac_query);
+                }
+                if (newCardId) {
+                  route.push('c', newCardId);
                 } else {
-                  if (this.searchParams?.ac_query) {
-                    this.router.navigate(['/s', this.searchParams?.ac_query, 'p', props.point_id], {queryParamsHandling: 'preserve'});
+                  if (this.layout.mobile) {
+                    if (this.cardId && (!this.pointId || this.pointId === props.point_id)) {
+                      route.push('c', this.cardId, 'p', props.point_id);
+                    } else {
+                      route.push('p', props.point_id);
+                    }
                   } else {
-                    this.router.navigate(['/p', props.point_id], {queryParamsHandling: 'preserve'});
-                  }  
+                    this.setPopup(true, props);
+                    this.pointsHover.next(null);
+                    dontRoute = true;
+                  }
+                }
+                if (!dontRoute) {
+                  route[0] = '/' + route[0];
+                  this.router.navigate(route, {queryParamsHandling: 'preserve'});  
                 }
                 // this.points.next(props as SRMPoint);
               }
               e.preventDefault();
             });
-            //TODO: Hover
-            // this.map.on('mouseenter', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
-            //   if (e.features && e.features.length > 0) {
-            //     const props: any = e.features[0].properties;
-            //     this.pointsHover.next(props.point_id || null);
-            //   }
-            //   this.map.getCanvas().style.cursor = 'pointer';
-            // });
+            this.map.on('mousemove', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
+              if (e.defaultPrevented || this.layout.mobile) {
+                return;
+              }
+              e.preventDefault();
+              if (e.features && e.features.length > 0) {
+                const props: any = e.features[0].properties;
+                if (props.point_id === this.stablePopupProps?.point_id) {
+                  return;
+                }
+                props.branch_geometry = (e.features[0].geometry as any || {})['coordinates'];
+                this.pointsHover.next(props);
+                this.map.getCanvas().style.cursor = 'pointer';
+              }
+            });
             // this.map.on('mouseout', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
+            //   if (e.defaultPrevented) {
+            //     return;
+            //   }
+            //   e.preventDefault();
             //   this.pointsHover.next(null);
             //   this.map.getCanvas().style.cursor = '';
             // });
+          });
+          this.map.on('mousemove', (e: mapboxgl.MapLayerMouseEvent) => {
+            if (e.defaultPrevented || this.layout.mobile) {
+              return;
+            }
+            e.preventDefault();
+            this.pointsHover.next(null);
+            this.map.getCanvas().style.cursor = '';
+          });
+          this.map.on('click', (e: mapboxgl.MapLayerMouseEvent) => {
+            if (e.defaultPrevented || this.layout.mobile) {
+              return;
+            }
+            e.preventDefault();
+            this.setPopup(true, null);
+          });
+          this.pointsHover.pipe(
+            untilDestroyed(this),
+            distinctUntilChanged((a, b) => a?.point_id === b?.point_id)
+          ).subscribe((props) => {
+            this.setPopup(false, props);
           });
           this.searchParamsQueue.pipe(
             untilDestroyed(this),
@@ -525,7 +578,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
     if (this.pointIdsFilter && this.pointIdsFilter.length) {
       filters.push(this.pointIdsFilter);
     }
-    for (const layer of LAYERS_CLICKABLE) {
+    for (const layer of LAYERS_FILTERABLE) {
       let layerFilters: any[] | null = filters.slice();
       if (BASE_FILTERS[layer]) {
         layerFilters.push(BASE_FILTERS[layer]);
@@ -650,5 +703,57 @@ export class MapComponent implements OnChanges, AfterViewInit {
     </g>
     <path fill-rule="evenodd" clip-rule="evenodd" d="M10.9429 8.58549C10.9804 8.39612 11 8.20036 11 8C11 7.79964 10.9804 7.60388 10.9429 7.41451L11.9239 7.22045C11.9739 7.47338 12 7.73414 12 8C12 8.26586 11.9739 8.52662 11.9239 8.77955L10.9429 8.58549ZM10.4947 6.33315L11.3257 5.77683C11.0339 5.34106 10.6589 4.96608 10.2232 4.67434L9.66685 5.5053C9.994 5.72433 10.2757 6.006 10.4947 6.33315ZM8.58549 5.0571L8.77955 4.07611C8.52662 4.02608 8.26586 4 8 4C7.73414 4 7.47338 4.02608 7.22045 4.07611L7.41451 5.0571C7.60388 5.01964 7.79964 5 8 5C8.20036 5 8.39612 5.01964 8.58549 5.0571ZM6.33315 5.5053L5.77683 4.67434C5.34106 4.96608 4.96608 5.34106 4.67434 5.77683L5.5053 6.33315C5.72433 6.006 6.006 5.72433 6.33315 5.5053ZM5.0571 7.41451C5.01964 7.60388 5 7.79964 5 8C5 8.20036 5.01964 8.39612 5.0571 8.58549L4.07611 8.77955C4.02608 8.52662 4 8.26586 4 8C4 7.73414 4.02608 7.47338 4.07611 7.22045L5.0571 7.41451ZM5.5053 9.66685L4.67434 10.2232C4.96608 10.6589 5.34106 11.0339 5.77683 11.3257L6.33315 10.4947C6.006 10.2757 5.72433 9.994 5.5053 9.66685ZM7.41451 10.9429L7.22045 11.9239C7.47338 11.9739 7.73414 12 8 12C8.26586 12 8.52662 11.9739 8.77955 11.9239L8.58549 10.9429C8.39612 10.9804 8.20036 11 8 11C7.79964 11 7.60388 10.9804 7.41451 10.9429ZM9.66685 10.4947L10.2232 11.3257C10.6589 11.0339 11.0339 10.6589 11.3257 10.2232L10.4947 9.66685C10.2757 9.994 9.994 10.2757 9.66685 10.4947Z" fill="white"/>
     </svg>`;
+  }
+
+  setPopup(stable: boolean, props: any) {
+    let obs: Observable<any> | null = null;
+    if (stable) {
+      this.stablePopupProps = null;
+      obs = from([{props, stable}]).pipe(
+        delay(100),
+        tap(({props, stable}) => {
+          this.stablePopupProps = props;
+        }),
+        delay(100)
+      );
+    } else {
+      this.hoverPopupProps = null;
+      obs = from([{props, stable}]).pipe(
+        delay(10),
+        tap(({props, stable}) => {
+          this.hoverPopupProps = props;
+        }),
+        delay(10)
+      );  
+    }    
+    obs?.subscribe(({props: any, stable: boolean}) => {
+      const el = (stable ? this.stablePopupEl : this.hoverPopupEl)?.nativeElement as HTMLElement;
+      let popup: mapboxgl.Popup | null = null;
+      console.log('HOVER', stable, props);
+      if (props && el) {
+        const mapPopup = el.querySelectorAll('*')[0] as HTMLElement;
+        popup = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false,
+          anchor: 'bottom',
+          // offset: [-2, -10],
+          className: stable ? 'map-popup-stable' : 'map-popup-hover',
+        }).setLngLat(props.branch_geometry)
+          .setDOMContent(mapPopup)
+          .setMaxWidth("300px")
+          .addTo(this.map);
+      }
+      if (stable) {
+        if (this.stablePopup) {
+          this.stablePopup.remove();
+        }
+        this.stablePopup = popup;        
+      } else {
+        if (this.hoverPopup) {
+          this.hoverPopup.remove();
+        }
+        this.hoverPopup = popup;
+      }    
+    });
   }
 }

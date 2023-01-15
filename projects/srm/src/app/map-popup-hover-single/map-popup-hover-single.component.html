@@ -1,0 +1,7 @@
+<ng-container *ngIf='card'>
+    <div class='header'>
+        <app-branch-details [card]='card'></app-branch-details>
+    </div>
+    <app-result-card [card]='card' [stacked]='true'></app-result-card>
+</ng-container>
+<div class='placeholder loading' *ngIf='!card'></div>

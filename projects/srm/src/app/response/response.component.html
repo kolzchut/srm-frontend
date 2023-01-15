@@ -2,6 +2,7 @@
 [style.background-color]='borderColor'
 [routerLink]='search ? ["/q"] : ["/s", responseQuery]'
 [queryParams]='search ? {q: response.name} : null'
+[class.small]='small'
 >
     <span class='point'>
         <span
@@ -21,6 +22,7 @@
     [style.background]='bgColor'
     [style.border-color]='borderColor'
     (click)='onClick()'
+    [class.small]='small'
 >
     <span class='point'>
         <span

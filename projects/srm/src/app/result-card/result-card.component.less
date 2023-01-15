@@ -5,9 +5,14 @@
     flex-flow: column;
     align-items: flex-start;
     background: @color-white;
-    border: 1px solid @color-gray-5;
     box-shadow: inset 0px 0px 8px 8px @color-white;
-    border-radius: 4px;
+    &:not(.stacked) {
+        border: 1px solid @color-gray-5;
+        border-radius: 4px;    
+    }
+    &.stacked {
+        border-top: 1px solid @color-gray-5;
+    }
     min-height: 24px;
     padding: 8px;
     gap: 4px;
@@ -33,6 +38,10 @@
 
             &.compact {
                 .ellipsis-2-line;
+            }
+            &.stacked {
+                font-size: 16px;
+                line-height: 20px;
             }
 
             em {

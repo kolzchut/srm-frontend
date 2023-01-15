@@ -14,9 +14,8 @@ import { PlatformService } from '../platform.service';
 import { swipe } from '../swipe';
 import { DOCUMENT } from '@angular/common';
 import { LayoutService } from '../layout.service';
+import { BranchCards, getPointCards } from './branch-card-utils';
 
-
-type BranchCards = {cards: Card[], hidden: Card[]};
 
 type AuxParams = {
   searchParams: SearchParams,
@@ -74,42 +73,16 @@ export class BranchContainerComponent implements OnInit, OnChanges {
       distinctUntilChanged((a, b) => a.hash === b.hash),
       switchMap((p) => {
         // console.log('GET POINT', ret.p.searchParams);
-        return forkJoin([
-          this.api.getPoint(p.pointId, p.searchParams),
-          this.api.getPoint(p.pointId),
-        ]).pipe(
-          map(([cards, allCards]) => {
-            return {cards, allCards, p};
-          })
+        return getPointCards(this.api, p.pointId, p.cardId, p.searchParams).pipe(
+          map(({branches, selectedCard, cardBranch}) => {
+            return {p, branches, selectedCard, cardBranch};
+          }),
         );
       })
-    ).subscribe(({p, cards, allCards}) => {
-      cards = cards.sort((a, b) => a.branch_id.localeCompare(b.branch_id));
-      this.branches = [];
-      let branch: BranchCards = {cards: [], hidden: []};
-      for (const card of cards) {
-        if (branch.cards.length === 0 || branch.cards[0].branch_id !== card.branch_id) {
-          branch = {cards: [], hidden: []}
-          this.branches.push(branch);
-        }
-        branch.cards.push(card);
-      }
-      for (const branch of this.branches) {
-        const ids = branch.cards.map(c => c.card_id);
-        if (ids.length > 0) {
-          branch.hidden = allCards.filter(c => {
-            return !ids.includes(c.card_id) && c.branch_id === branch.cards[0].branch_id;
-          });
-        }
-        for (const card of [...branch.cards, ...branch.hidden]) {
-          if (card.card_id === p.cardId) {
-            this.cardBranch = branch;
-            this.card = card;
-          }
-        }
-        // console.log('CARDS', branch.cards[0].branch_id, cards.filter(c => c.branch_id === branch.cards[0].branch_id));
-        // console.log('ALL CARDS', allCards.filter(c => c.branch_id === branch.cards[0].branch_id));
-      }
+    ).subscribe(({p, branches, selectedCard, cardBranch}) => {
+      this.branches = branches;
+      this.cardBranch = cardBranch;
+      this.card = selectedCard;
       if (p.cardId && this.card) {
         this.seo.setTitle(`כל שירות -  ${this.card.service_name}`);
       } else {
