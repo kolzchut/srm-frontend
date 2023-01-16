@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { from, Observable, ReplaySubject } from 'rxjs';
 import { catchError, delay, finalize, map, switchMap, tap } from 'rxjs/operators';
 
@@ -45,7 +45,9 @@ export class ApiService {
   constructor(
     private http: HttpClient,
     private transferState: TransferState,
-    private platform: PlatformService) {
+    private platform: PlatformService,
+    private zone: NgZone,
+  ) {
 
       // this.getSituations().subscribe((data: TaxonomyItem[]) => {
       //   this.situationsMap_ = {};
@@ -100,7 +102,9 @@ export class ApiService {
         this.platform.server(() => {
           // console.log('SET CACHED', stateKey);
           this.transferState.set(stateKey, val);
-          memoryCache.put(stateKey, val, keep ? 3600000 : 60000);
+          this.zone.runOutsideAngular(() => {
+            memoryCache.put(stateKey, val, keep ? 3600000 : 60000);
+          });
         });
         this.waiting[key].next(val);
         this.waiting[key].complete();
