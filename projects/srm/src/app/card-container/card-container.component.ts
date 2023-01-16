@@ -133,22 +133,24 @@ export class CardContainerComponent implements OnInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    fromEvent<TouchEvent>(this.content.nativeElement, 'touchstart')
-    .pipe(
-      untilDestroyed(this),
-      swipe(this.content.nativeElement)
-    ).subscribe((diff) => {
-      if (Math.abs(diff) > 0.1 * document.body.clientHeight) {
-        if (diff > 0) {
-          console.log('down swipe', this.branchLink);
-          if (this.branchLink) {
-            this.router.navigate(this.branchLink, {relativeTo: this.route, queryParamsHandling: 'preserve'});
+    this.platform.browser(() => {
+      fromEvent<TouchEvent>(this.content.nativeElement, 'touchstart')
+      .pipe(
+        untilDestroyed(this),
+        swipe(this.content.nativeElement)
+      ).subscribe((diff) => {
+        if (Math.abs(diff) > 0.1 * document.body.clientHeight) {
+          if (diff > 0) {
+            console.log('down swipe', this.branchLink);
+            if (this.branchLink) {
+              this.router.navigate(this.branchLink, {relativeTo: this.route, queryParamsHandling: 'preserve'});
+            }
           }
         }
-      }
+      });
+      const size = window.innerHeight - 100;
+      this.size.emit(size);
     });
-    const size = window.innerHeight - 100;
-    this.size.emit(size);
   }
 
   get landingPage(): boolean {

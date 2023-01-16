@@ -386,7 +386,31 @@ export class MapComponent implements OnChanges, AfterViewInit {
           });
           this.pointsHover.pipe(
             untilDestroyed(this),
-            distinctUntilChanged((a, b) => a?.point_id === b?.point_id)
+            distinctUntilChanged((a, b) => a?.point_id === b?.point_id),
+            switchMap((props) => {
+              if (!props || props.branch_count) {
+                return from([props]);
+              } else {
+                return this.api.getPoint(props.point_id).pipe(
+                  map((cards) => {
+                    if (cards.length === 0) {
+                      return {};
+                    }
+                    const ret = {
+                      service_count: cards.length,
+                      branch_count: cards.map((b) => b.organization_name,).filter((v, i, a) => a.indexOf(v) === i).length,
+                      branch_geometry: cards[0].branch_geometry,
+                      title: cards[0].organization_name,
+                      response_category: cards[0].response_category,
+                      branch_location_accurate: cards[0].branch_location_accurate,
+                      coordinates: cards[0].branch_geometry          
+                    };
+                    console.log('FETCHED FOR CARD HOVER', ret);
+                    return ret;
+                  })
+                );
+              }
+            })
           ).subscribe((props) => {
             this.setPopup(false, props);
           });

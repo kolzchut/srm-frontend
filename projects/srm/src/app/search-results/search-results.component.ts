@@ -28,6 +28,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   @Output() zoomout = new EventEmitter<ViewPort>();
   @Output() nationalCount = new EventEmitter<number>();
   @Output() visibleCount = new EventEmitter<number>();
+  @Output() hoverCard = new EventEmitter<Card>();
 
   @ViewChild('trigger') trigger: ElementRef;
 

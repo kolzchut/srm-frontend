@@ -6,6 +6,7 @@ import { Subject, timer } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { prepareQuery, _h } from '../consts';
+import { PlatformService } from '../platform.service';
 
 export type ResultType = {
   link: string[] | string | null,
@@ -35,7 +36,8 @@ export class SearchComponent implements OnInit {
   typedQueries = new Subject<string>();
   noResults = false;
 
-  constructor(private api: ApiService, public location: Location, private route: ActivatedRoute, private router: Router) {
+  constructor(private api: ApiService, public location: Location, private route: ActivatedRoute, private router: Router,
+      private platform: PlatformService) {
     api.getPresets().subscribe(presets => {
       console.table(presets);
       this.presets = presets.map((preset) => {
@@ -94,12 +96,14 @@ export class SearchComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    timer(0).subscribe(() => {
-      const el = this.inputEl.nativeElement as HTMLInputElement;
-      if (this.query_) {
-        el.setSelectionRange(0, this.query_.length);
-      }
-      el.focus();
+    this.platform.browser(() => {
+      timer(0).subscribe(() => {
+        const el = this.inputEl.nativeElement as HTMLInputElement;
+        if (this.query_) {
+          el.setSelectionRange(0, this.query_.length);
+        }
+        el.focus();
+      });  
     });
   }
 

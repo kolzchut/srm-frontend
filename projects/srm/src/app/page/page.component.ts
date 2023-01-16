@@ -6,7 +6,7 @@ import { SeoSocialShareService } from 'ngx-seo';
 import { from, Observable, Subject, timer } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, filter, first, map, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { AutoComplete, DrawerState, SearchParams, ViewPort } from '../consts';
+import { AutoComplete, Card, DrawerState, SearchParams, ViewPort } from '../consts';
 import { MapComponent } from '../map/map.component';
 import { SearchFiltersComponent } from '../search-filters/search-filters.component';
 import { DOCUMENT } from '@angular/common';
@@ -479,6 +479,14 @@ export class PageComponent implements OnInit {
   easeTo(props: any) {
     this.easeToProps = Object.assign({}, this.easeToProps, props);
     this.easeToQueue.next(this.easeToProps);
+  }
+
+  hoverCard(card: Card) {
+    if (card?.branch_geometry) {
+      this.map?.pointsHover.next({
+        point_id: card.point_id,      
+      });
+    }
   }
 }
 
