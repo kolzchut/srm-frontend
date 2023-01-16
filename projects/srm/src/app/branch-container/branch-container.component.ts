@@ -96,7 +96,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
     this.parametersQueue.next({searchParams: this.searchParams, pointId: this.pointId, cardId: this.cardId, hash: ''});
     timer(0).subscribe(() => {    
       const el = this.content?.nativeElement as HTMLElement;
-      if (el) {
+      if (el && this.platform.browser()) {
         const size = window.innerHeight - el.getBoundingClientRect().top;
         this.size.emit(size);
       }
