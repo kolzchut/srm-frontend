@@ -51,6 +51,7 @@
                         [class.shown]='filtersVisible === false' 
                         [searchParams]='searchParams'
                         (zoomout)='zoomOutMap($event)'
+                        (visibleCount)='visibleCount = $event'
                         (nationalCount)='nationalCount = $event'
                     ></app-search-results>
                 </div>
@@ -75,6 +76,12 @@
             (size)='branchSize = $event'
         >
         </app-card-container>
+        <app-landing-page-overlay *ngIf='(stage === "search-results" || stage === "card") && showLandingPageOverlay'
+            [searchParams]='searchParams' 
+            [cardId]='card'
+            [visibleCount]='visibleCount'
+            (closed)='showLandingPageOverlay = false'
+        ></app-landing-page-overlay>
     </div>
     <app-menu></app-menu>
     

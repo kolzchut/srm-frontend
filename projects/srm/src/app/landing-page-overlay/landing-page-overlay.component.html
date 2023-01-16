@@ -1,0 +1,42 @@
+<div class='container'>
+    <div class='overlay'></div>
+    <div class='dialog'>
+        <div class='text'>
+            <div class='header layout-mobile'>
+                <div class='logo'></div>
+                <span class='tagline'>כל השירותים החברתיים בשבילך -<br/>
+                    לכל מצב ובכל מקום</span>
+            </div>
+            <div class='main-text'>
+                אתר כל שירות מציג מידע על <strong>{{totalServices.toLocaleString()}} שירותים חברתיים</strong> שניתנים על ידי הממשלה, רשויות מקומיות, עמותות וארגונים נוספים.
+                <br/><br/>
+                <ng-container *ngIf='!cardId'>
+                    <ng-container *ngIf='searchParams?.ac_query === "_"'>
+                        בחיפוש <span class='search-term'>{{searchParams?.original_query}}</span> מצאנו {{visibleCount.toLocaleString()}} שירותים. שנציץ בהם?
+                    </ng-container>
+                    <ng-container *ngIf='searchParams?.ac_query !== "_"'>
+                        בחיפוש
+                        <span class='search-term'>
+                            <ng-container *ngIf='searchParams?.response_name && !searchParams?.situation_name'>{{searchParams?.response_name}}</ng-container>
+                            <ng-container *ngIf='!searchParams?.response_name && searchParams?.situation_name'>{{searchParams?.situation_name}}</ng-container>
+                            <ng-container *ngIf='searchParams?.response_name && searchParams?.situation_name'>{{searchParams?.response_name}} ל{{searchParams?.situation_name}}</ng-container>
+                        </span>
+                        <ng-container *ngIf='searchParams?.city_name'>
+                            מצאנו {{visibleCount.toLocaleString()}} שירותים<span class='city-name'>באיזור {{searchParams?.city_name}}</span>.
+                        </ng-container>
+                        <ng-container *ngIf='!searchParams?.city_name'>
+                            מצאנו {{visibleCount.toLocaleString()}} שירותים באיזור זה של המפה.
+                        </ng-container>
+                        שנציץ בהם?
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf='cardId'>
+                    אחד מהם הוא <strong>{{card?.service_name}}</strong>. שנציץ בו?
+                </ng-container>
+            </div>
+        </div>
+        <div class='cta'>
+            <a (click)='closed.emit()'>המשך</a>
+        </div>
+    </div>
+</div>

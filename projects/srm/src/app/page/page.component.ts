@@ -80,6 +80,9 @@ export class PageComponent implements OnInit {
   savedState: {center: LngLatLike, zoom: number} | null = null;
 
   nationalCount = 0;
+  visibleCount = 0;
+
+  showLandingPageOverlay = true;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
               private platform: PlatformService, public layout: LayoutService,
@@ -287,6 +290,9 @@ export class PageComponent implements OnInit {
         map.easeTo(params);
       }, 'ease-to-' + JSON.stringify(params));
     });
+    if (this.platform.server()) {
+      this.showLandingPageOverlay = false;
+    }
   }
 
   ngOnInit(): void {

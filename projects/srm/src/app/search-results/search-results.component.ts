@@ -27,6 +27,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   @Input() searchParams: SearchParams;
   @Output() zoomout = new EventEmitter<ViewPort>();
   @Output() nationalCount = new EventEmitter<number>();
+  @Output() visibleCount = new EventEmitter<number>();
 
   @ViewChild('trigger') trigger: ElementRef;
 
@@ -44,7 +45,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   resultsSubscription: Subscription | null = null;
 
   hasCounts = false;
-  visibleCount = 0;
+  totalVisibleCount = 0;
   totalCount = 0;
   totalNationalCount = 0;
   loading: boolean = true;
@@ -107,9 +108,10 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         this.offset = this.results.length;
         this.hasCounts = true;
         if (this.results.length > 0) {
-          this.visibleCount =  ((this.results[0] as any)['__counts']['total_overall'] - this.totalNationalCount) || 0;
+          this.totalVisibleCount =  ((this.results[0] as any)['__counts']['total_overall'] - this.totalNationalCount) || 0;
+          this.visibleCount.emit(this.totalVisibleCount);
         } else {
-          this.visibleCount = 0;
+          this.totalVisibleCount = 0;
         }
       });
       this.fetch();

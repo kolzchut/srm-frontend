@@ -48,6 +48,7 @@ import { MapPopupStableComponent } from './map-popup-stable/map-popup-stable.com
 import { BranchDetailsComponent } from './branch-details/branch-details.component';
 import { BranchDetailsAddressComponent } from './branch-details-address/branch-details-address.component';
 import { BranchDetailsOrgComponent } from './branch-details-org/branch-details-org.component';
+import { LandingPageOverlayComponent } from './landing-page-overlay/landing-page-overlay.component';
 
 @NgModule({
   declarations: [
@@ -91,7 +92,8 @@ import { BranchDetailsOrgComponent } from './branch-details-org/branch-details-o
     MapPopupStableComponent,
     BranchDetailsComponent,
     BranchDetailsAddressComponent,
-    BranchDetailsOrgComponent
+    BranchDetailsOrgComponent,
+    LandingPageOverlayComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
