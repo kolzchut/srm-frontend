@@ -82,7 +82,7 @@ export class PageComponent implements OnInit {
   nationalCount = 0;
   visibleCount = 0;
 
-  showLandingPageOverlay = true;
+  showLandingPageOverlay = false;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
               private platform: PlatformService, public layout: LayoutService,
@@ -482,7 +482,7 @@ export class PageComponent implements OnInit {
   }
 
   hoverCard(card: Card) {
-    if (card?.branch_geometry) {
+    if (card?.branch_geometry && this.layout.desktop) {
       this.map?.pointsHover.next({
         point_id: card.point_id,      
       });

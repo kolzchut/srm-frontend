@@ -756,16 +756,18 @@ export class MapComponent implements OnChanges, AfterViewInit {
       console.log('HOVER', stable, props);
       if (props && el) {
         const mapPopup = el.querySelectorAll('*')[0] as HTMLElement;
-        popup = new mapboxgl.Popup({
-          closeButton: false,
-          closeOnClick: false,
-          anchor: 'bottom',
-          // offset: [-2, -10],
-          className: stable ? 'map-popup-stable' : 'map-popup-hover',
-        }).setLngLat(props.branch_geometry)
-          .setDOMContent(mapPopup)
-          .setMaxWidth("300px")
-          .addTo(this.map);
+        if (mapPopup) {
+          popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false,
+            anchor: 'bottom',
+            // offset: [-2, -10],
+            className: stable ? 'map-popup-stable' : 'map-popup-hover',
+          }).setLngLat(props.branch_geometry)
+            .setDOMContent(mapPopup)
+            .setMaxWidth("300px")
+            .addTo(this.map);
+        }
       }
       if (stable) {
         if (this.stablePopup) {

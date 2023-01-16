@@ -77,11 +77,12 @@
             (size)='branchSize = $event'
         >
         </app-card-container>
-        <app-landing-page-overlay *ngIf='(stage === "search-results" || stage === "card") && showLandingPageOverlay'
+        <app-landing-page-overlay *ngIf='(stage === "search-results" || stage === "card")'
+            [style.display]='showLandingPageOverlay ? "flex" : "none"'
             [searchParams]='searchParams' 
             [cardId]='card'
             [visibleCount]='visibleCount'
-            (closed)='showLandingPageOverlay = false'
+            (open)='showLandingPageOverlay = $event'
         ></app-landing-page-overlay>
     </div>
     <app-menu></app-menu>
