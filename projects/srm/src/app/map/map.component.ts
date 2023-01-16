@@ -396,7 +396,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
                     if (cards.length === 0) {
                       return {};
                     }
-                    const ret = {
+                    const ret: any = {
                       service_count: cards.length,
                       branch_count: cards.map((b) => b.organization_name,).filter((v, i, a) => a.indexOf(v) === i).length,
                       branch_geometry: cards[0].branch_geometry,
@@ -405,10 +405,24 @@ export class MapComponent implements OnChanges, AfterViewInit {
                       branch_location_accurate: cards[0].branch_location_accurate,
                       coordinates: cards[0].branch_geometry          
                     };
-                    console.log('FETCHED FOR CARD HOVER', ret);
+                    if (cards.length === 1) {
+                      ret.card_id = cards[0].card_id;
+                    }
                     return ret;
+                  }),
+                );
+              }
+            }),
+            switchMap((props) => {
+              if (props?.card_id) {
+                return this.api.getCard(props.card_id).pipe(
+                  map((card) => {
+                    props.card = card;
+                    return props;
                   })
                 );
+              } else {
+                return from([props]);
               }
             })
           ).subscribe((props) => {
@@ -753,7 +767,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
     obs?.subscribe(({props: any, stable: boolean}) => {
       const el = (stable ? this.stablePopupEl : this.hoverPopupEl)?.nativeElement as HTMLElement;
       let popup: mapboxgl.Popup | null = null;
-      console.log('HOVER', stable, props);
       if (props && el) {
         const mapPopup = el.querySelectorAll('*')[0] as HTMLElement;
         if (mapPopup) {

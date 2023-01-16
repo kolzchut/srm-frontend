@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { debounceTime, first, from, Subject, switchMap, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, first, from, Subject, switchMap, take, tap } from 'rxjs';
 import { ApiService } from '../api.service';
 import { Card, SearchParams } from '../consts';
 import { PlatformService } from '../platform.service';
@@ -16,7 +16,7 @@ export class LandingPageOverlayComponent implements OnChanges {
   @Input() visibleCount = 0;
   @Output() open = new EventEmitter<boolean>();
 
-  ready = new Subject<void>();
+  ready = new Subject<string>();
   
   totalServices: number = 0;
   card = new Card();
@@ -31,8 +31,9 @@ export class LandingPageOverlayComponent implements OnChanges {
     });
     this.platform.browser(() => {
       this.ready.pipe(
-        debounceTime(1500),
-        switchMap(() => {
+        distinctUntilChanged(),
+        debounceTime(1000),
+        switchMap((token) => {
           if (this.cardId) {
             return this.api.getCard(this.cardId).pipe(
               tap((card) => {
@@ -43,20 +44,16 @@ export class LandingPageOverlayComponent implements OnChanges {
             return from([true]);
           }
         }),
-        first(),
+        take(2),
       ).subscribe(() => {
-        this.open.emit(true);
-        this.opened = true;
+        this.opened = !this.opened;
+        this.open.emit(this.opened);
       });
     });
   }
 
   ngOnChanges(): void {
-    if (!this.opened) {
-      this.ready.next();
-    } else {
-      this.open.emit(false);
-    }
+    this.ready.next('' + this.searchParams?.searchHash + this.cardId);
   }
 
   checkNeeded(): boolean {

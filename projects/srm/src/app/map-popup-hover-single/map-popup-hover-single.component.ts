@@ -16,10 +16,8 @@ export class MapPopupHoverSingleComponent implements OnChanges {
 
   ngOnChanges(): void {
     console.log('HOVER SINGLE', this.props);
-    if (this.props && this.props.card_id) {
-      this.api.getCard(this.props.card_id).subscribe(card => {
-        this.card = card;
-      });
+    if (this.props && this.props.card) {
+      this.card = this.props.card;
     }
   }
 
