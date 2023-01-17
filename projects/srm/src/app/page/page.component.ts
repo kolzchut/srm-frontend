@@ -12,6 +12,7 @@ import { SearchFiltersComponent } from '../search-filters/search-filters.compone
 import { DOCUMENT } from '@angular/common';
 import { PlatformService } from '../platform.service';
 import { LayoutService } from '../layout.service';
+import * as mapboxgl from 'mapbox-gl';
 
 class SearchParamCalc {
   acId: string;
@@ -205,6 +206,7 @@ export class PageComponent implements OnInit {
     route.params.pipe(
       untilDestroyed(this),
     ).subscribe(params => {
+      const prevCard = this.card;
       this.card = params.card || '';
       this.point = params.point || '';
       const q = (params.query || '_');
@@ -212,15 +214,19 @@ export class PageComponent implements OnInit {
       this.pushSearchParamsCalc();
 
       if (this.card) {
-        this.queueMapAction((map) => {
-          if (!this.savedState) {
-            this.savedState = {
-              center: map.getCenter(),
-              zoom: map.getZoom()
-            };
-          }
-          this.map.processAction();
-        }, 'save-map-state');
+        if (!prevCard) {
+          this.queueMapAction((map) => {
+            if (!this.savedState) {
+              this.savedState = {
+                center: map.getCenter(),
+                zoom: map.getZoom()
+              };
+            }
+            this.map.processAction();
+          }, 'save-map-state');
+        } else if (prevCard !== this.card) {
+          this.savedState = null
+        }
       } else if (!this.point) {
           if (this.savedState) {
             this.easeTo({center: this.savedState.center, zoom: this.savedState.zoom});
@@ -380,7 +386,7 @@ export class PageComponent implements OnInit {
         this.easeTo({padding: {top: 0, bottom: this.padding, left: 0, right: 0}});
       }  
     } else {
-      const padding = window.innerWidth / 2;
+      const padding = this.stage === 'search-results' || this.stage === 'card' ?  window.innerWidth / 2 : 0;
       // if (padding !== this.padding) {
       this.padding = padding;
       this.easeTo({padding: {top: 0, right: this.padding, left: 0, bottom: 0}});
@@ -479,6 +485,7 @@ export class PageComponent implements OnInit {
   easeTo(props: any) {
     this.easeToProps = Object.assign({}, this.easeToProps, props);
     this.easeToQueue.next(this.easeToProps);
+    // this.easeToProps = {};
   }
 
   hoverCard(card: Card) {

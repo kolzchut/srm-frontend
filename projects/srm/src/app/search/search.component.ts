@@ -170,4 +170,10 @@ export class SearchComponent implements OnInit {
       }
     }
   }
+
+  keydown(event: KeyboardEvent) {
+    if (this.layout.desktop && event.key === 'Escape') {
+      this.location.back();
+    }
+  }
 }

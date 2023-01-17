@@ -1,4 +1,4 @@
-<div class='container' appArrowToTab aria-role='dialog' aria-modal='true' (click)='layout.desktop && location.back()'>
+<div class='container' appArrowToTab aria-role='dialog' aria-modal='true' (keydown)='keydown($event)'>
     <div class='search-bar'>
         <a class='logo layout-desktop' [routerLink]='["/"]'></a>
         <button class='back-button layout-mobile' (click)='location.back()'></button>
@@ -7,6 +7,9 @@
             <button class='clear-button' (click)='query=""' *ngIf='!!query'></button>    
         </div>
         <app-desktop-menu-links></app-desktop-menu-links>
+    </div>
+    <div class='overlay layout-desktop' (click)='location.back()'>
+        
     </div>
     <div class='results'>
         <div class='result' *ngFor='let result of (query ? results : presets)'>
