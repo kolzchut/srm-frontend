@@ -467,7 +467,7 @@ export class PageComponent implements OnInit {
   }
 
   centerMap(center: LngLatLike) {
-    this.easeTo({center, zoom: 15, duration: 3000});
+    this.easeTo({center, zoom: 15, duration: 3000, easing: (t: number) => 1 - Math.pow(1 - t, 5)});
   }
 
   zoomOutMap(viewport: ViewPort) {
