@@ -20,7 +20,7 @@ export class LandingPageOverlayComponent implements OnChanges {
   
   totalServices: number = 0;
   card = new Card();
-  opened = false;
+  opened = 0;
 
   constructor(private api: ApiService, private platform: PlatformService) {
     if (!this.checkNeeded()) {
@@ -46,14 +46,16 @@ export class LandingPageOverlayComponent implements OnChanges {
         }),
         take(2),
       ).subscribe(() => {
-        this.opened = !this.opened;
-        this.open.emit(this.opened);
+        this.opened += 1;
+        this.open.emit(this.opened === 1);
       });
     });
   }
 
   ngOnChanges(): void {
-    this.ready.next('' + this.searchParams?.searchHash + this.cardId);
+    if (this.cardId || (this.searchParams && this.visibleCount > 0)) {
+      this.ready.next('' + this.searchParams?.searchHash + this.cardId + this.visibleCount);
+    }
   }
 
   checkNeeded(): boolean {
