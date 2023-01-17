@@ -113,6 +113,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
       }
       this.seo.setUrl(this.document.location.href);
       this.calculateExitLink();
+      (this.scrolled?.nativeElement as HTMLElement).scrollTo(0, 0);
     });
   }
 
