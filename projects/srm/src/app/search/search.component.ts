@@ -6,6 +6,7 @@ import { Subject, timer } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { prepareQuery, _h } from '../consts';
+import { LayoutService } from '../layout.service';
 import { PlatformService } from '../platform.service';
 
 export type ResultType = {
@@ -37,7 +38,7 @@ export class SearchComponent implements OnInit {
   noResults = false;
 
   constructor(private api: ApiService, public location: Location, private route: ActivatedRoute, private router: Router,
-      private platform: PlatformService) {
+      private platform: PlatformService, public layout: LayoutService) {
     api.getPresets().subscribe(presets => {
       console.table(presets);
       this.presets = presets.map((preset) => {
