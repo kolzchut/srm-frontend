@@ -26,10 +26,6 @@ export class LandingPageOverlayComponent implements OnChanges {
   needed = false;
 
   constructor(private api: ApiService, private platform: PlatformService) {
-    if (!this.checkNeeded()) {
-      this.open.emit(false);
-      this.opened = 2;
-    }
     api.getTotalServices().subscribe((total) => {
       this.totalServices = total;
     });
@@ -50,8 +46,13 @@ export class LandingPageOverlayComponent implements OnChanges {
         }),
         take(2),
       ).subscribe(() => {
-        this.opened += 1;
-        this.open.emit(this.opened === 1);
+        if (!this.checkNeeded()) {
+          this.open.emit(false);
+          this.opened = 2;
+        } else {
+          this.opened += 1;
+          this.open.emit(this.opened === 1);  
+        }    
       });
     });
   }
@@ -60,13 +61,15 @@ export class LandingPageOverlayComponent implements OnChanges {
     if (this.cardId || (this.searchParams && this.visibleCount > 0)) {
       this.ready.next('' + this.searchParams?.searchHash + this.cardId + this.visibleCount);
     }
-    if (!this.stage_) {
+    if (!this.stage_ && this.stage) {
+      console.log('ACTION LANDING PAGE', this.stage, this.stage_);
       this.stage_ = this.stage;
       this.needed = this.stage_ === 'search-results' || this.stage_ === 'card';
     }
   }
 
   checkNeeded(): boolean {
+    console.log('ACTION LANDING PAGE CHECK NEEDED', this.needed);
     return this.needed;
   }
 }
