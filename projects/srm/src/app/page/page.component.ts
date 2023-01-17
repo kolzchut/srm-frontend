@@ -84,6 +84,7 @@ export class PageComponent implements OnInit {
   visibleCount = 0;
 
   showLandingPageOverlay = false;
+  isLandingPage = true;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
               private platform: PlatformService, public layout: LayoutService,
@@ -246,6 +247,7 @@ export class PageComponent implements OnInit {
     route.data.pipe(
       untilDestroyed(this),
     ).subscribe((data: any) => {
+      const prevStage = this.stage;
       this.stage = data.stage;
       this.drawerState = DrawerState.Half;
       this.pushSearchParamsCalc();
@@ -259,6 +261,9 @@ export class PageComponent implements OnInit {
       timer(100).subscribe(() => {
         this.setPadding();
       });
+      if (prevStage !== '') {
+        this.isLandingPage = false;
+      }
     });
     route.queryParams.pipe(
       untilDestroyed(this),

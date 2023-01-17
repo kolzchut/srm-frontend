@@ -104,6 +104,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
       }),
     ).subscribe(({p, card}) => {
       this.card = card;
+      console.log('ACTION CARD', this.card?.branch_geometry);
       if (this.card?.branch_geometry) {
         const geom: [number, number] = this.card.branch_geometry;        
         this.center.emit(geom);

@@ -14,7 +14,7 @@ export class LandingPageOverlayComponent implements OnChanges {
   @Input() searchParams: SearchParams;
   @Input() cardId: string;
   @Input() visibleCount = 0;
-  @Input() stage: string;
+  @Input() needed = false;
   @Output() open = new EventEmitter<boolean>();
 
   ready = new Subject<string>();
@@ -23,7 +23,6 @@ export class LandingPageOverlayComponent implements OnChanges {
   card = new Card();
   opened = 0;
   stage_: string | null = null;
-  needed = false;
 
   constructor(private api: ApiService, private platform: PlatformService) {
     api.getTotalServices().subscribe((total) => {
@@ -60,11 +59,6 @@ export class LandingPageOverlayComponent implements OnChanges {
   ngOnChanges(): void {
     if (this.cardId || (this.searchParams && this.visibleCount > 0)) {
       this.ready.next('' + this.searchParams?.searchHash + this.cardId + this.visibleCount);
-    }
-    if (!this.stage_ && this.stage) {
-      console.log('ACTION LANDING PAGE', this.stage, this.stage_);
-      this.stage_ = this.stage;
-      this.needed = this.stage_ === 'search-results' || this.stage_ === 'card';
     }
   }
 
