@@ -20,7 +20,7 @@
     <div class='org'>
         <label i18n>השירות ניתן ע״י:</label>
         <div class='org-name' *ngIf='card.organization_name_parts'>
-            <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name_parts.primary}}</a>
+            <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href' target='_blank'>{{card.organization_name_parts.primary}}</a>
             <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name_parts.primary}}</span>
             <span *ngIf='card.organization_name_parts.secondary'> - {{card.organization_name_parts.secondary}}</span>
         </div>
