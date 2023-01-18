@@ -44,6 +44,7 @@ import { DesktopMenuLinksComponent } from './desktop-menu-links/desktop-menu-lin
 import { ArrowToTabDirective } from './arrow-to-tab.directive';
 import { MapPopupHoverSingleComponent } from './map-popup-hover-single/map-popup-hover-single.component';
 import { MapPopupHoverMultipleComponent } from './map-popup-hover-multiple/map-popup-hover-multiple.component';
+import { MapPopupHoverContainerComponent } from './map-popup-hover-container/map-popup-hover-container.component';
 import { MapPopupStableComponent } from './map-popup-stable/map-popup-stable.component';
 import { BranchDetailsComponent } from './branch-details/branch-details.component';
 import { BranchDetailsAddressComponent } from './branch-details-address/branch-details-address.component';
@@ -89,6 +90,7 @@ import { LandingPageOverlayComponent } from './landing-page-overlay/landing-page
     ArrowToTabDirective,
     MapPopupHoverSingleComponent,
     MapPopupHoverMultipleComponent,
+    MapPopupHoverContainerComponent,
     MapPopupStableComponent,
     BranchDetailsComponent,
     BranchDetailsAddressComponent,

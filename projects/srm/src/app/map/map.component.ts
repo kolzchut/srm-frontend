@@ -774,7 +774,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
           popup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false,
-            anchor: 'bottom',
+            // anchor: 'bottom',
             // offset: [-2, -10],
             className: stable ? 'map-popup-stable' : 'map-popup-hover',
           }).setLngLat(props.branch_geometry)

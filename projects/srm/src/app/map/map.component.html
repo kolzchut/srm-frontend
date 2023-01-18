@@ -4,11 +4,6 @@
         <app-map-popup-stable [props]='stablePopupProps' [searchParams]='searchParams'></app-map-popup-stable>
     </div>
     <div class='map-hover' #hoverPopup *ngIf='hoverPopupProps'>
-        <ng-container *ngIf='hoverPopupProps.service_count === 1'>
-            <app-map-popup-hover-single [props]='hoverPopupProps'></app-map-popup-hover-single>
-        </ng-container>
-        <ng-container *ngIf='hoverPopupProps.service_count > 1'>
-            <app-map-popup-hover-multiple [props]='hoverPopupProps'></app-map-popup-hover-multiple>
-        </ng-container>
+        <app-map-popup-hover-container [props]='hoverPopupProps' [searchParams]='searchParams'></app-map-popup-hover-container>
     </div>
 </div>
