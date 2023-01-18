@@ -7,6 +7,8 @@
     });
     .desktop({
         padding: 32px 56px;
+        // border-top: 1px solid @color-blue-5;
+        background-color: @color-blue-7;
     });
     .font-rag-sans;
     font-size: 13px;
@@ -15,6 +17,12 @@
     flex-flow: column;
     gap: 8px;
 
+    .bigger {
+        .desktop({
+            font-size: 16px;
+            line-height: 20px;
+        });
+    }
     strong {
         font-weight: 700;
     }
