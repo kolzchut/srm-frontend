@@ -42,16 +42,16 @@ export class MapPopupHoverContainerComponent implements OnInit {
           }
           this.multiProps.full_title = branch.cards[0].organization_name_parts?.primary || branch.cards[0].organization_name;
         });
-        if (this.multiProps.service_count === 1) {
-          this.card = card;
-          this.multiProps = null;
-          this.ready = true;
-        } else {
+        // if (this.multiProps.service_count === 1) {
+        //   this.card = card;
+        //   this.multiProps = null;
+        //   this.ready = true;
+        // } else {
           if (this.multiProps.branch_count > 1)  {
             this.multiProps.full_title += ' +' + (this.multiProps.branch_count - 1);
           }
           this.ready = true;
-        }
+        // }
       });
     }
     

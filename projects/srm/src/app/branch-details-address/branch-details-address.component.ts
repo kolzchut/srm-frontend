@@ -10,6 +10,8 @@ export class BranchDetailsAddressComponent implements OnInit {
 
   @Input() card: Card;
 
+  @Input() compact = true;
+
   constructor() { }
 
   ngOnInit(): void {

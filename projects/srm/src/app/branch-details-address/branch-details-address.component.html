@@ -1,4 +1,4 @@
-<div class='address'>
+<div class='address' [class.compact]='compact'>
     <ng-container *ngIf='!card.national_service'>
         <ng-container *ngIf='!card.address_parts'>
             <span class='primary'>{{card.branch_address}}</span>

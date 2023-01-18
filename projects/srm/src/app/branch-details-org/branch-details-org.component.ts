@@ -9,6 +9,7 @@ import { Card } from '../consts';
 export class BranchDetailsOrgComponent implements OnInit {
 
   @Input() card: Card;
+  @Input() compact = true;
 
   constructor() { }
 
