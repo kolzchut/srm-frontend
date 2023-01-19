@@ -264,6 +264,7 @@ export class PageComponent implements OnInit {
       if (prevStage !== '') {
         this.isLandingPage = false;
       }
+      this.map?.setPopup(false, null);
     });
     route.queryParams.pipe(
       untilDestroyed(this),
@@ -393,7 +394,7 @@ export class PageComponent implements OnInit {
     } else {
       const padding = this.stage === 'search-results' || this.stage === 'card' ?  window.innerWidth / 2 : 0;
       // if (padding !== this.padding) {
-      this.padding = padding;
+      this.padding = padding > 640 ? 640 : padding;
       this.easeTo({padding: {top: 0, right: this.padding, left: 0, bottom: 0}});
       // }  
     }

@@ -392,19 +392,21 @@ export class MapComponent implements OnChanges, AfterViewInit {
               if (!props || props.branch_count) {
                 return from([props]);
               } else {
-                return this.api.getPoint(props.point_id).pipe(
+                return this.api.getPoint(props.point_id, this.searchParams).pipe(
                   map((cards) => {
                     if (cards.length === 0) {
                       return {};
                     }
                     const ret: any = {
+                      point_id: props.point_id,
                       service_count: cards.length,
                       branch_count: cards.map((b) => b.organization_name,).filter((v, i, a) => a.indexOf(v) === i).length,
                       branch_geometry: cards[0].branch_geometry,
                       title: cards[0].organization_name,
                       response_category: cards[0].response_category,
                       branch_location_accurate: cards[0].branch_location_accurate,
-                      coordinates: cards[0].branch_geometry          
+                      coordinates: cards[0].branch_geometry,
+                      processed: true
                     };
                     if (cards.length === 1) {
                       ret.card_id = cards[0].card_id;

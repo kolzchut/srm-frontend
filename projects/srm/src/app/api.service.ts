@@ -15,31 +15,11 @@ import { LngLatBounds } from 'mapbox-gl';
   providedIn: 'root'
 })
 export class ApiService {
-  //   data.forEach((item) => {
-  //     if (item.id) {
-  //       this.situationsMap_[item.id] = item;
-  //     }
-  //   });
-  //   this.situationsMap.next(this.situationsMap_);
-  //   this.situationsMap.complete();
-  // });
-  // this.getResponses().subscribe((data: TaxonomyItem[]) => {
-  //   this.responsesMap_ = {};
-  //   data.forEach((item) => {
-  //     if (item.id) {
-  //       this.responsesMap_[item.id] = item;
-  //     }
-  //   });
-  //   this.responsesMap.next(this.responsesMap_);
-  //   this.responsesMap.complete();
-  // });
   waiting: any = {};
 
   MIN_SCORE = 20
   situationsMap_: any = {};
   responsesMap_: any = {};
-  // situationsMap = new ReplaySubject<any>(1);
-  // responsesMap = new ReplaySubject<any>(1);
   collapseCount: {[key: string]: number} = {};
 
   constructor(
@@ -47,39 +27,17 @@ export class ApiService {
     private transferState: TransferState,
     private platform: PlatformService,
     private zone: NgZone,
-  ) {
-
-      // this.getSituations().subscribe((data: TaxonomyItem[]) => {
-      //   this.situationsMap_ = {};
-      //   data.forEach((item) => {
-      //     if (item.id) {
-      //       this.situationsMap_[item.id] = item;
-      //     }
-      //   });
-      //   this.situationsMap.next(this.situationsMap_);
-      //   this.situationsMap.complete();
-      // });
-      // this.getResponses().subscribe((data: TaxonomyItem[]) => {
-      //   this.responsesMap_ = {};
-      //   data.forEach((item) => {
-      //     if (item.id) {
-      //       this.responsesMap_[item.id] = item;
-      //     }
-      //   });
-      //   this.responsesMap.next(this.responsesMap_);
-      //   this.responsesMap.complete();
-      // });
-  }
+  ) {}
 
   innerCache<T>(key: string, fetcher: Observable<T>, keep=false): Observable<T> {
     const stateKey = makeStateKey<T | null>(key);
-    if (this.platform.server()) {
-      const cached = memoryCache.get(stateKey);
+    const cached = memoryCache.get(stateKey);
       // console.log('GOT MEM CACHED', !!cached, stateKey);
-      if (cached) {
+    if (cached) {
+      if (this.platform.server()) {
         this.transferState.set(stateKey, cached);
-        return from([cached]);
       }
+      return from([cached]);
     }
     if (this.transferState.hasKey(stateKey)) {
       // console.log('GOT CACHED', stateKey);
@@ -102,9 +60,10 @@ export class ApiService {
         this.platform.server(() => {
           // console.log('SET CACHED', stateKey);
           this.transferState.set(stateKey, val);
-          this.zone.runOutsideAngular(() => {
-            memoryCache.put(stateKey, val, keep ? 3600000 : 60000);
-          });
+        });
+        const timeout = this.platform.server() ? (keep ? 3600000 : 60000) : 120000;
+        this.zone.runOutsideAngular(() => {
+          memoryCache.put(stateKey, val, timeout);
         });
         this.waiting[key].next(val);
         this.waiting[key].complete();
@@ -116,202 +75,9 @@ export class ApiService {
     return this.waiting[key];
   }
 
-  // coord(value: number) {
-  //   return Math.round(value * 10000) / 10000;
-  // }
-
   boundsFilter(bounds: number[][]) {
     return bounds;
-    // return [
-    //   [
-    //     this.coord(bounds.getWest()),
-    //     this.coord(bounds.getNorth()),
-    //   ], [
-    //     this.coord(bounds.getEast()),
-    //     this.coord(bounds.getSouth()),
-    //   ]
-    // ];
   }
-
-  // getGeoData(pointId: string): Observable<Point> {
-  //   return this.innerCache(`point-${pointId}`, this.http.get(environment.itemURL + pointId, {params: {type: 'geo_data'}}).pipe(
-  //     map((res: any) => {
-  //       return res as Point;
-  //     })
-  //   ));
-  // }
-
-  // getPlace(id: string): Observable<Place> {
-  //   const place = encodeURIComponent(id);
-  //   return this.innerCache(`place-${id}`, this.http.get(environment.itemURL + place, {params: {type: 'places'}}).pipe(
-  //     map((res: any) => {
-  //       return res as Place;
-  //     })
-  //   ));
-  // }
-
-  // getResponse(id: string): Observable<Response> {
-  //   return this.innerCache(`response-${id}`, this.http.get(environment.itemURL + id, {params: {type: 'responses'}}).pipe(
-  //     map((res: any) => {
-  //       return res as Response;
-  //     })
-  //   ));
-  // }
-
-  // getOrganization(id: string): Observable<Organization> {
-  //   return this.innerCache(`org-${id}`, this.http.get(environment.itemURL + id, {params: {type: 'orgs'}}).pipe(
-  //     map((res: any) => {
-  //       return res as Organization;
-  //     })
-  //   ));
-  // }
-
-  // setParams(params: any, state: State, bounds?: LngLatBounds): any {
-  //   const baseFilter: any = {};
-  //   if (bounds) {
-  //     baseFilter.branch_geometry__bounded = this.boundsFilter(bounds);
-  //   }
-  //   if (state.responseId) {
-  //     baseFilter.response_ids = state.responseId;
-  //   }
-  //   if (state.orgId) {
-  //     baseFilter.organization_id = state.orgId;
-  //   }
-  //   const filter: any[] = [];
-  //   filter.push(baseFilter);
-  //   if (state.situations && state.situations.length > 0) {
-  //     const terms = [];
-  //     for (const situations of state.situations) {
-  //       terms.push(...situations.map((s) => SITUATIONS_PREFIX + s));
-  //     }
-  //     params['extra'] = terms.join('|');
-  //   }
-  //   params['filter'] = JSON.stringify(filter);
-  // }
-
-  // getCards(state: State, bounds: LngLatBounds, offset=0): Observable<QueryCardsResult> {
-  //   const params: any = {size: 10, offset: offset, order: '-_score'};
-  //   this.setParams(params, state, bounds);
-  //   return this.http.get(environment.cardsURL, {params}).pipe(
-  //     map((res: any) => {
-  //       const results = res as QueryCardsResult;
-  //       return results;
-  //     })
-  //   );
-  // }
-
-  // getPointsForSituations(state: State): Observable<QueryPointsResult | null> {
-  //   const params: any = {size: 10000, order: 'point_id'};
-  //   if (state.responseId && state.responseId.length > 0) {
-  //     this.setParams(params, {responseId: state.responseId});
-  //     return this.http.get(environment.pointsURL, {params}).pipe(
-  //       map((res: any) => {
-  //         const results = res as QueryPointsResult;
-  //         return results;
-  //       })
-  //     );
-  //   } else {
-  //     return from([null]);
-  //   }
-  // }
-
-  // countCategories(state: State, bounds: LngLatBounds): Observable<QueryCardsResult> {
-  //   const filters: any = {};
-  //   if (bounds) {
-  //     filters.branch_geometry__bounded = this.boundsFilter(bounds);
-  //   }
-  //   if (state.responseId) {
-  //     filters.response_ids = state.responseId;
-  //   }
-  //   const config = CATEGORY_COLORS.map((cc) => {
-  //     return {
-  //       doc_types: ['cards'],
-  //       id: cc.category,
-  //       filters: Object.assign({response_categories: cc.category}, filters)
-  //     };
-  //   });
-  //   const params: any = {config: JSON.stringify(config)};
-  //   if (state.situations && state.situations.length > 0) {
-  //     const terms = [];
-  //     for (const situations of state.situations) {
-  //       terms.push(...situations.map((s) => SITUATIONS_PREFIX + s));
-  //     }
-  //     params['extra'] = terms.join('|');
-  //   }
-  //   return this.http.get(environment.countCategoriesURL, {params}).pipe(
-  //     map((res: any) => {
-  //       const results = res as QueryCardsResult;
-  //       return results;
-  //     })
-  //   );
-  // }
-
-  // getFilteringButtonCounts(state: State, bounds: LngLatBounds): Observable<QueryCardsResult> {
-  //   const responseFilter: any = {};
-  //   const mapFilter: any = {};
-  //   if (bounds) {
-  //     mapFilter.branch_geometry__bounded = this.boundsFilter(bounds);
-  //   }
-  //   if (state.responseId) {
-  //     responseFilter.response_ids = state.responseId;
-  //   }
-  //   const config = [
-  //     {
-  //       id: 'all',
-  //       doc_types: ['cards'],
-  //       filters: Object.assign({}, responseFilter)
-  //     },
-  //     {
-  //       id: 'map',
-  //       doc_types: ['cards'],
-  //       filters: Object.assign({}, responseFilter, mapFilter)
-  //     }
-  //   ];
-  //   const params: any = {config: JSON.stringify(config)};
-  //   if (state.situations && state.situations.length > 0) {
-  //     const terms = [];
-  //     for (const situations of state.situations) {
-  //       terms.push(...situations.map((s) => SITUATIONS_PREFIX + s));
-  //     }
-  //     params['extra'] = terms.join('|');
-  //   }
-  //   return this.http.get(environment.countCategoriesURL, {params}).pipe(
-  //     map((res: any) => {
-  //       const results = res as QueryCardsResult;
-  //       return results;
-  //     })
-  //   );
-  // }
-
-  // query<T>(query: string, url: string, offset: number): Observable<T> {
-  //   if (query && query.length > 0) {
-  //     const params = {q: query, offset};
-  //     return this.http.get(url, {params}).pipe(
-  //       map((res: any) => {
-  //         const results = res as T;
-  //         return results;
-  //       })
-  //     );
-  //   } else {
-  //     return from([{} as T]);
-  //   }
-  // }
-
-  // queryCards(query: string, offset=0) {
-  //   return this.query<QueryCardsResult>(query, environment.cardsURL, offset);
-  // }
-
-  // queryPlaces(query: any, offset=0) {
-  //   return this.query<QueryPlacesResult>(query, environment.placesURL, offset);
-  // }
-
-  // queryResponses(query: any, offset=0) {
-  //   return this.query<QueryResponsesResult>(query, environment.responsesURL, offset);
-  // }
-
-  // queryOrganizations(query: any, offset=0) {
-  //   return this.query<QueryOrganizationResult>(query, environment.orgsURL, offset);
-  // }
 
   _filter(searchParams?: SearchParams | null, bound=true): any | null {
     let filter: any | null = null;
@@ -637,12 +403,12 @@ export class ApiService {
       Object.assign(filter, srFilter);
     }
     params.filter = JSON.stringify(filter);
-    return this.http.get(environment.cardsURL, {params}).pipe(
+    return this.innerCache(`point-${searchParams?.query}-${params.filter}`, this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         const results = (res as QueryCardResult).search_results;
         return results.map((r: any) => r.source);
       })
-    );
+    ));
   }
 
   getTopCards(query: string): Observable<Card[]> {

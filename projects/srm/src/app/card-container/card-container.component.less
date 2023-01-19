@@ -7,7 +7,7 @@
     flex-flow: row-reverse;
     pointer-events: none;
     > .map-window {
-        flex: 0 0 50%;
+        flex: 0 0 @desktop-left-side-width;
     }
 
     .scrolled {
@@ -108,7 +108,7 @@
             width: 100%;
         });
         .desktop({
-            width: 50%;
+            width: @desktop-right-side-width;
         });
         height: 56px;
         bottom: 0;
