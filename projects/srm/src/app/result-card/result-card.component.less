@@ -14,7 +14,15 @@
         border-top: 1px solid @color-gray-5;
     }
     min-height: 24px;
-    padding: 8px;
+    .mobile({
+        padding: 8px;
+    });
+    .desktop({
+        padding: 8px 12px;
+        &.smallDesktop {
+            padding: 16px 12px;
+        }
+    });
     gap: 4px;
 
     &.compact {
@@ -45,9 +53,15 @@
             &.compact {
                 .ellipsis-2-line;
             }
+            &.smallDesktop {
+                font-size: 20px;
+                line-height: 24px;
+            }
             &.stacked {
-                font-size: 16px;
-                line-height: 20px;
+                .desktop({
+                    font-size: 16px;
+                    line-height: 20px;    
+                });
             }
 
             em {

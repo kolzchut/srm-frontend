@@ -50,6 +50,7 @@ import { BranchDetailsComponent } from './branch-details/branch-details.componen
 import { BranchDetailsAddressComponent } from './branch-details-address/branch-details-address.component';
 import { BranchDetailsOrgComponent } from './branch-details-org/branch-details-org.component';
 import { LandingPageOverlayComponent } from './landing-page-overlay/landing-page-overlay.component';
+import { CardBranchServicesComponent } from './card-branch-services/card-branch-services.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { LandingPageOverlayComponent } from './landing-page-overlay/landing-page
     BranchDetailsComponent,
     BranchDetailsAddressComponent,
     BranchDetailsOrgComponent,
-    LandingPageOverlayComponent
+    LandingPageOverlayComponent,
+    CardBranchServicesComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

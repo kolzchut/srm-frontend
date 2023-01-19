@@ -8,6 +8,7 @@ import { Card, CARD_SNIPPET_FIELDS, _h } from '../consts';
   styleUrls: ['./result-card.component.less'],
   host: {
     '[class.compact]' : 'compact',
+    '[class.smallDesktop]' : 'smallDesktop',
     '[class.stacked]' : 'stacked',
   }
 })
@@ -17,6 +18,7 @@ export class ResultCardComponent implements OnChanges {
   @Input() compact = false;
   @Input() stacked = false;
   @Input() small = true;
+  @Input() smallDesktop = true;
   _h = _h;
   snippet: string | null = null;
 
