@@ -16,6 +16,7 @@ export class ResultCardComponent implements OnChanges {
   @Input() card: Card;
   @Input() compact = false;
   @Input() stacked = false;
+  @Input() small = true;
   _h = _h;
   snippet: string | null = null;
 

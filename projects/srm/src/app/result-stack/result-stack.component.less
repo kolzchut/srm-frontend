@@ -22,8 +22,14 @@
                 display: inline;
                 .font-rag-sans;
                 font-weight: 600;
-                font-size: 13px;
-                line-height: 13px;
+                .mobile({
+                    font-size: 13px;
+                    line-height: 13px;    
+                });
+                .desktop({
+                    font-size: 16px;
+                    line-height: 20px;
+                });
                 color: @color-gray-2;
             }
     

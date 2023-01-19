@@ -1,14 +1,14 @@
 <div class='title'>
     <span [class.compact]='compact' [class.stacked]='stacked' [innerHtml]='_h(card, "service_name")'></span>
     <ng-container *ngIf='showSnippet || compact || stacked'>
-        <app-response [response]='card.responses[0]' [small]='true' [link]='false' *ngIf='card.responses.length'></app-response>
-        <app-situation [situation]='card.situations[0]' [small]='true' *ngIf='card.situations.length'></app-situation>    
+        <app-response [response]='card.responses[0]' [small]='small' [link]='false' *ngIf='card.responses.length'></app-response>
+        <app-situation [situation]='card.situations[0]' [small]='small' *ngIf='card.situations.length'></app-situation>    
     </ng-container>
 </div>
 <ng-container *ngIf='!showSnippet && !compact && !stacked'>
     <div class='title'>
-        <app-response [response]='card.responses[0]' [small]='true' [link]='false' *ngIf='card.responses.length'></app-response>
-        <app-situation [situation]='card.situations[0]' [small]='true' *ngIf='card.situations.length'></app-situation>    
+        <app-response [response]='card.responses[0]' [small]='small' [link]='false' *ngIf='card.responses.length'></app-response>
+        <app-situation [situation]='card.situations[0]' [small]='small' *ngIf='card.situations.length'></app-situation>    
     </div>
 </ng-container>
 <div class='snippet' [innerHtml]='snippet' *ngIf='showSnippet'></div>
