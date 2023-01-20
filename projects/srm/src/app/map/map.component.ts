@@ -736,9 +736,9 @@ export class MapComponent implements OnChanges, AfterViewInit {
   generateInaccuratePointImg(color: string) {
     return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g fill="${color}">
-        <g opacity="0.15"><circle cx="8" cy="8" r="4"/></g>
-        <g opacity="0.15"><circle cx="8" cy="8" r="5"/></g>
-        <g opacity="0.15"><circle cx="8" cy="8" r="6"/></g>
+        <g opacity="0.8"><circle cx="8" cy="8" r="4"/></g>
+        <g opacity="0.4"><circle cx="8" cy="8" r="5"/></g>
+        <g opacity="0.2"><circle cx="8" cy="8" r="6"/></g>
         <g opacity="0.1"><circle cx="8" cy="8" r="7"/></g>
         <g opacity="0.05"><circle cx="8" cy="8" r="8"/></g>
     </g>
