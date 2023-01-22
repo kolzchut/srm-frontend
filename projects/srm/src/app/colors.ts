@@ -3,7 +3,7 @@ export const CATEGORY_COLORS = [
     {category: 'health', color: '#469EB1'},
     {category: 'care', color: '#2da961'},
     {category: 'education', color: '#d067f7'},
-    {category: 'legal', color: '#e57410'},
+    {category: 'legal', color: '#D0820D'},
     {category: 'work', color: '#a89400'},
     {category: 'housing', color: '#f84dc8'},
     {category: 'community_services', color: '#e96d6d'},
