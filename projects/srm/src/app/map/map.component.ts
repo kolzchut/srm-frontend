@@ -742,7 +742,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
         <g opacity="0.08"><circle cx="8" cy="8" r="6"/></g>
         <g opacity="0.04"><circle cx="8" cy="8" r="7"/></g>
     </g>
-    <g opacity="1" fill="#f9f4f1"><circle cx="8" cy="8" r="3"/></g>
+    <g opacity="1" fill="#f9f4f1"><circle cx="8" cy="8" r="2"/></g>
     </svg>`;
   }
 
