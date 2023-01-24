@@ -19,6 +19,12 @@
         pointer-events: none;
         background-color: rgba(0,0,0,0);
         transition: background-color 0.3s ease-out;
+        display: none;
+
+        &.visible {
+            display: block;
+        }
+
         &.active {
             .mobile({
                 background-color: rgba(0,0,0,.25);
@@ -31,7 +37,7 @@
     }
 
     .menu {
-        display: flex;
+        // display: flex;
         flex-flow: column;
         align-items: stretch;
         background: @color-gray-6;
@@ -42,9 +48,13 @@
         width: 80%;
         height: 100%;
         transform: translateX(110%);
+        display: none;
         transition: transform 250ms ease-out;
         pointer-events: all;
 
+        &.visible {
+            display: flex;
+        }
         &.enter {
             transform: translateX(0);
         }

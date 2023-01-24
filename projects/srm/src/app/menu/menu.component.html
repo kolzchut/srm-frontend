@@ -1,9 +1,9 @@
-<div class='backdrop' [class.active]='active' (click)='closeMe(null)'>
+<div class='backdrop' [class.visible]='visible' [class.active]='active' (click)='closeMe(null)'>
 
 </div>
 <div class='menu'
     [class.enter]='active'
-    [class.exit]='!active'
+    [class.visible]='visible'
 >
     <div class='container'>
         <a class='logo' [routerLink]='["/"]'></a>

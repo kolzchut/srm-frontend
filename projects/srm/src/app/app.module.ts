@@ -51,6 +51,7 @@ import { BranchDetailsAddressComponent } from './branch-details-address/branch-d
 import { BranchDetailsOrgComponent } from './branch-details-org/branch-details-org.component';
 import { LandingPageOverlayComponent } from './landing-page-overlay/landing-page-overlay.component';
 import { CardBranchServicesComponent } from './card-branch-services/card-branch-services.component';
+import { ClickOnReturnDirective } from './click-on-return.directive';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ import { CardBranchServicesComponent } from './card-branch-services/card-branch-
     BranchDetailsAddressComponent,
     BranchDetailsOrgComponent,
     LandingPageOverlayComponent,
-    CardBranchServicesComponent
+    CardBranchServicesComponent,
+    ClickOnReturnDirective
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

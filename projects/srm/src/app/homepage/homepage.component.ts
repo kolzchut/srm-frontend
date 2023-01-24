@@ -6,7 +6,10 @@ import { PlatformService } from '../platform.service';
 @Component({
   selector: 'app-homepage',
   templateUrl: './homepage.component.html',
-  styleUrls: ['./homepage.component.less']
+  styleUrls: ['./homepage.component.less'],
+  host: {
+    'tabIndex': 'null',
+  }
 })
 export class HomepageComponent implements OnInit, AfterViewInit {
 

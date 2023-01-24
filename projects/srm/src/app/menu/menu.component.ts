@@ -2,7 +2,7 @@ import { Component, EventEmitter, Injectable, Input, OnInit, Output } from '@ang
 import { NavigationEnd, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ReplaySubject, timer } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { delay, filter, tap } from 'rxjs/operators';
 
 
 @Injectable({
@@ -11,6 +11,8 @@ import { filter } from 'rxjs/operators';
 export class MenuService {
 
   public activated = new ReplaySubject<boolean>(1);
+
+  private active_ = false;
 
   constructor(private router: Router) {
     this.router.events.pipe(
@@ -21,8 +23,14 @@ export class MenuService {
   }
 
   set active(value: boolean) {
+    this.active_ = value;
     this.activated.next(value);
   }
+
+  get active(): boolean {
+    return this.active_;
+  }
+  
 }
 
 
@@ -35,6 +43,7 @@ export class MenuService {
 export class MenuComponent implements OnInit {
 
   active = false;
+  visible = false;
 
   logoUrls: string[] = [
     'assets/img/logo-kolzchut.svg',
@@ -45,8 +54,23 @@ export class MenuComponent implements OnInit {
   constructor(private menu: MenuService) {
     this.menu.activated.pipe(
       untilDestroyed(this),
+      tap((value) => {
+        if (value) {
+          this.visible = true;
+        }
+      }),
+      delay(100),
+      tap((value) => {
+        this.active = value;
+      }),
+      delay(250),
+      tap((value) => {
+        if (!value) {
+          this.visible = false;
+        }
+      }),
     ).subscribe((value) => {
-      this.active = value;
+      console.log('MENU ACTIVE=', value);
     });
   }
 

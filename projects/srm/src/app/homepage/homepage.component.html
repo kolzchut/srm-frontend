@@ -4,7 +4,7 @@
             <app-menu-icon></app-menu-icon>
         </div>
         <div class='logo-tagline'>
-            <div class='logo'></div>
+            <div class='logo' alt='Site Logo'></div>
             <h2 class='tagline'>
                 <span>כל השירותים והמענים החברתיים</span>
                 <span>שניתן למצוא על מפה אחת</span>
@@ -16,7 +16,7 @@
         <p class='layout-desktop'>
             <strong>אספנו וסיווגנו {{totalServices.toLocaleString()}} שירותים חברתיים</strong> מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים.
         </p>
-        <a class='searchbox' [routerLink]='["/q"]' [class.cta]='slide === 3'>
+        <a class='searchbox' [routerLink]='["/q"]' [class.cta]='slide === 3' tabindex="0">
             <h1 [class.active]='slide === 0'>כל שירות</h1>
             <div class='subtitle'>
                 <span [class.active]='slide === 1' class='situation'>לכל מצב</span>
@@ -24,7 +24,7 @@
                 <span [class.active]='slide === 2' class='situation'>לכל מקום</span>
             </div>
         </a>
-        <div class='slides'>
+        <div class='slides' tabindex='null'>
             <div class='slide' data-slide='0'>
                 <h3><strong>{{numResponses}} סוגי שירותים</strong> כמו למשל:</h3>
                 <div class='staggered' [class.seen-once]='!!seenOnce[0]'>
@@ -54,21 +54,25 @@
             </div>
         </div>
         <div class='pager' [class.cta]='slide === 3'>
-            <a class='chevron right' [class.active]='slide > 0' (click)='slide = slide > 0 ? slide-1 : slide'></a>
+            <a class='chevron right' [class.active]='slide > 0' (activated)='slide = slide > 0 ? slide-1 : slide'
+                aria-role='button' aria-label='Previous Slide' tabindex="0" clickOnReturn
+            ></a>
             <div class='dots'>
                 <div class='dot' [class.active]='slide === 0' data-slide='0'></div>
                 <div class='dot' [class.active]='slide === 1' data-slide='1'></div>
                 <div class='dot' [class.active]='slide === 2' data-slide='2'></div>
                 <div class='dot' [class.active]='slide === 3' data-slide='3'></div>    
             </div>
-            <a class='chevron left' [class.active]='slide < 3' (click)='slide = slide < 3 ? slide+1 : slide'></a>
+            <a class='chevron left' [class.active]='slide < 3' (activated)='slide = slide < 3 ? slide+1 : slide'
+                aria-role='button' aria-label='Next Slide' tabindex="0" clickOnReturn
+            ></a>
         </div>
     </div>
     <div class='logos'>
         <div class='logo-block'>
-            <a class='kolzchut'></a>
-            <a class='moj'></a>
-            <a class='digital-israel'></a>    
+            <a class='kolzchut' aria-label='Logo of Kol-Zchut organization' href='https://www.kolzchut.org.il/he/%D7%A2%D7%9E%D7%95%D7%93_%D7%A8%D7%90%D7%A9%D7%99' target="_blank"></a>
+            <a class='moj' aria-label='Logo of Ministry of Justice' href='https://www.gov.il/he/departments/ministry_of_justice/govil-landing-page' target="_blank"></a>
+            <a class='digital-israel' aria-label='Logo of Digital Israel unit' href='https://www.gov.il/he/departments/national-digital-agency/govil-landing-page' target="_blank"></a>    
         </div>
         <div class='logo-block layout-mobile'>
             <a class='kolzchut'></a>
