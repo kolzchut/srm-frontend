@@ -1,4 +1,4 @@
-<div class='map' #map></div>
+<div class='map' #map aria-hidden="true" role='presentation'></div>
 <div class='map-popup-container' style="display: none;">
     <div class='map-popup' #stablePopup *ngIf='stablePopupProps'>
         <app-map-popup-stable [props]='stablePopupProps' [searchParams]='searchParams'></app-map-popup-stable>

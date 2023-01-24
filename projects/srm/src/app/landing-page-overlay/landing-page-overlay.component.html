@@ -1,5 +1,5 @@
 <div class='container'>
-    <div class='overlay' (click)='open.emit(false)'></div>
+    <div class='overlay' (activated)='open.emit(false)' clickOnReturn tabindex="0" role="button" aria-label="Close disclaimer dialog"></div>
     <div class='dialog'>
         <div class='text'>
             <div class='header layout-mobile'>
@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class='cta'>
-            <a (click)='open.emit(false)'>המשך</a>
+            <a (activated)='open.emit(false)' clickOnReturn tabindex="0" role="button" aria-label="Close disclaimer dialog">המשך</a>
         </div>
     </div>
 </div>

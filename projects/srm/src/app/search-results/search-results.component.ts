@@ -20,6 +20,8 @@ export type SearchParamsOffset = {
   styleUrls: ['./search-results.component.less'],
   host: {
     '[class.empty]' : 'results.length === 0',
+    'role': 'feed',
+    '[attr.aria-busy]': 'loading ? "true" : "false"',
   }
 })
 export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit {

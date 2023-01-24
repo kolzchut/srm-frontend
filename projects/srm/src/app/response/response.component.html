@@ -3,6 +3,7 @@
 [routerLink]='search ? ["/q"] : ["/s", responseQuery]'
 [queryParams]='search ? {q: response.name} : null'
 [class.small]='small'
+[attr.aria-label]='"Search " + response.name'
 >
     <span class='point'>
         <span
@@ -18,10 +19,29 @@
         [style.background-color]='borderColor'
     >←</span>
 </a>
-<div class='response' *ngIf='!link' 
+<div class='response' *ngIf='!link && selectable' 
     [style.background]='bgColor'
     [style.border-color]='borderColor'
     (click)='onClick()'
+    [class.small]='small'
+    role='button'
+    [attr.aria-label]='"Toggle " + response.name'
+    tabindex="0"
+>
+    <span class='point'>
+        <span
+            [style.background]='pointBgColor'
+            [style.border-color]='pointBorderColor'
+        ></span>
+    </span>
+    <span class='name'
+        [class.small]='small'
+        [style.font-weight]='fontWeight'
+    >{{response.name}}</span>
+</div>
+<div class='response' *ngIf='!link && !selectable' 
+    [style.background]='bgColor'
+    [style.border-color]='borderColor'
     [class.small]='small'
 >
     <span class='point'>

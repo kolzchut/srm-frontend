@@ -1,5 +1,5 @@
 <a class='header' [routerLink]='layout.mobile ? link : (landingPage ? null : ["../.."])' queryParamsHandling='preserve' *ngIf='card' [class.point]='!!pointId'>
-    <button class='back-icon layout-desktop' [class.card]='!!cardId' [class.point]='!!pointId' *ngIf='!landingPage'></button>
+    <button class='back-icon layout-desktop' [class.card]='!!cardId' [class.point]='!!pointId' *ngIf='!landingPage' aria-label="Close service card and go back"></button>
     <div class='spacer layout-desktop' *ngIf='landingPage'></div>
     <app-branch-details [card]='card' [compact]='compact'></app-branch-details>
     <button class='control-icon layout-mobile' [class.card]='!!cardId' [class.point]='!!pointId'></button>
