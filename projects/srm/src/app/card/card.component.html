@@ -13,9 +13,10 @@
             <app-situation *ngFor='let situation of card.situations' [situation]='situation'></app-situation>
         </div>
     </div>
-    <div class='terms' *ngIf='card.service_details'>
+    <div class='terms' *ngIf='card.service_details || card.service_payment_details'>
         <label i18n>תנאים לקבלת השירות:</label>
-        <div [innerHTML]='card.service_details'></div>
+        <div [innerHTML]='card.service_details' *ngIf='card.service_details'></div>
+        <div [innerHTML]='card.service_payment_details' *ngIf='card.service_payment_details'></div>
     </div>
     <div class='org'>
         <label i18n>השירות ניתן ע״י:</label>
