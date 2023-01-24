@@ -1,6 +1,6 @@
 <div class='container' appArrowToTab aria-role='dialog' aria-modal='true' (keydown)='keydown($event)'>
     <div class='search-bar'>
-        <a class='logo layout-desktop' [routerLink]='["/"]'></a>
+        <a class='logo layout-desktop' [routerLink]='["/"]' aria-label='Go to Home Page'></a>
         <button class='back-button layout-mobile' (click)='location.back()'></button>
         <div class='searchbox'>
             <input type='search' placeholder='ניתן לחפש לפי שם, סוג מענה, מיקום...' [(ngModel)]='query' enterkeyhint='חיפוש' #input (keydown)='changed($event)' class='focusable'>
@@ -8,7 +8,7 @@
         </div>
         <app-desktop-menu-links></app-desktop-menu-links>
     </div>
-    <div class='overlay layout-desktop' (click)='location.back()'>
+    <div class='overlay layout-desktop' (activated)='location.back()' role='button' aria-label='close search and go back' clickOnReturn tabindex="0">
         
     </div>
     <div class='results'>
@@ -22,10 +22,18 @@
                *ngIf='result.direct'
                [routerLink]='result.link'
                [queryParams]='result.linkParams'
+               role='link'
+               [attr.aria-label]='"go to " + result.display'
+               tabindex="0"
             ></a>
             <a class='result-arrow'
                *ngIf='!result.direct'
-               (click)='result.query && query = result.query'></a>
+               (activated)='result.query && query = result.query'
+               role='button'
+               [attr.aria-label]='"search for " + result.query'
+               clickOnReturn
+               tabindex="0"
+            ></a>
         </div>
     </div>
 </div>
