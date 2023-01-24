@@ -11,8 +11,8 @@
     <div class='overlay layout-desktop' (activated)='location.back()' role='button' aria-label='close search and go back' clickOnReturn tabindex="0">
         
     </div>
-    <div class='results'>
-        <div class='result' *ngFor='let result of (query ? results : presets)'>
+    <div class='results' role='list'>
+        <div class='result' *ngFor='let result of (query ? results : presets)' role='listitem'>
             <a class='result-title focusable' [routerLink]='result.link' [queryParams]='result.linkParams' tabindex="0">
                 <span class='result-icon'>
                 </span>
