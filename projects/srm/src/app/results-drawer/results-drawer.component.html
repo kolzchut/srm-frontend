@@ -5,20 +5,20 @@
 
     <ng-container *ngIf='nationalCount > 0'>
         <a class='national-services' [routerLink]='["."]' [queryParams]="{national: 'yes'}" [queryParamsHandling]='"merge"' [preserveFragment]="true"
-            *ngIf='state !== DrawerState.National' role='button' arial-label='filter results to show only national services'>
+            *ngIf='state !== DrawerState.National' role='button' aria-label='filter results to show only national services'>
          <span>+ {{ nationalCount }} שירותים ארציים</span>
      </a>
      <div class='national-services' *ngIf='state === DrawerState.National'>
          <span>+ {{ nationalCount }} שירותים ארציים</span>
-         <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" *ngIf='!scrollAll' arial-label='filter results to show national and local services'></a>
+         <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" *ngIf='!scrollAll' aria-label='filter results to show national and local services'></a>
      </div>
      <div class='national-services-explanation layout-desktop' *ngIf='state === DrawerState.National'>
         *השירותים ניתנים בכל הארץ
      </div>
     </ng-container>
 </div>
-<div class='content' #handleEl>
-    <div class='handle layout-mobile' (click)='$event.stopPropagation()'>
+<div class='content' #handleEl role="presentation">
+    <div class='handle layout-mobile' (click)='$event.stopPropagation()' role='presentation'>
         <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
     </div>
     <div class='non-scrollable' [class.scrollable-anyway]='scrollAll'>

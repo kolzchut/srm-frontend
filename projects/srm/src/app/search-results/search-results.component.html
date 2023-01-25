@@ -10,7 +10,7 @@
 <div class='counts' *ngIf='hasCounts && searchParams.national'>
     <div class='line' *ngIf='totalNationalCount > 0'>
         <span class='strong'>{{totalNationalCount.toLocaleString()}} שירותים טלפוניים, אינטרנטיים וכד׳ | </span> 
-        <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true">
+        <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" role="button">
             הצג גם שירותים מקומיים
         </a>
     </div>
@@ -35,4 +35,4 @@
         <div class='placeholder loading'></div>
     </ng-container>
 </ng-container>
-<div class='trigger' [class.visible]='triggerVisible' #trigger tabindex="0" role="region" aria-label="Focus here to fetch more results"></div>
+<div class='trigger' [class.visible]='triggerVisible' #trigger role="presentation"></div>

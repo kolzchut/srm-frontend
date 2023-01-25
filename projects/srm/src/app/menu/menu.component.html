@@ -1,12 +1,15 @@
-<div class='backdrop' [class.visible]='visible' [class.active]='active' (click)='closeMe(null)'>
+<div class='backdrop' [class.visible]='visible' [class.active]='active' (activated)='closeMe(null)' clickOnReturn role="presentation">
 
 </div>
 <div class='menu'
     [class.enter]='active'
     [class.visible]='visible'
+    role="dialog"
+    aria-label="Main Menu"
+    [attr.aria-modal]='active ? "true" : "false"'
 >
     <div class='container'>
-        <a class='logo' [routerLink]='["/"]'></a>
+        <a class='logo' [routerLink]='["/"]' #menu aria-label="Go to Home Page"></a>
         <a class='menu-item' [routerLink]='["/"]' i18n>דף הבית</a>
         <a class='menu-item' [routerLink]='["/about", "kolsherut"]' i18n>אודות המפה</a>
         <a class='menu-item' [routerLink]='["/about", "partners"]' i18n>שותפים</a>
@@ -21,5 +24,5 @@
             <div *ngFor='let url of logoUrls' class='logo-strip-item' [style.background-image]='"url(" + url + ")"'></div>    
         </div>
     </div>
-    <div class='closer' (click)='closeMe(null)'></div>
+    <div class='closer' (activated)='closeMe(null)' clickOnReturn tabindex="0" role="button" aria-label="Close Menu"></div>
 </div>

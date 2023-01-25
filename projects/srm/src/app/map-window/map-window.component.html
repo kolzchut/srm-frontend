@@ -4,6 +4,9 @@
         [class.national-service]='mode === MapWindowMode.NationalService'
         [class.passthrough]='passthrough()'
         [routerLink]='link'
+        [attr.role]='link ? "button" : "presentation"'
+        [attr.aria-label]='link ? "See all services in this branch" : null'
+        [attr.aria-hidden]='link ? "false" : "true"'
         queryParamsHandling='preserve'>
     <div class='message-blur' *ngIf='mode === MapWindowMode.Inaccurate || mode === MapWindowMode.NationalService'>&nbsp;</div>
     <div class='message' *ngIf='mode === MapWindowMode.Inaccurate'>*שימו לב: הכתובת שבידינו אינה מדויקת</div>

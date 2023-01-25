@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injectable, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Injectable, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ReplaySubject, timer } from 'rxjs';
@@ -42,6 +42,8 @@ export class MenuService {
 })
 export class MenuComponent implements OnInit {
 
+  @ViewChild('menu') menuEl: ElementRef;
+
   active = false;
   visible = false;
 
@@ -62,6 +64,7 @@ export class MenuComponent implements OnInit {
       delay(100),
       tap((value) => {
         this.active = value;
+        this.menuEl.nativeElement.focus();
       }),
       delay(250),
       tap((value) => {

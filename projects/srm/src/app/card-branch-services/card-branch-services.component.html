@@ -1,5 +1,5 @@
 <div class='title' *ngIf='cards.length > 1'>עוד {{cards.length}} שירותים ניתנים בסניף זה:</div>
 <div class='title' *ngIf='cards.length === 1'>עוד שירות נוסף ניתן בסניף זה:</div>
-<a [routerLink]='["../..", "c", card.card_id]' [queryParamsHandling]='"merge"' *ngFor='let card of cards'>
+<a [routerLink]='["../..", "c", card.card_id]' [queryParamsHandling]='"merge"' *ngFor='let card of cards' [attr.aria-label]='"Go to " + card.service_name'>
     <app-result-card [card]='card' [small]='true' [smallDesktop]='true'></app-result-card>
 </a>

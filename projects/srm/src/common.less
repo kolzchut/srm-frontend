@@ -17,8 +17,6 @@
 @color-blue-6: #CCDDFC; // primary-200
 @color-blue-7: #F2F7FF; // primary-100 TODO: Ask Mushon for true name
 
-@color-light-blue: #F2F7FF; // this is actually @color-blue-7 which in Figma is primary-100
-
 @color-yellow-7: #FDF9ED; // TODO: Ask Mushon for true name
 
 @color-yellow: #F2C94C;
@@ -173,6 +171,13 @@
         display: none !important;
     }
 });
+
+.contrast(@rules) {
+    @media (prefers-contrast: more) {
+        @rules();
+    }   
+}
+
 
 ::ng-deep .display-none {
     display: block;

@@ -1,10 +1,10 @@
-<div class='container' appArrowToTab role='dialog' aria-modal='true' (keydown)='keydown($event)'>
+<div class='container' appArrowToTab role='dialog' aria-modal='true' (keydown)='keydown($event)' aria-label="Search Dialog">
     <div class='search-bar'>
         <a class='logo layout-desktop' [routerLink]='["/"]' aria-label='Go to Home Page'></a>
-        <button class='back-button layout-mobile' (click)='location.back()'></button>
+        <button class='back-button layout-mobile' (activated)='location.back()' clickOnReturn aria-label="Close search and go back"></button>
         <div class='searchbox'>
             <input type='search' placeholder='ניתן לחפש לפי שם, סוג מענה, מיקום...' [(ngModel)]='query' enterkeyhint='חיפוש' #input (keydown)='changed($event)' class='focusable'>
-            <button class='clear-button' (click)='query=""' *ngIf='!!query'></button>    
+            <button class='clear-button' (click)='query=""' *ngIf='!!query' aria-label="Clear search"></button>    
         </div>
         <app-desktop-menu-links></app-desktop-menu-links>
     </div>
