@@ -159,7 +159,7 @@ export class SearchComponent implements OnInit {
     if (event.key === 'Enter' && this.query?.length > 0) {
       let found = false;
       for (const result of this.autoCompleteResults) {
-        if (result.query === this.query) {
+        if (result.query === this.query.trim()) {
           this.router.navigate(result.link as string[], {queryParams: result.linkParams});
           found = true;
           break;

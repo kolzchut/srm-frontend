@@ -139,7 +139,7 @@ export function _h(sr: any, f: string) {
 }
 
 export function prepareQuery(query: string) {
-    return query.split(' ').join('_');
+    return query.trim().split(' ').join('_');
 }
 
 export type QueryPresetResult = SearchResult<Preset>;
