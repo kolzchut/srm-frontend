@@ -14,6 +14,7 @@ import * as mapboxgl from 'mapbox-gl';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ApiService } from '../api.service';
 import { Router } from '@angular/router';
+import { getPointCards, PointCards } from '../branch-container/branch-card-utils';
 // declare var mapboxgl: any;
 
 type MoveQueueItem = {
@@ -315,34 +316,40 @@ export class MapComponent implements OnChanges, AfterViewInit {
               if (e.features && e.features.length > 0) {
                 const props: any = e.features[0].properties;
                 props.branch_geometry = (e.features[0].geometry as any || {})['coordinates'];
-                console.log('CLICKED', props);
-                const newCardId = props.card_id;
-                const route = [];
-                let dontRoute = false;
-                console.log('CLICKED2', 's', this.searchParams?.ac_query, 'c', newCardId, 'p', props.point_id, 'l', this.layout.mobile, 'cp', this.pointId);
-                if (this.searchParams?.ac_query) {
-                  route.push('s', this.searchParams?.ac_query);
-                }
-                if (newCardId) {
-                  route.push('c', newCardId);
-                } else {
-                  if (this.layout.mobile) {
-                    if (this.cardId && (!this.pointId || this.pointId === props.point_id)) {
-                      route.push('c', this.cardId, 'p', props.point_id);
-                    } else {
-                      route.push('p', props.point_id);
+                getPointCards(this.api, props.point_id, '', this.searchParams).pipe(
+                  map((pc: PointCards) => {
+                    if (pc.branches?.length === 1 && pc.branches[0].cards?.length === 1) {
+                      return pc.branches[0].cards[0].card_id;
                     }
-                  } else {
-                    this.setPopup(true, props);
-                    this.pointsHover.next(null);
-                    dontRoute = true;
+                    return null;
+                  })
+                ).subscribe((newCardId: string | null) => {
+                  const route = [];
+                  let dontRoute = false;
+                  if (this.searchParams?.ac_query) {
+                    route.push('s', this.searchParams?.ac_query);
                   }
-                }
-                if (!dontRoute) {
-                  route[0] = '/' + route[0];
-                  this.router.navigate(route, {queryParamsHandling: 'preserve'});  
-                }
-                // this.points.next(props as SRMPoint);
+                  if (newCardId) {
+                    route.push('c', newCardId);
+                  } else {
+                    if (this.layout.mobile) {
+                      if (this.cardId && (!this.pointId || this.pointId === props.point_id)) {
+                        route.push('c', this.cardId, 'p', props.point_id);
+                      } else {
+                        route.push('p', props.point_id);
+                      }
+                    } else {
+                      this.setPopup(true, props);
+                      this.pointsHover.next(null);
+                      dontRoute = true;
+                    }
+                  }
+                  if (!dontRoute) {
+                    route[0] = '/' + route[0];
+                    this.router.navigate(route, {queryParamsHandling: 'preserve'});  
+                  }
+                });
+                  // this.points.next(props as SRMPoint);
               }
               e.preventDefault();
             });
@@ -776,8 +783,6 @@ export class MapComponent implements OnChanges, AfterViewInit {
           popup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: false,
-            // anchor: 'bottom',
-            // offset: [-2, -10],
             className: stable ? 'map-popup-stable' : 'map-popup-hover',
           }).setLngLat(props.branch_geometry)
             .setDOMContent(mapPopup)

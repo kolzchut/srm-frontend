@@ -1,11 +1,15 @@
-import { forkJoin, map } from "rxjs";
+import { forkJoin, map, Observable } from "rxjs";
 import { ApiService } from "../api.service";
 import { Card, SearchParams } from "../consts";
 
 export type BranchCards = {cards: Card[], hidden: Card[]};
+export type PointCards = {
+  branches: BranchCards[],
+  selectedCard: Card | null,
+  cardBranch: BranchCards | null,
+};
 
-
-export function getPointCards(api: ApiService, pointId: string, cardId: string, searchParams: SearchParams | null) {
+export function getPointCards(api: ApiService, pointId: string, cardId: string, searchParams: SearchParams | null): Observable<PointCards> {
   return forkJoin([
     api.getPoint(pointId, searchParams),
     api.getPoint(pointId),

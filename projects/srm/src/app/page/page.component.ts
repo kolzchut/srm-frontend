@@ -105,6 +105,19 @@ export class PageComponent implements OnInit {
 
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
+      // throttleTime(1000, undefined, {leading: false, trailing: true}),
+      distinctUntilChanged((x, y) => {
+        return x.national === y.national
+      }),
+    ).subscribe((spc) => {
+      console.log('NATIONAL CHANGED', spc.national);
+      if (this.searchFilters) {
+        this.searchFilters.active = false;
+      }
+    });
+
+    this.searchParamsCalc.pipe(
+      untilDestroyed(this),
       debounceTime(platform.server() ? 0 : 100),
       map((spc) => {
         spc.resolvedQuery = spc.acId || spc.ftQuery || '';
