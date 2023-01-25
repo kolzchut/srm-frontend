@@ -39,8 +39,8 @@
 </div>
 <div *ngIf='didYouMean' class='did-you-mean layout-mobile'>
     <span>האם התכוונת&nbsp;</span>
-    <a [routerLink]='["/s", didYouMeanLink]'>
-        {{didYouMean}}
+    <a [routerLink]='["/s", didYouMean.link]'>
+        {{didYouMean.display}}
     </a><span>?</span>
 </div>
 <app-desktop-menu-links></app-desktop-menu-links>

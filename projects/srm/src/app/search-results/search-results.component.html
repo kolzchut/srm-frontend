@@ -15,6 +15,7 @@
         </a>
     </div>
 </div>
+
 <ng-container *ngFor='let result of results; let i=index'>
     <ng-container *ngIf='!!result'>
         <a [routerLink]='["c", result.card_id]' [queryParamsHandling]='"merge"' *ngIf='!result._collapse_count' (mouseover)='hoverCard.next(result)' [attr.aria-label]='"Open the " + result.service_name + " card"'>

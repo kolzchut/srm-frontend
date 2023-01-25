@@ -11,7 +11,8 @@
             <app-searchbox-header *ngIf='stage === "search-results" && layout.mobile' 
                     [query]='query'
                     [showCity]='!mapMoved'
-                    [searchParams]='searchParams'        
+                    [searchParams]='searchParams'
+                    [didYouMean]='didYouMean'
             ></app-searchbox-header>
             <app-results-drawer
                 [state]='stage === "point" ? (searchParams?.ac_query && !card ? DrawerState.Minimal : DrawerState.Hidden) : (searchParams?.national ? DrawerState.National : drawerState)'
@@ -26,6 +27,14 @@
                     [class.visible]='stage === "search-results" || (stage === "point" && !card)'
                     [class.filters]='filtersVisible'
                 >
+                    <div *ngIf='didYouMean && !filtersVisible' class='did-you-mean layout-desktop'>
+                        <div class='inner'>
+                            <span>האם התכוונת&nbsp;</span>
+                            <a [routerLink]='["/s", didYouMean.link]'>
+                                {{didYouMean.display}}
+                            </a><span>?</span>    
+                        </div>
+                    </div>                
                     <app-search-filters 
                         [searchParams]='searchParams'
                         (params)='setSearchParams($event)'

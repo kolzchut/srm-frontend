@@ -86,6 +86,8 @@ export class PageComponent implements OnInit {
   showLandingPageOverlay = false;
   isLandingPage = true;
 
+  didYouMean: {display: string, link: string} | null = null;
+
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
               private platform: PlatformService, public layout: LayoutService,
               @Inject(DOCUMENT) private document: any) {
@@ -120,7 +122,8 @@ export class PageComponent implements OnInit {
           return from([spc])
         }
       }),
-      tap((spc) => {
+      map((spc) => {
+        console.log('SEARCH PARAMS CALC', spc);
         if (this.stage === 'search-results') {
           if (spc.ac) {
             this.seo.setTitle(`כל שירות - חיפוש ${spc.ac.query}`)
@@ -130,9 +133,7 @@ export class PageComponent implements OnInit {
             this.seo.setUrl(this.document.location.href);
           }
         }
-      }),
-      map((spc) => {
-        console.log('SEARCH PARAMS CALC', spc);
+
         const fs = spc.fs?.split('|').map(x => 'human_situations:' + x) || [];
         const fag = spc.fag?.split('|').map(x => 'human_situations:age_group:' + x) || [];
         const fl = spc.fl?.split('|').map(x => 'human_situations:language:' + x) || [];
@@ -185,6 +186,24 @@ export class PageComponent implements OnInit {
       }),
       distinctUntilChanged((a, b) => {
         return a.original_query === b.original_query;
+      }),
+      tap((searchParams: SearchParams) => {
+        const ret = !!searchParams?.query && !searchParams?.filter_responses?.length && !searchParams?.filter_situations?.length;
+        if (!ret) {
+         this.didYouMean = null;
+        } else {
+          this.api.didYouMean(searchParams).subscribe((didYouMean: string | null) => {
+            if (!didYouMean) {
+              this.didYouMean = null;
+            } else {
+              this.didYouMean = {
+                display: didYouMean,
+                link: didYouMean.split(' ').join('_')
+              }
+            }
+            console.log('DID YOU MEAN', didYouMean);
+          });
+        }
       }),
       delay<SearchParams>(platform.server() ? 0 : 1000),
     ).subscribe((params: SearchParams) => {

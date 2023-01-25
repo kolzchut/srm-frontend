@@ -231,31 +231,53 @@ export class ApiService {
   }
 
   didYouMean(searchParams: SearchParams): Observable<string | null> {
-    const SHARD_SIZE = 50;
-    const params: any = {
-      size: 1,
-      offset: 0,
-      extra: 'did-you-mean',
-      q: searchParams.query
-    };
-    const filter = this._filter(searchParams, false);
-    if (filter) {
-      params.filter = JSON.stringify(filter);
-    }
-    return this.http.get(environment.cardsURL, {params}).pipe(
-      map((res: any) => {
-        const qcr = res as QueryCardResult;
-        if (qcr.possible_autocomplete && qcr.possible_autocomplete.length) {
-          const best = qcr.possible_autocomplete[0];
-          const total = qcr.search_counts?._current?.total_overall || 0;
-          const best_doc_count = best.doc_count || 0;
-          const threshold = (total > SHARD_SIZE ? SHARD_SIZE : total) / 3;
-          console.log('did you mean', best.key, best_doc_count, total);
-          if (best_doc_count <= SHARD_SIZE && best_doc_count > threshold && best.key) {
-            return best.key;
-          }
+    return from([null]).pipe(
+      switchMap(() => {
+        if (searchParams.query) {
+          return this.getAutoComplete(searchParams.query).pipe(
+            map((results) => {
+              if (results && results.length) {
+                return results[0].query;
+              } else {
+                return null;
+              }
+            })
+          );
+        } else {
+          return from([null]);
         }
-        return null;
+      }),
+      switchMap((suggestion) => {
+        if (suggestion) {
+          return from([suggestion]);
+        }
+        const SHARD_SIZE = 50;
+        const params: any = {
+          size: 1,
+          offset: 0,
+          extra: 'did-you-mean',
+          q: searchParams.query
+        };
+        const filter = this._filter(searchParams, false);
+        if (filter) {
+          params.filter = JSON.stringify(filter);
+        }
+        return this.http.get(environment.cardsURL, {params}).pipe(
+          map((res: any) => {
+            const qcr = res as QueryCardResult;
+            if (qcr.possible_autocomplete && qcr.possible_autocomplete.length) {
+              const best = qcr.possible_autocomplete[0];
+              const total = qcr.search_counts?._current?.total_overall || 0;
+              const best_doc_count = best.doc_count || 0;
+              const threshold = (total > SHARD_SIZE ? SHARD_SIZE : total) / 3;
+              console.log('did you mean', best.key, best_doc_count, total);
+              if (best_doc_count <= SHARD_SIZE && best_doc_count > threshold && best.key) {
+                return best.key;
+              }
+            }
+            return null;
+          }),
+        );    
       })
     );
   }
