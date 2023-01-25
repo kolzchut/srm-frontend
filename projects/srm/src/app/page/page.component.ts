@@ -188,7 +188,7 @@ export class PageComponent implements OnInit {
         return a.original_query === b.original_query;
       }),
       tap((searchParams: SearchParams) => {
-        const ret = !!searchParams?.query && !searchParams?.filter_responses?.length && !searchParams?.filter_situations?.length;
+        const ret = searchParams.ac_query !== '_' && !!searchParams?.query && !searchParams?.filter_responses?.length && !searchParams?.filter_situations?.length;
         if (!ret) {
          this.didYouMean = null;
         } else {
