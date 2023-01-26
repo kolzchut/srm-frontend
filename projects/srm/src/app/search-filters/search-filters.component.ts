@@ -24,8 +24,12 @@ export class SearchFiltersComponent implements OnChanges {
   situations: DistinctItem[] = [];
   responses: DistinctItem[] = [];
   audiences: TaxonomyItem[] = [];
+  health_issues: TaxonomyItem[] = [];
   age_groups: TaxonomyItem[] = [];
   languages: TaxonomyItem[] = [];
+  others: {
+    [key: string]: TaxonomyItem[]
+  };
   responseItems: TaxonomyItem[];
   situationsMap: any = {};
   responsesMap: any = {};
@@ -84,12 +88,35 @@ export class SearchFiltersComponent implements OnChanges {
         this.audiences = this.situations
           .filter(x => !!x && !!x.key)
           .filter(x => 
-            x.key?.indexOf('human_situations:age_group') === -1 &&
-            x.key?.indexOf('human_situations:language') === -1
+            x.key?.indexOf('human_situations:armed_forces') === 0 ||
+            x.key?.indexOf('human_situations:citizenship') === 0 ||
+            x.key?.indexOf('human_situations:criminal_history') === 0 ||
+            x.key?.indexOf('human_situations:deprivation') === 0 ||
+            x.key?.indexOf('human_situations:education') === 0 ||
+            x.key?.indexOf('human_situations:household') === 0 ||
+            x.key?.indexOf('human_situations:housing') === 0 ||
+            x.key?.indexOf('human_situations:income') === 0 ||
+            x.key?.indexOf('human_situations:sectors') === 0 ||
+            x.key?.indexOf('human_situations:sexuality') === 0 ||
+            x.key?.indexOf('human_situations:survivors') === 0 ||
+            false
           )
           .filter(x => x.key !== this.searchParams.situation)
           .map(x => this.situationsMap[x.key || ''])
           .filter(x => !!x);
+        this.health_issues = this.situations
+          .filter(x => !!x && !!x.key)
+          .filter(x => 
+            x.key?.indexOf('human_situations:mental_health') === 0 ||
+            x.key?.indexOf('human_situations:substance_dependency') === 0 ||
+            x.key?.indexOf('human_situations:disability') === 0 ||
+            x.key?.indexOf('human_situations:health') === 0 ||
+            false
+          )
+          .filter(x => x.key !== this.searchParams.situation)
+          .map(x => this.situationsMap[x.key || ''])
+          .filter(x => !!x);
+        
         this.age_groups = this.situations
           .filter(x => !!x && !!x.key)
           .filter(x => 
@@ -97,11 +124,6 @@ export class SearchFiltersComponent implements OnChanges {
           )
           .map(x => this.situationsMap[x.key || ''])
           .filter(x => !!x);
-        if (this.age_groups.length > 1) {
-          this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors'].map(x => this.situationsMap['human_situations:age_group:' + x]);
-        } else {
-          this.age_groups = [];
-        }
 
         this.languages = this.situations
           .filter(x => !!x && !!x.key)
@@ -114,6 +136,16 @@ export class SearchFiltersComponent implements OnChanges {
           .filter(x => x.key !== this.searchParams.situation)
           .map(x => this.situationsMap[x.key || ''])
           .filter(x => !!x);
+
+        this.others = {};
+        for (const hsroot of ['employment', 'benefit_holders', 'life_events', 'urgency', 'gender', 'community', 'role']) {
+          this.others[hsroot] = this.situations
+            .filter(x => !!x && !!x.key)
+            .filter(x => x.key?.indexOf('human_situations:' + hsroot) === 0)
+            .filter(x => x.key !== this.searchParams.situation)
+            .map(x => this.situationsMap[x.key || ''])
+            .filter(x => !!x);
+        }
 
         this.responseItems = this.responses
           .filter(x => x.key !== this.searchParams.response)

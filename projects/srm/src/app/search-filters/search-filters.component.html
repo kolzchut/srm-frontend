@@ -25,53 +25,17 @@
                 ></app-response>
             </div>
         </div>
-        <div class='section' *ngIf='audiences && audiences.length'>
-            <div class='section-header'>
-                <div class='title'>קהלי יעד:</div>
-                <!-- <div class='title' *ngIf='!searchParams.situation'>קהלי יעד:</div>
-                <div class='title' *ngIf='!!searchParams.situation'>קהלי יעד נוספים:</div> -->
-                <a class='clear' (activated)='currentSearchParams.filter_situations = []; pushSearchParams()' clickOnReturn role='button' tabindex="0" aria-label="Clear target audiences filter">ניקוי</a>
-            </div>
-            <div class='tags'>
-                <div *ngFor='let situation of audiences'>
-                    <app-search-filter-checkbox
-                        [item]='situation'
-                        [current]='currentSearchParams.filter_situations || []'
-                        (changed)='onSituationChange($event, situation, "filter_situations")'
-                    ></app-search-filter-checkbox>
-                </div>
-            </div>
-        </div>
-        <div class='section' *ngIf='age_groups && age_groups.length'>
-            <div class='section-header'>
-                <div class='title'>קבוצות גיל:</div>
-                <a class='clear' (activated)='currentSearchParams.filter_age_groups = []; pushSearchParams()' clickOnReturn role='button' tabindex="0" aria-label="Clear age group filter">ניקוי</a>
-            </div>
-            <div class='tags vertical'>
-                <div *ngFor='let situation of age_groups'>
-                    <app-search-filter-checkbox
-                        [item]='situation'
-                        [current]='currentSearchParams.filter_age_groups || []'
-                        (changed)='onSituationChange($event, situation, "filter_age_groups")'
-                    ></app-search-filter-checkbox>
-                </div>
-            </div>
-        </div>
-        <div class='section' *ngIf='languages && languages.length'>
-            <div class='section-header'>
-                <div class='title'>לדוברי שפות (שאינן עברית):</div>
-                <a class='clear' (activated)='currentSearchParams.filter_languages = []; pushSearchParams()' clickOnReturn role='button' tabindex="0" aria-label="Clear languages filter">ניקוי</a>
-            </div>
-            <div class='tags'>
-                <div *ngFor='let situation of languages'>
-                    <app-search-filter-checkbox
-                        [item]='situation'
-                        [current]='currentSearchParams.filter_languages || []'
-                        (changed)='onSituationChange($event, situation, "filter_languages")'
-                    ></app-search-filter-checkbox>
-                </div>
-            </div>
-        </div>
+        <app-search-filters-situation-section title='קהלי יעד' [situations]='audiences' [searchParams]='currentSearchParams' [field]='"filter_situations"' (push)='pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מצבים רפואיים ומוגבלויות' [situations]='health_issues' [searchParams]='currentSearchParams' [field]='"filter_health"' (push)='pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מוכרות ממשלתית' [situations]='others.benefit_holders' [searchParams]='currentSearchParams' [field]='"filter_benefit_holders"' (push)='pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מצב תעסוקתי' [situations]='others.employment' [searchParams]='currentSearchParams' [field]='"filter_employment"' (push)='pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='אירועי חיים' [situations]='others.life_events' [searchParams]='currentSearchParams' [field]='"filter_life_events"' (push)='pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='דחיפות' [situations]='others.urgency' [searchParams]='currentSearchParams' [field]='"filter_urgency"' (push)='pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='קהילה' [situations]='others.community' [searchParams]='currentSearchParams' [field]='"filter_community"' (push)='pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='תפקיד' [situations]='others.role' [searchParams]='currentSearchParams' [field]='"filter_role"' (push)='pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='קבוצות גיל' [situations]='age_groups' [searchParams]='currentSearchParams' [field]='"filter_age_groups"' (push)='pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מיועד עבור' [situations]='others.gender' [searchParams]='currentSearchParams' [field]='"filter_gender"' (push)='pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='לדוברי שפות (שאינן עברית)' [situations]='languages' [searchParams]='currentSearchParams' [field]='"filter_languages"' (push)='pushSearchParams()'></app-search-filters-situation-section>
     </div>
     <div class='submit'>
         <button class='main' (click)='closeWithParams()'>

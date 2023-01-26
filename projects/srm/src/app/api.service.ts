@@ -177,7 +177,7 @@ export class ApiService {
     const params: any = {
       size: 10,
       offset: offset,
-      order: '-_score'
+      // order: '-_score'
     };
     if (searchParams.query) {
       params.q = searchParams.query;
