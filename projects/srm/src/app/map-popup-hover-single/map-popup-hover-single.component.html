@@ -2,5 +2,7 @@
     <div class='header'>
         <app-branch-details [card]='card'></app-branch-details>
     </div>
-    <app-result-card [card]='card' [stacked]='true'></app-result-card>
+    <a [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"'>
+        <app-result-card [card]='card' [stacked]='true'></app-result-card>
+    </a>
 </ng-container>

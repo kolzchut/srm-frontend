@@ -4,6 +4,6 @@
         <app-map-popup-stable [props]='stablePopupProps' [searchParams]='searchParams'></app-map-popup-stable>
     </div>
     <div class='map-hover' #hoverPopup *ngIf='hoverPopupProps'>
-        <app-map-popup-hover-container [props]='hoverPopupProps' [searchParams]='searchParams'></app-map-popup-hover-container>
+        <app-map-popup-hover-container [props]='hoverPopupProps' [searchParams]='searchParams' (stable)='setPopup(true, $event)'></app-map-popup-hover-container>
     </div>
 </div>

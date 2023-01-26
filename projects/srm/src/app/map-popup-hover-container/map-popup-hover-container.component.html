@@ -1,9 +1,9 @@
 <ng-container *ngIf='ready'>
     <ng-container *ngIf='card'>
-        <app-map-popup-hover-single [card]='card'></app-map-popup-hover-single>
+        <app-map-popup-hover-single [card]='card' [searchParams]='searchParams'></app-map-popup-hover-single>
     </ng-container>
     <ng-container *ngIf='multiProps'>
-        <app-map-popup-hover-multiple [props]='multiProps'></app-map-popup-hover-multiple>
+        <app-map-popup-hover-multiple [props]='multiProps' (clicked)='stable.next(multiProps)'></app-map-popup-hover-multiple>
     </ng-container>
 </ng-container>
 <ng-container *ngIf='!ready'>

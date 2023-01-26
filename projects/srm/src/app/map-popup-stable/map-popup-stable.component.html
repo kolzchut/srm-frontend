@@ -1,37 +1,33 @@
-<ng-container *ngIf='props.branch_count === 1'>
-    <ng-container *ngIf='cards && cards.length'>
-        <div class='header'>
-            <app-branch-details [card]='cards[0]'></app-branch-details>
+<ng-container *ngIf='cards && cards.length'>
+    <div class='header'>
+        <app-branch-details [card]='cards[0]'></app-branch-details>
+    </div>
+    <div class='scrollable'>
+        <a [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"' *ngFor='let card of cards'>
+            <app-result-card [card]='card' [stacked]='true'></app-result-card>
+        </a>
+        <div class='footer' *ngIf='cards.length < props.service_count'>
+            +{{props.service_count - cards.length}} שירותים נוספים
         </div>
-        <div class='scrollable'>
-            <a [routerLink]='route(card)' [queryParamsHandling]='"merge"' *ngFor='let card of cards'>
+    </div>
+</ng-container>
+<ng-container *ngIf='branches && branches.length'>
+    <div class='scrollable'>
+        <div class='inverse header'>
+            <app-branch-details-address [card]='branches[0].cards[0]'></app-branch-details-address>
+        </div>
+        <ng-container *ngFor='let branch of branches'>
+            <div class='mini header'>
+                <app-branch-details-org [card]='branch.cards[0]'></app-branch-details-org>
+            </div>
+            <a [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"' *ngFor='let card of branch.cards'>
                 <app-result-card [card]='card' [stacked]='true'></app-result-card>
             </a>
-            <div class='footer' *ngIf='cards.length < props.service_count'>
-                +{{props.service_count - cards.length}} שירותים נוספים
-            </div>
-        </div>
-    </ng-container>
-</ng-container>
-<ng-container *ngIf='props.branch_count > 1'>
-    <ng-container *ngIf='branches && branches.length'>
-        <div class='scrollable'>
-            <div class='inverse header'>
-                <app-branch-details-address [card]='branches[0].cards[0]'></app-branch-details-address>
-            </div>
-            <ng-container *ngFor='let branch of branches'>
-                <div class='mini header'>
-                    <app-branch-details-org [card]='branch.cards[0]'></app-branch-details-org>
-                </div>
-                <a [routerLink]='route(card)' [queryParamsHandling]='"merge"' *ngFor='let card of branch.cards'>
-                    <app-result-card [card]='card' [stacked]='true'></app-result-card>
-                </a>
-                <div class='footer' *ngIf='branch.hidden.length'>
-                    +{{branch.hidden.length}} שירותים נוספים
-                </div>                
-            </ng-container>
-        </div>
-    </ng-container>
+            <div class='footer' *ngIf='branch.hidden.length'>
+                +{{branch.hidden.length}} שירותים נוספים
+            </div>                
+        </ng-container>
+    </div>
 </ng-container>
 <ng-container *ngIf='!(cards?.length) && !(branches?.length)'>
     <div class='placeholder loading'></div>

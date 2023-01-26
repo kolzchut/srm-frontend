@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 import { getPointCards } from '../branch-container/branch-card-utils';
@@ -13,6 +13,7 @@ export class MapPopupHoverContainerComponent implements OnInit {
 
   @Input() props: any;
   @Input() searchParams: SearchParams | null;
+  @Output() stable = new EventEmitter<void>();
 
   ready = false;
 
@@ -42,6 +43,8 @@ export class MapPopupHoverContainerComponent implements OnInit {
             service_count: 0,
             branch_count: branches.length,
             full_title: null,
+            point_id: this.props.point_id,
+            branch_geometry: this.props.branch_geometry,
           };
           let card: Card | null = null;
           branches.forEach(branch => {

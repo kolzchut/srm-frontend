@@ -3,6 +3,25 @@ import { ApiService } from '../api.service';
 import { BranchCards, getPointCards } from '../branch-container/branch-card-utils';
 import { Card, SearchParams } from '../consts';
 
+export class CardRoute {
+
+  routeBase: string[] = [];
+
+  set searchParams(searchParams: SearchParams | null) {
+    this.routeBase = [];
+    if (searchParams?.ac_query) {
+      this.routeBase.push('s', searchParams.ac_query);
+    }
+    this.routeBase.push('c');
+    this.routeBase[0] = '/' + this.routeBase[0];
+  }
+
+  route(card: Card): string[] {
+    return [...this.routeBase, card.card_id];
+  }
+}
+
+
 @Component({
   selector: 'app-map-popup-stable',
   templateUrl: './map-popup-stable.component.html',
@@ -15,34 +34,24 @@ export class MapPopupStableComponent implements OnChanges {
 
   cards: Card[] = [];
   branches: BranchCards[] = [];
-  routeBase: string[] = [];
+  cardRouter = new CardRoute();
 
   constructor(private api: ApiService) { }
 
   ngOnChanges(): void {
     console.log('STABLE', this.props);
     if (this.props?.point_id) {
-      if (this.props?.branch_count === 1) {
-        this.api.getPoint(this.props.point_id, this.searchParams).subscribe(cards => {
-          console.log('STABLE CARDS', cards);
-          this.cards = cards;
-        });
-      } else {
-        console.log('POINT CARDS', this.props.point_id, this.searchParams);
-        getPointCards(this.api, this.props.point_id, '', this.searchParams).subscribe(({branches, selectedCard, cardBranch}) => {
+      console.log('POINT CARDS', this.props.point_id, this.searchParams);
+      getPointCards(this.api, this.props.point_id, '', this.searchParams).subscribe(({branches, selectedCard, cardBranch}) => {
+        if (branches.length === 1) {
+          this.cards = branches[0].cards;
+          this.branches = [];
+        } else {
           this.branches = branches;
-        });
-      }
+          this.cards = [];
+        }
+      });
     }
-    this.routeBase = [];
-    if (this.searchParams?.ac_query) {
-      this.routeBase.push('s', this.searchParams.ac_query);
-    }
-    this.routeBase.push('c');
-    this.routeBase[0] = '/' + this.routeBase[0];
-  }
-
-  route(card: Card): string[] {
-    return [...this.routeBase, card.card_id];
+    this.cardRouter.searchParams = this.searchParams;
   }
 }
