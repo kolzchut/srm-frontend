@@ -16,7 +16,7 @@
             <a class='result-title focusable' [routerLink]='result.link' [queryParams]='result.linkParams' tabindex="0">
                 <span class='result-icon'>
                 </span>
-                <span class='text' [innerHtml]='result.display'></span>
+                <span class='text'><span [innerHtml]='result.display'></span></span>
             </a>
             <a class='result-arrow direct'
                *ngIf='result.direct'
