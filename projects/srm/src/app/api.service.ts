@@ -4,7 +4,7 @@ import { catchError, delay, finalize, map, switchMap, tap } from 'rxjs/operators
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult, CARD_SNIPPET_FIELDS, TaxonomyItem, SearchParams, DistinctItem, QueryTaxonomyItemResult } from './consts';
+import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult, CARD_SNIPPET_FIELDS, TaxonomyItem, SearchParams, DistinctItem, QueryTaxonomyItemResult, SITUATION_FILTERS } from './consts';
 import { makeStateKey, TransferState} from '@angular/platform-browser';
 import { PlatformService } from './platform.service';
 import * as memoryCache from 'memory-cache';
@@ -82,7 +82,8 @@ export class ApiService {
   _filter(searchParams?: SearchParams | null, bound=true): any | null {
     let filter: any | null = null;
     if (searchParams && (searchParams.response || searchParams.situation || searchParams.filter_responses || 
-        searchParams.filter_situations || searchParams.filter_age_groups || searchParams.filter_languages)) {
+        SITUATION_FILTERS.some(f => (searchParams as any)['filter_' + f]) 
+        )) {
       filter = {};
       if (searchParams.response) {
         filter['response_ids'] = searchParams.response;
@@ -93,15 +94,13 @@ export class ApiService {
       if (searchParams.situation) {
         filter['situation_ids'] = searchParams.situation;
       }
-      if (searchParams.filter_situations?.length) {
-          filter['situation_ids#1'] = searchParams.filter_situations;
-      }
-      if (searchParams.filter_age_groups?.length) {
-          filter['situation_ids#2'] = searchParams.filter_age_groups;
-      }
-      if (searchParams.filter_languages?.length) {
-          filter['situation_ids#3'] = searchParams.filter_languages;
-      }
+      let situationFilters = 0;
+      SITUATION_FILTERS.forEach((f) => {
+        if ((searchParams as any)['filter_' + f]?.length) {
+          filter['situation_ids#' + situationFilters] = (searchParams as any)['filter_' + f];
+          situationFilters++;
+        }
+      });
       if (searchParams.bounds && searchParams.bounds.length === 2 && bound) {
           filter['branch_geometry__bounded'] = this.boundsFilter(searchParams.bounds);
       }

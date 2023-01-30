@@ -3,7 +3,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
 import { filter, distinctUntilChanged, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { DistinctItem, SearchParams, TaxonomyItem } from '../consts';
+import { DistinctItem, SearchParams, SITUATION_FILTERS, TaxonomyItem } from '../consts';
 
 @UntilDestroy()
 @Component({
@@ -172,10 +172,7 @@ export class SearchFiltersComponent implements OnChanges {
   get totalFilters(): number {
     const sp = this.currentSearchParams || this.searchParams;
     return (sp?.filter_responses?.length || 0) + 
-           (sp?.filter_situations?.length || 0) +
-           (sp?.filter_age_groups?.length || 0) +
-           (sp?.filter_languages?.length || 0)
-    ;
+            SITUATION_FILTERS.reduce((partialSum, f) => partialSum + ((sp as any || {})['filter_' + f]?.length || 0), 0);
   }
 
   _copySearchParams(sp: SearchParams): SearchParams {
@@ -189,7 +186,18 @@ export class SearchFiltersComponent implements OnChanges {
       filter_situations: sp.filter_situations?.slice() || [],
       filter_age_groups: sp.filter_age_groups?.slice() || [],
       filter_languages: sp.filter_languages?.slice() || [],
+
+      filter_health: sp.filter_health?.slice() || [],
+      filter_benefit_holders: sp.filter_benefit_holders?.slice() || [],
+      filter_employment: sp.filter_employment?.slice() || [],
+      filter_life_events: sp.filter_life_events?.slice() || [],
+      filter_urgency: sp.filter_urgency?.slice() || [],
+      filter_community: sp.filter_community?.slice() || [],
+      filter_role: sp.filter_role?.slice() || [],
+      filter_gender: sp.filter_gender?.slice() || [],
+
       filter_responses: sp.filter_responses?.slice() || [],
+
       national: !!sp.national
     });
     return ret;
@@ -238,10 +246,8 @@ export class SearchFiltersComponent implements OnChanges {
   }
 
   clear() {
-    this.currentSearchParams.filter_age_groups = [];
-    this.currentSearchParams.filter_languages = [];
+    SITUATION_FILTERS.forEach(f => (this.currentSearchParams as any)['filter_' + f] = []);
     this.currentSearchParams.filter_responses = [];
-    this.currentSearchParams.filter_situations = [];
     this.closeWithParams();
   }
 

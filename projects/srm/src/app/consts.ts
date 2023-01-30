@@ -148,6 +148,11 @@ export type QueryAutoCompleteResult = SearchResult<AutoComplete>;
 export type QueryCardResult = SearchResult<Card>;
 export type QueryTaxonomyItemResult = SearchResult<TaxonomyItem>;
 
+export const SITUATION_FILTERS = [
+    'situations', 'age_groups', 'languages', 'health', 'benefit_holders',
+    'employment', 'life_events', 'urgency', 'community', 'role', 'gender'
+];
+
 export class SearchParams {
     ac_query: string | null;
     query: string | null;
@@ -163,13 +168,24 @@ export class SearchParams {
     filter_situations?: string[];
     filter_age_groups?: string[];
     filter_languages?: string[];
+    filter_health?: string[];
+    filter_benefit_holders?: string[];
+    filter_employment?: string[];
+    filter_life_events?: string[];
+    filter_urgency?: string[];
+    filter_community?: string[];
+    filter_role?: string[];
+    filter_gender?: string[];
     filter_responses?: string[];
+
     bounds?: number[][];
     ac_bounds?: LngLatBoundsLike;
     requiredCenter?: number[];
     national?: boolean;
 
     get searchHash(): string {
-      return [this.query, this.response, this.situation, this.filter_situations, this.filter_age_groups, this.filter_languages, this.filter_responses, this.national].map(x => x || '').join('|');
+      return [this.query, this.response, this.situation, 
+        ...SITUATION_FILTERS.map((f) => (this as any)['filter_' + f]),
+        this.filter_responses, this.national].map(x => x || '').join('|');
     }    
 };

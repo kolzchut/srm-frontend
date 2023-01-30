@@ -6,7 +6,7 @@ import { SeoSocialShareService } from 'ngx-seo';
 import { from, Observable, Subject, timer } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, filter, first, map, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { AutoComplete, Card, DrawerState, SearchParams, ViewPort } from '../consts';
+import { AutoComplete, Card, DrawerState, SearchParams, SITUATION_FILTERS, ViewPort } from '../consts';
 import { MapComponent } from '../map/map.component';
 import { SearchFiltersComponent } from '../search-filters/search-filters.component';
 import { DOCUMENT } from '@angular/common';
@@ -22,6 +22,16 @@ class SearchParamCalc {
   fr?: string;
   fag?: string;
   fl?: string;
+
+  fbh?: string;
+  fc?: string;
+  fe?: string;
+  fg?: string;
+  fh?: string;
+  fle?: string;
+  frl?: string;
+  fu?: string;
+
   ac?: AutoComplete | null;
   geoValues: number[] = [];
   bounds: number[][] = [];
@@ -32,7 +42,9 @@ class SearchParamCalc {
   }
 
   get searchHash(): string {
-    return [this.resolvedQuery, this.acId, this.ftQuery, this.fs, this.fag, this.fl, this.fr, this.national].map(x => x || '').join('|');
+    return [this.resolvedQuery, this.acId, this.ftQuery, this.fs, this.fag, this.fl, 
+      this.fbh, this.fc, this.fe, this.fg, this.fh, this.fle, this.frl, this.fu,
+      this.fr, this.national].map(x => x || '').join('|');
   }
   
   get cardsHash(): string {
@@ -148,6 +160,14 @@ export class PageComponent implements OnInit {
         }
 
         const fs = spc.fs?.split('|').map(x => 'human_situations:' + x) || [];
+        const fh = spc.fh?.split('|').map(x => 'human_situations:' + x) || [];
+        const fbh = spc.fbh?.split('|').map(x => 'human_situations:benefit_holders:' + x) || [];
+        const fe = spc.fe?.split('|').map(x => 'human_situations:employment:' + x) || [];
+        const fle = spc.fle?.split('|').map(x => 'human_situations:life_events:' + x) || [];
+        const fu = spc.fu?.split('|').map(x => 'human_situations:urgency:' + x) || [];
+        const fc = spc.fc?.split('|').map(x => 'human_situations:community:' + x) || [];
+        const frl = spc.frl?.split('|').map(x => 'human_situations:role:' + x) || [];
+        const fg = spc.fg?.split('|').map(x => 'human_situations:gender:' + x) || [];
         const fag = spc.fag?.split('|').map(x => 'human_situations:age_group:' + x) || [];
         const fl = spc.fl?.split('|').map(x => 'human_situations:language:' + x) || [];
         const fr = spc.fr?.split('|').map(x => 'human_services:' + x) || [];
@@ -168,7 +188,17 @@ export class PageComponent implements OnInit {
             filter_situations: fs,
             filter_age_groups: fag,
             filter_languages: fl,
+            filter_health: fh,
+            filter_benefit_holders: fbh,
+            filter_employment: fe,
+            filter_life_events: fle,
+            filter_urgency: fu,
+            filter_community: fc,
+            filter_role: frl,
+            filter_gender: fg,
+        
             filter_responses: fr,
+
             bounds: spc.bounds,
             ac_bounds: spc.ac.bounds,
             requiredCenter: spc.geoValues,
@@ -187,7 +217,17 @@ export class PageComponent implements OnInit {
             filter_situations: fs,
             filter_age_groups: fag,
             filter_languages: fl,
+            filter_health: fh,
+            filter_benefit_holders: fbh,
+            filter_employment: fe,
+            filter_life_events: fle,
+            filter_urgency: fu,
+            filter_community: fc,
+            filter_role: frl,
+            filter_gender: fg,
+
             filter_responses: fr,
+
             bounds: spc.bounds,
             ac_bounds: null,
             requiredCenter: spc.geoValues,
@@ -309,6 +349,16 @@ export class PageComponent implements OnInit {
       this.currentSearchParamCalc.fs = params.fs;
       this.currentSearchParamCalc.fag = params.fag;
       this.currentSearchParamCalc.fl = params.fl;
+
+      this.currentSearchParamCalc.fbh = params.fbh;
+      this.currentSearchParamCalc.fc = params.fc;
+      this.currentSearchParamCalc.fe = params.fe;
+      this.currentSearchParamCalc.fg = params.fg;
+      this.currentSearchParamCalc.fh = params.fh;
+      this.currentSearchParamCalc.fle = params.fle;
+      this.currentSearchParamCalc.frl = params.frl;
+      this.currentSearchParamCalc.fu = params.fu;
+
       this.currentSearchParamCalc.fr = params.fr;
       this.currentSearchParamCalc.national = params.national === 'yes';
       if (this.stage === 'search-results') {
@@ -351,7 +401,10 @@ export class PageComponent implements OnInit {
   }
 
   needsDidYouMean(searchParams: SearchParams) {
-    return !!searchParams?.query && !searchParams?.filter_responses?.length && !searchParams?.filter_situations?.length && !searchParams?.org_id;
+    return !!searchParams?.query && 
+            !searchParams?.filter_responses?.length && 
+            !SITUATION_FILTERS.some((f) => !!((searchParams as any)['filter_' + f]?.length)) &&
+            !searchParams?.org_id;
   }
 
   handleDrawer(drawerEvent: string) {
@@ -376,6 +429,14 @@ export class PageComponent implements OnInit {
         fs: searchParams.filter_situations?.map(x => x.slice('human_situations:'.length)).join('|') || null,
         fag: searchParams.filter_age_groups?.map(x => x.slice('human_situations:age_group:'.length)).join('|') || null,
         fl: searchParams.filter_languages?.map(x => x.slice('human_situations:language:'.length)).join('|') || null,
+        fh: searchParams.filter_health?.map(x => x.slice('human_situations:'.length)).join('|') || null,
+        fbh: searchParams.filter_benefit_holders?.map(x => x.slice('human_situations:benefit_holders:'.length)).join('|') || null,
+        fe: searchParams.filter_employment?.map(x => x.slice('human_situations:employment:'.length)).join('|') || null,
+        fle: searchParams.filter_life_events?.map(x => x.slice('human_situations:life_events:'.length)).join('|') || null,
+        fu: searchParams.filter_urgency?.map(x => x.slice('human_situations:urgency:'.length)).join('|') || null,
+        fc: searchParams.filter_community?.map(x => x.slice('human_situations:community:'.length)).join('|') || null,
+        frl: searchParams.filter_role?.map(x => x.slice('human_situations:role:'.length)).join('|') || null,
+        fg: searchParams.filter_gender?.map(x => x.slice('human_situations:gender:'.length)).join('|') || null,
         fr: searchParams.filter_responses?.map(x => x.slice('human_services:'.length)).join('|') || null,
         national: searchParams.national ? 'yes' : null
       },
