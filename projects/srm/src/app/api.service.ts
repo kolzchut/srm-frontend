@@ -132,6 +132,7 @@ export class ApiService {
       q: query,
       highlight: 'query,query._2gram,query._3gram,query.hebrew',
       match_operator: 'and',
+      filter: JSON.stringify([{visible: true}]),
     };
     return this.http.get(environment.autocompleteURL, {params}).pipe(
         map((res) => {

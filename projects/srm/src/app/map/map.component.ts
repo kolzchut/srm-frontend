@@ -249,8 +249,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
           style: this.STYLE,
           minZoom: 6.4,
           attributionControl: false,
-          center: [34.95, 32],
-          zoom: this.layout.mobile ?  8.5 : 9.5,
+          bounds: [[34.578046, 32.162327], [35.356111, 31.690073]],
           maxBounds: [[30, 27], [40, 38]],
         };
         this.map = new mapboxgl.Map(mapParams);

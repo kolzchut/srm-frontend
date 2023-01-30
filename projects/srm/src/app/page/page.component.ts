@@ -139,7 +139,7 @@ export class PageComponent implements OnInit {
         console.log('SEARCH PARAMS CALC', spc);
         if (this.stage === 'search-results') {
           if (spc.ac) {
-            this.seo.setTitle(`כל שירות - חיפוש ${spc.ac.query}`)
+            this.seo.setTitle(`כל שירות - חיפוש ${spc.ac.query_heb}`)
             this.seo.setUrl(this.document.location.href);
           } else {
             this.seo.setTitle(`כל שירות - חיפוש ${spc.ftQuery}`)
@@ -156,7 +156,7 @@ export class PageComponent implements OnInit {
           Object.assign(ret, {
             ac_query: spc.ac.id || '_',
             query: null,
-            original_query: spc.ac.query,
+            original_query: spc.ac.query_heb,
             response: spc.ac.response,
             response_name: spc.ac.response_name,
             situation: spc.ac.situation,
@@ -197,25 +197,30 @@ export class PageComponent implements OnInit {
         this.searchParams = ret;
         return ret;
       }),
-      distinctUntilChanged((a, b) => {
-        return a.original_query === b.original_query;
-      }),
-      tap((searchParams: SearchParams) => {
-        const ret = !!searchParams?.query && !searchParams?.filter_responses?.length && !searchParams?.filter_situations?.length;
+      switchMap((searchParams: SearchParams) => {
+        const ret = this.needsDidYouMean(searchParams);
+        console.log('DID YOU MEAN', ret, searchParams);
         if (!ret) {
           this.didYouMean = null;
+          return from([searchParams]);
         } else {
-          this.api.didYouMean(searchParams).subscribe((didYouMean: string | null) => {
-            if (!didYouMean) {
-              this.didYouMean = null;
-            } else {
-              this.didYouMean = {
-                display: didYouMean,
-                link: didYouMean.split(' ').join('_')
+          return this.api.didYouMean(searchParams).pipe(
+            tap((didYouMean: string | null) => {
+              if (!didYouMean) {
+                this.didYouMean = null;
+              } else {
+                this.didYouMean = {
+                  display: didYouMean,
+                  link: didYouMean.split(' ').join('_')
+                }
               }
-            }
-          });
+            }),
+            map(() => searchParams)
+          );
         }
+      }),
+      distinctUntilChanged((a, b) => {
+        return a.original_query === b.original_query && a.ac_query === b.ac_query;
       }),
       delay<SearchParams>(platform.server() ? 0 : 1000),
     ).subscribe((params: SearchParams) => {
@@ -339,6 +344,10 @@ export class PageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  needsDidYouMean(searchParams: SearchParams) {
+    return !!searchParams?.query && !searchParams?.filter_responses?.length && !searchParams?.filter_situations?.length && !searchParams?.org_id;
   }
 
   handleDrawer(drawerEvent: string) {

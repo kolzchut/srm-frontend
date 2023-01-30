@@ -102,6 +102,7 @@ export type Preset = {
 export type AutoComplete = {
     id: string,
     query: string,
+    query_heb: string,
     response: string | null,
     response_name: string | null,
     situation: string | null,
