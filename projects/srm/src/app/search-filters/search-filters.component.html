@@ -16,13 +16,23 @@
                 <a class='clear' (activated)='currentSearchParams.filter_responses = []; pushSearchParams()' clickOnReturn role='button' tabindex="0" aria-label="Clear service items filter">ניקוי</a>
             </div>
             <div class='tags responses'>
-                <app-response *ngFor='let response of responseItems' 
+                <app-response *ngFor='let response of responseItems.slice(0, NUM_RESPONSES)' 
                         [response]='response' 
                         [selected]='isResponseSelected(response)'
                         [link]='false'
                         [selectable]='true'
                         (clicked)='toggleResponse(response)'
                 ></app-response>
+                <app-search-filters-more-button *ngIf='responseItems.length > NUM_RESPONSES' [count]='responseItems.length - NUM_RESPONSES' [style]='"response"' #moreResponses></app-search-filters-more-button>
+                <ng-container *ngIf='moreResponses?.expanded'>
+                    <app-response *ngFor='let response of responseItems.slice(NUM_RESPONSES)' 
+                            [response]='response' 
+                            [selected]='isResponseSelected(response)'
+                            [link]='false'
+                            [selectable]='true'
+                            (clicked)='toggleResponse(response)'
+                    ></app-response>
+                </ng-container>
             </div>
         </div>
         <app-search-filters-situation-section title='קהלי יעד' [situations]='audiences' [searchParams]='currentSearchParams' [field]='"filter_situations"' (push)='pushSearchParams()'></app-search-filters-situation-section>
@@ -41,7 +51,7 @@
         <button class='main' (click)='closeWithParams()'>
             <img src='assets/img/icon-filter-gray-1.svg' class='arrow' alt="Filtering icon">
             <strong>הפעל סינון</strong>&nbsp;
-            <span *ngIf='resultCount > 1'>({{resultCount}} תוצאות)</span>
+            <span *ngIf='resultCount > 1'>({{resultCount.toLocaleString()}} תוצאות)</span>
             <span *ngIf='resultCount === 1'>(תוצאה אחת)</span>
             <span *ngIf='resultCount === 0'>(אין תוצאות)</span>
             <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div>

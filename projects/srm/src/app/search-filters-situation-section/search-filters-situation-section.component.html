@@ -6,12 +6,22 @@
         <a class='clear' (activated)='searchParams[field] = []; changed()' clickOnReturn role='button' tabindex="0" aria-label="Clear target audiences filter">ניקוי</a>
     </div>
     <div class='tags'>
-        <div *ngFor='let situation of situations'>
+        <div *ngFor='let situation of situations.slice(0, NUM_SITUATIONS)'>
             <app-search-filter-checkbox
                 [item]='situation'
                 [current]='searchParams[field] || []'
                 (changed)='toggled($event, situation)'
             ></app-search-filter-checkbox>
         </div>
+        <app-search-filters-more-button *ngIf='situations.length > NUM_SITUATIONS' [count]='situations.length - NUM_SITUATIONS' [style]='"situation"' #moreSituations></app-search-filters-more-button>
+        <ng-container *ngIf='moreSituations?.expanded'>
+            <div *ngFor='let situation of situations.slice(NUM_SITUATIONS)'>
+                <app-search-filter-checkbox
+                    [item]='situation'
+                    [current]='searchParams[field] || []'
+                    (changed)='toggled($event, situation)'
+                ></app-search-filter-checkbox>
+            </div>    
+        </ng-container>
     </div>
 </div>

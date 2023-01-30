@@ -53,6 +53,7 @@ import { LandingPageOverlayComponent } from './landing-page-overlay/landing-page
 import { CardBranchServicesComponent } from './card-branch-services/card-branch-services.component';
 import { ClickOnReturnDirective } from './click-on-return.directive';
 import { SearchFiltersSituationSectionComponent } from './search-filters-situation-section/search-filters-situation-section.component';
+import { SearchFiltersMoreButtonComponent } from './search-filters-more-button/search-filters-more-button.component';
 
 @NgModule({
   declarations: [
@@ -101,7 +102,8 @@ import { SearchFiltersSituationSectionComponent } from './search-filters-situati
     LandingPageOverlayComponent,
     CardBranchServicesComponent,
     ClickOnReturnDirective,
-    SearchFiltersSituationSectionComponent
+    SearchFiltersSituationSectionComponent,
+    SearchFiltersMoreButtonComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

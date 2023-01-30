@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Subject } from 'rxjs';
 import { filter, distinctUntilChanged, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { DistinctItem, SearchParams, SITUATION_FILTERS, TaxonomyItem } from '../consts';
+import { SearchFiltersMoreButtonComponent } from '../search-filters-more-button/search-filters-more-button.component';
 
 @UntilDestroy()
 @Component({
@@ -16,9 +17,13 @@ import { DistinctItem, SearchParams, SITUATION_FILTERS, TaxonomyItem } from '../
 })
 export class SearchFiltersComponent implements OnChanges {
 
+  NUM_RESPONSES = 8;
+  
   @Input() searchParams: SearchParams;
   @Output() params = new EventEmitter<SearchParams>();
   @Output() activate = new EventEmitter<boolean>();
+
+  @ViewChild('moreResponses') moreResponses: SearchFiltersMoreButtonComponent;
 
   active_ = false;
   situations: DistinctItem[] = [];
@@ -29,7 +34,7 @@ export class SearchFiltersComponent implements OnChanges {
   languages: TaxonomyItem[] = [];
   others: {
     [key: string]: TaxonomyItem[]
-  };
+  } = {};
   responseItems: TaxonomyItem[];
   situationsMap: any = {};
   responsesMap: any = {};

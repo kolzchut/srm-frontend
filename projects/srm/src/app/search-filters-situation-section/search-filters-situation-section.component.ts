@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { TaxonomyItem } from '../consts';
+import { SearchFiltersMoreButtonComponent } from '../search-filters-more-button/search-filters-more-button.component';
 
 @Component({
   selector: 'app-search-filters-situation-section',
@@ -8,12 +9,16 @@ import { TaxonomyItem } from '../consts';
 })
 export class SearchFiltersSituationSectionComponent implements OnInit {
 
+  NUM_SITUATIONS = 6;
+
   @Input() situations: TaxonomyItem[] | null = null;
   @Input() title: string;
   @Input() field: string;
   @Input() searchParams: any;
 
   @Output() push = new EventEmitter<void>();
+
+  @ViewChild('moreSituations') moreSituations: SearchFiltersMoreButtonComponent;
 
   constructor() { }
 
