@@ -3,7 +3,6 @@ import { MapboxService } from '../mapbox.service';
 
 import { from, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { throttleTime, filter, distinctUntilChanged, switchMap, debounceTime, first, delay, tap, map } from 'rxjs/operators';
-import { StateService, CenterZoomType, GeoType, BoundsType } from '../state.service';
 import { ALL_CATEGORIES, CATEGORY_COLORS } from '../colors';
 import { Card, Point as SRMPoint, SearchParams } from '../consts';
 import { environment } from '../../environments/environment';
@@ -16,6 +15,10 @@ import { ApiService } from '../api.service';
 import { Router } from '@angular/router';
 import { getPointCards, PointCards } from '../branch-container/branch-card-utils';
 // declare var mapboxgl: any;
+
+export type CenterZoomType = [number, number, number];
+export type BoundsType = [[number, number], [number, number]];
+export type GeoType = CenterZoomType | BoundsType | null;
 
 type MoveQueueItem = {
   action: (map: mapboxgl.Map) => void,
@@ -439,7 +442,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
           });
           this.searchParamsQueue.pipe(
             untilDestroyed(this),
-            debounceTime(500),
+            debounceTime(this.platform.browser() ? 500 : 0),
             distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
             switchMap((params) => {
               if (params) {

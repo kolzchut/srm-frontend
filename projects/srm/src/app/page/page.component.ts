@@ -130,7 +130,7 @@ export class PageComponent implements OnInit {
 
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
-      debounceTime(platform.server() ? 0 : 100),
+      debounceTime(platform.browser() ? 100 : 0),
       map((spc) => {
         spc.resolvedQuery = spc.acId || spc.ftQuery || '';
         spc.resolvedQuery = spc.resolvedQuery.split('_').join(' ');
@@ -151,10 +151,10 @@ export class PageComponent implements OnInit {
         console.log('SEARCH PARAMS CALC', spc);
         if (this.stage === 'search-results') {
           if (spc.ac) {
-            this.seo.setTitle(`כל שירות - חיפוש ${spc.ac.query_heb}`)
+            this.seo.setTitle(`${spc.ac.query_heb} | כל שירות`)
             this.seo.setUrl(this.document.location.href);
           } else {
-            this.seo.setTitle(`כל שירות - חיפוש ${spc.ftQuery}`)
+            this.seo.setTitle(`${spc.ftQuery} | כל שירות`)
             this.seo.setUrl(this.document.location.href);
           }
         }
@@ -380,7 +380,7 @@ export class PageComponent implements OnInit {
     });
     this.easeToQueue.pipe(
       untilDestroyed(this),
-      debounceTime(platform.server() ? 0 : 100),
+      debounceTime(platform.browser() ? 100 : 0),
     ).subscribe((params) => {
       this.easeToProps = {};
       this.queueMapAction((map) => {

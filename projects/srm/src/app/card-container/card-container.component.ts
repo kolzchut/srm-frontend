@@ -110,7 +110,10 @@ export class CardContainerComponent implements OnInit, OnChanges {
         this.center.emit(geom);
       }
       if (this.card) {
-        this.seo.setTitle(`כל שירות -  ${this.card.service_name}`);
+        this.seo.setTitle(`${this.card.service_name} / ${this.card.organization_short_name || this.card.organization_name} | כל שירות`);
+        if (this.card.service_description) {
+          this.seo.setDescription(this.card.service_description);
+        }
       }
       this.seo.setUrl(this.document.location.href);
       this.calculateExitLink();

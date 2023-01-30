@@ -52,7 +52,7 @@ export class SearchComponent implements OnInit {
     });
     this.typedQueries.pipe(
       untilDestroyed(this),
-      debounceTime(500),
+      debounceTime(this.platform.browser() ? 500 : 0),
     ).subscribe((query) => {
       this.queries.next(query);
     });

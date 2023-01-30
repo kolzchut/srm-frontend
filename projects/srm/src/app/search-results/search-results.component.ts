@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
+import { SeoSocialShareService } from 'ngx-seo';
 import { forkJoin, from, Subject, Subscription, throwError } from 'rxjs';
 import { catchError, concatMap, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
@@ -54,7 +55,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   loading: boolean = true;
   viewport: ViewPort;
 
-  constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService) {
+  constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService, private seo: SeoSocialShareService) {
   }
 
   ngOnInit(): void {
@@ -73,6 +74,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
               this.totalNationalCount = nationalCounts.search_counts?._current?.total_overall || 0;
               this.nationalCount.emit(this.totalNationalCount);
               this.searchHash = params.searchHash;
+              this.seo.setDescription(`מציג ${this.totalCount.toLocaleString()} שירותים ומענים עבור ${params.original_query}`);
             }),
             map(() => {
               return params;
@@ -80,7 +82,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           );
         }
       }),
-      debounceTime(500),
+      debounceTime(this.platform.browser() ? 500 : 0),
     ).subscribe((params) => {
       this.offset = 0;
       this.fetchedOffset = -1;

@@ -1,5 +1,5 @@
 <div class='container'>
-    <div class='overlay' (activated)='open.emit(false)' clickOnReturn tabindex="0" role="button" aria-label="Close disclaimer dialog"></div>
+    <div class='overlay' (activated)='close()' clickOnReturn tabindex="0" role="button" aria-label="Close disclaimer dialog"></div>
     <div class='dialog'>
         <div class='text'>
             <div class='header layout-mobile'>
@@ -17,9 +17,7 @@
                     <ng-container *ngIf='searchParams?.ac_query !== "_"'>
                         בחיפוש
                         <span class='search-term'>
-                            <ng-container *ngIf='searchParams?.response_name && !searchParams?.situation_name'>{{searchParams?.response_name}}</ng-container>
-                            <ng-container *ngIf='!searchParams?.response_name && searchParams?.situation_name'>{{searchParams?.situation_name}}</ng-container>
-                            <ng-container *ngIf='searchParams?.response_name && searchParams?.situation_name'>{{searchParams?.response_name}} ל{{searchParams?.situation_name}}</ng-container>
+                            <ng-container>{{searchParams?.original_query}}</ng-container>
                         </span>
                         <ng-container *ngIf='searchParams?.city_name'>
                             מצאנו {{visibleCount.toLocaleString()}} שירותים<span class='city-name'>באיזור {{searchParams?.city_name}}</span>.
@@ -36,7 +34,7 @@
             </div>
         </div>
         <div class='cta'>
-            <a (activated)='open.emit(false)' clickOnReturn tabindex="0" role="button" aria-label="Close disclaimer dialog">המשך</a>
+            <a (activated)='close()' clickOnReturn tabindex="0" role="button" aria-label="Close disclaimer dialog">המשך</a>
         </div>
     </div>
 </div>
