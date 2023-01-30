@@ -122,13 +122,11 @@ export class SearchFiltersComponent implements OnChanges {
           .map(x => this.situationsMap[x.key || ''])
           .filter(x => !!x);
         
-        this.age_groups = this.situations
-          .filter(x => !!x && !!x.key)
-          .filter(x => 
-            x.key?.indexOf('human_situations:age_group') === 0
-          )
-          .map(x => this.situationsMap[x.key || ''])
-          .filter(x => !!x);
+        this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors']
+            .map(x => 'human_situations:age_group:' + x)
+            .filter(x => this.situations.map(y => y.key).indexOf(x) >= 0)
+            .map(x => this.situationsMap[x])
+            .filter(x => !!x);
 
         this.languages = this.situations
           .filter(x => !!x && !!x.key)
