@@ -23,4 +23,13 @@ export class CardComponent implements OnInit {
     return environment.suggestChangesForm + '?service_name=' + encodeURIComponent(this.card.service_name) + '&id=' + 
            encodeURIComponent(this.card.card_id) + '&url=' + encodeURIComponent(this.document.location.href);
   }
+
+  implementingOffice() {
+    return this.card?.service_implements?.split('#')[1] || '';
+  }
+
+  implementingLink() {
+    const serviceId = (this.card?.service_implements?.split('#')[0] || '').split(':')[1] || '';
+    return `https://next.obudget.org/i/activities/gov_social_service/${serviceId}?theme=soproc`;
+  }
 }

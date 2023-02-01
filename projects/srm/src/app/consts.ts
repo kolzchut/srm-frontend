@@ -31,6 +31,7 @@ export class Card {
     service_payment_details: string;
     service_urls: {href: string, title: string}[];
     service_phone_numbers: string[];
+    service_implements: string;
 
     organization_id: string;
     organization_name: string;

@@ -1,6 +1,11 @@
 <div class='main-content'>
     <h1 class='name'>{{card.service_name}}</h1>
     <div class='description' *ngIf='card.service_description'>{{card.service_description}}</div>
+    <div class='implements' *ngIf='card.service_implements'>
+        <span>השירות ניתן על ידי {{card.organization_name}} מטעם {{implementingOffice()}}.
+            <br/><a [href]='implementingLink()' target='_blank'>למידע נוסף על השירות</a>
+        </span>
+    </div>
     <div class='responses'>
         <label i18n>מהות השירות:</label>
         <div class='list'>
