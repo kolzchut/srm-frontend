@@ -5,7 +5,12 @@
         <span *ngIf='totalCount - totalNationalCount > 0'>מתוך {{totalCount.toLocaleString()}} <a (activated)='zoomout.emit(viewport)' clickOnReturn role="button" aria-label="zoom out to get all services" tabindex="0">בכל הארץ</a></span>
         <span *ngIf='totalCount - totalNationalCount === 0'>מתוך {{totalCount.toLocaleString()}} בכל הארץ</span>
     </div>
-    <span *ngIf='totalVisibleCount === 0 && totalCount === 0'>לא נמצאו תוצאות בכל הארץ, מומלץ <a href="/q">לשנות את החיפוש</a></span>
+    <ng-container *ngIf='searchParams.hasFilters'>
+        <span *ngIf='totalVisibleCount === 0 && totalCount === 0'>לא נמצאו תוצאות בכל הארץ, מומלץ  לשנות את הסינון או <a href="/q">לחפש מחדש</a></span>
+    </ng-container>
+    <ng-container *ngIf='!searchParams.hasFilters'>
+        <span *ngIf='totalVisibleCount === 0 && totalCount === 0'>לא נמצאו תוצאות בכל הארץ, מומלץ <a href="/q">לשנות את החיפוש</a></span>
+    </ng-container>
 </div>
 <div class='counts' *ngIf='hasCounts && searchParams.national'>
     <div class='line' *ngIf='totalNationalCount > 0'>

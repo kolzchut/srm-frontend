@@ -188,5 +188,9 @@ export class SearchParams {
       return [this.query, this.response, this.situation, 
         ...SITUATION_FILTERS.map((f) => (this as any)['filter_' + f]),
         this.filter_responses, this.national].map(x => x || '').join('|');
-    }    
+    }
+
+    get hasFilters(): boolean {
+        return !!SITUATION_FILTERS.find((f) => (this as any)['filter_' + f]?.length);
+    }
 };
