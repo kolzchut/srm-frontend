@@ -143,8 +143,10 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
           this.scrollTop.emit(top);
         });
       }
-      this.currentHeight = el.clientHeight;
-      this.size.emit(this.currentHeight);
+      timer(100).subscribe(() => {
+        this.currentHeight = this.calcHeight();
+        this.size.emit(this.currentHeight);
+      });
     }
   }
 
