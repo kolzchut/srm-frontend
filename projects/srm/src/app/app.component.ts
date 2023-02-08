@@ -37,8 +37,8 @@ export class AppComponent {
     this.seo.setData({
       title: 'כל שירות',
       description: 'כל שירות - מפת מענים חברתיים המסופקים על ידי הממשלה, עמותות וחברות',
-      image: 'https://www.kolsherut.org.il/assets/img/logo.png',
-      imageAuxData: {mimeType: 'image/svg+xml', width: 58, height: 36},
+      image: '/assets/img/social.png',
+      // imageAuxData: {mimeType: 'image/png', width: 58, height: 36},
       url: 'https://www.kolsherut.org.il/',
       type: 'website',
       author: 'כל זכות',

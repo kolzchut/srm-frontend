@@ -327,10 +327,12 @@ export class PageComponent implements OnInit {
       this.stage = data.stage;
       this.drawerState = DrawerState.Half;
       this.pushSearchParamsCalc();
-      this.seo.setImage('/assets/img/social.png');
       if (['about', 'search', 'homepage'].indexOf(this.stage) >= 0) {
         this.seo.setTitle(`כל שירות`);
         this.seo.setUrl(this.document.location.href);
+        this.api.getTotalServices().subscribe((totalServices: number) => {
+          this.seo.setDescription(`אספנו וסיווגנו ${totalServices.toLocaleString()} שירותים חברתיים מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים. אנחנו בטוחים שנמצא גם משהו בשבילך!`);
+        });
       }
       if (this.searchFilters) {
         this.searchFilters.active = false;
