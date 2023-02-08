@@ -4,5 +4,6 @@ export const environment = Object.assign({}, devEnv, {
     // clusterDataURL: '/clusters.json',
     // taxonomySituationsURL: '/situations.json',
     // taxonomyResponsesURL: '/responses.json'
+    externalUrl: 'https://srm-staging.whiletrue.industries',
 });
   

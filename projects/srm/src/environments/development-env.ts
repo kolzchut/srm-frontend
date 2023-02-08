@@ -20,6 +20,8 @@ export const devEnv: any = {
   suggestChangesForm: 'https://eu.jotform.com/form/222203528302038',
   mapStyle: 'mapbox://styles/srm-kolzchut/ckzwhyzwr000t14mkynmw94zw/draft',
   gaTag: 'UA-16990732-9',
+
+  externalUrl: 'http://localhost:4200',
   // gaTag: 'G-0FXK63SSNX',
   // gaTag: 'G-7ZHM371DDF',
   // sitemapUrl: 'https://srm-staging.datacity.org.il/dataset/572c3ee3-8d50-4da8-99ea-88db35f1bdd4/resource/6b0a249e-3dd1-4051-a2af-eae27dd4e219/download/sitemap.xml',
