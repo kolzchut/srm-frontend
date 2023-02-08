@@ -327,6 +327,7 @@ export class PageComponent implements OnInit {
       this.stage = data.stage;
       this.drawerState = DrawerState.Half;
       this.pushSearchParamsCalc();
+      this.seo.setImage('/assets/img/social.png');
       if (['about', 'search', 'homepage'].indexOf(this.stage) >= 0) {
         this.seo.setTitle(`כל שירות`);
         this.seo.setUrl(this.document.location.href);
