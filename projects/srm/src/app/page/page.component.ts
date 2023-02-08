@@ -84,7 +84,7 @@ export class PageComponent implements OnInit {
   
   branchSize_ = 0;
   drawerSize_ = 0;
-  padding = 0;
+  padding = -1;
 
   acResult: any;
   ac_query: string;
@@ -268,7 +268,7 @@ export class PageComponent implements OnInit {
       if (params.ac_bounds) {
         const bounds: mapboxgl.LngLatBoundsLike = params.ac_bounds;
         this.queueMapAction((map) => {
-          map.fitBounds(bounds, {padding: {top: 100, bottom: 100, left: 0, right: 0}, maxZoom: 15});
+          map.fitBounds(bounds, {padding: {top: 100, bottom: 100, left: 0, right: 0}, maxZoom: 15, duration: 0});
         }, 'search-by-location-' + params.city_name);
         this.queueMapAction((map) => {
           this.mapMoved = false;
@@ -276,7 +276,7 @@ export class PageComponent implements OnInit {
         }, 'map-moved-reset');
       } else if (params.requiredCenter && params.requiredCenter.length === 3) {
         const rc = params.requiredCenter;
-        this.easeTo({center: [rc[0], rc[1]], zoom: rc[2]});
+        this.easeTo({center: [rc[0], rc[1]], zoom: rc[2], duration: 0});
         // this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
       } 
     });
@@ -496,14 +496,23 @@ export class PageComponent implements OnInit {
     if (this.layout.mobile) {
       const padding = this.branchSize + this.drawerSize;
       if (padding !== this.padding) {
+        const params: any = {padding: {top: 0, bottom: padding, left: 0, right: 0}};
+        if (this.padding === -1) {
+          params.duration = 0;
+        }
+        this.easeTo(params);
         this.padding = padding;
-        this.easeTo({padding: {top: 0, bottom: this.padding, left: 0, right: 0}});
       }  
     } else {
       const padding = this.stage === 'search-results' || this.stage === 'card' ?  window.innerWidth / 2 : 0;
       // if (padding !== this.padding) {
+      const params: any = {};
+      if (this.padding === -1) {
+        params.duration = 0;
+      }
       this.padding = padding > 640 ? 640 : padding;
-      this.easeTo({padding: {top: 0, right: this.padding, left: 0, bottom: 0}});
+      params.padding = {top: 0, right: this.padding, left: 0, bottom: 0};
+      this.easeTo(params);
       // }  
     }
   }
@@ -533,7 +542,7 @@ export class PageComponent implements OnInit {
   }
 
   set bounds(bounds: number[][]) {
-    if (this.drawerState !== DrawerState.Full) {
+    if (this.padding !== -1 && this.drawerState !== DrawerState.Full) {
       this.currentSearchParamCalc.bounds = bounds;
       this.pushSearchParamsCalc();
     }

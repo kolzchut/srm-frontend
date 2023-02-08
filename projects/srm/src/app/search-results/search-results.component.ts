@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
-import { forkJoin, from, Subject, Subscription, throwError } from 'rxjs';
+import { forkJoin, from, ReplaySubject, Subject, Subscription, throwError } from 'rxjs';
 import { catchError, concatMap, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';
@@ -45,7 +45,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   results: (Card | null)[] = [];
   obs: IntersectionObserver;
   fetchQueue = new Subject<SearchParamsOffset>();
-  paramsQueue = new Subject<SearchParams>();
+  paramsQueue = new ReplaySubject<SearchParams>(1);
   resultsSubscription: Subscription | null = null;
 
   hasCounts = false;
@@ -124,6 +124,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   ngOnChanges(): void {
+
     this.paramsQueue.next(this.searchParams);
   }
 
