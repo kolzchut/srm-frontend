@@ -531,7 +531,7 @@ export class ApiService {
     );
   }
 
-  getInaccuratePoints(searchParams: SearchParams): Observable<any> {
+  getAllPoints(searchParams: SearchParams): Observable<any> {
     const params: any = {
       size: 1,
     };
@@ -542,21 +542,25 @@ export class ApiService {
     }
     params.extra = 'point-ids-extended';
     const filter = this._filter(searchParams, false) || {};
-    filter.branch_location_accurate = false;
     if (filter) {
       params.filter = JSON.stringify(filter);
     }
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         const results = res as QueryCardResult;
-        return results.point_id.map((r: any) => {
+        const allPoints = results.point_id.map((r: any) => {
           return {
             point_id: r.key,
             response_category: r.response_category?.buckets[0]?.key,
             geometry: JSON.parse(r.branch_geometry?.buckets[0]?.key || 'null'),
+            branch_location_accurate: r.branch_location_accurate?.buckets[0]?.key,
             branch_count: r.branch_id?.buckets.length || 1,
           };
         }).filter((r: any) => r.point_id !== 'national_service');
+        return {
+          inaccurate: allPoints.filter((p: any) => !p.branch_location_accurate),
+          accurate: allPoints.filter((p: any) => !!p.branch_location_accurate),
+        };
       })
     );
   }

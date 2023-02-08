@@ -69,7 +69,7 @@ const LAYERS_CLICKABLE = [
   LAYER_CLUSTERS_INACCURATE_ON,
 ];
 const LAYERS_FILTERABLE = [
-  ...LAYERS_CLICKABLE,
+  // ...LAYERS_CLICKABLE,
   LAYER_LABELS_OFF,
   LAYER_LABELS_OFF_INACCURATE,
 ];
@@ -77,6 +77,10 @@ const LAYERS_INACCURATE = [
   LAYER_POINTS_INACCURATE_ON,
   LAYER_CLUSTERS_INACCURATE_ON,
   LAYER_POINTS_INACCURATE_OUT,
+];
+const LAYERS_ACCURATE = [
+  LAYER_POINTS_ON_CENTER,
+  LAYER_POINTS_STROKE_ON,
 ];
 
 const BASE_FILTERS: any = {};
@@ -293,6 +297,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
             }
           }
           this.addActivePointDataSource(this.map);
+          this.addAccuratePointsDataSource(this.map);
           this.addInaccuratePointsDataSource(this.map);
           const colorStyle = [
             "match",
@@ -458,10 +463,11 @@ export class MapComponent implements OnChanges, AfterViewInit {
               }
             }),
             switchMap((params) => {
-              return this.api.getInaccuratePoints(params);
+              return this.api.getAllPoints(params);
             }),
           ).subscribe((points) => {
-            this.updateInaccuratePoints(points);
+            this.updateInaccuratePoints(points.inaccurate);
+            this.updateAccuratePoints(points.accurate);
           });
           this.map.on('moveend', (event: mapboxgl.MapboxEvent<MouseEvent>) => {
             // console.log('MOVEEND', event);
@@ -551,6 +557,33 @@ export class MapComponent implements OnChanges, AfterViewInit {
         paint: layerDef.paint || {}
       }, before);
       map.setFilter(layer, BASE_FILTERS[layer] || null);  //TODO add filter for inaccurate, ensure inaccurate is part of the props
+    }
+  }
+
+  addAccuratePointsDataSource(map: mapboxgl.Map) {
+    map.addSource('accurate-points', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: []
+      }
+    });
+
+    for (const layer of LAYERS_ACCURATE) {
+      const oldLayers = map.getStyle().layers || [];
+      const layerIndex = oldLayers.findIndex(l => l.id === layer);
+      const layerDef: any = oldLayers[layerIndex];
+      const before = oldLayers[layerIndex + 1] && oldLayers[layerIndex + 1].id;
+
+      map.removeLayer(layer);
+      map.addLayer({
+        id: layer,
+        type: layerDef.type,
+        source: 'accurate-points',
+        layout: Object.assign(layerDef.layout || {}, {visibility: 'visible'}),
+        paint: layerDef.paint || {}
+      }, before);
+      map.setFilter(layer, BASE_FILTERS[layer] || null);
     }
   }
 
@@ -655,35 +688,28 @@ export class MapComponent implements OnChanges, AfterViewInit {
     this.updateMarkerProps({});
   }
 
-  // processPointIds(ids: string[], singlePointMode: boolean, props: any | null = null) {
-  //   const pointIds = ids || [];
-  //   const activePointId = singlePointMode ? pointIds[0] : null;
-  //   console.log('MMM SET FILTER', singlePointMode, this.currentPointIds?.length, activePointId);
-  //   if (singlePointMode) {
-  //     if (this.currentPointIds?.length) {
-  //       for (const layer of LAYERS_CLICKABLE) {
-  //         this.map.setFilter(layer, ['in', ['get', 'point_id'], ['literal', [...this.currentPointIds.filter(id => id !== activePointId)]]]);
-  //       }
-  //     }
-  //   } else {
-  //     for (const layer of LAYERS_CLICKABLE) {
-  //       this.map.setFilter(layer, ['in', ['get', 'point_id'], ['literal', [...pointIds]]]);
-  //     }
-  //     this.currentPointIds = pointIds;
-  //   }
-  //   if (activePointId && props) {
-  //     console.log('MMM PROPS', props);
-  //     this.lastProps = props;
-  //     this.updateMarkerProps({});
-  //   } 
-  // }
-
   setCenter(center: mapboxgl.LngLat, zoom: number) {
     const fragment = 'g' + center.lng.toFixed(5) + '/' + center.lat.toFixed(5) + '/' + zoom.toFixed(2);
     this.router.navigate([], {
       fragment,
       queryParamsHandling: 'preserve',
       replaceUrl: true,
+    });
+  }
+
+  updateAccuratePoints(points: any[]) {
+    const source = this.map.getSource('accurate-points') as mapboxgl.GeoJSONSource;
+    const data: any[] = points.map((p) => ({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: p.geometry
+      },
+      properties: p
+    }));
+    source?.setData({
+      type: 'FeatureCollection',
+      features: data
     });
   }
 
