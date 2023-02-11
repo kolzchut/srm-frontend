@@ -86,10 +86,10 @@ export class ApiService {
         )) {
       filter = {};
       if (searchParams.response) {
-        filter['response_ids'] = searchParams.response;
+        filter['response_ids_parents'] = searchParams.response;
       }
       if (searchParams.filter_responses?.length) {
-          filter['response_ids#1'] = searchParams.filter_responses;
+          filter['response_ids_parents#1'] = searchParams.filter_responses;
       }
       if (searchParams.situation) {
         filter['situation_ids'] = searchParams.situation;
@@ -372,10 +372,10 @@ export class ApiService {
     if (searchParams.response || searchParams.situation || searchParams.org_id || searchParams.national) {
       const filter: any = {};
       if (searchParams.response) {
-        filter['response_ids'] = searchParams.response;
+        filter['response_ids_parents'] = searchParams.response;
       }
       if (searchParams.situation) {
-        filter['situation_ids'] = searchParams.situation;
+        filter['situation_ids_parents'] = searchParams.situation;
       }
       if (searchParams.org_id) {
         filter['organization_id'] = searchParams.org_id;
