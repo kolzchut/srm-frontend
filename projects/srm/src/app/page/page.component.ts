@@ -20,6 +20,7 @@ class SearchParamCalc {
   resolvedQuery: string;
   fs?: string;
   fr?: string;
+  frc?: string;
   fag?: string;
   fl?: string;
 
@@ -171,6 +172,7 @@ export class PageComponent implements OnInit {
         const fag = spc.fag?.split('|').map(x => 'human_situations:age_group:' + x) || [];
         const fl = spc.fl?.split('|').map(x => 'human_situations:language:' + x) || [];
         const fr = spc.fr?.split('|').map(x => 'human_services:' + x) || [];
+        const frc = spc.frc?.split('|').map(x => 'human_services:' + x) || [];
         const ret: SearchParams = new SearchParams();
         if (spc.ac) {
           Object.assign(ret, {
@@ -198,6 +200,7 @@ export class PageComponent implements OnInit {
             filter_gender: fg,
         
             filter_responses: fr,
+            filter_response_categories: frc,
 
             bounds: spc.bounds,
             ac_bounds: spc.ac.bounds,
@@ -406,6 +409,7 @@ export class PageComponent implements OnInit {
   needsDidYouMean(searchParams: SearchParams) {
     return !!searchParams?.query && 
             !searchParams?.filter_responses?.length && 
+            !searchParams?.filter_response_categories?.length && 
             !SITUATION_FILTERS.some((f) => !!((searchParams as any)['filter_' + f]?.length)) &&
             !searchParams?.org_id;
   }
@@ -441,6 +445,7 @@ export class PageComponent implements OnInit {
         frl: searchParams.filter_role?.map(x => x.slice('human_situations:role:'.length)).join('|') || null,
         fg: searchParams.filter_gender?.map(x => x.slice('human_situations:gender:'.length)).join('|') || null,
         fr: searchParams.filter_responses?.map(x => x.slice('human_services:'.length)).join('|') || null,
+        frc: searchParams.filter_response_categories?.map(x => x.slice('human_services:'.length)).join('|') || null,
         national: searchParams.national ? 'yes' : null
       },
       replaceUrl: true,

@@ -82,7 +82,7 @@ export class ApiService {
   _filter(searchParams?: SearchParams | null, bound=true): any | null {
     let filter: any | null = null;
     if (searchParams && (searchParams.response || searchParams.situation || searchParams.filter_responses || 
-        SITUATION_FILTERS.some(f => (searchParams as any)['filter_' + f]) 
+        SITUATION_FILTERS.some(f => (searchParams as any)['filter_' + f]) || searchParams.filter_response_categories
         )) {
       filter = {};
       if (searchParams.response) {
@@ -90,6 +90,9 @@ export class ApiService {
       }
       if (searchParams.filter_responses?.length) {
           filter['response_ids_parents#1'] = searchParams.filter_responses;
+      }
+      if (searchParams.filter_response_categories?.length) {
+        filter['response_ids_parents#2'] = searchParams.filter_response_categories;
       }
       if (searchParams.situation) {
         filter['situation_ids'] = searchParams.situation;

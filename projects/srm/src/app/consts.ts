@@ -130,6 +130,7 @@ export type SearchResult<T extends any> = {
     }[],
     situations: DistinctItem[],
     responses: DistinctItem[],
+    categories: DistinctItem[],
     point_id: DistinctItem[],
     collapse_key: DistinctItem[],
     possible_autocomplete: DistinctItem[],
@@ -178,6 +179,7 @@ export class SearchParams {
     filter_role?: string[];
     filter_gender?: string[];
     filter_responses?: string[];
+    filter_response_categories?: string[];
 
     bounds?: number[][];
     ac_bounds?: LngLatBoundsLike;
@@ -187,7 +189,7 @@ export class SearchParams {
     get searchHash(): string {
       return [this.query, this.response, this.situation, 
         ...SITUATION_FILTERS.map((f) => (this as any)['filter_' + f]),
-        this.filter_responses, this.national].map(x => x || '').join('|');
+        this.filter_responses, this.filter_response_categories, this.national].map(x => x || '').join('|');
     }
 
     get hasFilters(): boolean {

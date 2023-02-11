@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Subject } from 'rxjs';
+import { ReplaySubject, Subject, forkJoin } from 'rxjs';
 import { filter, distinctUntilChanged, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { DistinctItem, SearchParams, SITUATION_FILTERS, TaxonomyItem } from '../consts';
@@ -28,6 +28,7 @@ export class SearchFiltersComponent implements OnChanges {
   active_ = false;
   situations: DistinctItem[] = [];
   responses: DistinctItem[] = [];
+  categories: DistinctItem[] = [];
   audiences: TaxonomyItem[] = [];
   health_issues: TaxonomyItem[] = [];
   age_groups: TaxonomyItem[] = [];
@@ -36,6 +37,7 @@ export class SearchFiltersComponent implements OnChanges {
     [key: string]: TaxonomyItem[]
   } = {};
   responseItems: TaxonomyItem[];
+  responseCategoryItems: TaxonomyItem[];
   situationsMap: any = {};
   responsesMap: any = {};
 
@@ -45,23 +47,26 @@ export class SearchFiltersComponent implements OnChanges {
   incomingSearchParams = new Subject<SearchParams>();
   internalSearchParams = new Subject<SearchParams>();
   
+  ready = new ReplaySubject<boolean>(1);
+  
   constructor(private api: ApiService) {
-    this.api.getSituations().subscribe((data: TaxonomyItem[]) => {
+    forkJoin([this.api.getSituations(), this.api.getResponses()])
+    .subscribe(([situationData, responseData]) => {
       this.situationsMap = {};
-      data.forEach((item) => {
+      situationData.forEach((item) => {
         if (item.id) {
           this.situationsMap[item.id] = item;
         }
       });
-    });
-    this.api.getResponses().subscribe((data: TaxonomyItem[]) => {
       this.responsesMap = {};
-      data.forEach((item) => {
+      responseData.forEach((item) => {
         if (item.id) {
           this.responsesMap[item.id] = item;
         }
       });
-    });
+      console.log('ZZZ RP', this.responsesMap);
+      this.ready.next(true);
+    })
     this.internalSearchParams.pipe(
       untilDestroyed(this),
       distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
@@ -77,6 +82,7 @@ export class SearchFiltersComponent implements OnChanges {
       filter((params) => !!params),
       distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
     ).subscribe((params) => {
+      console.log('ZZZ processSearchParams', params);
       this.processSearchParams(params);
     });
   }
@@ -86,10 +92,14 @@ export class SearchFiltersComponent implements OnChanges {
   }
 
   processSearchParams(params?: SearchParams): void {
-    if (this.active_) {
-      this.api.getDistinct(this.searchParams).subscribe((data) => {
+    if (params) {
+      this.ready.pipe(
+        switchMap(() => this.api.getDistinct(params))
+      ).subscribe((data) => {
+        console.log('ZZZ getDistinct', data);
         this.situations = data.situations;
         this.responses = data.responses;
+        this.categories = data.categories;
         this.audiences = this.situations
           .filter(x => !!x && !!x.key)
           .filter(x => 
@@ -154,7 +164,14 @@ export class SearchFiltersComponent implements OnChanges {
           .filter(x => x.key !== this.searchParams.response)
           .map(x => this.responsesMap[x.key || ''])
           .filter(x => !!x);
+        console.log('ZZZ', this.responsesMap);
+        this.responseCategoryItems = this.categories
+          .map(x => x.key)
+          .map(x => this.responsesMap['human_services:' + x])
+          .filter(x => !!x);
+        console.log('ZZZ responseCategoryItems', this.categories, this.responseCategoryItems);
       });
+    // }
     }
     this.currentSearchParams = this._copySearchParams(params || this.searchParams);
   }
@@ -200,6 +217,7 @@ export class SearchFiltersComponent implements OnChanges {
       filter_gender: sp.filter_gender?.slice() || [],
 
       filter_responses: sp.filter_responses?.slice() || [],
+      filter_response_categories: sp.filter_response_categories?.slice() || [],
 
       national: !!sp.national
     });
@@ -209,6 +227,14 @@ export class SearchFiltersComponent implements OnChanges {
   isResponseSelected(response: TaxonomyItem) {
     if (response.id && this.currentSearchParams?.filter_responses) {
       return this.currentSearchParams.filter_responses.indexOf(response.id) !== -1;
+    } else {
+      return false;
+    }
+  }
+
+  isResponseCategorySelected(response: TaxonomyItem) {
+    if (response.id && this.currentSearchParams?.filter_response_categories) {
+      return this.currentSearchParams.filter_response_categories.indexOf(response.id) !== -1;
     } else {
       return false;
     }
@@ -231,6 +257,16 @@ export class SearchFiltersComponent implements OnChanges {
     this.currentSearchParams.filter_responses = this.currentSearchParams.filter_responses.filter(x => x !== item.id);
     if (checked && item.id) {
       this.currentSearchParams.filter_responses.push(item.id);
+    }
+    this.pushSearchParams();
+  }
+
+  toggleResponseCategory(item: TaxonomyItem) {
+    const checked = !this.isResponseCategorySelected(item);
+    this.currentSearchParams.filter_response_categories = this.currentSearchParams.filter_response_categories || [];
+    this.currentSearchParams.filter_response_categories = this.currentSearchParams.filter_response_categories.filter(x => x !== item.id);
+    if (checked && item.id) {
+      this.currentSearchParams.filter_response_categories.push(item.id);
     }
     this.pushSearchParams();
   }

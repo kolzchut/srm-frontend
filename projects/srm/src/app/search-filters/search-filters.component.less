@@ -81,25 +81,6 @@
                     margin: 0 8px;
                 }
             }
-            .tags {
-                display: flex;
-                flex-flow: row wrap;
-
-                &.vertical {
-                    flex-flow: column;
-                }
-                gap: 8px 4px;
-
-                app-response {
-                    cursor: pointer;
-                    margin: 4px 0;
-                }
-
-                &.responses {
-                    margin-top: 8px;
-                    gap: 0px 2px;
-                }
-            }
             padding-bottom: 16px;
             margin-bottom: 16px;
             border-bottom: 1px solid @color-gray-6;
@@ -164,6 +145,32 @@
         }
     }
 
+    .tags {
+        display: flex;
+        flex-flow: row wrap;
+    
+        &.scroll {
+            overflow-y: scroll;
+            .no-scrollbars;
+            flex-wrap: nowrap;
+        }
+
+        &.vertical {
+            flex-flow: column;
+        }
+        gap: 8px 4px;
+
+        app-response {
+            cursor: pointer;
+            margin: 4px 0;
+        }
+
+        &.responses {
+            margin-top: 8px;
+            gap: 0px 2px;
+        }
+    }
+    
     .count {
         position: absolute;
         top: -2px;
