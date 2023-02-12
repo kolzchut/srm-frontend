@@ -50,6 +50,7 @@
                         [class.hidden]='filtersVisible === true' 
                         [class.shown]='filtersVisible === false' 
                         [searchParams]='searchParams'
+                        [active]="stage === 'search-results'"
                         (zoomout)='zoomOutMap($event)'
                         (visibleCount)='visibleCount = $event'
                         (nationalCount)='nationalCount = $event'

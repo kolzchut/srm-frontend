@@ -230,9 +230,9 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     });
   }
 
-  scrollToTop() {
-    if (this.layout.desktop) {
-      (this.scrollable.nativeElement as HTMLDivElement)?.scrollTo({top: 0});
-    }
-  }
+  // scrollToTop() {
+  //   if (this.layout.desktop) {
+  //     (this.scrollable.nativeElement as HTMLDivElement)?.scrollTo({top: 0});
+  //   }
+  // }
 }

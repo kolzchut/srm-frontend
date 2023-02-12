@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, O
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
 import { forkJoin, from, ReplaySubject, Subject, Subscription, throwError } from 'rxjs';
-import { catchError, concatMap, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, debounceTime, delay, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';
 import { PlatformService } from '../platform.service';
@@ -28,6 +28,7 @@ export type SearchParamsOffset = {
 export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit {
 
   @Input() searchParams: SearchParams;
+  @Input() active = false;
   @Output() zoomout = new EventEmitter<ViewPort>();
   @Output() nationalCount = new EventEmitter<number>();
   @Output() visibleCount = new EventEmitter<number>();
@@ -63,6 +64,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
 
     this.paramsQueue.pipe(
       filter((params) => !!params),
+      delay(1),
       switchMap((params) => {
         if (params.searchHash === this.searchHash) {
           return from([params]);
@@ -74,7 +76,9 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
               this.totalNationalCount = nationalCounts.search_counts?._current?.total_overall || 0;
               this.nationalCount.emit(this.totalNationalCount);
               this.searchHash = params.searchHash;
-              this.seo.setDescription(`מציג ${this.totalCount.toLocaleString()} שירותים ומענים עבור ${params.original_query}`);
+              if (this.active) {
+                this.seo.setDescription(`מציג ${this.totalCount.toLocaleString()} שירותים ומענים עבור ${params.original_query}`);
+              }
             }),
             map(() => {
               return params;

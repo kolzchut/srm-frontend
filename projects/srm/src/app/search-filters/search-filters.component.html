@@ -5,7 +5,7 @@
         <span>סינון</span>
         <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div>
     </button>
-    <div class='tags responses' *ngIf='responseCategoryItems'>
+    <div class='tags header' *ngIf='responseCategoryItems'>
         <app-response *ngFor='let response of responseCategoryItems' 
                 [response]='response' 
                 [selected]='isResponseCategorySelected(response)'

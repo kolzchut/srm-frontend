@@ -8,7 +8,9 @@
     &:not(.active) {
         flex-flow: row;
         align-items: center;
+        gap: 4px;
         padding: 8px 6px;
+        padding-left: 0;
         background: @color-white;
     
         .open-modal {
@@ -149,12 +151,6 @@
         display: flex;
         flex-flow: row wrap;
     
-        &.scroll {
-            overflow-y: scroll;
-            .no-scrollbars;
-            flex-wrap: nowrap;
-        }
-
         &.vertical {
             flex-flow: column;
         }
@@ -168,6 +164,19 @@
         &.responses {
             margin-top: 8px;
             gap: 0px 2px;
+        }
+
+        &.header {
+            flex-wrap: nowrap;
+            overflow-x: scroll;
+            .no-scrollbars;
+            app-response {
+                flex: 0 0 auto;
+            }
+            gap: 2px;
+            padding-right: 4px;
+            padding-left: 8px;
+            mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, #fff 8px, #fff calc(100% ~'-' 8px), rgba(0,0,0,0) 100%);
         }
     }
     

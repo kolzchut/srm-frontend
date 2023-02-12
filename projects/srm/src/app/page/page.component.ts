@@ -45,7 +45,7 @@ class SearchParamCalc {
   get searchHash(): string {
     return [this.resolvedQuery, this.acId, this.ftQuery, this.fs, this.fag, this.fl, 
       this.fbh, this.fc, this.fe, this.fg, this.fh, this.fle, this.frl, this.fu,
-      this.fr, this.national].map(x => x || '').join('|');
+      this.fr, this.frc, this.national].map(x => x || '').join('|');
   }
   
   get cardsHash(): string {
@@ -111,6 +111,7 @@ export class PageComponent implements OnInit {
       distinctUntilChanged((x, y) => {
         return x.geoHash.localeCompare(y.geoHash) === 0
       }),
+      delay(0),
     ).subscribe((spc) => {
       console.log('ACTION MAP MOVED', spc.geoValues, spc.ac?.bounds);
       this.mapMoved = true;
@@ -132,6 +133,7 @@ export class PageComponent implements OnInit {
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
       debounceTime(platform.browser() ? 100 : 0),
+      delay(1),
       map((spc) => {
         spc.resolvedQuery = spc.acId || spc.ftQuery || '';
         spc.resolvedQuery = spc.resolvedQuery.split('_').join(' ');
@@ -148,6 +150,7 @@ export class PageComponent implements OnInit {
           return from([spc])
         }
       }),
+    ).pipe(
       map((spc) => {
         console.log('SEARCH PARAMS CALC', spc);
         if (this.stage === 'search-results') {
@@ -230,6 +233,7 @@ export class PageComponent implements OnInit {
             filter_gender: fg,
 
             filter_responses: fr,
+            filter_response_categories: frc,
 
             bounds: spc.bounds,
             ac_bounds: null,
@@ -366,6 +370,7 @@ export class PageComponent implements OnInit {
       this.currentSearchParamCalc.fu = params.fu;
 
       this.currentSearchParamCalc.fr = params.fr;
+      this.currentSearchParamCalc.frc = params.frc;
       this.currentSearchParamCalc.national = params.national === 'yes';
       if (this.stage === 'search-results') {
         this.pushSearchParamsCalc();

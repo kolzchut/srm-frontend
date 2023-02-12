@@ -187,7 +187,7 @@ export class SearchParams {
     national?: boolean;
 
     get searchHash(): string {
-      return [this.query, this.response, this.situation, 
+      return [this.query, this.response, this.situation, this.org_id,
         ...SITUATION_FILTERS.map((f) => (this as any)['filter_' + f]),
         this.filter_responses, this.filter_response_categories, this.national].map(x => x || '').join('|');
     }

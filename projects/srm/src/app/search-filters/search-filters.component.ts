@@ -64,7 +64,6 @@ export class SearchFiltersComponent implements OnChanges {
           this.responsesMap[item.id] = item;
         }
       });
-      console.log('ZZZ RP', this.responsesMap);
       this.ready.next(true);
     })
     this.internalSearchParams.pipe(
@@ -82,7 +81,6 @@ export class SearchFiltersComponent implements OnChanges {
       filter((params) => !!params),
       distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
     ).subscribe((params) => {
-      console.log('ZZZ processSearchParams', params);
       this.processSearchParams(params);
     });
   }
@@ -96,80 +94,79 @@ export class SearchFiltersComponent implements OnChanges {
       this.ready.pipe(
         switchMap(() => this.api.getDistinct(params))
       ).subscribe((data) => {
-        console.log('ZZZ getDistinct', data);
-        this.situations = data.situations;
-        this.responses = data.responses;
-        this.categories = data.categories;
-        this.audiences = this.situations
-          .filter(x => !!x && !!x.key)
-          .filter(x => 
-            x.key?.indexOf('human_situations:armed_forces') === 0 ||
-            x.key?.indexOf('human_situations:citizenship') === 0 ||
-            x.key?.indexOf('human_situations:criminal_history') === 0 ||
-            x.key?.indexOf('human_situations:deprivation') === 0 ||
-            x.key?.indexOf('human_situations:education') === 0 ||
-            x.key?.indexOf('human_situations:household') === 0 ||
-            x.key?.indexOf('human_situations:housing') === 0 ||
-            x.key?.indexOf('human_situations:income') === 0 ||
-            x.key?.indexOf('human_situations:sectors') === 0 ||
-            x.key?.indexOf('human_situations:sexuality') === 0 ||
-            x.key?.indexOf('human_situations:survivors') === 0 ||
-            false
-          )
-          .filter(x => x.key !== this.searchParams.situation)
-          .map(x => this.situationsMap[x.key || ''])
-          .filter(x => !!x);
-        this.health_issues = this.situations
-          .filter(x => !!x && !!x.key)
-          .filter(x => 
-            x.key?.indexOf('human_situations:mental_health') === 0 ||
-            x.key?.indexOf('human_situations:substance_dependency') === 0 ||
-            x.key?.indexOf('human_situations:disability') === 0 ||
-            x.key?.indexOf('human_situations:health') === 0 ||
-            false
-          )
-          .filter(x => x.key !== this.searchParams.situation)
-          .map(x => this.situationsMap[x.key || ''])
-          .filter(x => !!x);
-        
-        this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors']
-            .map(x => 'human_situations:age_group:' + x)
-            .filter(x => this.situations.map(y => y.key).indexOf(x) >= 0)
-            .map(x => this.situationsMap[x])
-            .filter(x => !!x);
-
-        this.languages = this.situations
-          .filter(x => !!x && !!x.key)
-          .filter(x => 
-            x.key?.indexOf('human_situations:language') === 0
-          )
-          .filter(x => 
-            x.key !== 'human_situations:language:hebrew_speaking'
-          )
-          .filter(x => x.key !== this.searchParams.situation)
-          .map(x => this.situationsMap[x.key || ''])
-          .filter(x => !!x);
-
-        this.others = {};
-        for (const hsroot of ['employment', 'benefit_holders', 'life_events', 'urgency', 'gender', 'community', 'role']) {
-          this.others[hsroot] = this.situations
+        if (this.active_) {
+          this.situations = data.situations;
+          this.responses = data.responses;
+          this.audiences = this.situations
             .filter(x => !!x && !!x.key)
-            .filter(x => x.key?.indexOf('human_situations:' + hsroot) === 0)
-            .filter(x => x.key !== this.searchParams.situation)
+            .filter(x => 
+              x.key?.indexOf('human_situations:armed_forces') === 0 ||
+              x.key?.indexOf('human_situations:citizenship') === 0 ||
+              x.key?.indexOf('human_situations:criminal_history') === 0 ||
+              x.key?.indexOf('human_situations:deprivation') === 0 ||
+              x.key?.indexOf('human_situations:education') === 0 ||
+              x.key?.indexOf('human_situations:household') === 0 ||
+              x.key?.indexOf('human_situations:housing') === 0 ||
+              x.key?.indexOf('human_situations:income') === 0 ||
+              x.key?.indexOf('human_situations:sectors') === 0 ||
+              x.key?.indexOf('human_situations:sexuality') === 0 ||
+              x.key?.indexOf('human_situations:survivors') === 0 ||
+              false
+            )
+            .filter(x => x.key !== params.situation)
             .map(x => this.situationsMap[x.key || ''])
             .filter(x => !!x);
-        }
+          this.health_issues = this.situations
+            .filter(x => !!x && !!x.key)
+            .filter(x => 
+              x.key?.indexOf('human_situations:mental_health') === 0 ||
+              x.key?.indexOf('human_situations:substance_dependency') === 0 ||
+              x.key?.indexOf('human_situations:disability') === 0 ||
+              x.key?.indexOf('human_situations:health') === 0 ||
+              false
+            )
+            .filter(x => x.key !== params.situation)
+            .map(x => this.situationsMap[x.key || ''])
+            .filter(x => !!x);
+          
+          this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors']
+              .map(x => 'human_situations:age_group:' + x)
+              .filter(x => this.situations.map(y => y.key).indexOf(x) >= 0)
+              .map(x => this.situationsMap[x])
+              .filter(x => !!x);
 
-        this.responseItems = this.responses
-          .filter(x => x.key !== this.searchParams.response)
-          .map(x => this.responsesMap[x.key || ''])
-          .filter(x => !!x);
-        console.log('ZZZ', this.responsesMap);
+          this.languages = this.situations
+            .filter(x => !!x && !!x.key)
+            .filter(x => 
+              x.key?.indexOf('human_situations:language') === 0
+            )
+            .filter(x => 
+              x.key !== 'human_situations:language:hebrew_speaking'
+            )
+            .filter(x => x.key !== params.situation)
+            .map(x => this.situationsMap[x.key || ''])
+            .filter(x => !!x);
+
+          this.others = {};
+          for (const hsroot of ['employment', 'benefit_holders', 'life_events', 'urgency', 'gender', 'community', 'role']) {
+            this.others[hsroot] = this.situations
+              .filter(x => !!x && !!x.key)
+              .filter(x => x.key?.indexOf('human_situations:' + hsroot) === 0)
+              .filter(x => x.key !== params.situation)
+              .map(x => this.situationsMap[x.key || ''])
+              .filter(x => !!x);
+          }
+
+          this.responseItems = this.responses
+            .filter(x => x.key !== params.response)
+            .map(x => this.responsesMap[x.key || ''])
+            .filter(x => !!x);
+        }
+        this.categories = data.categories;
         this.responseCategoryItems = this.categories
           .map(x => x.key)
           .map(x => this.responsesMap['human_services:' + x])
           .filter(x => !!x);
-        console.log('ZZZ responseCategoryItems', this.categories, this.responseCategoryItems);
       });
     // }
     }
@@ -233,8 +230,8 @@ export class SearchFiltersComponent implements OnChanges {
   }
 
   isResponseCategorySelected(response: TaxonomyItem) {
-    if (response.id && this.currentSearchParams?.filter_response_categories) {
-      return this.currentSearchParams.filter_response_categories.indexOf(response.id) !== -1;
+    if (response.id && this.searchParams?.filter_response_categories) {
+      return this.searchParams.filter_response_categories.indexOf(response.id) !== -1;
     } else {
       return false;
     }
@@ -263,12 +260,12 @@ export class SearchFiltersComponent implements OnChanges {
 
   toggleResponseCategory(item: TaxonomyItem) {
     const checked = !this.isResponseCategorySelected(item);
-    this.currentSearchParams.filter_response_categories = this.currentSearchParams.filter_response_categories || [];
-    this.currentSearchParams.filter_response_categories = this.currentSearchParams.filter_response_categories.filter(x => x !== item.id);
+    this.searchParams.filter_response_categories = this.searchParams.filter_response_categories || [];
+    this.searchParams.filter_response_categories = this.searchParams.filter_response_categories.filter(x => x !== item.id);
     if (checked && item.id) {
-      this.currentSearchParams.filter_response_categories.push(item.id);
+      this.searchParams.filter_response_categories.push(item.id);
     }
-    this.pushSearchParams();
+    this.params.emit(this._copySearchParams(this.searchParams));
   }
 
   fixSearchParams(sp: SearchParams) {

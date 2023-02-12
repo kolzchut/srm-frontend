@@ -548,13 +548,24 @@ export class ApiService {
     if (filter) {
       params.filter = JSON.stringify(filter);
     }
+    let forceCategory: string | null = null;
+    if (searchParams.filter_response_categories?.length === 1) {
+      forceCategory = searchParams.filter_response_categories[0];
+    } else if (searchParams.response) {
+      forceCategory = searchParams.response;
+    } else if (searchParams.filter_responses?.length === 1) {
+      forceCategory = searchParams.filter_responses[0];
+    }
+    if (forceCategory) {
+      forceCategory = forceCategory.split(':')[1];
+    }
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         const results = res as QueryCardResult;
         const allPoints = results.point_id.map((r: any) => {
           return {
             point_id: r.key,
-            response_category: r.response_category?.buckets[0]?.key,
+            response_category: forceCategory || r.response_category?.buckets[0]?.key,
             geometry: JSON.parse(r.branch_geometry?.buckets[0]?.key || 'null'),
             branch_location_accurate: r.branch_location_accurate?.buckets[0]?.key,
             branch_count: r.branch_id?.buckets.length || 1,
