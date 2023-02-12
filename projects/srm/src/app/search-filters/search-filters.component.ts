@@ -89,7 +89,7 @@ export class SearchFiltersComponent implements OnChanges {
     this.incomingSearchParams.next(this.searchParams);
   }
 
-  processSearchParams(params?: SearchParams): void {
+  processSearchParams(params: SearchParams): void {
     if (params) {
       this.ready.pipe(
         switchMap(() => this.api.getDistinct(params))
@@ -177,7 +177,7 @@ export class SearchFiltersComponent implements OnChanges {
     this.activate.emit(value);
     this.active_ = value;
     if (value) {
-      this.processSearchParams();
+      this.processSearchParams(this.searchParams);
       this.pushSearchParams();
     }
   }
