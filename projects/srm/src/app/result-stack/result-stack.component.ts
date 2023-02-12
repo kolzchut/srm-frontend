@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Card } from '../consts';
+import { Card, _h } from '../consts';
 import { LayoutService } from '../layout.service';
 
 @Component({
@@ -10,6 +10,8 @@ import { LayoutService } from '../layout.service';
 export class ResultStackComponent implements OnInit {
 
   @Input() result: Card;
+
+  _h = _h;
 
   constructor(public layout: LayoutService) { }
 

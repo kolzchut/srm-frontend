@@ -21,7 +21,7 @@
             .org, .city, .national-service {
                 display: inline;
                 .font-rag-sans;
-                font-weight: 600;
+                font-weight: 400;
                 .mobile({
                     font-size: 13px;
                     line-height: 13px;    
@@ -30,11 +30,14 @@
                     font-size: 16px;
                     line-height: 20px;
                 });
-                color: @color-gray-2;
+                color: @color-gray-1;
+                ::ng-deep em {
+                    font-weight: 600;
+                }
             }
     
             .city {
-                font-weight: 400;
+                color: @color-gray-3;
             }
 
             .national-service {

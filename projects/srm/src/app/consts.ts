@@ -69,6 +69,7 @@ export class Card {
     response_category: string;
     point_id: string;
     _snippets: {[key: string]: string[]};
+    _highlights: {[key: string]: string | string[]};
 
     _collapse_count?: number;
     collapse_key: string;

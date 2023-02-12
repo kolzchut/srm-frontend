@@ -184,7 +184,7 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
-      params.highlight = 'service_name,service_name.hebrew';
+      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name,responses.name';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
       params.minscore = this.MIN_SCORE;
     } else if (searchParams.structured_query) {
