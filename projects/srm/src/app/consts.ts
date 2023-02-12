@@ -188,8 +188,8 @@ export class SearchParams {
 
     get searchHash(): string {
       return [this.query, this.response, this.situation, this.org_id,
-        ...SITUATION_FILTERS.map((f) => (this as any)['filter_' + f]),
-        this.filter_responses, this.filter_response_categories, this.national].map(x => x || '').join('|');
+        ...SITUATION_FILTERS.map((f) => (this as any)['filter_' + f]?.join('|')),
+        this.filter_responses?.join('|'), this.filter_response_categories?.join('|'), this.national].map(x => x || '').join('|');
     }
 
     get hasFilters(): boolean {

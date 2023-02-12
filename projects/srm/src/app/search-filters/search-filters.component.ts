@@ -260,12 +260,13 @@ export class SearchFiltersComponent implements OnChanges {
 
   toggleResponseCategory(item: TaxonomyItem) {
     const checked = !this.isResponseCategorySelected(item);
-    this.searchParams.filter_response_categories = this.searchParams.filter_response_categories || [];
-    this.searchParams.filter_response_categories = this.searchParams.filter_response_categories.filter(x => x !== item.id);
+    const sp = this._copySearchParams(this.searchParams);
+    sp.filter_response_categories = sp.filter_response_categories || [];
+    sp.filter_response_categories = sp.filter_response_categories.filter(x => x !== item.id);
     if (checked && item.id) {
-      this.searchParams.filter_response_categories.push(item.id);
+      sp.filter_response_categories.push(item.id);
     }
-    this.params.emit(this._copySearchParams(this.searchParams));
+    this.params.emit(sp);
   }
 
   fixSearchParams(sp: SearchParams) {

@@ -447,8 +447,8 @@ export class MapComponent implements OnChanges, AfterViewInit {
           });
           this.searchParamsQueue.pipe(
             untilDestroyed(this),
-            debounceTime(this.platform.browser() ? 500 : 0),
             distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
+            debounceTime(this.platform.browser() ? 500 : 0),
             switchMap((params) => {
               if (params) {
                 return this.api.getPoints(params).pipe(
