@@ -39,7 +39,7 @@ export class ResultCardComponent implements OnChanges {
         }
       }  
     }
-    if (this.card?._highlights['situations.name']) {
+    if (this.card?._highlights && this.card?._highlights['situations.name']) {
       const highlighted = this.card._highlights['situations.name'];
       if (highlighted.length === this.card?.situations?.length) {
         this.card.situations.forEach((s, i) => {
@@ -47,7 +47,7 @@ export class ResultCardComponent implements OnChanges {
         });
       }
     }
-    if (this.card?._highlights['responses.name']) {
+    if (this.card?._highlights && this.card?._highlights['responses.name']) {
       const highlighted = this.card._highlights['responses.name'];
       if (highlighted.length === this.card?.responses?.length) {
         this.card.responses.forEach((r, i) => {
