@@ -23,7 +23,9 @@ export class PageNotFoundComponent implements OnInit {
         this.request.res.status(404);
       }
     });
-    this.src = 'assets/img/404/' + Math.ceil(Math.random()*4) + '.png';
+    this.platform.browser(() => {
+      this.src = 'assets/img/404/' + Math.ceil(Math.random()*4) + '.png';
+    });
   }
 
 }
