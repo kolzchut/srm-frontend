@@ -53,6 +53,13 @@ export function app(): express.Express {
       req, providers: [
         { provide: APP_BASE_HREF, useValue: req.baseUrl }
       ]
+    }, (error, html) => {
+      if (error) {
+        console.error(Date.now(), error);
+        res.status(500).send(error);
+      } else if (!res.headersSent && !res.finished) {
+        res.send(html);
+      }
     });
   });
 

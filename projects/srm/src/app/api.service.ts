@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, Optional, Inject } from '@angular/core';
 import { from, Observable, ReplaySubject } from 'rxjs';
 import { catchError, delay, finalize, map, switchMap, tap } from 'rxjs/operators';
 
@@ -8,8 +8,10 @@ import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult,
 import { makeStateKey, TransferState} from '@angular/platform-browser';
 import { PlatformService } from './platform.service';
 import * as memoryCache from 'memory-cache';
-import { response } from 'express';
+import { REQUEST } from '@nguniversal/express-engine/tokens';
+import { Request } from 'express';
 import { LngLatBounds } from 'mapbox-gl';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +29,8 @@ export class ApiService {
     private transferState: TransferState,
     private platform: PlatformService,
     private zone: NgZone,
+    private router: Router,
+    @Optional() @Inject(REQUEST) private request: Request
   ) {}
 
   innerCache<T>(key: string, fetcher: Observable<T>, keep=false): Observable<T> {
@@ -172,6 +176,20 @@ export class ApiService {
     return this.innerCache(`card-${id}`, this.http.get(environment.itemURL + id).pipe(
       map((res: any) => {
         return res as Card;
+      }),
+      catchError((err) => {
+        if (err.status === 404) {
+          this.platform.server(() => {
+            if (this.request.res) {
+              this.request.res.redirect(302, '/not-found');
+              this.request.res.finished = true;
+              this.request.res.end();
+            }
+          });
+          return from([]);
+        } else {
+          return from([]);
+        }
       })
     ));
   }
@@ -595,3 +613,4 @@ export class ApiService {
     );
   }
 }
+

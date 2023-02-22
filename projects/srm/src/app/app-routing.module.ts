@@ -5,9 +5,6 @@ import { PageComponent } from './page/page.component';
 
 const routes: Routes = [
   {
-    path: 'about', component: PageComponent, data: {group: 'flow', stage: 'about'},
-  },
-  {
     path: 'about/kolsherut', component: PageComponent, data: {group: 'flow', stage: 'about:about'},
   },
   {
