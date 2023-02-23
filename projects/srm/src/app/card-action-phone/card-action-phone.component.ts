@@ -25,7 +25,7 @@ export class CardActionPhoneComponent implements OnChanges {
     if (this.org) {
       phone = this.card?.organization_phone_numbers?.[0];
     } else {
-      phone = this.card?.service_phone_numbers?.[0] || this.card?.branch_phone_numbers?.[0];
+      phone = this.card?.service_phone_numbers?.[0] || this.card?.branch_phone_numbers?.[0] || this.card?.organization_phone_numbers?.[0];
     }
     this.active = false;
     if (phone && phone.length) {

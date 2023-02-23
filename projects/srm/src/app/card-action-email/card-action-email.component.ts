@@ -25,7 +25,7 @@ export class CardActionEmailComponent implements OnChanges {
     if (this.org) {
       email = this.card?.organization_email_address;
     } else {
-      email = this.card?.service_email_address || this.card?.branch_email_address;
+      email = this.card?.service_email_address || this.card?.branch_email_address || this.card?.organization_email_address;
     }
     console.log('EMAIL', email);
     this.active = false;

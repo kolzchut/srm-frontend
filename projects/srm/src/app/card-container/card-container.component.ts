@@ -1,6 +1,6 @@
 import { state, style, trigger, transition, animate, query } from '@angular/animations';
 import { Location } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LngLatLike } from 'mapbox-gl';
@@ -85,6 +85,8 @@ export class CardContainerComponent implements OnInit, OnChanges {
   
   MWM = MapWindowMode;
 
+  showQuickActions = false;
+
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
               private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService,
               @Inject(DOCUMENT) private document: any) { }
@@ -123,8 +125,14 @@ export class CardContainerComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.parametersQueue.next({searchParams: this.searchParams, cardId: this.cardId, hash: ''});
+    if (changes.cardId) {
+      this.showQuickActions = false;
+      timer(2000).subscribe(() => {
+        this.showQuickActions = true;
+      });
+    }
   }
 
   calculateExitLink(): void {

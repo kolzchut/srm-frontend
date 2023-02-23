@@ -119,20 +119,10 @@
         bottom: 0;
         right: 0;
         z-index: 1;
-        animation: slideIn;
-        animation-delay: 2s;
-        animation-duration: 300ms;
-        animation-fill-mode: both;
-        animation-timing-function: ease-in-out;
-        animation-iteration-count: 1;
-    }
-}
-
-@keyframes slideIn {
-    0% {
         transform: translateY(100%);
-    }
-    100% {
-        transform: translateY(0);
+        &.visible {
+            transform: translateY(0);
+        }
+        transition: transform 0.3s ease-in-out;
     }
 }
