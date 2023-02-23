@@ -31,6 +31,7 @@ export class Card {
     service_payment_details: string;
     service_urls: {href: string, title: string}[];
     service_phone_numbers: string[];
+    service_email_address: string;
     service_implements: string;
 
     organization_id: string;
@@ -41,6 +42,7 @@ export class Card {
     organization_kind: string;
     organization_urls: {href: string, title: string}[];
     organization_phone_numbers: string[];
+    organization_email_address: string;
     organization_branch_count: number;
 
     branch_id: string;
@@ -49,6 +51,7 @@ export class Card {
     branch_description: string;
     branch_urls: {href: string, title: string}[];
     branch_phone_numbers: string[];
+    branch_email_address: string;
     branch_address: string;
     branch_location_accurate: boolean;
     branch_city: string;

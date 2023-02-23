@@ -54,6 +54,7 @@ import { CardBranchServicesComponent } from './card-branch-services/card-branch-
 import { ClickOnReturnDirective } from './click-on-return.directive';
 import { SearchFiltersSituationSectionComponent } from './search-filters-situation-section/search-filters-situation-section.component';
 import { SearchFiltersMoreButtonComponent } from './search-filters-more-button/search-filters-more-button.component';
+import { CardActionEmailComponent } from './card-action-email/card-action-email.component';
 
 @NgModule({
   declarations: [
@@ -103,7 +104,8 @@ import { SearchFiltersMoreButtonComponent } from './search-filters-more-button/s
     CardBranchServicesComponent,
     ClickOnReturnDirective,
     SearchFiltersSituationSectionComponent,
-    SearchFiltersMoreButtonComponent
+    SearchFiltersMoreButtonComponent,
+    CardActionEmailComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

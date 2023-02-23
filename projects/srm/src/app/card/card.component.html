@@ -36,6 +36,7 @@
         </div>
         <div class='actions'>
             <app-card-action-phone [card]='card' [org]='true'></app-card-action-phone>
+            <app-card-action-email [card]='card' [org]='true'></app-card-action-email>
             <app-card-action-nav [card]='card' [org]='true'></app-card-action-nav>
         </div>
         <div class='org-branches' *ngIf='card.organization_branch_count > 1'>
