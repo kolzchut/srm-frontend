@@ -336,7 +336,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
                   if (this.searchParams?.ac_query) {
                     route.push('s', this.searchParams?.ac_query);
                   }
-                  if (newCardId) {
+                  if (newCardId && this.layout.desktop) {
                     route.push('c', newCardId);
                   } else {
                     if (this.layout.mobile) {
