@@ -12,7 +12,7 @@
             <app-response *ngFor='let response of card.responses' [response]='response'></app-response>
         </div>
     </div>
-    <div class='situations'>
+    <div class='situations' *ngIf='card.situations && card.situations.length'>
         <label i18n>השירות מתאים עבור:</label>
         <div class='list'>
             <app-situation *ngFor='let situation of card.situations' [situation]='situation'></app-situation>

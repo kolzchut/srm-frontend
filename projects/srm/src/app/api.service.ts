@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
 export class ApiService {
   waiting: any = {};
 
-  MIN_SCORE = 20
+  MIN_SCORE = 50
   situationsMap_: any = {};
   responsesMap_: any = {};
   collapseCount: {[key: string]: number} = {};
@@ -314,7 +314,6 @@ export class ApiService {
       params.q = searchParams.query;
       params.highlight = 'service_name,service_name.hebrew';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
-      params.minscore = this.MIN_SCORE;
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
     }
@@ -537,7 +536,6 @@ export class ApiService {
     if (searchParams.query) {
       params.q = searchParams.query;
       params.minscore = this.MIN_SCORE;
-      params.order = '-_score';
     }
     params.extra = 'point-ids';
     const filter = this._filter(searchParams, false);
@@ -560,7 +558,6 @@ export class ApiService {
     if (searchParams.query) {
       params.q = searchParams.query;
       params.minscore = this.MIN_SCORE;
-      params.order = '-_score';
     }
     params.extra = 'point-ids-extended';
     const filter = this._filter(searchParams, false) || {};
