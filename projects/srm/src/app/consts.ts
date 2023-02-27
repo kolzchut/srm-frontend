@@ -19,6 +19,7 @@ export class TaxonomyItem {
 export class DistinctItem {
     key?: string;
     doc_count?: number;
+    max_score?: { value: number };
 };
 
 

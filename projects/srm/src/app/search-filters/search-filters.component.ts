@@ -159,6 +159,7 @@ export class SearchFiltersComponent implements OnChanges {
 
           this.responseItems = this.responses
             .filter(x => x.key !== params.response)
+            .filter(x => !x.max_score || x.max_score.value >= this.api.MIN_SCORE)
             .map(x => this.responsesMap[x.key || ''])
             .filter(x => !!x);
         }
