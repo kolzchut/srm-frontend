@@ -76,6 +76,7 @@
             [searchParams]='searchParams'
             (center)='centerMap($event)'
             (size)='branchSize = $event'
+            (zoomout)='zoomOutMap($event)'
         >
         </app-card-container>
         <app-landing-page-overlay *ngIf='(stage === "search-results" || stage === "card")'

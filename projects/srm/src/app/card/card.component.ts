@@ -1,9 +1,10 @@
 import { DOCUMENT, Location } from '@angular/common'
-import { AfterViewInit, Component, ElementRef, Inject, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { fromEvent, Subscription, timer } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiService } from '../api.service';
-import { Card } from '../consts';
+import { Card, SearchParams, ViewPort } from '../consts';
 
 @Component({
   selector: 'app-card',
@@ -13,8 +14,9 @@ import { Card } from '../consts';
 export class CardComponent implements OnInit {
 
   @Input() card: Card;
+  @Output() zoomout = new EventEmitter<ViewPort>();
 
-  constructor(private api: ApiService, @Inject(DOCUMENT) private document: Document) { }
+  constructor(private api: ApiService, private router: Router, @Inject(DOCUMENT) private document: Document) { }
 
   ngOnInit(): void {
   }
@@ -31,5 +33,15 @@ export class CardComponent implements OnInit {
   implementingLink() {
     const serviceId = (this.card?.service_implements?.split('#')[0] || '').split(':')[1] || '';
     return `https://next.obudget.org/i/activities/gov_social_service/${serviceId}?theme=soproc`;
+  }
+
+  showAllBranches() {
+    const params = new SearchParams();
+    params.org_id = this.card.organization_id;
+    this.api.getCounts(params, false).subscribe((counts) => {
+      console.log('ACTION ZOOMOUT', counts);
+      this.zoomout.emit(counts.viewport);
+      this.router.navigate(['/s', this.card.organization_id]);
+    });
   }
 }

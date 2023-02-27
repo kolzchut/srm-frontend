@@ -8,7 +8,7 @@ import { SeoSocialShareService } from 'ngx-seo';
 import { EMPTY, forkJoin, from, fromEvent, Observable, ReplaySubject, Subject, Subscription, timer } from 'rxjs';
 import { distinctUntilChanged, first, map, switchMap, tap, withLatestFrom, zipWith } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { Card, SearchParams } from '../consts';
+import { Card, SearchParams, ViewPort } from '../consts';
 import { MapWindowMode } from '../map-window/map-window.component';
 import { MapComponent } from '../map/map.component';
 import { PlatformService } from '../platform.service';
@@ -73,6 +73,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
   @Input() searchParams: SearchParams;
   @Output() center = new EventEmitter<LngLatLike>();
   @Output() size = new EventEmitter<number>();
+  @Output() zoomout = new EventEmitter<ViewPort>();
   @ViewChild('content') content: ElementRef;
   @ViewChild('scrolled') scrolled: ElementRef;
   @ViewChild('mapWindow') mapWindow: ElementRef;

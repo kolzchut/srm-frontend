@@ -313,6 +313,7 @@ export class PageComponent implements OnInit {
         }
       } else if (!this.point) {
           if (this.savedState) {
+            console.log('ACTION - restore-map-state');
             this.easeTo({center: this.savedState.center, zoom: this.savedState.zoom});
             this.savedState = null;
           }    
@@ -611,6 +612,7 @@ export class PageComponent implements OnInit {
   }
 
   zoomOutMap(viewport: ViewPort) {
+    this.savedState = null;
     this.queueMapAction((map) => {
       map.fitBounds([viewport.top_left, viewport.bottom_right], {padding: {top: 70, bottom: 10, left: 10, right: 10}, maxZoom: 15});
     }, 'zoom-out-map');

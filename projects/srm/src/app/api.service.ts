@@ -86,8 +86,9 @@ export class ApiService {
   _filter(searchParams?: SearchParams | null, bound=true): any | null {
     let filter: any | null = null;
     if (searchParams && (searchParams.response || searchParams.situation || searchParams.filter_responses || 
-        SITUATION_FILTERS.some(f => (searchParams as any)['filter_' + f]) || searchParams.filter_response_categories
-        )) {
+        SITUATION_FILTERS.some(f => (searchParams as any)['filter_' + f]) || searchParams.filter_response_categories ||
+        searchParams.org_id
+      )) {
       filter = {};
       if (searchParams.response) {
         filter['response_ids_parents'] = searchParams.response;
