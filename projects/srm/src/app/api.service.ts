@@ -208,6 +208,7 @@ export class ApiService {
       params.minscore = this.MIN_SCORE;
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
+      params.match_operator = 'or';
     }
     if (offset === 0) {
       params.extra = 'national-services|collapse|collapse-collect';
@@ -316,6 +317,7 @@ export class ApiService {
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
+      params.match_operator = 'or';
     }
     const filter = this._filter(searchParams);
     filter['collapse_key'] = collapse_key;
