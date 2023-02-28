@@ -77,6 +77,8 @@ export class Card {
 
     _collapse_count?: number;
     collapse_key: string;
+
+    __props: any;
 };
 
 export const CARD_SNIPPET_FIELDS = [

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
-import { forkJoin, from, ReplaySubject, Subject, Subscription, throwError } from 'rxjs';
+import { forkJoin, from, ReplaySubject, Subject, Subscription, throwError, timer } from 'rxjs';
 import { catchError, concatMap, debounceTime, delay, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';
@@ -160,10 +160,24 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
     const res = this.results[index];
     if (!!res) {
       this.api.getCardsForCollapseKey(this.searchParams, res.collapse_key).subscribe((cards) => {
-        this.results = this.results.slice(0, index).concat(cards).concat(this.results.slice(index + 1));
+        cards.forEach((card, idx) => {
+          card.__props = card.__props || {};
+          if (idx > 0) {
+            card.__props.slide = idx > 20 ? 20 : idx;
+          }
+          card.__props.z = cards.length - idx;
+        });
+        this.results = this.results.slice(0, index).concat(cards).concat(this.results.slice(index + 2));
+        timer(1).subscribe(() => {
+          cards.forEach((card, idx) => {
+            if (idx > 0) {
+              card.__props.slide_now = true;
+            }
+          });
+        });
       });
-      this.results[index] = null;  
+      res._collapse_count = 0;
+      this.results = this.results.slice(0, index + 1).concat(null).concat(this.results.slice(index + 1));
     }
-    // console.log('EXPAND', index, this.results[index]);
   }
 }

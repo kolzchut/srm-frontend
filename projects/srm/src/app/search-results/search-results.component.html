@@ -23,13 +23,20 @@
 
 <ng-container *ngFor='let result of results; let i=index'>
     <ng-container *ngIf='!!result'>
-        <a [routerLink]='["c", result.card_id]' [queryParamsHandling]='"merge"' *ngIf='!result._collapse_count' (mouseover)='hoverCard.next(result)' [attr.aria-label]='"Open the " + result.service_name + " card"'>
+        <a [routerLink]='["c", result.card_id]' [queryParamsHandling]='"merge"' *ngIf='!result._collapse_count' 
+           (mouseover)='hoverCard.next(result)' [attr.aria-label]='"Open the " + result.service_name + " card"'
+           [style.transition-delay]='(result.__props?.slide * 100) + "ms"'
+           [style.z-index]='result.__props?.z'
+           [class.animated]='!!result.__props?.slide'
+           [class.slide-in]='!!result.__props?.slide_now'
+        >
             <app-result-stack [result]='result'></app-result-stack>
         </a>
         <a (activated)='expand(i)' *ngIf='!!result._collapse_count' (mouseover)='hoverCard.next(result)' clickOnReturn tabindex="0" role="button" [attr.aria-label]='"Expand card to see " + result._collapse_count + " similar results"'>
             <app-result-stack [result]='result' *ngIf='!!result._collapse_count'></app-result-stack>
         </a>
     </ng-container>
+    <div class='placeholder loading' *ngIf='!result'></div>
 </ng-container>
 <ng-container *ngIf='loading'>
     <ng-container *ngIf='!results.length'>
