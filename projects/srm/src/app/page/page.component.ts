@@ -6,7 +6,7 @@ import { SeoSocialShareService } from 'ngx-seo';
 import { from, Observable, Subject, timer } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, filter, first, map, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { AutoComplete, Card, DrawerState, SearchParams, SITUATION_FILTERS, ViewPort } from '../consts';
+import { AutoComplete, Card, DrawerState, prepareQuery, SearchParams, SITUATION_FILTERS, ViewPort } from '../consts';
 import { MapComponent } from '../map/map.component';
 import { SearchFiltersComponent } from '../search-filters/search-filters.component';
 import { DOCUMENT } from '@angular/common';
@@ -144,11 +144,7 @@ export class PageComponent implements OnInit {
         return x.cardsHash.localeCompare(y.cardsHash) === 0
       }),
       switchMap((spc) => {
-        if (spc.acId && spc.acId !== '') {
-          return this.getAutocomplete(spc);
-        } else {
-          return from([spc])
-        }
+        return this.getAutocomplete(spc);
       }),
     ).pipe(
       map((spc) => {
@@ -561,19 +557,26 @@ export class PageComponent implements OnInit {
 
   getAutocomplete(spc: SearchParamCalc) {
     let obs: Observable<AutoComplete | null>;
-    if (spc.acId !== this.ac_query) {
-      obs = this.api.getAutocompleteEntry(spc.acId);
+    if (!spc.acId && spc.ftQuery) {
+      obs = this.api.getAutocompleteEntry(prepareQuery(spc.ftQuery));
     } else {
-      obs = from([this.acResult]);
+      if (spc.acId !== this.ac_query) {
+        obs = this.api.getAutocompleteEntry(spc.acId);
+      } else {
+        obs = from([this.acResult]);
+      }  
     }
     return obs
       .pipe(
         tap((ac) => {
+          if (ac) {
+            spc.acId = ac.id;
+          }
+          spc.ac = ac;
           this.ac_query = spc.acId;
           this.acResult = ac;
         }),
-        map((ac) => {
-          spc.ac = ac;
+        map(() => {
           return spc;
         }),
       );

@@ -90,7 +90,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
 
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
               private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService,
-              @Inject(DOCUMENT) private document: any) { }
+              @Inject(DOCUMENT) private document: Document) { }
 
   ngOnInit(): void {
     this.parametersQueue.pipe(
@@ -118,7 +118,9 @@ export class CardContainerComponent implements OnInit, OnChanges {
           this.seo.setDescription(this.card.service_description);
         }
       }
-      this.seo.setUrl(this.document.location.href);
+      const loc = this.document.location;
+      this.seo.setUrl(loc.href);
+      this.seo.setCanonicalUrl(`https://${loc.host}/c/${this.cardId}`);
       this.calculateExitLink();
       this.platform.browser(() => {
         (this.scrolled?.nativeElement as HTMLElement)?.scrollTo(0, 0);
