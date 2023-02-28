@@ -137,11 +137,12 @@ export class BranchContainerComponent implements OnInit, OnChanges {
         const intersecting = entries.filter(e => e.isIntersecting);
         if (intersecting.length > 0) {
           const target = intersecting[0].target as HTMLElement;
-          const slideCard = JSON.parse(target.getAttribute('data-card') as string);
+          const slideCard: Card = JSON.parse(target.getAttribute('data-card') as string);
           const title = slideCard.organization_name_parts?.primary || slideCard.organization_name;
           const response_category = slideCard.response_category;
+          const card_id = slideCard.card_id;
           this.visibleCard = slideCard;
-          this.markerProps.emit({title, response_category});
+          this.markerProps.emit({title, response_category, card_id});
         }
       }, {threshold: 0.5});
       this.content?.nativeElement?.querySelectorAll('app-point-result-stack .card').forEach((el: HTMLElement) => {
