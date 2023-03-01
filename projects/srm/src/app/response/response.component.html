@@ -32,11 +32,13 @@
         <span
             [style.background]='pointBgColor'
             [style.border-color]='pointBorderColor'
+            [class.disabled]='disabled'
         ></span>
     </span>
     <span class='name'
         [class.small]='small'
         [class.selected]='selected'
+        [class.disabled]='disabled'
         [style.font-weight]='fontWeight'
     >{{response.name}}</span>
     <span class='icon' *ngIf='selected'></span>

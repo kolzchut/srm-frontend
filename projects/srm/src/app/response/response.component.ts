@@ -15,6 +15,7 @@ export class ResponseComponent implements OnChanges {
   @Input() suffix = true;
   @Input() selectable = false;
   @Input() selected = false;
+  @Input() disabled = false;
   @Input() small = false;
   @Output() clicked = new EventEmitter<void>();
 

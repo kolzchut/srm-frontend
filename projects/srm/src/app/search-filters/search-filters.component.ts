@@ -238,6 +238,10 @@ export class SearchFiltersComponent implements OnChanges {
     }
   }
 
+  isResponseCategoryDisabled(response: TaxonomyItem) {
+    return !!this.searchParams?.filter_response_categories && this.searchParams.filter_response_categories.length > 0 && !this.isResponseCategorySelected(response);
+  }
+
   onSituationChange(checked: boolean, item: TaxonomyItem, field: string) {
     const csp: any = this.currentSearchParams;
     let sits: string[] = csp[field] || [];

@@ -9,6 +9,7 @@
         <app-response *ngFor='let response of responseCategoryItems' 
                 [response]='response' 
                 [selected]='isResponseCategorySelected(response)'
+                [disabled]='isResponseCategoryDisabled(response)'
                 [link]='false'
                 [selectable]='true'
                 (clicked)='toggleResponseCategory(response)'
