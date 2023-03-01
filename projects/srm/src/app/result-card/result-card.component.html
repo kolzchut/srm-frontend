@@ -1,8 +1,8 @@
 <div class='title'>
     <span [class.compact]='compact' [class.stacked]='stacked' [class.smallDesktop]='smallDesktop' [innerHtml]='_h(card, "service_name")'></span>
     <ng-container *ngIf='showSnippet || compact || stacked || smallDesktop'>
-        <app-response [response]='card.responses[0]' [small]='small' [link]='false' *ngIf='card.responses.length'></app-response>
-        <app-situation [situation]='card.situations[0]' [small]='small' *ngIf='card.situations.length'></app-situation>    
+        <app-response [response]='r' [small]='small' [link]='false' *ngFor='let r of selectedResponses'></app-response>
+        <app-situation [situation]='s' [small]='small'  *ngFor='let s of selectedSituations'></app-situation>    
     </ng-container>
 </div>
 <ng-container *ngIf='!showSnippet && !compact && !stacked && !smallDesktop'>

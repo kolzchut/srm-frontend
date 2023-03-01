@@ -176,7 +176,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           });
         });
       });
-      res._collapse_count = 0;
+      // res._collapse_count = 0;
       this.results = this.results.slice(0, index + 1).concat(null).concat(this.results.slice(index + 1));
     }
   }

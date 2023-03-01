@@ -314,10 +314,11 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
-      params.highlight = 'service_name,service_name.hebrew';
+      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name,responses.name';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
+      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name,responses.name';
       params.match_operator = 'or';
     }
     const filter = this._filter(searchParams);
