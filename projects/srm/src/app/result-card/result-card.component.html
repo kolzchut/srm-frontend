@@ -7,8 +7,8 @@
 </div>
 <ng-container *ngIf='!showSnippet && !compact && !stacked && !smallDesktop'>
     <div class='title'>
-        <app-response [response]='card.responses[0]' [small]='small' [link]='false' *ngIf='card.responses.length'></app-response>
-        <app-situation [situation]='card.situations[0]' [small]='small' *ngIf='card.situations.length'></app-situation>    
+        <app-response [response]='r' [small]='small' [link]='false' *ngFor='let r of selectedResponses'></app-response>
+        <app-situation [situation]='s' [small]='small' *ngFor='let s of selectedSituations'></app-situation>    
     </div>
 </ng-container>
 <div class='snippet' [innerHtml]='snippet' *ngIf='showSnippet'></div>

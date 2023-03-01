@@ -30,10 +30,10 @@
            [class.animated]='!!result.__props?.slide'
            [class.slide-in]='!!result.__props?.slide_now'
         >
-            <app-result-stack [result]='result'></app-result-stack>
+            <app-result-stack [result]='result' [taxonomyIds]='selectedTaxonomyIds'></app-result-stack>
         </a>
         <a (activated)='expand(i)' *ngIf='!!result._collapse_count' (mouseover)='hoverCard.next(result)' clickOnReturn tabindex="0" role="button" [attr.aria-label]='"Expand card to see " + result._collapse_count + " similar results"'>
-            <app-result-stack [result]='result' *ngIf='!!result._collapse_count'></app-result-stack>
+            <app-result-stack [result]='result' [taxonomyIds]='selectedTaxonomyIds' *ngIf='!!result._collapse_count'></app-result-stack>
         </a>
     </ng-container>
     <div class='placeholder loading' *ngIf='!result'></div>

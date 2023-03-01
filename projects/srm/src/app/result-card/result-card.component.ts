@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Card, CARD_SNIPPET_FIELDS, _h } from '../consts';
+import { Card, CARD_SNIPPET_FIELDS, TaxonomyItem, _h } from '../consts';
 
 @Component({
   selector: 'app-result-card',
@@ -15,12 +15,15 @@ import { Card, CARD_SNIPPET_FIELDS, _h } from '../consts';
 export class ResultCardComponent implements OnChanges {
 
   @Input() card: Card;
+  @Input() taxonomyIds: string[];
   @Input() compact = false;
   @Input() stacked = false;
   @Input() small = true;
   @Input() smallDesktop = true;
   _h = _h;
   snippet: string | null = null;
+  selectedResponses: TaxonomyItem[] = [];
+  selectedSituations: TaxonomyItem[] = [];
 
   constructor(private sanitizer: DomSanitizer) { }
 
@@ -39,11 +42,31 @@ export class ResultCardComponent implements OnChanges {
         }
       }  
     }
+
+    this.selectedSituations = [];
+    this.card.situations?.forEach((s: TaxonomyItem) => {
+      if (this.taxonomyIds?.includes(s.id || '')) {
+        s.__selected = true;
+        this.selectedSituations.push(s);
+      }
+    });
+    this.selectedResponses = [];
+    this.card.responses?.forEach((r: TaxonomyItem) => {
+      if (this.taxonomyIds?.includes(r.id || '')) {
+        r.__selected = true;
+        this.selectedResponses.push(r);
+      }
+    });
+
     if (this.card?._highlights && this.card?._highlights['situations.name']) {
       const highlighted = this.card._highlights['situations.name'];
       if (highlighted.length === this.card?.situations?.length) {
         this.card.situations.forEach((s, i) => {
           s.name = highlighted[i];
+          if (!s.__selected && s.name.indexOf('<em>') >= 0) {
+            s.__selected = true;
+            this.selectedSituations.push(s);
+          }
         });
       }
     }
@@ -52,7 +75,27 @@ export class ResultCardComponent implements OnChanges {
       if (highlighted.length === this.card?.responses?.length) {
         this.card.responses.forEach((r, i) => {
           r.name = highlighted[i];
+          if (!r.__selected && r.name.indexOf('<em>') >= 0) {
+            r.__selected = true;
+            this.selectedResponses.push(r);
+          }
         });
+      }
+    }
+    if (this.selectedSituations.length === 0 && this.card.situations?.length > 0) {
+      this.selectedSituations.push(this.card.situations[0]);
+    }
+    if (this.card.responses?.length > 0) {
+      this.card.responses.forEach((r) => {
+        r.category = r.id?.split(':')[1];
+      });
+      if ((this.selectedResponses.length > 0 && this.card.response_category !== this.selectedResponses[0].category) || this.selectedResponses.length === 0) {
+        for (const r of this.card.responses) {
+          if (r.category === this.card.response_category) {
+            this.selectedResponses = [r, ...this.selectedResponses.filter((sr) => sr.id !== r.id)];
+            break;
+          }
+        }
       }
     }
   }

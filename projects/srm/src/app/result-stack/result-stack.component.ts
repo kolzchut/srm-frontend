@@ -10,6 +10,7 @@ import { LayoutService } from '../layout.service';
 export class ResultStackComponent implements OnInit {
 
   @Input() result: Card;
+  @Input() taxonomyIds: string[];
 
   _h = _h;
 

@@ -55,6 +55,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   totalNationalCount = 0;
   loading: boolean = true;
   viewport: ViewPort;
+  selectedTaxonomyIds: string[] = [];
 
   constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService, private seo: SeoSocialShareService) {
   }
@@ -69,6 +70,22 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         if (params.searchHash === this.searchHash) {
           return from([params]);
         } else {
+          this.selectedTaxonomyIds = [
+            params.response || '',
+            params.situation || '',
+            ...(params.filter_responses || []),
+            ...(params.filter_age_groups || []),
+            ...(params.filter_benefit_holders || []),
+            ...(params.filter_community || []),
+            ...(params.filter_employment || []),
+            ...(params.filter_gender || []),
+            ...(params.filter_health || []),
+            ...(params.filter_languages || []),
+            ...(params.filter_life_events || []),
+            ...(params.filter_role || []),
+            ...(params.filter_situations || []),
+            ...(params.filter_urgency || [])
+          ];
           return forkJoin([this.api.getCounts(params, false), this.api.getNationalCounts(params)]).pipe(
             tap(([counts, nationalCounts]) => {
               this.totalCount = counts.search_counts?._current?.total_overall || 0;

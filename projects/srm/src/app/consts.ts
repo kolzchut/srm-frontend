@@ -15,6 +15,7 @@ export class TaxonomyItem {
     name?: string;
     synonyms?: string[];
     category?: string;
+    __selected?: boolean;
 };
 export class DistinctItem {
     key?: string;
