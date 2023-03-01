@@ -205,6 +205,8 @@ export class ApiService {
       params.q = searchParams.query;
       params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name,responses.name';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
+      params.match_type = 'cross_fields';
+      params.match_operator = 'and';
       params.minscore = this.MIN_SCORE;
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
@@ -345,6 +347,8 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
+      params.match_type = 'cross_fields';
+      params.match_operator = 'and';
       params.minscore = this.MIN_SCORE;
     }
     let filter = this._filter(searchParams, false);
@@ -372,6 +376,8 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
+      params.match_type = 'cross_fields';
+      params.match_operator = 'and';
       params.minscore = this.MIN_SCORE;
     }
     const filter = this._filter(searchParams, false) || {};
@@ -391,6 +397,8 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
+      params.match_type = 'cross_fields';
+      params.match_operator = 'and';
       params.minscore = this.MIN_SCORE;
     }
     params.extra = 'distinct-situations|distinct-responses';
@@ -440,6 +448,8 @@ export class ApiService {
       params.q = searchParams.query;
       params.highlight = 'service_name,service_name.hebrew';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
+      params.match_type = 'cross_fields';
+      params.match_operator = 'and';
       params.minscore = this.MIN_SCORE;
     }
     const filter: any = {
@@ -464,7 +474,7 @@ export class ApiService {
       q: query.replace(/ עבור /g, ' ').replace(/ של /g, ' ').replace(/ באיזור /g, ' '),
       highlight: 'branch_name,branch_name.hebrew,service_name,service_name.hebrew',
       match_operator: 'or',
-      match_type: 'best_fields'
+      match_type: 'cross_fields'
     };
     return this.http.get(environment.cardsURL, {params}).pipe(
         map((res) => {
