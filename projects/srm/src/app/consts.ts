@@ -194,6 +194,8 @@ export class SearchParams {
     requiredCenter?: number[];
     national?: boolean;
 
+    selectedTaxonomyIds: string[] | null = null;
+
     get searchHash(): string {
       return [this.query, this.response, this.situation, this.org_id,
         ...SITUATION_FILTERS.map((f) => (this as any)['filter_' + f]?.join('|')),
@@ -202,5 +204,27 @@ export class SearchParams {
 
     get hasFilters(): boolean {
         return !!SITUATION_FILTERS.find((f) => (this as any)['filter_' + f]?.length);
+    }
+
+    get allTaxonomyIds(): string[] {
+        if (!this.selectedTaxonomyIds) {
+            this.selectedTaxonomyIds = [
+                this.response || '',
+                this.situation || '',
+                ...(this.filter_responses || []),
+                ...(this.filter_age_groups || []),
+                ...(this.filter_benefit_holders || []),
+                ...(this.filter_community || []),
+                ...(this.filter_employment || []),
+                ...(this.filter_gender || []),
+                ...(this.filter_health || []),
+                ...(this.filter_languages || []),
+                ...(this.filter_life_events || []),
+                ...(this.filter_role || []),
+                ...(this.filter_situations || []),
+                ...(this.filter_urgency || [])
+            ];
+        }
+        return this.selectedTaxonomyIds;
     }
 };

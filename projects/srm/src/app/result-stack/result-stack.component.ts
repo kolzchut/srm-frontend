@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Card, _h } from '../consts';
+import { Card, SearchParams, _h } from '../consts';
 import { LayoutService } from '../layout.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { LayoutService } from '../layout.service';
 export class ResultStackComponent implements OnInit {
 
   @Input() result: Card;
-  @Input() taxonomyIds: string[];
+  @Input() searchParams: SearchParams;
 
   _h = _h;
 

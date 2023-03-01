@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Card, CARD_SNIPPET_FIELDS, TaxonomyItem, _h } from '../consts';
+import { Card, CARD_SNIPPET_FIELDS, SearchParams, TaxonomyItem, _h } from '../consts';
 
 @Component({
   selector: 'app-result-card',
@@ -15,7 +15,7 @@ import { Card, CARD_SNIPPET_FIELDS, TaxonomyItem, _h } from '../consts';
 export class ResultCardComponent implements OnChanges {
 
   @Input() card: Card;
-  @Input() taxonomyIds: string[];
+  @Input() searchParams: SearchParams;
   @Input() compact = false;
   @Input() stacked = false;
   @Input() small = true;
@@ -45,14 +45,14 @@ export class ResultCardComponent implements OnChanges {
 
     this.selectedSituations = [];
     this.card.situations?.forEach((s: TaxonomyItem) => {
-      if (this.taxonomyIds?.includes(s.id || '')) {
+      if (this.searchParams?.allTaxonomyIds.includes(s.id || '')) {
         s.__selected = true;
         this.selectedSituations.push(s);
       }
     });
     this.selectedResponses = [];
     this.card.responses?.forEach((r: TaxonomyItem) => {
-      if (this.taxonomyIds?.includes(r.id || '')) {
+      if (this.searchParams?.allTaxonomyIds.includes(r.id || '')) {
         r.__selected = true;
         this.selectedResponses.push(r);
       }
@@ -89,9 +89,12 @@ export class ResultCardComponent implements OnChanges {
       this.card.responses.forEach((r) => {
         r.category = r.id?.split(':')[1];
       });
-      if ((this.selectedResponses.length > 0 && this.card.response_category !== this.selectedResponses[0].category) || this.selectedResponses.length === 0) {
+      const requiredCategory = this.searchParams?.filter_response_categories?.length === 1 ? 
+          this.searchParams.filter_response_categories[0].slice('human_services:'.length) : 
+          this.card.response_category;
+      if ((this.selectedResponses.length > 0 && requiredCategory !== this.selectedResponses[0].category) || this.selectedResponses.length === 0) {
         for (const r of this.card.responses) {
-          if (r.category === this.card.response_category) {
+          if (r.category === requiredCategory) {
             this.selectedResponses = [r, ...this.selectedResponses.filter((sr) => sr.id !== r.id)];
             break;
           }
