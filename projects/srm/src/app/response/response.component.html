@@ -36,8 +36,10 @@
     </span>
     <span class='name'
         [class.small]='small'
+        [class.selected]='selected'
         [style.font-weight]='fontWeight'
     >{{response.name}}</span>
+    <span class='icon' *ngIf='selected'></span>
 </div>
 <div class='response' *ngIf='!link && !selectable' 
     [style.background]='bgColor'
