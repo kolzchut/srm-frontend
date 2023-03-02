@@ -47,6 +47,7 @@ export class ResultCardComponent implements OnChanges {
     this.card.situations?.forEach((s: TaxonomyItem) => {
       if (this.searchParams?.allTaxonomyIds.includes(s.id || '')) {
         s.__selected = true;
+        s.name = '<em>' + s.name + '</em>';
         this.selectedSituations.push(s);
       }
     });
@@ -54,6 +55,7 @@ export class ResultCardComponent implements OnChanges {
     this.card.responses?.forEach((r: TaxonomyItem) => {
       if (this.searchParams?.allTaxonomyIds.includes(r.id || '')) {
         r.__selected = true;
+        r.name = '<em>' + r.name + '</em>';
         this.selectedResponses.push(r);
       }
     });
@@ -62,8 +64,8 @@ export class ResultCardComponent implements OnChanges {
       const highlighted = this.card._highlights['situations.name.hebrew'];
       if (highlighted.length === this.card?.situations?.length) {
         this.card.situations.forEach((s, i) => {
-          s.name = highlighted[i];
-          if (!s.__selected && s.name.indexOf('<em>') >= 0) {
+          if (!s.__selected && highlighted[i].indexOf('<em>') >= 0) {
+            s.name = highlighted[i];
             s.__selected = true;
             this.selectedSituations.push(s);
           }
@@ -74,8 +76,8 @@ export class ResultCardComponent implements OnChanges {
       const highlighted = this.card._highlights['responses.name.hebrew'];
       if (highlighted.length === this.card?.responses?.length) {
         this.card.responses.forEach((r, i) => {
-          r.name = highlighted[i];
-          if (!r.__selected && r.name.indexOf('<em>') >= 0) {
+          if (!r.__selected && highlighted[i].indexOf('<em>') >= 0) {
+            r.name = highlighted[i];
             r.__selected = true;
             this.selectedResponses.push(r);
           }

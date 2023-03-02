@@ -210,7 +210,6 @@ export class ApiService {
       params.minscore = this.MIN_SCORE;
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
-      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
       params.match_operator = 'or';
     }
     if (offset === 0) {
@@ -322,7 +321,6 @@ export class ApiService {
       params.match_operator = 'and';
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
-      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
       params.match_operator = 'or';
     }
     const filter = this._filter(searchParams);
