@@ -83,6 +83,19 @@ export class ApiService {
     return bounds;
   }
 
+  fullTextParams(params: any, options?: any) {
+    options = options || {};
+    params.match_type = 'cross_fields';
+    params.match_operator = 'and';
+    if (!options.no_highlight) {
+      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
+      params.snippets = CARD_SNIPPET_FIELDS.join(',');
+    }  
+    if (!options.no_minscore) {
+      params.minscore = this.MIN_SCORE;
+    }
+  }
+
   _filter(searchParams?: SearchParams | null, bound=true): any | null {
     let filter: any | null = null;
     if (searchParams && (searchParams.response || searchParams.situation || searchParams.filter_responses || 
@@ -203,11 +216,7 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
-      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
-      params.snippets = CARD_SNIPPET_FIELDS.join(',');
-      params.match_type = 'cross_fields';
-      params.match_operator = 'and';
-      params.minscore = this.MIN_SCORE;
+      this.fullTextParams(params);
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
       params.match_operator = 'or';
@@ -315,10 +324,7 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
-      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
-      params.snippets = CARD_SNIPPET_FIELDS.join(',');
-      params.match_type = 'cross_fields';
-      params.match_operator = 'and';
+      this.fullTextParams(params, {no_minscore: true});
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
       params.match_operator = 'or';
@@ -347,9 +353,7 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
-      params.match_type = 'cross_fields';
-      params.match_operator = 'and';
-      params.minscore = this.MIN_SCORE;
+      this.fullTextParams(params, {no_highlight: true});
     }
     let filter = this._filter(searchParams, false);
     if (searchParams.national) {
@@ -376,9 +380,7 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
-      params.match_type = 'cross_fields';
-      params.match_operator = 'and';
-      params.minscore = this.MIN_SCORE;
+      this.fullTextParams(params, {no_highlight: true});
     }
     const filter = this._filter(searchParams, false) || {};
     filter.national_service = true;
@@ -397,9 +399,7 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
-      params.match_type = 'cross_fields';
-      params.match_operator = 'and';
-      params.minscore = this.MIN_SCORE;
+      this.fullTextParams(params, {no_highlight: true});
     }
     params.extra = 'distinct-situations|distinct-responses';
     if (searchParams.response || searchParams.situation || searchParams.org_id || searchParams.national) {
@@ -446,11 +446,7 @@ export class ApiService {
     };
     if (searchParams?.query) {
       params.q = searchParams.query;
-      params.highlight = 'service_name,service_name.hebrew';
-      params.snippets = CARD_SNIPPET_FIELDS.join(',');
-      params.match_type = 'cross_fields';
-      params.match_operator = 'and';
-      params.minscore = this.MIN_SCORE;
+      this.fullTextParams(params);
     }
     const filter: any = {
       point_id: pointId,
@@ -549,7 +545,7 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
-      params.minscore = this.MIN_SCORE;
+      this.fullTextParams(params, {no_highlight: true});
     }
     params.extra = 'point-ids';
     const filter = this._filter(searchParams, false);
@@ -571,7 +567,7 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
-      params.minscore = this.MIN_SCORE;
+      this.fullTextParams(params, {no_highlight: true});
     }
     params.extra = 'point-ids-extended';
     const filter = this._filter(searchParams, false) || {};
