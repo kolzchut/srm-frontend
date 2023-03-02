@@ -203,14 +203,14 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
-      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name,responses.name';
+      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
       params.match_type = 'cross_fields';
       params.match_operator = 'and';
       params.minscore = this.MIN_SCORE;
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
-      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name,responses.name';
+      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
       params.match_operator = 'or';
     }
     if (offset === 0) {
@@ -316,13 +316,13 @@ export class ApiService {
     };
     if (searchParams.query) {
       params.q = searchParams.query;
-      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name,responses.name';
+      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
       params.match_type = 'cross_fields';
       params.match_operator = 'and';
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
-      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name,responses.name';
+      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
       params.match_operator = 'or';
     }
     const filter = this._filter(searchParams);
