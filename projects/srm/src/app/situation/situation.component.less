@@ -20,16 +20,24 @@
     background-position: center right;
     padding-right: 20px;
 
+    span {
+        height: 16px;
+        ::ng-deep {
+            em {
+                font-weight: 600;
+            }
+        }    
+    }
+
     &.small {
         height: 18px;
         font-size: 13px;
         background-size: 16px;
         padding-right: 16px;
-    }
 
-    ::ng-deep {
-        em {
-            font-weight: 600;
+        span {
+            height: 13px;
         }
     }
+
 }

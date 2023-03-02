@@ -318,6 +318,8 @@ export class ApiService {
       params.q = searchParams.query;
       params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name,responses.name';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
+      params.match_type = 'cross_fields';
+      params.match_operator = 'and';
     } else if (searchParams.structured_query) {
       params.q = searchParams.structured_query;
       params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name,responses.name';
