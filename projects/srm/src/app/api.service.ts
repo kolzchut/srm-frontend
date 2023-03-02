@@ -152,7 +152,7 @@ export class ApiService {
       q: query,
       highlight: 'query,query._2gram,query._3gram,query.hebrew',
       match_operator: 'and',
-      filter: JSON.stringify([{visible: true}]),
+      filter: JSON.stringify([{visible: true, low: false}]),
     };
     return this.http.get(environment.autocompleteURL, {params}).pipe(
         map((res) => {
@@ -267,6 +267,47 @@ export class ApiService {
   didYouMean(searchParams: SearchParams): Observable<string | null> {
     return from([null]).pipe(
       switchMap(() => {
+        console.log('did you mean', searchParams.query);
+        const SHARD_SIZE = 50;
+        const params: any = {
+          size: 1,
+          offset: 0,
+          extra: 'did-you-mean',
+          q: searchParams.query
+        };
+        this.fullTextParams(params, {no_highlight: true});
+        const filter = this._filter(searchParams, false);
+        if (filter) {
+          params.filter = JSON.stringify(filter);
+        }
+        return this.http.get(environment.cardsURL, {params}).pipe(
+          map((res: any) => {
+            const qcr = res as QueryCardResult;
+            const total = qcr.search_counts?._current?.total_overall || 0;
+            if (total < 10) {
+              return null;
+            }
+            if (qcr.possible_autocomplete && qcr.possible_autocomplete.length) {
+              const factor = Math.log(qcr.possible_autocomplete[0].key?.length || 2) / Math.log(2);
+              qcr.possible_autocomplete.forEach((p) => {
+                p.doc_count = (p.doc_count || 0) * Math.log(p.key?.length || 2) / factor;
+              });
+              qcr.possible_autocomplete.sort((a, b) => (b.doc_count || 0) - (a.doc_count || 0));
+              const best = qcr.possible_autocomplete[0];
+              const best_doc_count = best.doc_count || 0;
+              const threshold = (total < SHARD_SIZE ? total : SHARD_SIZE) / 3;
+              if (best_doc_count <= SHARD_SIZE && best_doc_count > threshold && best.key) {
+                return best.key;
+              }
+            }
+            return null;
+          }),
+        );    
+      }),
+      switchMap((suggestion) => {
+        if (suggestion) {
+          return from([suggestion]);
+        }
         if (searchParams.query) {
           return this.getAutoComplete(searchParams.query).pipe(
             map((results) => {
@@ -281,38 +322,6 @@ export class ApiService {
           return from([null]);
         }
       }),
-      switchMap((suggestion) => {
-        if (suggestion) {
-          return from([suggestion]);
-        }
-        const SHARD_SIZE = 50;
-        const params: any = {
-          size: 1,
-          offset: 0,
-          extra: 'did-you-mean',
-          q: searchParams.query
-        };
-        const filter = this._filter(searchParams, false);
-        if (filter) {
-          params.filter = JSON.stringify(filter);
-        }
-        return this.http.get(environment.cardsURL, {params}).pipe(
-          map((res: any) => {
-            const qcr = res as QueryCardResult;
-            if (qcr.possible_autocomplete && qcr.possible_autocomplete.length) {
-              const best = qcr.possible_autocomplete[0];
-              const total = qcr.search_counts?._current?.total_overall || 0;
-              const best_doc_count = best.doc_count || 0;
-              const threshold = (total > SHARD_SIZE ? SHARD_SIZE : total) / 3;
-              console.log('did you mean', best.key, best_doc_count, total);
-              if (best_doc_count <= SHARD_SIZE && best_doc_count > threshold && best.key) {
-                return best.key;
-              }
-            }
-            return null;
-          }),
-        );    
-      })
     );
   }
 
