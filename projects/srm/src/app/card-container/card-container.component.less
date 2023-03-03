@@ -120,10 +120,12 @@
         right: 0;
         z-index: 1;
         will-change: transform;
-        transform: translateY(100%);
-        &.visible {
-            transform: translateY(0.002%);
+        &:not(.safari) {
+            transform: translateY(100%);
+            &.visible {
+                transform: translateY(0.002%);
+            }
+            transition: transform 0.3s ease-in-out;    
         }
-        transition: transform 0.3s ease-in-out;
     }
 }

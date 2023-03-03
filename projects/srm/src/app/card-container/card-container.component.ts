@@ -89,7 +89,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
   showQuickActions = false;
 
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
-              private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService,
+              private el: ElementRef, private seo: SeoSocialShareService, public platform: PlatformService,
               @Inject(DOCUMENT) private document: Document) {
     if (platform.safari) {
       this.showQuickActions = true;

@@ -18,7 +18,7 @@
         <div class='menu-icon' *ngIf='landingPage'><app-menu-icon [dark]='true'></app-menu-icon></div>
         <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.original_query ? {q: searchParams?.original_query} : {}" role="button" aria-label="search"></a>
     </div>    
-    <div class='quick-actions' *ngIf='card' [class.visible]='showQuickActions'>
+    <div class='quick-actions' *ngIf='card' [class.visible]='showQuickActions' [class.safari]='platform.safari'>
         <app-quick-actions [card]='card'></app-quick-actions>
     </div>
 </div>
