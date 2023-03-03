@@ -124,6 +124,9 @@ export class CardContainerComponent implements OnInit, OnChanges {
       this.calculateExitLink();
       this.platform.browser(() => {
         (this.scrolled?.nativeElement as HTMLElement)?.scrollTo(0, 0);
+        timer(2000).subscribe(() => {
+          this.showQuickActions = true;
+        });  
       });
     });
   }
@@ -132,9 +135,6 @@ export class CardContainerComponent implements OnInit, OnChanges {
     this.parametersQueue.next({searchParams: this.searchParams, cardId: this.cardId, hash: ''});
     if (changes.cardId) {
       this.showQuickActions = false;
-      timer(2000).subscribe(() => {
-        this.showQuickActions = true;
-      });
     }
   }
 
