@@ -90,7 +90,11 @@ export class CardContainerComponent implements OnInit, OnChanges {
 
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
               private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService,
-              @Inject(DOCUMENT) private document: Document) { }
+              @Inject(DOCUMENT) private document: Document) {
+    if (platform.safari) {
+      this.showQuickActions = true;
+    }
+  }
 
   ngOnInit(): void {
     this.parametersQueue.pipe(
