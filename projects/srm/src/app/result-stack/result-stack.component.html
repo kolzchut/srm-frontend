@@ -1,6 +1,6 @@
 <div class='branch' [class.collapsible]='collapsible'>
     <div class='branch-headers'>
-        <ng-container *ngIf='result.branch_city'>
+        <ng-container *ngIf='result.branch_city && !result.national_service'>
             <ng-container *ngIf='result.organization_short_name'>
                 <span class='org' [innerHTML]="_h(result, 'organization_short_name') + '&nbsp;/&nbsp;'"></span>
             </ng-container>
