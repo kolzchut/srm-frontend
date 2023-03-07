@@ -150,13 +150,8 @@ export class PageComponent implements OnInit {
       map((spc) => {
         console.log('SEARCH PARAMS CALC', spc);
         if (this.stage === 'search-results') {
-          if (spc.ac) {
-            this.seo.setTitle(`${spc.ac.query_heb} | כל שירות`)
-            this.seo.setUrl(this.document.location.href);
-          } else {
-            this.seo.setTitle(`${spc.ftQuery} | כל שירות`)
-            this.seo.setUrl(this.document.location.href);
-          }
+          this.seo.setTitle(`${spc.resolvedQuery} | כל שירות`)
+          this.seo.setUrl(this.document.location.href);
         }
 
         const fs = spc.fs?.split('|').map(x => 'human_situations:' + x) || [];
@@ -282,6 +277,10 @@ export class PageComponent implements OnInit {
         this.easeTo({center: [rc[0], rc[1]], zoom: rc[2], duration: 0});
         // this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
       } 
+      params.original_query && window.gtag && gtag('event', 'page_view', {
+        page_title: params.original_query + ' ' + params.allTaxonomyIds.join('|'),
+        page_location: 'https://www.kolsherut.org.il/fake-search-page.php?q=' + encodeURIComponent(params.original_query),
+      });
     });
     route.params.pipe(
       untilDestroyed(this),
