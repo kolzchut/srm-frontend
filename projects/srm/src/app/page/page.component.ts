@@ -279,10 +279,12 @@ export class PageComponent implements OnInit {
       } 
       if (params.original_query && window.gtag) {
         const title = params.original_query + ' ' + params.allTaxonomyIds.join('|');
+        const path = '/fake-search-page.php?query=' + encodeURIComponent(params.original_query);
         console.log('PAGE VIEW search', title);
         window.gtag('event', 'page_view', {
           page_title: title,
-          page_location: 'https://www.kolsherut.org.il/fake-search-page.php?query=' + encodeURIComponent(params.original_query),
+          page_location: 'https://www.kolsherut.org.il' + path,
+          page_path: path
         });
       }
     });
