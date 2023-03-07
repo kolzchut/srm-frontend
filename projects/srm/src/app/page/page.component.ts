@@ -284,7 +284,7 @@ export class PageComponent implements OnInit {
         const path = '/fake-search-page.php?query=' + encodeURIComponent(params.original_query);
         console.log('PAGE VIEW search', title);
         window.gtag({
-          event: page_view,
+          event: 'page_view',
           page_title: title,
           page_location: 'https://www.kolsherut.org.il' + path,
           page_path: path
