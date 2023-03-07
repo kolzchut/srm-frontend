@@ -3,7 +3,6 @@ import { NavigationEnd, Router } from '@angular/router';
 import { SeoSocialShareService } from 'ngx-seo';
 import { debounceTime, filter } from 'rxjs';
 import { environment } from '../environments/environment';
-import { AnalyticsService } from './analytics.service';
 import { PlatformService } from './platform.service';
 
 @Component({

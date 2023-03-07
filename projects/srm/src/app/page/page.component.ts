@@ -277,10 +277,14 @@ export class PageComponent implements OnInit {
         this.easeTo({center: [rc[0], rc[1]], zoom: rc[2], duration: 0});
         // this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
       } 
-      params.original_query && window.gtag && gtag('event', 'page_view', {
-        page_title: params.original_query + ' ' + params.allTaxonomyIds.join('|'),
-        page_location: 'https://www.kolsherut.org.il/fake-search-page.php?query=' + encodeURIComponent(params.original_query),
-      });
+      if (params.original_query && window.gtag) {
+        const title = params.original_query + ' ' + params.allTaxonomyIds.join('|');
+        console.log('PAGE VIEW search', title);
+        window.gtag('event', 'page_view', {
+          page_title: title,
+          page_location: 'https://www.kolsherut.org.il/fake-search-page.php?query=' + encodeURIComponent(params.original_query),
+        });
+      }
     });
     route.params.pipe(
       untilDestroyed(this),
