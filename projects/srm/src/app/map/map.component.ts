@@ -804,7 +804,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
         delay(10)
       );  
     }    
-    obs?.subscribe(({props: any, stable: boolean}) => {
+    obs?.subscribe(({props, stable}) => {
       const el = (stable ? this.stablePopupEl : this.hoverPopupEl)?.nativeElement as HTMLElement;
       let popup: mapboxgl.Popup | null = null;
       if (props && el) {
