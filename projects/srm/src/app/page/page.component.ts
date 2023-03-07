@@ -279,7 +279,7 @@ export class PageComponent implements OnInit {
       } 
       params.original_query && window.gtag && gtag('event', 'page_view', {
         page_title: params.original_query + ' ' + params.allTaxonomyIds.join('|'),
-        page_location: 'https://www.kolsherut.org.il/fake-search-page.php?q=' + encodeURIComponent(params.original_query),
+        page_location: 'https://www.kolsherut.org.il/fake-search-page.php?query=' + encodeURIComponent(params.original_query),
       });
     });
     route.params.pipe(
