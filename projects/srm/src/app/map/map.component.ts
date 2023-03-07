@@ -411,7 +411,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
                 return this.api.getPoint(props.point_id, this.searchParams).pipe(
                   map((cards) => {
                     if (cards.length === 0) {
-                      return {};
+                      return null;
                     }
                     const ret: any = {
                       point_id: props.point_id,

@@ -329,7 +329,7 @@ export class ApiService {
     const params: any = {
       size: 1000,
       offset: 0,
-      order: '-_score'
+      // order: '-_score'
     };
     if (searchParams.query) {
       params.q = searchParams.query;
@@ -451,7 +451,7 @@ export class ApiService {
     const params: any = {
       size: 70,
       offset: 0,
-      order: '-_score'
+      // order: '-_score'
     };
     if (searchParams?.query) {
       params.q = searchParams.query;
