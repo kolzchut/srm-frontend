@@ -5,6 +5,8 @@ import { debounceTime, filter } from 'rxjs';
 import { environment } from '../environments/environment';
 import { PlatformService } from './platform.service';
 
+declare const window: any;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -26,9 +28,10 @@ export class AppComponent {
           platform.browser(() => {
             const event = event_ as NavigationEnd;
             console.log('PAGE VIEW', event.urlAfterRedirects);
-            window.gtag && gtag('config', environment.gaTag, {
-              'page_path': event.urlAfterRedirects
-            });  
+            window.gtag && window.gtag({
+              event: 'page_view',
+              page_path: event.urlAfterRedirects
+            });
           })
         });
       }

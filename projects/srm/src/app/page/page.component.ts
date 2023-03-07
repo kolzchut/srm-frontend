@@ -14,6 +14,8 @@ import { PlatformService } from '../platform.service';
 import { LayoutService } from '../layout.service';
 import * as mapboxgl from 'mapbox-gl';
 
+declare const window: any;
+
 class SearchParamCalc {
   acId: string;
   ftQuery: string;
@@ -281,11 +283,12 @@ export class PageComponent implements OnInit {
         const title = params.original_query + ' ' + params.allTaxonomyIds.join('|');
         const path = '/fake-search-page.php?query=' + encodeURIComponent(params.original_query);
         console.log('PAGE VIEW search', title);
-        window.gtag('event', 'page_view', {
+        window.gtag({
+          event: page_view,
           page_title: title,
           page_location: 'https://www.kolsherut.org.il' + path,
           page_path: path
-        });
+      });
       }
     });
     route.params.pipe(
