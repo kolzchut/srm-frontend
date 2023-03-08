@@ -619,7 +619,7 @@ export class PageComponent implements OnInit {
   }
 
   centerMap(center: LngLatLike) {
-    if (this.map.map.getZoom() < 12) {
+    if (this.map?.map?.getZoom() < 12) {
       console.log('ACTION CENTERING', center);
       this.easeTo({center, zoom: 12, duration: 3000, curve: 1.42, easing: (t: number) => 1 - Math.pow(1 - t, 5)});
     }
