@@ -278,17 +278,18 @@ export class PageComponent implements OnInit {
         const rc = params.requiredCenter;
         this.easeTo({center: [rc[0], rc[1]], zoom: rc[2], duration: 0});
         // this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
-      } 
+      }
       if (params.original_query && window.gtag) {
         const title = params.original_query + ' ' + params.allTaxonomyIds.join('|');
-        const path = '/fake-search-page.php?query=' + encodeURIComponent(params.original_query);
-        console.log('PAGE VIEW search', title);
-        window.gtag({
-          event: 'page_view',
-          page_title: title,
-          page_location: 'https://www.kolsherut.org.il' + path,
-          page_path: path
-      });
+        timer(2000).subscribe(() => {
+          console.log('EVENT search', title);
+          window.gtag({
+            event: 'search',
+            search_term: title,
+            debug_mode: 1,
+            ignore_referrer: 1
+          });
+        });
       }
     });
     route.params.pipe(
