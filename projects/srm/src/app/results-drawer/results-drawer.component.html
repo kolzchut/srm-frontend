@@ -5,12 +5,12 @@
 
     <ng-container *ngIf='nationalCount > 0'>
         <a class='national-services' [routerLink]='["."]' [queryParams]="{national: 'yes'}" [queryParamsHandling]='"merge"' [preserveFragment]="true"
-            *ngIf='state !== DrawerState.National' role='button' aria-label='filter results to show only national services'>
+            *ngIf='state !== DrawerState.National' role='button' aria-label='סינון התוצאות להצגת שירותים ארציים בלבד'>
          <span>+ {{ nationalCount }} שירותים ארציים</span>
      </a>
      <div class='national-services' *ngIf='state === DrawerState.National'>
          <span>+ {{ nationalCount }} שירותים ארציים</span>
-         <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" *ngIf='!scrollAll' aria-label='filter results to show national and local services'></a>
+         <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" *ngIf='!scrollAll' aria-label='סינון התוצאות להצגת גם שירותים מקומיים וגם ארציים'></a>
      </div>
      <div class='national-services-explanation layout-desktop' *ngIf='state === DrawerState.National'>
         *השירותים ניתנים בכל הארץ

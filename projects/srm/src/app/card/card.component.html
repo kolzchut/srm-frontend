@@ -40,7 +40,7 @@
             <app-card-action-nav [card]='card' [org]='true'></app-card-action-nav>
         </div>
         <div class='org-branches' *ngIf='card.organization_branch_count > 1'>
-            <a (click)='showAllBranches()' clickOnReturn aria-label="Show all of this organizations's branches">{{card.organization_branch_count}} סניפים בארץ ←</a>
+            <a (click)='showAllBranches()' clickOnReturn aria-label="הצגת כל סניפי הארגון">{{card.organization_branch_count}} סניפים בארץ ←</a>
         </div>
     </div>
     <div class='data-sources'>

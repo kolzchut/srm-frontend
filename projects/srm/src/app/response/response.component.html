@@ -3,7 +3,7 @@
 [routerLink]='search ? ["/q"] : ["/s", responseQuery]'
 [queryParams]='search ? {q: response.name} : null'
 [class.small]='small'
-[attr.aria-label]='"Search " + response.name'
+[attr.aria-label]='"חיפוש " + response.name'
 >
     <span class='point'>
         <span
@@ -25,7 +25,7 @@
     (click)='onClick()'
     [class.small]='small'
     role='button'
-    [attr.aria-label]='"Toggle " + response.name'
+    [attr.aria-label]='selected ? ("ביטול בחירת " + response.name) : ("בחירת " + response.name)'
     tabindex="0"
 >
     <span class='point'>

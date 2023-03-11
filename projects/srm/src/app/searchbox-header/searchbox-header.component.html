@@ -1,4 +1,4 @@
-<a class='logo layout-desktop' [routerLink]='["/"]' aria-label='Go to Home Page'></a>
+<a class='logo layout-desktop' [routerLink]='["/"]' aria-label='חזרה לעמוד הבית'></a>
 <div class='searchbox'>
     <app-menu-icon *ngIf='layout.mobile'></app-menu-icon>
     <a class='clickable' [routerLink]='["/q"]' [queryParams]='{q: searchParams?.original_query}' [title]='searchParams?.original_query'>

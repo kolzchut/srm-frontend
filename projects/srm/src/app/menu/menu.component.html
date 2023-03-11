@@ -5,15 +5,17 @@
     [class.enter]='active'
     [class.visible]='visible'
     role="dialog"
-    aria-label="Main Menu"
+    aria-label="תפריט ראשי"
     [attr.aria-modal]='active ? "true" : "false"'
 >
     <div class='container'>
-        <a class='logo' [routerLink]='["/"]' #menu aria-label="Go to Home Page"></a>
+        <a class='logo' [routerLink]='["/"]' #menu aria-label="מעבר לדף הבית"></a>
         <a class='menu-item' [routerLink]='["/"]' i18n>דף הבית</a>
         <a class='menu-item' [routerLink]='["/about", "kolsherut"]' i18n>אודות המפה</a>
         <a class='menu-item' [routerLink]='["/about", "partners"]' i18n>שותפים</a>
-        <a class='menu-item' i18n  href='https://www.kolzchut.org.il/he/כל-זכות:כל-שירות_-_מדיניות_השימוש' target='_blank' (click)='closeMe(null)'>
+        <a class='menu-item' i18n  href='https://www.kolzchut.org.il/he/כל-זכות:כל-שירות_-_מדיניות_השימוש' target='_blank' (click)='closeMe(null)'
+            aria-label='מדיניות האתר - נפתח בחלון חדש'
+        >
             מדיניות האתר
         </a>
         <a class='menu-item' [routerLink]='["/about", "contact"]' i18n>צרו קשר</a>
@@ -24,5 +26,5 @@
             <div *ngFor='let url of logoUrls' class='logo-strip-item' [style.background-image]='"url(" + url + ")"'></div>    
         </div>
     </div>
-    <div class='closer' (activated)='closeMe(null)' clickOnReturn tabindex="0" role="button" aria-label="Close Menu"></div>
+    <div class='closer' (activated)='closeMe(null)' clickOnReturn tabindex="0" role="button" aria-label="סגירת התפריט הראשי"></div>
 </div>

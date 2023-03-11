@@ -14,9 +14,9 @@
     </ng-container>
 </div>
 <div class='controls'>
-    <a class='back' [routerLink]='["../.."]' queryParamsHandling='preserve' *ngIf='!landingPage' role='button' aria-label="go back"></a>
+    <a class='back' [routerLink]='["../.."]' queryParamsHandling='preserve' *ngIf='!landingPage' role='button' aria-label="חזרה לעמוד הקודם"></a>
     <div class='menu-icon' *ngIf='landingPage'><app-menu-icon [dark]='true'></app-menu-icon></div>
-    <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.original_query ? {q: searchParams?.original_query} : {}" role="button" aria-label="search"></a>
+    <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.original_query ? {q: searchParams?.original_query} : {}" role="button" aria-label="ביצוע חיפוש במערכת"></a>
 </div>
 <div class='quick-actions' [style.bottom]='"0px"' *ngIf='actionsCard'>
     <app-quick-actions [card]='actionsCard'></app-quick-actions>

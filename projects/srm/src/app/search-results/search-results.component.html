@@ -2,7 +2,7 @@
 <div class='counts' *ngIf='hasCounts && !searchParams?.national'>
     <div class='line' *ngIf='totalCount > 0'>
         <span class='strong'>{{totalVisibleCount.toLocaleString()}} תוצאות על המפה</span>
-        <span *ngIf='totalCount - totalNationalCount > 0'>מתוך {{totalCount.toLocaleString()}} <a (activated)='zoomout.emit(viewport)' clickOnReturn role="button" aria-label="zoom out to get all services" tabindex="0">בכל הארץ</a></span>
+        <span *ngIf='totalCount - totalNationalCount > 0'>מתוך {{totalCount.toLocaleString()}} <a (activated)='zoomout.emit(viewport)' clickOnReturn role="button" aria-label="הצגת כלל התוצאות הרלוונטיות לכל הארץ" tabindex="0">בכל הארץ</a></span>
         <span *ngIf='totalCount - totalNationalCount === 0'>מתוך {{totalCount.toLocaleString()}} בכל הארץ</span>
     </div>
     <ng-container *ngIf='searchParams.hasFilters'>
@@ -24,7 +24,7 @@
 <ng-container *ngFor='let result of results; let i=index'>
     <ng-container *ngIf='!!result'>
         <a [routerLink]='["c", result.card_id]' [queryParamsHandling]='"merge"' *ngIf='!result._collapse_count' 
-           (mouseover)='hoverCard.next(result)' [attr.aria-label]='"Open the " + result.service_name + " card"'
+           (mouseover)='hoverCard.next(result)' [attr.aria-label]='"פתיחת עמוד השירות של " + result.service_name'
            [style.transition-delay]='(result.__props?.slide * 100) + "ms"'
            [style.z-index]='result.__props?.z'
            [class.animated]='!!result.__props?.slide'
@@ -32,7 +32,7 @@
         >
             <app-result-stack [result]='result' [searchParams]='searchParams'></app-result-stack>
         </a>
-        <a (activated)='expand(i)' *ngIf='!!result._collapse_count' (mouseover)='hoverCard.next(result)' clickOnReturn tabindex="0" role="button" [attr.aria-label]='"Expand card to see " + result._collapse_count + " similar results"'>
+        <a (activated)='expand(i)' *ngIf='!!result._collapse_count' (mouseover)='hoverCard.next(result)' clickOnReturn tabindex="0" role="button" [attr.aria-label]='"הרחבת הכרטיס וצפייה ב- " + result._collapse_count + " תוצאות דומות"'>
             <app-result-stack [result]='result' [searchParams]='searchParams' *ngIf='!!result._collapse_count'></app-result-stack>
         </a>
     </ng-container>

@@ -23,6 +23,7 @@ export type SearchParamsOffset = {
     '[class.empty]' : 'results.length === 0',
     'role': 'feed',
     '[attr.aria-busy]': 'loading ? "true" : "false"',
+    'aria-label': 'רשימת תוצאות החיפוש, כוללת את המידע על כלל הנקודות המופיעות על גבי המפה'
   }
 })
 export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit {

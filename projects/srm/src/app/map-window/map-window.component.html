@@ -5,7 +5,7 @@
         [class.passthrough]='passthrough()'
         [routerLink]='link'
         [attr.role]='link ? "button" : "presentation"'
-        [attr.aria-label]='link ? "See all services in this branch" : null'
+        [attr.aria-label]='link ? "צפייה בכל השירותים שבסניף זה" : null'
         [attr.aria-hidden]='link ? "false" : "true"'
         queryParamsHandling='preserve'>
     <div class='message-blur' *ngIf='mode === MapWindowMode.Inaccurate || mode === MapWindowMode.NationalService'>&nbsp;</div>
