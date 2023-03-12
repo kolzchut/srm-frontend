@@ -58,19 +58,21 @@
         <app-search-filters-situation-section title='לדוברי שפות (שאינן עברית)' [situations]='languages' [searchParams]='currentSearchParams' [field]='"filter_languages"' (push)='pushSearchParams()'></app-search-filters-situation-section>
     </div>
     <div class='submit'>
-        <button class='main' (click)='closeWithParams()'>
-            <img src='assets/img/icon-filter-gray-1.svg' class='arrow' alt="אייקון סינון">
-            <strong>הצג רשימה</strong>&nbsp;
-            <span *ngIf='resultCount > 1'>({{resultCount.toLocaleString()}} תוצאות)</span>
-            <span *ngIf='resultCount === 1'>(תוצאה אחת)</span>
-            <span *ngIf='resultCount === 0'>(אין תוצאות)</span>
-            <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div>
-        </button>
-        <a class='cancel' (activated)='clear()' *ngIf='totalFilters' clickOnReturn role='button' tabindex="0" aria-label="ניקוי כלל המסננים">
-            ניקוי
-        </a>
-        <a class='cancel' (activated)='clear()' *ngIf='!totalFilters' clickOnReturn role='button' tabindex="0" aria-label="סגירת אפשרויות הסינון ללא שמירה">
-            ביטול
-        </a>
+        <div class='inner'>
+            <button class='main' (click)='closeWithParams()'>
+                <img src='assets/img/icon-filter-gray-1.svg' class='arrow' alt="אייקון סינון">
+                <strong>הצג רשימה</strong>&nbsp;
+                <span *ngIf='resultCount > 1'>({{resultCount.toLocaleString()}} תוצאות)</span>
+                <span *ngIf='resultCount === 1'>(תוצאה אחת)</span>
+                <span *ngIf='resultCount === 0'>(אין תוצאות)</span>
+                <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div>
+            </button>
+            <a class='cancel' (activated)='clear()' *ngIf='totalFilters' clickOnReturn role='button' tabindex="0" aria-label="ניקוי כלל המסננים">
+                ניקוי
+            </a>
+            <a class='cancel' (activated)='clear()' *ngIf='!totalFilters' clickOnReturn role='button' tabindex="0" aria-label="סגירת אפשרויות הסינון ללא שמירה">
+                ביטול
+            </a>
+        </div>  
     </div>
 </ng-container>
