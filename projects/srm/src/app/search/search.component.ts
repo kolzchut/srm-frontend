@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { SeoSocialShareService } from 'ngx-seo';
 import { Subject, timer } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
@@ -38,7 +39,7 @@ export class SearchComponent implements OnInit {
   noResults = false;
 
   constructor(private api: ApiService, public location: Location, private route: ActivatedRoute, private router: Router,
-      private platform: PlatformService, public layout: LayoutService) {
+      private platform: PlatformService, public layout: LayoutService, private seo: SeoSocialShareService) {
     api.getPresets().subscribe(presets => {
       console.table(presets);
       this.presets = presets.map((preset) => {
@@ -106,6 +107,7 @@ export class SearchComponent implements OnInit {
         el.focus();
       });  
     });
+    this.seo.setTitle('כל שירות | חיפוש שירותים ומענים חברתיים');
   }
 
   get query() {
