@@ -1,7 +1,9 @@
 <a class='logo layout-desktop' [routerLink]='["/"]' aria-label='חזרה לעמוד הבית'></a>
 <div class='searchbox'>
     <app-menu-icon *ngIf='layout.mobile'></app-menu-icon>
-    <a class='clickable' [routerLink]='["/q"]' [queryParams]='{q: searchParams?.original_query}' [title]='searchParams?.original_query'>
+    <a class='clickable' [routerLink]='["/q"]' [queryParams]='{q: searchParams?.original_query}' [title]='searchParams?.original_query'
+       aria-label='ביצוע חיפוש חדש באתר כל שירות'
+        >
         <div class='search-params' *ngIf='placeholder'>
             <span class='placeholder'>{{placeholder}}</span>
         </div>
@@ -39,7 +41,7 @@
 </div>
 <div *ngIf='didYouMean' class='did-you-mean layout-mobile'>
     <span>האם התכוונת&nbsp;</span>
-    <a [routerLink]='["/s", didYouMean.link]'>
+    <a [routerLink]='["/s", didYouMean.link]' [attr.aria-label]='"שינוי החיפוש לחיפוש מובנה של " + didYouMean.display'>
         {{didYouMean.display}}
     </a><span>?</span>
 </div>

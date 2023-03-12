@@ -1,4 +1,4 @@
-<div class='container'>
-    <div class='closer' (click)='closeMe()'></div>
+<div class='container' role='dialog' aria-modal='true'>
+    <div class='closer' (activated)='closeMe()' clickOnReturn role="button" tabindex="0" aria-label="סגירת תיבת הטקסט וחזרה לעמוד הקודם"></div>
     <ng-content></ng-content>
 </div>

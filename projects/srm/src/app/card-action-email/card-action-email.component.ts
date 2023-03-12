@@ -17,6 +17,7 @@ export class CardActionEmailComponent implements OnChanges {
   action = '';
   display = '';
   active = false;
+  orgname = '';
 
   constructor() { }
 
@@ -27,6 +28,7 @@ export class CardActionEmailComponent implements OnChanges {
     } else {
       email = this.card?.service_email_address || this.card?.branch_email_address || this.card?.organization_email_address;
     }
+    this.orgname = this.card?.organization_name_parts.primary || this.card?.organization_short_name || this.card?.organization_name || 'ארגון';
     console.log('EMAIL', email);
     this.active = false;
     if (email && email.length) {

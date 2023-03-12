@@ -32,7 +32,8 @@
         >
             <app-result-stack [result]='result' [searchParams]='searchParams'></app-result-stack>
         </a>
-        <a (activated)='expand(i)' *ngIf='!!result._collapse_count' (mouseover)='hoverCard.next(result)' clickOnReturn tabindex="0" role="button" [attr.aria-label]='"הרחבת הכרטיס וצפייה ב- " + result._collapse_count + " תוצאות דומות"'>
+        <a (activated)='expand(i)' *ngIf='!!result._collapse_count' (mouseover)='hoverCard.next(result)' clickOnReturn tabindex="0" role="button"
+           [attr.aria-label]='"הרחבת הכרטיס של " + result.service_name + " וצפייה ב- " + result._collapse_count + " תוצאות דומות"'>
             <app-result-stack [result]='result' [searchParams]='searchParams' *ngIf='!!result._collapse_count'></app-result-stack>
         </a>
     </ng-container>

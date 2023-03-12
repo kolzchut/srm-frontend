@@ -7,24 +7,24 @@
         </span>
     </div>
     <div class='responses'>
-        <label i18n>מהות השירות:</label>
+        <h2 i18n>מהות השירות:</h2>
         <div class='list'>
             <app-response *ngFor='let response of card.responses' [response]='response'></app-response>
         </div>
     </div>
     <div class='situations' *ngIf='card.situations && card.situations.length'>
-        <label i18n>השירות מתאים עבור:</label>
+        <h2 i18n>השירות מתאים עבור:</h2>
         <div class='list'>
             <app-situation *ngFor='let situation of card.situations' [situation]='situation'></app-situation>
         </div>
     </div>
     <div class='terms' *ngIf='card.service_details || card.service_payment_details'>
-        <label i18n>תנאים לקבלת השירות:</label>
+        <h2 i18n>תנאים לקבלת השירות:</h2>
         <div [innerHTML]='card.service_details' *ngIf='card.service_details'></div>
         <div [innerHTML]='card.service_payment_details' *ngIf='card.service_payment_details'></div>
     </div>
     <div class='org'>
-        <label i18n>השירות ניתן ע״י:</label>
+        <h2 i18n>השירות ניתן ע״י:</h2>
         <div class='org-name' *ngIf='card.organization_name_parts'>
             <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href' target='_blank'>{{card.organization_name_parts.primary}}</a>
             <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name_parts.primary}}</span>

@@ -30,9 +30,9 @@
                     <div *ngIf='didYouMean && !filtersVisible' class='did-you-mean layout-desktop'>
                         <div class='inner'>
                             <span>האם התכוונת&nbsp;</span>
-                            <a [routerLink]='["/s", didYouMean.link]'>
+                            <a [routerLink]='["/s", didYouMean.link]' [attr.aria-label]='"שינוי החיפוש לחיפוש מובנה של " + didYouMean.display'>
                                 {{didYouMean.display}}
-                            </a><span>?</span>    
+                            </a><span>?</span>
                         </div>
                     </div>                
                     <app-search-filters 
@@ -102,4 +102,5 @@
         (map)='map = $event'
         (mapBounds)='bounds = $event'
         aria-hidden='true'
+        tabindex="-1"
 ></app-map>

@@ -386,6 +386,9 @@ export class MapComponent implements OnChanges, AfterViewInit {
             //   this.map.getCanvas().style.cursor = '';
             // });
           });
+          this.mapEl.nativeElement.querySelectorAll('a, button').forEach(function(item: HTMLElement) { 
+            item.setAttribute('tabindex', '-1'); 
+          });
           this.map.on('mousemove', (e: mapboxgl.MapLayerMouseEvent) => {
             if (e.defaultPrevented || this.layout.mobile) {
               return;
