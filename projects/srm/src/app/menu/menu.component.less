@@ -102,29 +102,7 @@
                 // }
             }
         }
-    
-        .logos-strip {
-            height: 96px;
-            flex: 0 0 auto;
-            background: @color-white;
-            padding: 24px 0;
-            overflow: hidden;
-    
-            .scroller {
-                width: 200%;
-                animation: marquee 7s linear infinite;
-                display: flex;
-                flex-flow: row nowrap;
-                align-items: center;
-            }
-            .logo-strip-item {
-                margin: 0 16px;
-                height: 48px;
-                width: 100px;
-                .background-image;
-            }
-        }
-    
+        
         .closer {
             cursor: pointer;
             .background-image;
@@ -136,15 +114,6 @@
             background-image: url(../../assets/img/icon-close.svg);
             opacity: 0.8;
         }
-    }
-}
-
-@keyframes marquee {
-    from {
-        transform: translateX(0);
-    }
-    to {
-        transform: translateX(50%);
     }
 }
 

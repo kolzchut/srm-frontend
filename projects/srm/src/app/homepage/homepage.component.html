@@ -5,10 +5,10 @@
         </div>
         <div class='logo-tagline'>
             <div class='logo' alt='לוגו האתר ״כל שירות״'></div>
-            <h2 class='tagline'>
+            <h1 class='tagline'>
                 <span>כל השירותים והמענים החברתיים</span>
                 <span>שניתן למצוא על מפה אחת</span>
-            </h2>
+            </h1>
         </div>
         <app-desktop-menu-links></app-desktop-menu-links>
     </div>    
@@ -17,7 +17,7 @@
             <strong>אספנו וסיווגנו {{totalServices.toLocaleString()}} שירותים חברתיים</strong> מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים.
         </p>
         <a class='searchbox' [routerLink]='["/q"]' [class.cta]='slide === 3' tabindex="0">
-            <h1 [class.active]='slide === 0'>כל שירות</h1>
+            <div class='title' [class.active]='slide === 0'>כל שירות</div>
             <div class='subtitle'>
                 <span [class.active]='slide === 1' class='situation'>לכל מצב</span>
                 <span class='separator'></span>
@@ -73,11 +73,6 @@
             <a class='kolzchut' aria-label='מעבר לאתר של כל זכות בטאב חדש' href='https://www.kolzchut.org.il/he/%D7%A2%D7%9E%D7%95%D7%93_%D7%A8%D7%90%D7%A9%D7%99' target="_blank"></a>
             <a class='moj' aria-label='מעבר לאתר של משרד המשפטים בטאב חדש' href='https://www.gov.il/he/departments/ministry_of_justice/govil-landing-page' target="_blank"></a>
             <a class='digital-israel' aria-label='מעבר לאתר של מערך הדיגיטל הלאומי בטאב חדש' href='https://www.gov.il/he/departments/national-digital-agency/govil-landing-page' target="_blank"></a>    
-        </div>
-        <div class='logo-block layout-mobile' aria-hidden="true">
-            <a class='kolzchut' role="presentation"></a>
-            <a class='moj' role="presentation"></a>
-            <a class='digital-israel' role="presentation"></a>    
         </div>
     </div>
 </div>

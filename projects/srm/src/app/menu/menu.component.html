@@ -20,11 +20,5 @@
         </a>
         <a class='menu-item' [routerLink]='["/about", "contact"]' i18n>צרו קשר</a>
     </div>
-    <div class='logos-strip'>
-        <div class='scroller'>
-            <div *ngFor='let url of logoUrls' class='logo-strip-item' [style.background-image]='"url(" + url + ")"'></div>
-            <div *ngFor='let url of logoUrls' class='logo-strip-item' [style.background-image]='"url(" + url + ")"'></div>    
-        </div>
-    </div>
     <div class='closer' (activated)='closeMe(null)' clickOnReturn tabindex="0" role="button" aria-label="סגירת התפריט הראשי"></div>
 </div>

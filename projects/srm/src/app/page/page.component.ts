@@ -341,7 +341,7 @@ export class PageComponent implements OnInit {
       this.drawerState = DrawerState.Half;
       this.pushSearchParamsCalc();
       if (['about', 'search', 'homepage'].indexOf(this.stage) >= 0) {
-        this.seo.setTitle(`כל שירות`);
+        this.seo.setTitle(`כל שירות | כל השירותים והמענים החברתיים שניתן למצוא על מפה אחת`);
         this.seo.setUrl(this.document.location.href);
         this.api.getTotalServices().subscribe((totalServices: number) => {
           this.seo.setDescription(`אספנו וסיווגנו ${totalServices.toLocaleString()} שירותים חברתיים מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים. אנחנו בטוחים שנמצא גם משהו בשבילך!`);
