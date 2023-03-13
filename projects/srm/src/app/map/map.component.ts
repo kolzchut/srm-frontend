@@ -82,6 +82,9 @@ const LAYERS_ACCURATE = [
   LAYER_POINTS_ON_CENTER,
   LAYER_POINTS_STROKE_ON,
 ];
+const LAYERS_HOVERABLE = [
+  LAYER_POINTS_STROKE_ON
+];
 
 const BASE_FILTERS: any = {};
 BASE_FILTERS[LAYER_POINTS_INACCURATE_ACTIVE] = ['all', ['!', ['get', 'branch_location_accurate']], ['==', ['get', 'branch_count'], ['number', 1]]];
@@ -136,6 +139,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
   stablePopupProps: any = null;
   hoverPopupProps: any = null;
   pointsHover = new Subject<any>();
+  hoveredPoint: any = null;
   
   constructor(private mapboxService: MapboxService, 
               private api: ApiService,
@@ -385,6 +389,44 @@ export class MapComponent implements OnChanges, AfterViewInit {
             //   this.pointsHover.next(null);
             //   this.map.getCanvas().style.cursor = '';
             // });
+          });
+          this.map.getStyle().layers?.filter((l) => LAYERS_CLICKABLE.indexOf(l.id) >= 0).forEach((layer: mapboxgl.Layer) => { 
+            const layerName = layer.id;
+            this.map.on('mousemove', layerName, (e) => {
+              const features = e.features || [];
+              if (features.length > 0 && features[0].id !== this.hoveredPoint?.id) {
+                if (this.hoveredPoint !== null) {
+                  this.map.setFeatureState(
+                    {
+                      source: this.hoveredPoint.source,
+                      id: this.hoveredPoint.id
+                    },
+                    { hover: false }
+                  );
+                }
+                this.hoveredPoint = features[0];
+                this.map.setFeatureState(
+                  {
+                    source: this.hoveredPoint.source,
+                    id: this.hoveredPoint.id
+                  },
+                  { hover: true }
+                );
+              }
+            });
+            this.map.on('mouseleave', layerName, () => {
+              if (this.hoveredPoint !== null) {
+                this.map.setFeatureState(
+                  {
+                    source: this.hoveredPoint.source,
+                    id: this.hoveredPoint.id
+                  },
+                  { hover: false }
+                );
+              }
+              this.hoveredPoint = null;
+            });
+
           });
           this.mapEl.nativeElement.querySelectorAll('a, button').forEach(function(item: HTMLElement) { 
             item.setAttribute('tabindex', '-1'); 
@@ -704,13 +746,14 @@ export class MapComponent implements OnChanges, AfterViewInit {
 
   updateAccuratePoints(points: any[]) {
     const source = this.map.getSource('accurate-points') as mapboxgl.GeoJSONSource;
-    const data: any[] = points.map((p) => ({
+    const data: any[] = points.map((p, i) => ({
       type: 'Feature',
       geometry: {
         type: 'Point',
         coordinates: p.geometry
       },
-      properties: p
+      properties: p,
+      id: i + 1
     }));
     source?.setData({
       type: 'FeatureCollection',
@@ -720,13 +763,14 @@ export class MapComponent implements OnChanges, AfterViewInit {
 
   updateInaccuratePoints(points: any[]) {
     const source = this.map.getSource('inaccurate-points') as mapboxgl.GeoJSONSource;
-    const data: any[] = points.map((p) => ({
+    const data: any[] = points.map((p, i) => ({
       type: 'Feature',
       geometry: {
         type: 'Point',
         coordinates: p.geometry
       },
-      properties: p
+      properties: p,
+      id: i + 1
     }));
     source?.setData({
       type: 'FeatureCollection',
