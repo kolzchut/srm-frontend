@@ -1,4 +1,8 @@
 <div class='container' role='dialog' aria-modal='true'>
     <div class='closer' (activated)='closeMe()' clickOnReturn role="button" tabindex="0" aria-label="סגירת תיבת הטקסט וחזרה לעמוד הקודם"></div>
+    <div class='header' *ngIf='title || subtitle'>
+        <h1 [innerHTML]="title" *ngIf='title'></h1>
+        <h2 [innerHTML]="subtitle" *ngIf='subtitle'></h2>    
+    </div>
     <ng-content></ng-content>
 </div>

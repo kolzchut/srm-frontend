@@ -34,12 +34,14 @@
         width: 100%;
         overflow: hidden;
 
-        span {
+        span, h2 {
             .font-rag-sans;
             max-width: 100%;
             display: inline-block;
             font-weight: 300;
             color: @color-gray-1;
+            margin-bottom: 0;
+            margin-top: 0;
             .mobile({
                 font-size: 20px;
                 line-height: 24px;
@@ -67,6 +69,7 @@
             ::ng-deep em {
                 font-weight: 600;
             }
+            margin-left: 8px;
         }
 
         app-response, app-situation {

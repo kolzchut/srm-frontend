@@ -9,6 +9,9 @@ import { timer } from 'rxjs';
 })
 export class MenuPopupComponent implements OnInit {
 
+  @Input() title: string;
+  @Input() subtitle: string;
+
   constructor(private location: Location) { }
 
   ngOnInit(): void {

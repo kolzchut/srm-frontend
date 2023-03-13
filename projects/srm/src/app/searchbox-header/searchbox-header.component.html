@@ -9,11 +9,11 @@
         </div>
         <div class='search-params' *ngIf='searchParams'>
             <ng-container *ngIf='searchParams.query'>
-                <span class='query'>{{searchParams.query}}</span>
+                <h1 class='query'>{{searchParams.query}}</h1>
             </ng-container>
             <ng-container *ngIf='!searchParams.query'>
-                <span class='query' *ngIf='responseDisplay'>{{responseDisplay}}</span>
-                <span class='query dim' *ngIf='!responseDisplay'>כל שירות</span>
+                <h1 class='query' *ngIf='responseDisplay'>{{responseDisplay}}</h1>
+                <h1 class='query dim' *ngIf='!responseDisplay'>כל שירות</h1>
                 <div class='extra-values'>
                     <ng-container *ngIf='situationDisplay'>
                         <span class='text'>עבור {{situationDisplay}}</span>
