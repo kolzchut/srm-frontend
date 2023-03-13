@@ -4,7 +4,7 @@
     display: flex;
     flex-flow: row;
     align-items: center;
-    gap: 32px;
+    gap: 32px 16px;
     padding: 0;
     padding-right: 64px;
 
@@ -16,5 +16,26 @@
         color: @color-blue-1;
         cursor: pointer;
         white-space: nowrap;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &.footer {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 0;
+        margin-top: 40px;
+        a {
+            font-size: 16px;
+        }
+    }
+
+    &.homepage {
+        a {
+            color: @color-blue-0;
+        }
     }
 }
