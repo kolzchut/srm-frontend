@@ -390,7 +390,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
             //   this.map.getCanvas().style.cursor = '';
             // });
           });
-          this.map.getStyle().layers?.filter((l) => LAYERS_CLICKABLE.indexOf(l.id) >= 0).forEach((layer: mapboxgl.Layer) => { 
+          this.map.getStyle().layers?.filter((l) => LAYER_POINTS_STROKE_ON.indexOf(l.id) >= 0).forEach((layer: mapboxgl.Layer) => { 
             const layerName = layer.id;
             this.map.on('mousemove', layerName, (e) => {
               const features = e.features || [];
