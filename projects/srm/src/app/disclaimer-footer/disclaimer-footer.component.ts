@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-disclaimer-footer',
@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./disclaimer-footer.component.less']
 })
 export class DisclaimerFooterComponent implements OnInit {
+
+  @Input() homepage = false;
 
   constructor() { }
 
