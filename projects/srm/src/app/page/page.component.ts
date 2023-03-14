@@ -284,7 +284,7 @@ export class PageComponent implements OnInit {
         timer(2000).subscribe(() => {
           console.log('EVENT search', title);
           window.gtag({
-            event: 'search',
+            event: 'srm:search',
             search_term: title,
             debug_mode: 1,
             ignore_referrer: 1
