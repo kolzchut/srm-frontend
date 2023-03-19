@@ -280,7 +280,7 @@ export class PageComponent implements OnInit {
         // this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
       }
       if (params.original_query && window.gtag) {
-        const title = params.original_query + ' ' + params.allTaxonomyIds.join('|');
+        const title = params.original_query;
         timer(2000).subscribe(() => {
           console.log('EVENT search', title);
           window.gtag({
@@ -291,6 +291,7 @@ export class PageComponent implements OnInit {
             filter_response_categories_count: (params.filter_response_categories || []).length,
             filter_national: params.national ? 1 : 0,
             landing_page: this.isLandingPage ? 1 : 0,
+            search_structured: !!params.query ? 0 : 1,
           });
         });
       }
