@@ -286,8 +286,11 @@ export class PageComponent implements OnInit {
           window.gtag({
             event: 'srm:search',
             search_term: title,
-            debug_mode: 1,
-            ignore_referrer: 1
+            filter_count: params.allTaxonomyIds.length,
+            filter_responses_count: (params.filter_responses || []).length,
+            filter_response_categories_count: (params.filter_response_categories || []).length,
+            filter_national: params.national ? 1 : 0,
+            landing_page: this.isLandingPage ? 1 : 0,
           });
         });
       }
