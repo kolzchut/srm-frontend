@@ -263,36 +263,37 @@ export class PageComponent implements OnInit {
         return a.original_query === b.original_query && a.ac_query === b.ac_query;
       }),
       delay<SearchParams>(platform.server() ? 0 : 1000),
+      tap((params: SearchParams) => {
+        // console.log('ACTION CHANGED TO', params.original_query, params.ac_bounds);
+        if (params.ac_bounds) {
+          const bounds: mapboxgl.LngLatBoundsLike = params.ac_bounds;
+          this.queueMapAction((map) => {
+            map.fitBounds(bounds, {padding: {top: 100, bottom: 100, left: 0, right: 0}, maxZoom: 15, duration: 0});
+          }, 'search-by-location-' + params.city_name);
+          this.queueMapAction((map) => {
+            this.mapMoved = false;
+            this.map.processAction();  
+          }, 'map-moved-reset');
+        } else if (params.requiredCenter && params.requiredCenter.length === 3) {
+          const rc = params.requiredCenter;
+          this.easeTo({center: [rc[0], rc[1]], zoom: rc[2], duration: 0});
+          // this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
+        }      
+      }),
+      debounceTime(3000),
     ).subscribe((params: SearchParams) => {
-      // console.log('ACTION CHANGED TO', params.original_query, params.ac_bounds);
-      if (params.ac_bounds) {
-        const bounds: mapboxgl.LngLatBoundsLike = params.ac_bounds;
-        this.queueMapAction((map) => {
-          map.fitBounds(bounds, {padding: {top: 100, bottom: 100, left: 0, right: 0}, maxZoom: 15, duration: 0});
-        }, 'search-by-location-' + params.city_name);
-        this.queueMapAction((map) => {
-          this.mapMoved = false;
-          this.map.processAction();  
-        }, 'map-moved-reset');
-      } else if (params.requiredCenter && params.requiredCenter.length === 3) {
-        const rc = params.requiredCenter;
-        this.easeTo({center: [rc[0], rc[1]], zoom: rc[2], duration: 0});
-        // this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
-      }
       if (params.original_query && window.gtag) {
         const title = params.original_query;
-        timer(2000).subscribe(() => {
-          console.log('EVENT search', title);
-          window.gtag({
-            event: 'srm:search',
-            search_term: title,
-            filter_count: params.allTaxonomyIds.length,
-            filter_responses_count: (params.filter_responses || []).length,
-            filter_response_categories_count: (params.filter_response_categories || []).length,
-            filter_national: params.national ? 1 : 0,
-            landing_page: this.isLandingPage ? 1 : 0,
-            search_structured: !!params.query ? 0 : 1,
-          });
+        console.log('EVENT search', title);
+        window.gtag({
+          event: 'srm:search',
+          search_term: title,
+          filter_count: params.allTaxonomyIds.length,
+          filter_responses_count: (params.filter_responses || []).length,
+          filter_response_categories_count: (params.filter_response_categories || []).length,
+          filter_national: params.national ? 1 : 0,
+          landing_page: this.isLandingPage ? 1 : 0,
+          search_structured: !!params.query ? 0 : 1,
         });
       }
     });
