@@ -11,7 +11,7 @@
         <app-desktop-menu-links></app-desktop-menu-links>
     </div>
     <div class='overlay layout-desktop' (click)='location.back()' tabindex="-1" role="presentation">
-        <div class='closer-text' role='button' aria-label='סגירת תיבת החיפוש וחזרה לעמוד הקודם' clickOnReturn tabindex="0">X</div>
+        <div class='closer-text' role='button' aria-label='סגירת תיבת החיפוש וחזרה לעמוד הקודם' clickOnReturn tabindex="0"><img src='../../assets/img/icon-close-black.svg'></div>
     </div>
     <div class='results' role='list'>
         <div class='result' *ngFor='let result of (query ? results : presets)' role='listitem'>
