@@ -9,13 +9,13 @@
     <div class='responses'>
         <h2 i18n>מהות השירות:</h2>
         <div class='list'>
-            <app-response *ngFor='let response of card.responses' [response]='response'></app-response>
+            <app-response *ngFor='let response of card.responses' [response]='response' [link]='true'></app-response>
         </div>
     </div>
     <div class='situations' *ngIf='card.situations && card.situations.length'>
         <h2 i18n>השירות מתאים עבור:</h2>
         <div class='list'>
-            <app-situation *ngFor='let situation of card.situations' [situation]='situation'></app-situation>
+            <app-situation *ngFor='let situation of card.situations' [situation]='situation' [link]='true'></app-situation>
         </div>
     </div>
     <div class='terms' *ngIf='card.service_details || card.service_payment_details'>

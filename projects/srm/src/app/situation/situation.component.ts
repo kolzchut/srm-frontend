@@ -10,6 +10,9 @@ export class SituationComponent implements OnInit {
 
   @Input() situation: TaxonomyItem = {};
   @Input() small = false;
+  @Input() link = false;
+
+  hover = false;
 
   constructor() { }
 

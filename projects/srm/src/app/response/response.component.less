@@ -1,5 +1,11 @@
 @import '../../common.less';
 
+:host {
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
 .response {
     display: flex;
     flex-flow: row;
@@ -53,11 +59,11 @@
         align-items: center;
         span {
             display: block;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             // background: #27AE60; //TODO
-            // border: 2px solid @color-white;
-            border-radius: 4px;
+            border: 2px solid @color-white;
+            border-radius: 5px;
         }
     }
 
@@ -65,18 +71,22 @@
         height: 100%;
         background: #27AE6020;
         cursor: pointer;
+        span {
+            transform: rotate(135deg);
+        }
     }
 
     &.selectable {
         .point {
             width: 18px;
-            span {
-                width: 8px;
-                height: 8px;    
-                &.disabled {
-                    width: 4px;
-                    height: 4px;
-                }
+            span.selected:not(.disabled) {
+                width: 10px;
+                height: 10px;    
+                border-width: 0;
+                // &.disabled {
+                //     width: 4px;
+                //     height: 4px;
+                // }
             }
         }
         .name {

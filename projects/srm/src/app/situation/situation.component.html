@@ -1,3 +1,12 @@
-<div class='situation' [class.small]='small'>
-    <span [innerHTML]='situation.name'></span>
+<div class='situation' [class.small]='small'
+    [routerLink]='link ? ["/q"] : null'
+    [queryParams]='link ? {q: situation.name} : null'
+    [class.small]='small'
+    [class.linkable]='link'
+    [attr.aria-label]='"ביצוע חיפוש חדש באתר עבור " + situation.name'
+>
+    <span class='text' [innerHTML]='situation.name'
+    ></span>
+    <span class='link' *ngIf='link'
+    ><span>←</span></span>
 </div>
