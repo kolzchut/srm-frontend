@@ -22,7 +22,7 @@ export class ApiService {
   MIN_SCORE = 50
   situationsMap_: any = {};
   responsesMap_: any = {};
-  collapseCount: {[key: string]: number} = {};
+  // collapseCount: {[key: string]: number} = {};
 
   constructor(
     private http: HttpClient,
@@ -242,18 +242,18 @@ export class ApiService {
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         const qcr = res as QueryCardResult;
-        if (qcr.collapse_key) {
-          this.collapseCount = {};
-          qcr.collapse_key.forEach((c: DistinctItem) => {
-            if (c.key && c.doc_count) {
-              this.collapseCount[c.key] = c.doc_count;
-            }
-          });
-        }
+        // if (qcr.collapse_key) {
+        //   this.collapseCount = {};
+        //   qcr.collapse_key.forEach((c: DistinctItem) => {
+        //     if (c.key && c.doc_count) {
+        //       this.collapseCount[c.key] = c.doc_count;
+        //     }
+        //   });
+        // }
         const results = qcr.search_results;
         const ret = results.map((r: any) => {
-          r = r.source;
-          r._collapse_count = (this.collapseCount[r.collapse_key] || 1) - 1;
+          r = Object.assign(new Card(), r.source);
+          // r._collapse_count = (this.collapseCount[r.collapse_key] || 1) - 1;
           return r;
         });
         if (ret.length > 0) {

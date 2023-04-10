@@ -30,19 +30,7 @@
 
 <ng-container *ngFor='let result of results; let i=index'>
     <ng-container *ngIf='!!result'>
-        <a [routerLink]='["c", result.card_id]' [queryParamsHandling]='"merge"' *ngIf='!result._collapse_count' 
-           (mouseover)='hoverCard.next(result)' [attr.aria-label]='"פתיחת עמוד השירות של " + result.service_name'
-           [style.transition-delay]='(result.__props?.slide * 100) + "ms"'
-           [style.z-index]='result.__props?.z'
-           [class.animated]='!!result.__props?.slide'
-           [class.slide-in]='!!result.__props?.slide_now'
-        >
-            <app-result-stack [result]='result' [searchParams]='searchParams'></app-result-stack>
-        </a>
-        <a (activated)='expand(i)' *ngIf='!!result._collapse_count' (mouseover)='hoverCard.next(result)' clickOnReturn tabindex="0" role="button"
-           [attr.aria-label]='"הרחבת הכרטיס של " + result.service_name + " וצפייה ב- " + result._collapse_count + " תוצאות דומות"'>
-            <app-result-stack [result]='result' [searchParams]='searchParams' *ngIf='!!result._collapse_count'></app-result-stack>
-        </a>
+        <app-result-stack [result]='result' [searchParams]='searchParams' (hover)='hoverCard.next($event)'></app-result-stack>
     </ng-container>
     <div class='placeholder loading' *ngIf='!result'></div>
 </ng-container>

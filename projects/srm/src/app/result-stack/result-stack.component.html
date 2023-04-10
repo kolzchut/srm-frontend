@@ -1,4 +1,7 @@
-<div class='branch' [class.collapsible]='collapsible'>
+<a [routerLink]='["c", result.card_id]' [queryParamsHandling]='"merge"'
+   (mouseover)='hover.next(result)'
+   [attr.aria-label]='"פתיחת עמוד השירות של " + result.service_name'
+   class='branch' [class.collapsible]='collapsible'>
     <div class='branch-headers'>
         <ng-container *ngIf='result.branch_city && !result.national_service'>
             <ng-container *ngIf='result.organization_short_name'>
@@ -18,22 +21,21 @@
                 <span class='national-service'>שירות ארצי</span>
             </ng-container>
         </ng-container>
-        <span class='city' *ngIf='collapsibleCount > 1'>
-            (+ {{result._collapse_count}} מיקומים נוספים)
-        </span>            
-        <span class='city' *ngIf='collapsibleCount === 1'>
-            (+ מיקום נוסף)
-        </span>
     </div>
     <div class='cards'>
         <app-result-card [card]='result' [small]='layout.mobile' [smallDesktop]='false' [searchParams]='searchParams'></app-result-card>
     </div>
-</div>
+</a>
 <div class='bookends' *ngIf='collapsible'>
-    <ng-container *ngFor='let _ of [].constructor(collapsibleCount)'>
-        <div class='bookend'></div>
+    <ng-container *ngFor='let extra of result.collapse_hits?.slice(1, showCount + 1) || []; let i = index;'>
+        <a [routerLink]='["c", extra.card_id]' [queryParamsHandling]='"merge"'
+           (mouseover)='hover.next(extra)' 
+           [attr.aria-label]='"פתיחת עמוד השירות " + result.service_name + " של " + extra.organization_name + " ב" + extra.branch_address'
+           class='bookend' [style.zIndex]='1000 - i'>
+            <span class='org'>{{extra.organization_name_parts?.primary || extra.organization_short_name || extra.organization_name}}</span>
+            <span class='separator'>&nbsp;/&nbsp;</span>
+            <span class='city'>{{extra.address_parts?.primary || extra.branch_address }}</span>
+        </a>
     </ng-container>
-</div>
-<div class='count' *ngIf='collapsible'>
-    +{{result._collapse_count}}
+    <a class='bookend more' *ngIf='moreAvailable > 0' (activated)='more()' role='button' aria-label='הצגת עוד 10 תוצאות דומות' clickOnReturn tabindex="0">+ {{moreAvailable}} שירותים דומים</a>
 </div>

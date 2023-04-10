@@ -61,8 +61,8 @@ export class Card {
 
     national_service: boolean;
 
-    address_parts: {primary: string, secondary: string};
-    organization_name_parts: {primary: string, secondary: string};
+    address_parts?: {primary: string, secondary: string};
+    organization_name_parts?: {primary: string, secondary: string};
 
     data_sources: string[];
 
@@ -76,10 +76,19 @@ export class Card {
     _snippets: {[key: string]: string[]};
     _highlights: {[key: string]: string | string[]};
 
-    _collapse_count?: number;
+    // _collapse_count?: number;
     collapse_key: string;
+    collapse_hits?: Card[];
 
     __props: any;
+
+    get collapsed(): boolean {
+        return !!this.collapse_hits && this.collapse_hits.length > 1;
+    }
+
+    get collapsed_count(): number {
+        return this.collapsed ? (this.collapse_hits?.length || 1)- 1 : 0;
+    }
 };
 
 export const CARD_SNIPPET_FIELDS = [

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Card, SearchParams, _h } from '../consts';
 import { LayoutService } from '../layout.service';
 
@@ -11,20 +11,37 @@ export class ResultStackComponent implements OnInit {
 
   @Input() result: Card;
   @Input() searchParams: SearchParams;
+  @Output() hover = new EventEmitter<Card>();
 
   _h = _h;
+
+  showCount = -1;
 
   constructor(public layout: LayoutService) { }
 
   ngOnInit(): void {
+    if (this.showCount === -1 && this.collapsibleCount > 0) {
+      this.showCount = this.collapsibleCount > 4 ? 4 : this.collapsibleCount;
+    }
+  }
+
+  more() {
+    this.showCount += 10;
+    if (this.showCount > this.collapsibleCount) {
+      this.showCount = this.collapsibleCount;
+    }
+  }
+
+  get moreAvailable() {
+    return this.collapsibleCount - this.showCount;
   }
 
   get collapsible() {
-    return (this.result?._collapse_count || 0) > 0;
+    return this.result.collapsed;
   }
 
   get collapsibleCount() {
-    const c = (this.result?._collapse_count || 0);
-    return c > 10 ? 10 : c;
+    const c = this.result.collapsed_count;
+    return c;
   }
 }
