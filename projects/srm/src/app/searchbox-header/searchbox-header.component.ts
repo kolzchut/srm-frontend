@@ -19,7 +19,6 @@ export class SearchboxHeaderComponent implements OnChanges {
   @Input() homepage = false;
   @Input() searchParams: SearchParams;
   @Input() showCity = true;
-  @Input() didYouMean: {display: string, link: string} | null = null;
 
   responseDisplay: string | null = null;
   situationDisplay: string | null = null;

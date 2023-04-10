@@ -39,10 +39,4 @@
         <div class='search-icon'></div>    
     </a>
 </div>
-<div *ngIf='didYouMean' class='did-you-mean layout-mobile'>
-    <span>האם התכוונת&nbsp;</span>
-    <a [routerLink]='["/s", didYouMean.link]' [attr.aria-label]='"שינוי החיפוש לחיפוש מובנה של " + didYouMean.display'>
-        {{didYouMean.display}}
-    </a><span>?</span>
-</div>
 <app-desktop-menu-links></app-desktop-menu-links>

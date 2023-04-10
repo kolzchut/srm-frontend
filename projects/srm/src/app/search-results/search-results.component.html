@@ -21,6 +21,13 @@
     </div>
 </div>
 
+<div *ngIf='didYouMean' class='did-you-mean'>
+    <span>האם התכוונת&nbsp;</span>
+    <a [routerLink]='["/s", didYouMean.link]' [attr.aria-label]='"שינוי החיפוש לחיפוש מובנה של " + didYouMean.display'>
+        {{didYouMean.display}}
+    </a><span>?</span>
+</div>
+
 <ng-container *ngFor='let result of results; let i=index'>
     <ng-container *ngIf='!!result'>
         <a [routerLink]='["c", result.card_id]' [queryParamsHandling]='"merge"' *ngIf='!result._collapse_count' 

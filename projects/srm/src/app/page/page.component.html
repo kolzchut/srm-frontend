@@ -12,7 +12,6 @@
                     [query]='query'
                     [showCity]='!mapMoved'
                     [searchParams]='searchParams'
-                    [didYouMean]='didYouMean'
             ></app-searchbox-header>
             <app-results-drawer
                 [state]='stage === "point" ? (searchParams?.ac_query && !card ? DrawerState.Minimal : DrawerState.Hidden) : (searchParams?.national ? DrawerState.National : drawerState)'
@@ -51,6 +50,7 @@
                         [class.shown]='filtersVisible === false' 
                         [searchParams]='searchParams'
                         [active]="stage === 'search-results'"
+                        [didYouMean]='didYouMean'
                         (zoomout)='zoomOutMap($event)'
                         (visibleCount)='visibleCount = $event'
                         (nationalCount)='nationalCount = $event'

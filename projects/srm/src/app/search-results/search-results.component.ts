@@ -30,6 +30,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
 
   @Input() searchParams: SearchParams;
   @Input() active = false;
+  @Input() didYouMean: {display: string, link: string} | null = null;
   @Output() zoomout = new EventEmitter<ViewPort>();
   @Output() nationalCount = new EventEmitter<number>();
   @Output() visibleCount = new EventEmitter<number>();
