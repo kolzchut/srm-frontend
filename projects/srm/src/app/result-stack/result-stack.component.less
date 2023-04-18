@@ -111,6 +111,14 @@
 
             .org {
                 color: @color-gray-1;
+                .mobile({
+                    max-width: 50%;
+                    .ellipsis;
+                });
+                .desktop({
+                    max-width: 66%;
+                    .ellipsis;
+                });
             }
 
             &.more {

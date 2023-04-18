@@ -16,12 +16,17 @@ export class ResultStackComponent implements OnInit {
   _h = _h;
 
   showCount = -1;
+  showOrgs = true;
 
   constructor(public layout: LayoutService) { }
 
   ngOnInit(): void {
     if (this.showCount === -1 && this.collapsibleCount > 0) {
       this.showCount = this.collapsibleCount > 4 ? 4 : this.collapsibleCount;
+    }
+    if (this.result?.collapse_hits) {
+      const orgName = this.orgName(this.result);
+      this.showOrgs = this.result.collapse_hits.some((h) => this.orgName(h) !== orgName);
     }
   }
 
@@ -43,5 +48,9 @@ export class ResultStackComponent implements OnInit {
   get collapsibleCount() {
     const c = this.result.collapsed_count;
     return c;
+  }
+
+  orgName(card: Card) {
+    return card.organization_name_parts?.primary || card.organization_short_name || card.organization_name;
   }
 }

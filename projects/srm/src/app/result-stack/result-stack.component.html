@@ -32,7 +32,7 @@
            (mouseover)='hover.next(extra)' 
            [attr.aria-label]='"פתיחת עמוד השירות " + result.service_name + " של " + extra.organization_name + " ב" + extra.branch_address'
            class='bookend' [style.zIndex]='1000 - i'>
-            <span class='org'>{{extra.organization_name_parts?.primary || extra.organization_short_name || extra.organization_name}}</span>
+            <span class='org' *ngIf='showOrgs'>{{orgName(extra)}}</span>
             <span class='separator'>&nbsp;/&nbsp;</span>
             <span class='city'>{{extra.address_parts?.primary || extra.branch_address }}</span>
         </a>
