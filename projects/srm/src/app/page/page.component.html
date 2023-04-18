@@ -26,14 +26,6 @@
                     [class.visible]='stage === "search-results" || (stage === "point" && !card)'
                     [class.filters]='filtersVisible'
                 >
-                    <div *ngIf='didYouMean && !filtersVisible' class='did-you-mean layout-desktop'>
-                        <div class='inner'>
-                            <span>האם התכוונת&nbsp;</span>
-                            <a [routerLink]='["/s", didYouMean.link]' [attr.aria-label]='"שינוי החיפוש לחיפוש מובנה של " + didYouMean.display'>
-                                {{didYouMean.display}}
-                            </a><span>?</span>
-                        </div>
-                    </div>                
                     <app-search-filters 
                         [searchParams]='searchParams'
                         (params)='setSearchParams($event)'
