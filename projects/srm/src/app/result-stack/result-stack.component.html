@@ -32,9 +32,9 @@
            (mouseover)='hover.next(extra)' 
            [attr.aria-label]='"פתיחת עמוד השירות " + result.service_name + " של " + extra.organization_name + " ב" + extra.branch_address'
            class='bookend' [style.zIndex]='1000 - i'>
-            <span class='org' *ngIf='showOrgs'>{{orgName(extra)}}</span>
+            <span class='org'>{{orgName(extra)}}</span>
             <span class='separator'>&nbsp;/&nbsp;</span>
-            <span class='city'>{{extra.address_parts?.primary || extra.branch_address }}</span>
+            <span class='city'>{{cityName(extra)}}</span>
         </a>
     </ng-container>
     <a class='bookend more' *ngIf='moreAvailable > 0' (activated)='more()' role='button' aria-label='הצגת עוד 10 תוצאות דומות' clickOnReturn tabindex="0">+ {{moreAvailable}} שירותים דומים</a>

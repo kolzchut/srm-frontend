@@ -16,7 +16,7 @@ export class ResultStackComponent implements OnInit {
   _h = _h;
 
   showCount = -1;
-  showOrgs = true;
+  // showOrgs = true;
 
   constructor(public layout: LayoutService) { }
 
@@ -25,8 +25,22 @@ export class ResultStackComponent implements OnInit {
       this.showCount = this.collapsibleCount > 4 ? 4 : this.collapsibleCount;
     }
     if (this.result?.collapse_hits) {
-      const orgName = this.orgName(this.result);
-      this.showOrgs = this.result.collapse_hits.some((h) => this.orgName(h) !== orgName);
+      const cityNames: any = {};
+      // const orgName = this.orgName(this.result);
+      // this.showOrgs = this.result.collapse_hits.some((h) => this.orgName(h) !== orgName);
+      this.result.collapse_hits.forEach((h) => {
+        const cityName = this.cityName(h);
+        if (cityName) {
+          if (cityNames[cityName]) {
+            cityNames[cityName] += 1;
+          } else {
+            cityNames[cityName] = 1;
+          }
+        }
+        (h as any)['__city_count'] = cityName ? cityNames[cityName] : 0;
+      });
+      // Sort collapse_hits by __city_count ascending
+      this.result.collapse_hits.sort((a, b) => (a as any)['__city_count'] - (b as any)['__city_count']);
     }
   }
 
@@ -48,6 +62,10 @@ export class ResultStackComponent implements OnInit {
   get collapsibleCount() {
     const c = this.result.collapsed_count;
     return c;
+  }
+
+  cityName(card: Card) {
+    return card.address_parts?.primary || card.branch_address;
   }
 
   orgName(card: Card) {
