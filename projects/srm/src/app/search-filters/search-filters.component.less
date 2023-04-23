@@ -40,6 +40,23 @@
                 border: 1px solid @color-gray-1;
                 color: @color-gray-1;
             }
+
+            img {
+                display: none;
+            }
+            &:hover {
+                color: @color-white;
+                background-color: @color-gray-1;
+                transform: translateY(-1px);
+                img.hover {
+                    display: block;
+                }
+            }
+            &:not(:hover) {
+                img.nohover {
+                    display: block;
+                }
+            }
         }
     }
 
@@ -210,4 +227,13 @@
         color: @color-white;
         background: @color-gray-1;
     }
+
+    .open-modal:hover .count {
+        top: -3px;
+        left: -3px;
+        width: 18px;
+        height: 18px;
+        border: 1px solid @color-white;
+    }
+
 }

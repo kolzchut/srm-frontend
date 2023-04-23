@@ -118,7 +118,9 @@
                     font-weight: 600;
                     font-size: 16px;
                     line-height: 20px;
-                    text-decoration-line: underline;
+                    &:hover {
+                        text-decoration-line: underline;
+                    }
                     color: @color-blue-1;
                 }
             }
@@ -159,7 +161,9 @@
                 font-weight: 400;
                 font-size: 16px;
                 line-height: 20px;
-                text-decoration-line: underline;
+                a:hover {
+                    text-decoration-line: underline;
+                }
                 color: @color-blue-1;
                 cursor: pointer;
                 margin-top: 8px;
@@ -199,6 +203,7 @@
                 &:hover {
                     cursor: pointer;
                     border-color: @color-gray-4;
+                    transform: translateY(-1px);            
                 }
                 display: flex;
                 flex-flow: row;
