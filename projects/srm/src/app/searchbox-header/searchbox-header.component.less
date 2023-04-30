@@ -101,10 +101,12 @@
 
                 .extra-values {
                     display: flex;
-                    flex-flow: row wrap;
+                    flex-flow: row;
                     align-items: center;
                     gap: 0 6px;
-                    
+                    overflow: hidden;
+                    width: 100%;
+
                     .text {
                         .font-rag-sans;
                         font-weight: 400;
@@ -119,7 +121,7 @@
                         &.soft {
                             color: @color-gray-4;
                         }
-                        white-space: nowrap;
+                        .ellipsis;
                     }
                     .separator {
                         width: 4px;
