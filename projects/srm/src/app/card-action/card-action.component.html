@@ -1,6 +1,6 @@
 <a class='button' [class.primary]='primary' [class.org]='org' [class]='"kind-" + kind' [href]='action' target='_blank' [attr.aria-label]='label'>
     <span class='icon'></span>
-    <span class='label' i18n *ngIf='kind === "url"'>עוד</span>
+    <span class='label' i18n *ngIf='kind === "url"'>אתר</span>
     <span class='label' i18n *ngIf='kind === "nav"'>{{display}}</span>
     <span class='label' i18n *ngIf='kind === "phone"'>{{display}}</span>
     <span class='label' i18n *ngIf='kind === "email"'>{{display}}</span>
