@@ -45,7 +45,7 @@ export class ResponseComponent implements OnChanges {
       this.fontWeight = 400;
     } else if (this.disabled) {
       this.textColor = '#767573';
-      this.bgColor = '#FBFAF8';
+      this.bgColor = '#FFFCF5';
       this.borderColor = '#CCDDFC';
       this.pointBorderColor = '#fff';
       this.pointBgColor = this.color;
