@@ -4,7 +4,7 @@
         <button class='back-button layout-mobile' (activated)='location.back()' clickOnReturn aria-label="סגירת תיבת החיפוש וחזרה לעמוד הקודם"></button>
         <div class='searchbox'>
             <input type='search' placeholder='ניתן לחפש לפי שם, סוג מענה, מיקום...' [(ngModel)]='query' enterkeyhint='חיפוש' #input (keydown)='changed($event)' class='focusable'
-                aria-label='חיפוש שירותים באתר כל שירות. ניתן להשתמש בחיצים על מנת לנווט באפשרויות או באמצעות טאב אם משתמשים בקורא מסך.'
+                aria-label='חיפוש שירותים באתר כל שירות. ניתן להשתמש בחיצים על מנת לנווט באפשרויות או באמצעות טאב אם משתמשים בקורא מסך.'  role='textbox'
             >
             <button class='clear-button' (click)='query=""' *ngIf='!!query' aria-label="ניקוי החיפוש"></button>    
         </div>
