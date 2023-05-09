@@ -24,6 +24,8 @@ export class ResultCardComponent implements OnChanges {
   snippet: string | null = null;
   selectedResponses: TaxonomyItem[] = [];
   selectedSituations: TaxonomyItem[] = [];
+  deselectedResponses: TaxonomyItem[] = [];
+  deselectedSituations: TaxonomyItem[] = [];
 
   constructor(private sanitizer: DomSanitizer) { }
 
@@ -85,6 +87,7 @@ export class ResultCardComponent implements OnChanges {
       }
     }
     if (this.selectedSituations.length === 0 && this.card.situations?.length > 0) {
+      this.card.situations[0].__selected = true;
       this.selectedSituations.push(this.card.situations[0]);
     }
     if (this.card.responses?.length > 0) {
@@ -103,6 +106,31 @@ export class ResultCardComponent implements OnChanges {
         }
       }
     }
+
+    let deselectedCount = 0;
+    this.card.situations?.forEach((s: TaxonomyItem) => {
+      if (!s.__selected && deselectedCount < 2) {
+        this.deselectedSituations.push({
+          id: s.id,
+          name: '',
+          category: s.category,
+          __selected: false
+        });
+        deselectedCount++;
+      }
+    });
+    deselectedCount = 0;
+    this.card.responses?.forEach((r: TaxonomyItem) => {
+      if (!r.__selected && deselectedCount < 2) {
+        this.deselectedResponses.push({
+          id: r.id,
+          name: '',
+          category: r.category,
+          __selected: false
+        });
+        deselectedCount++;
+      }
+    });
   }
 
   get showSnippet() {
