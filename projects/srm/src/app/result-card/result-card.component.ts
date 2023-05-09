@@ -120,8 +120,9 @@ export class ResultCardComponent implements OnChanges {
       }
     });
     deselectedCount = 0;
+    let categories = this.selectedResponses.map((r) => r.category);
     this.card.responses?.forEach((r: TaxonomyItem) => {
-      if (!r.__selected && deselectedCount < 2) {
+      if (!r.__selected && deselectedCount < 2 && !categories.includes(r.category)) {
         this.deselectedResponses.push({
           id: r.id,
           name: '',
@@ -129,8 +130,22 @@ export class ResultCardComponent implements OnChanges {
           __selected: false
         });
         deselectedCount++;
+        r.__selected = true;
       }
     });
+    if (deselectedCount < 2) {
+      this.card.responses?.forEach((r: TaxonomyItem) => {
+        if (!r.__selected && deselectedCount < 2) {
+          this.deselectedResponses.push({
+            id: r.id,
+            name: '',
+            category: r.category,
+            __selected: false
+          });
+          deselectedCount++;
+        }
+      });  
+    }
   }
 
   get showSnippet() {
