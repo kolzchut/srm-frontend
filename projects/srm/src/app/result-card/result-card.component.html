@@ -13,10 +13,10 @@
             </ng-container>
         </ng-container>
         <ng-container *ngFor='let s of selectedSituations; let idx=index'>
-            <ng-container *ngIf='idx<selectedResponses.length-1'>
+            <ng-container *ngIf='idx<selectedSituations.length-1'>
                 <app-situation [situation]='s' [small]='small' [style.zIndex]='100-idx'></app-situation>
             </ng-container>
-            <ng-container *ngIf='idx===selectedResponses.length-1'>
+            <ng-container *ngIf='idx===selectedSituations.length-1'>
                 <span class='last' [style.zIndex]='100-idx'>
                     <app-situation [situation]='s' [small]='small' [style.zIndex]='50'></app-situation>
                     <app-situation [situation]='ss' [small]='small' [style.zIndex]='49-idx2' *ngFor='let ss of deselectedSituations; let idx2=index'></app-situation>
