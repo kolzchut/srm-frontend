@@ -2,13 +2,36 @@ import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Card, CARD_SNIPPET_FIELDS, SearchParams, TaxonomyItem, _h } from '../consts';
 
+// MODES:
+// - Branch services (desktop & mobile):
+//      min height: 84px
+//      font size: 20px
+//      padding: 18px 8px
+//      trailing tags
+// - Search results
+//    - desktop:
+//        padding: 4px 8px
+//        font size: 24px        
+//    - mobile:
+//        padding: 4px 8px
+//        font size: 20px        
+// - Map popup
+//    - Single
+//        font-size: 20px
+//        padding: 4px 8px
+//    - Multiple
+//        font-size: 16px
+//        padding: 5px 6px
+
 @Component({
   selector: 'app-result-card',
   templateUrl: './result-card.component.html',
   styleUrls: ['./result-card.component.less'],
   host: {
     '[class.compact]' : 'compact',
-    '[class.smallDesktop]' : 'smallDesktop',
+    '[class.smaller]' : 'smaller',
+    '[class.larger]' : 'larger',
+    '[class.padded]' : 'padded',
     '[class.stacked]' : 'stacked',
   }
 })
@@ -17,9 +40,10 @@ export class ResultCardComponent implements OnChanges {
   @Input() card: Card;
   @Input() searchParams: SearchParams;
   @Input() compact = false;
+  @Input() smaller = false;
+  @Input() larger = false;
+  @Input() padded = false;
   @Input() stacked = false;
-  @Input() small = true;
-  @Input() smallDesktop = true;
   _h = _h;
   snippet: string | null = null;
   selectedResponses: TaxonomyItem[] = [];

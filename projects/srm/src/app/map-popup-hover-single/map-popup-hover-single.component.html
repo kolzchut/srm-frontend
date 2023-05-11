@@ -3,6 +3,6 @@
         <app-branch-details [card]='card'></app-branch-details>
     </div>
     <a [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"'>
-        <app-result-card [card]='card' [stacked]='true'></app-result-card>
+        <app-result-card [card]='card' [compact]='true'></app-result-card>
     </a>
 </ng-container>
