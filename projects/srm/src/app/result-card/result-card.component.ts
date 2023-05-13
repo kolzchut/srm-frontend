@@ -44,6 +44,7 @@ export class ResultCardComponent implements OnChanges {
   @Input() larger = false;
   @Input() padded = false;
   @Input() stacked = false;
+  @Input() bold = false;
   _h = _h;
   snippet: string | null = null;
   selectedResponses: TaxonomyItem[] = [];

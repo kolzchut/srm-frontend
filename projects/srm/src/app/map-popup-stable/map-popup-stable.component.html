@@ -4,7 +4,7 @@
     </div>
     <div class='scrollable'>
         <a [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"' *ngFor='let card of cards'>
-            <app-result-card [card]='card' [stacked]='true' [smaller]='true'></app-result-card>
+            <app-result-card [card]='card' [stacked]='true' [smaller]='true' [bold]='true'></app-result-card>
         </a>
         <div class='footer' *ngIf='cards.length < props.service_count'>
             +{{props.service_count - cards.length}} שירותים נוספים
@@ -21,7 +21,7 @@
                 <app-branch-details-org [card]='branch.cards[0]'></app-branch-details-org>
             </div>
             <a [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"' *ngFor='let card of branch.cards'>
-                <app-result-card [card]='card' [stacked]='true' [smaller]='true'></app-result-card>
+                <app-result-card [card]='card' [stacked]='true' [smaller]='true' [bold]='true'></app-result-card>
             </a>
             <div class='footer' *ngIf='branch.hidden.length'>
                 +{{branch.hidden.length}} שירותים נוספים
