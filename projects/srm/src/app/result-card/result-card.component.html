@@ -1,6 +1,6 @@
 <div class='title' [class.bold]='bold'>
     <h2 [class.larger]='larger' [class.smaller]='smaller' [class.compact]='compact' [innerHtml]='_h(card, "service_name")'></h2>
-    <ng-container *ngIf='snippet || compact || stacked'>
+    <ng-container *ngIf='compact || stacked'>
         <ng-container *ngFor='let r of selectedResponses; let idx=index'>
             <ng-container *ngIf='idx<selectedResponses.length-1'>
                 <app-response [response]='r' [small]='smaller' [link]='false' [style.zIndex]='100-idx'></app-response>
@@ -25,7 +25,7 @@
         </ng-container>
     </ng-container>
 </div>
-<ng-container *ngIf='!showSnippet && !compact && !stacked'>
+<ng-container *ngIf='!compact && !stacked'>
     <div class='title'>
         <ng-container *ngFor='let r of selectedResponses; let idx=index'>
             <ng-container *ngIf='idx<selectedResponses.length-1'>

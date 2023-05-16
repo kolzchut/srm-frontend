@@ -1,6 +1,6 @@
 <a [routerLink]='["c", result.card_id]' [queryParamsHandling]='"merge"'
    (mouseover)='hover.next(result)'
-   [attr.aria-label]='"פתיחת עמוד השירות של " + result.service_name'
+   [attr.aria-label]='result.service_name + " - פתיחת עמוד השירות"'
    class='branch' [class.collapsible]='collapsible'>
     <div class='branch-headers'>
         <ng-container *ngIf='result.branch_city && !result.national_service'>
