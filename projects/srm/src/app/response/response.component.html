@@ -4,7 +4,7 @@
     [routerLink]='search ? ["/q"] : ["/s", responseQuery]'
     [queryParams]='search ? {q: response.name} : null'
     [class.small]='small'
-    [attr.aria-label]='"ביצוע חיפוש חדש באתר עבור " + response.name'
+    [attr.aria-label]='response.name + " - לחצו לחיפוש באתר"'
     (mouseover)='hover = true' (mouseleave)='hover = false'
 >
     <span class='point'>

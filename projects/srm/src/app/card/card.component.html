@@ -18,6 +18,7 @@
             <app-situation *ngFor='let situation of card.situations' [situation]='situation' [link]='true'></app-situation>
         </div>
     </div>
+    <ng-content></ng-content>
     <div class='terms' *ngIf='card.service_details || card.service_payment_details'>
         <h2 i18n>תנאים לקבלת השירות:</h2>
         <div [innerHTML]='card.service_details' *ngIf='card.service_details'></div>

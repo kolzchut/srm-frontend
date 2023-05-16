@@ -119,13 +119,5 @@
         bottom: 0;
         right: 0;
         z-index: 1;
-        will-change: transform;
-        &:not(.safari) {
-            transform: translateY(100%);
-            &.visible {
-                transform: translateY(0.002%);
-            }
-            transition: transform 0.3s ease-in-out;    
-        }
     }
 }

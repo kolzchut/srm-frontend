@@ -10,7 +10,11 @@
     >
         <div class='branch'>
             <app-branch-header [card]='card' [link]='branchLink' [cardId]='cardId' [landingPage]='landingPage' [compact]='false'></app-branch-header>
-            <app-card *ngIf='card' [card]='card' (zoomout)='zoomout.emit($event)'></app-card>
+            <app-card *ngIf='card' [card]='card' (zoomout)='zoomout.emit($event)'>
+                <div class='quick-actions' *ngIf='card' [class.visible]='showQuickActions' [class.safari]='platform.safari'>
+                    <app-quick-actions [card]='card'></app-quick-actions>
+                </div>    
+            </app-card>
         </div>
     </div>
     <div class='controls layout-mobile'>
@@ -18,7 +22,4 @@
         <div class='menu-icon' *ngIf='landingPage'><app-menu-icon [dark]='true'></app-menu-icon></div>
         <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams?.original_query ? {q: searchParams?.original_query} : {}" role="button" aria-label="ביצוע חיפוש חדש"></a>
     </div>    
-    <div class='quick-actions' *ngIf='card' [class.visible]='showQuickActions' [class.safari]='platform.safari'>
-        <app-quick-actions [card]='card'></app-quick-actions>
-    </div>
 </div>

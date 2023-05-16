@@ -3,7 +3,7 @@
     [queryParams]='link ? {q: situation.name} : null'
     [class.small]='small'
     [class.linkable]='link'
-    [attr.aria-label]='"ביצוע חיפוש חדש באתר עבור " + situation.name'
+    [attr.aria-label]='situation.name + " - לחצו לחיפוש באתר"'
 >
     <span class='text' [innerHTML]='situation.name'
     ></span>
