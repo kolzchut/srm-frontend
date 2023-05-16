@@ -11,7 +11,7 @@
         <div class='branch'>
             <app-branch-header [card]='card' [link]='branchLink' [cardId]='cardId' [landingPage]='landingPage' [compact]='false'></app-branch-header>
             <app-card *ngIf='card' [card]='card' (zoomout)='zoomout.emit($event)'>
-                <div class='quick-actions' *ngIf='card' [class.visible]='showQuickActions' [class.safari]='platform.safari'>
+                <div class='quick-actions'>
                     <app-quick-actions [card]='card'></app-quick-actions>
                 </div>    
             </app-card>

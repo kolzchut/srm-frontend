@@ -40,29 +40,29 @@ type AuxParams = {
     trigger('slideInOut', [
       state('in', style({transform: 'translateY(0%)'})),
       transition(":enter", [
-        query('.content', [
-          style({ transform: 'translateY(100%)' }),
-          animate(
-            300, style({ transform: 'translateY(0%)' })
-          )
-        ]),
-        query('.map-window, .controls', [
-          style({ opacity: 0 }),
-          animate(
-            600, style({ opacity: 1 })
-          )
-        ]),
+        // query('.content', [
+        //   style({ transform: 'translateY(100%)' }),
+        //   animate(
+        //     300, style({ transform: 'translateY(0%)' })
+        //   )
+        // ]),
+        // query('.map-window', [
+        //   style({ opacity: 0 }),
+        //   animate(
+        //     600, style({ opacity: 1 })
+        //   )
+        // ]),
       ]),
       transition(":leave", [
-        query('.map-window, .controls', [
-          style({ opacity: 0 }),
-        ]),
-        query('.content', [
-          style({ transform: 'translateY(0%)' }),
-          animate(
-            300, style({ transform: 'translateY(100%)' })
-          )
-        ])
+        // query('.map-window', [
+        //   style({ opacity: 0 }),
+        // ]),
+        // query('.content', [
+        //   style({ transform: 'translateY(0%)' }),
+        //   animate(
+        //     300, style({ transform: 'translateY(100%)' })
+        //   )
+        // ])
       ])      
     ])
   ]
@@ -128,18 +128,12 @@ export class CardContainerComponent implements OnInit, OnChanges {
       this.calculateExitLink();
       this.platform.browser(() => {
         (this.scrolled?.nativeElement as HTMLElement)?.scrollTo(0, 0);
-        timer(2000).subscribe(() => {
-          this.showQuickActions = true;
-        });  
       });
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.parametersQueue.next({searchParams: this.searchParams, cardId: this.cardId, hash: ''});
-    if (changes.cardId) {
-      this.showQuickActions = false;
-    }
   }
 
   calculateExitLink(): void {
