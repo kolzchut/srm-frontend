@@ -401,7 +401,7 @@ export class ApiService {
     ));
   }
 
-  getDistinct(searchParams: SearchParams): Observable<QueryCardResult> {
+  getDistinct(searchParams: SearchParams, bound=false): Observable<QueryCardResult> {
     const params: any = {
       size: 1,
       offset: 0,
@@ -411,7 +411,7 @@ export class ApiService {
       this.fullTextParams(params, {no_highlight: true});
     }
     params.extra = 'distinct-situations|distinct-responses';
-    if (searchParams.response || searchParams.situation || searchParams.org_id || searchParams.national) {
+    if (searchParams.response || searchParams.situation || searchParams.org_id || searchParams.national || bound) {
       const filter: any = {};
       if (searchParams.response) {
         filter['response_ids_parents'] = searchParams.response;
@@ -424,6 +424,9 @@ export class ApiService {
       }
       if (searchParams.national) {
         filter['national_service'] = true;
+      }
+      if (bound && searchParams.bounds && searchParams.bounds.length === 2 && bound) {
+        filter['branch_geometry__bounded'] = this.boundsFilter(searchParams.bounds);
       }
       params.filter = JSON.stringify([filter]);
     }

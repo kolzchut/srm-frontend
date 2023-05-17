@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ReplaySubject, Subject, forkJoin } from 'rxjs';
-import { filter, distinctUntilChanged, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { ReplaySubject, Subject, forkJoin, fromEvent, merge } from 'rxjs';
+import { filter, distinctUntilChanged, switchMap, takeUntil, tap, debounceTime, first } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { DistinctItem, SearchParams, SITUATION_FILTERS, TaxonomyItem } from '../consts';
+import { DistinctItem, QueryCardResult, SearchParams, SITUATION_FILTERS, TaxonomyItem } from '../consts';
 import { SearchFiltersMoreButtonComponent } from '../search-filters-more-button/search-filters-more-button.component';
 
 @UntilDestroy()
@@ -48,6 +48,8 @@ export class SearchFiltersComponent implements OnChanges {
   internalSearchParams = new Subject<SearchParams>();
   
   ready = new ReplaySubject<boolean>(1);
+
+  showDiscovery: boolean | null = null;
   
   constructor(private api: ApiService) {
     forkJoin([this.api.getSituations(), this.api.getResponses()])
@@ -83,6 +85,22 @@ export class SearchFiltersComponent implements OnChanges {
     ).subscribe((params) => {
       this.processSearchParams(params);
     });
+    this.incomingSearchParams.pipe(
+      untilDestroyed(this),
+      filter((params) => !!params),
+      distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
+    ).subscribe((params) => {
+      this.processSearchParams(params);
+    });
+    this.incomingSearchParams.pipe(
+      untilDestroyed(this),
+      filter((params) => !!params),
+      filter((params) => !params.hasFilters),
+      debounceTime(3000),
+      switchMap((params) => this.api.getDistinct(params, true)),
+    ).subscribe((result) => {
+      this.checkDiscoveryNeeded(result);
+    });
   }
 
   ngOnChanges(): void {
@@ -92,86 +110,105 @@ export class SearchFiltersComponent implements OnChanges {
   processSearchParams(params: SearchParams): void {
     if (params) {
       this.ready.pipe(
-        switchMap(() => this.api.getDistinct(params))
-      ).subscribe((data) => {
-        if (this.active_) {
-          this.situations = data.situations;
-          this.responses = data.responses;
-          this.audiences = this.situations
-            .filter(x => !!x && !!x.key)
-            .filter(x => 
-              x.key?.indexOf('human_situations:armed_forces') === 0 ||
-              x.key?.indexOf('human_situations:citizenship') === 0 ||
-              x.key?.indexOf('human_situations:criminal_history') === 0 ||
-              x.key?.indexOf('human_situations:deprivation') === 0 ||
-              x.key?.indexOf('human_situations:education') === 0 ||
-              x.key?.indexOf('human_situations:household') === 0 ||
-              x.key?.indexOf('human_situations:housing') === 0 ||
-              x.key?.indexOf('human_situations:income') === 0 ||
-              x.key?.indexOf('human_situations:sectors') === 0 ||
-              x.key?.indexOf('human_situations:sexuality') === 0 ||
-              x.key?.indexOf('human_situations:survivors') === 0 ||
-              false
-            )
-            .filter(x => x.key !== params.situation)
-            .map(x => this.situationsMap[x.key || ''])
-            .filter(x => !!x);
-          this.health_issues = this.situations
-            .filter(x => !!x && !!x.key)
-            .filter(x => 
-              x.key?.indexOf('human_situations:mental_health') === 0 ||
-              x.key?.indexOf('human_situations:substance_dependency') === 0 ||
-              x.key?.indexOf('human_situations:disability') === 0 ||
-              x.key?.indexOf('human_situations:health') === 0 ||
-              false
-            )
-            .filter(x => x.key !== params.situation)
-            .map(x => this.situationsMap[x.key || ''])
-            .filter(x => !!x);
-          
-          this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors']
-              .map(x => 'human_situations:age_group:' + x)
-              .filter(x => this.situations.map(y => y.key).indexOf(x) >= 0)
-              .map(x => this.situationsMap[x])
-              .filter(x => !!x);
-
-          this.languages = this.situations
-            .filter(x => !!x && !!x.key)
-            .filter(x => 
-              x.key?.indexOf('human_situations:language') === 0
-            )
-            .filter(x => 
-              x.key !== 'human_situations:language:hebrew_speaking'
-            )
-            .filter(x => x.key !== params.situation)
-            .map(x => this.situationsMap[x.key || ''])
-            .filter(x => !!x);
-
-          this.others = {};
-          for (const hsroot of ['employment', 'benefit_holders', 'life_events', 'urgency', 'gender', 'community', 'role']) {
-            this.others[hsroot] = this.situations
+        switchMap(() => this.api.getDistinct(params)),
+        tap((data) => {
+          if (this.active_) {
+            this.situations = data.situations;
+            this.responses = data.responses;
+            this.audiences = this.situations
               .filter(x => !!x && !!x.key)
-              .filter(x => x.key?.indexOf('human_situations:' + hsroot) === 0)
+              .filter(x => 
+                x.key?.indexOf('human_situations:armed_forces') === 0 ||
+                x.key?.indexOf('human_situations:citizenship') === 0 ||
+                x.key?.indexOf('human_situations:criminal_history') === 0 ||
+                x.key?.indexOf('human_situations:deprivation') === 0 ||
+                x.key?.indexOf('human_situations:education') === 0 ||
+                x.key?.indexOf('human_situations:household') === 0 ||
+                x.key?.indexOf('human_situations:housing') === 0 ||
+                x.key?.indexOf('human_situations:income') === 0 ||
+                x.key?.indexOf('human_situations:sectors') === 0 ||
+                x.key?.indexOf('human_situations:sexuality') === 0 ||
+                x.key?.indexOf('human_situations:survivors') === 0 ||
+                false
+              )
               .filter(x => x.key !== params.situation)
               .map(x => this.situationsMap[x.key || ''])
               .filter(x => !!x);
-          }
+            this.health_issues = this.situations
+              .filter(x => !!x && !!x.key)
+              .filter(x => 
+                x.key?.indexOf('human_situations:mental_health') === 0 ||
+                x.key?.indexOf('human_situations:substance_dependency') === 0 ||
+                x.key?.indexOf('human_situations:disability') === 0 ||
+                x.key?.indexOf('human_situations:health') === 0 ||
+                false
+              )
+              .filter(x => x.key !== params.situation)
+              .map(x => this.situationsMap[x.key || ''])
+              .filter(x => !!x);
+            
+            this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors']
+                .map(x => 'human_situations:age_group:' + x)
+                .filter(x => this.situations.map(y => y.key).indexOf(x) >= 0)
+                .map(x => this.situationsMap[x])
+                .filter(x => !!x);
 
-          this.responseItems = this.responses
-            .filter(x => x.key !== params.response)
-            .filter(x => !x.max_score || x.max_score.value >= this.api.MIN_SCORE)
-            .map(x => this.responsesMap[x.key || ''])
+            this.languages = this.situations
+              .filter(x => !!x && !!x.key)
+              .filter(x => 
+                x.key?.indexOf('human_situations:language') === 0
+              )
+              .filter(x => 
+                x.key !== 'human_situations:language:hebrew_speaking'
+              )
+              .filter(x => x.key !== params.situation)
+              .map(x => this.situationsMap[x.key || ''])
+              .filter(x => !!x);
+
+            this.others = {};
+            for (const hsroot of ['employment', 'benefit_holders', 'life_events', 'urgency', 'gender', 'community', 'role']) {
+              this.others[hsroot] = this.situations
+                .filter(x => !!x && !!x.key)
+                .filter(x => x.key?.indexOf('human_situations:' + hsroot) === 0)
+                .filter(x => x.key !== params.situation)
+                .map(x => this.situationsMap[x.key || ''])
+                .filter(x => !!x);
+            }
+
+            this.responseItems = this.responses
+              .filter(x => x.key !== params.response)
+              .filter(x => !x.max_score || x.max_score.value >= this.api.MIN_SCORE)
+              .map(x => this.responsesMap[x.key || ''])
+              .filter(x => !!x);
+          }
+          this.categories = data.categories;
+          this.responseCategoryItems = this.categories
+            .map(x => x.key)
+            .map(x => this.responsesMap['human_services:' + x])
             .filter(x => !!x);
-        }
-        this.categories = data.categories;
-        this.responseCategoryItems = this.categories
-          .map(x => x.key)
-          .map(x => this.responsesMap['human_services:' + x])
-          .filter(x => !!x);
-      });
-    // }
+        }),
+      ).subscribe();
     }
     this.currentSearchParams = this._copySearchParams(params || this.searchParams);
+  }
+
+  checkDiscoveryNeeded(result: QueryCardResult): void {
+    const THRESHOLD = 40;
+    if (result.search_counts._current.total_overall > THRESHOLD) {
+      const possibleFilters = [...(result.situations || []), ...(result.responses || [])].filter(x => (x.doc_count || 0) < THRESHOLD);
+      if (possibleFilters.length < 3) {
+        return;
+      }
+      if (this.showDiscovery === null) {
+        this.showDiscovery = true;
+        merge(
+          fromEvent(window, 'mousedown'),
+          fromEvent(window, 'touchstart')
+        ).pipe(first()).subscribe(() => {
+          this.showDiscovery = false;
+        });
+      }
+    }
   }
 
   set active(value: boolean) {

@@ -212,7 +212,9 @@ export class SearchParams {
     }
 
     get hasFilters(): boolean {
-        return !!SITUATION_FILTERS.find((f) => (this as any)['filter_' + f]?.length);
+        return !!SITUATION_FILTERS.find((f) => (this as any)['filter_' + f]?.length) || 
+                !!this.filter_responses?.length || 
+                !!this.filter_response_categories?.length;
     }
 
     get allTaxonomyIds(): string[] {

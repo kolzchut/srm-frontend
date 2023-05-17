@@ -1,12 +1,5 @@
 <ng-container *ngIf='!active'>
-    <button class='open-modal' [class.active]='!!totalFilters' (click)='active = true' aria-label='פתיחת אפשרויות הסינון'>
-        <img *ngIf='!totalFilters' src='assets/img/icon-filter-white.svg' class='hover' alt='אייקון סינון'>
-        <img *ngIf='!totalFilters' src='assets/img/icon-filter-gray-3.svg' class='nohover' alt='אייקון סינון'>
-        <img *ngIf='!!totalFilters' src='assets/img/icon-filter-white.svg' class='hover' [alt]='"אייקון סינון עם " + totalFilters + " מסננים פעילים"'>
-        <img *ngIf='!!totalFilters' src='assets/img/icon-filter-gray-1.svg' class='nohover' [alt]='"אייקון סינון עם " + totalFilters + " מסננים פעילים"'>
-        <span>סינון</span>
-        <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div>
-    </button>
+    <app-search-filters-button [totalFilters]='totalFilters' [showDiscovery]='!!showDiscovery' (activate)='active = true'></app-search-filters-button>
     <div class='tags header' *ngIf='responseCategoryItems && false'> <!-- todo #483 -->
         <app-response *ngFor='let response of responseCategoryItems' 
                 [response]='response' 

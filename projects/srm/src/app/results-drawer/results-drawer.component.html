@@ -18,10 +18,10 @@
     </ng-container>
 </div>
 <div class='content' #handleEl role="presentation">
-    <div class='handle layout-mobile' (click)='$event.stopPropagation()' role='presentation'>
-        <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
-    </div>
     <div class='non-scrollable' [class.scrollable-anyway]='scrollAll'>
+        <div class='handle layout-mobile' (click)='$event.stopPropagation()' role='presentation'>
+            <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
+        </div>
         <ng-content select='content-header'></ng-content>
     </div>
     <div class='scrollable' #scrollable>
