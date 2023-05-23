@@ -25,7 +25,7 @@ export class CardActionComponent implements OnInit {
   onclick() {
     if (this.action) {
       this.analytics.cardActionEvent(this.card, this.kind, this.action);
-      window.open(this.action, '_blank');
+      // window.open(this.action, '_blank');
     }
   }
 }

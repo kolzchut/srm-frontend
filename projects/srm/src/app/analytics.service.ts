@@ -15,9 +15,9 @@ export class AnalyticsService {
   constructor(private platform: PlatformService) { }
 
   searchEvent(params: SearchParams, isLandingPage: boolean) {
-    if (params.original_query && window.gtag && this.platform.browser()) {
-      const title = params.original_query;
-      console.log('EVENT search', title);
+    const title = params.original_query;
+    console.log('EVENT search', title);
+    if (title && window.gtag && this.platform.browser()) {
       const responseCount = (params.filter_responses || []).length;
       window.gtag({
         event: 'srm:search',
@@ -33,8 +33,8 @@ export class AnalyticsService {
   }
 
   cardEvent(card: Card, params: SearchParams | null, isLandingPage: boolean) {
+    console.log('EVENT card', card);
     if (window.gtag && this.platform.browser()) {
-      console.log('EVENT card', card);
       window.gtag({
         event: 'srm:card',
         card_id: card.card_id,
@@ -48,8 +48,8 @@ export class AnalyticsService {
   }
 
   cardActionEvent(card: Card, action: string, action_url: string) {
+    console.log('EVENT card action', action, action_url, card);
     if (window.gtag && this.platform.browser()) {
-      console.log('EVENT card action', card);
       window.gtag({
         event: 'srm:card_action',
         card_id: card.card_id,

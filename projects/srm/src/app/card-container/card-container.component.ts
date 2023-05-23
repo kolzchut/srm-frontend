@@ -6,7 +6,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LngLatLike } from 'mapbox-gl';
 import { SeoSocialShareService } from 'ngx-seo';
 import { EMPTY, forkJoin, from, fromEvent, Observable, ReplaySubject, Subject, Subscription, timer } from 'rxjs';
-import { distinctUntilChanged, first, map, switchMap, tap, withLatestFrom, zipWith } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, first, map, switchMap, tap, withLatestFrom, zipWith } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';
 import { MapWindowMode } from '../map-window/map-window.component';
@@ -112,31 +112,39 @@ export class CardContainerComponent implements OnInit, OnChanges {
           return {p, card};
         }));
       }),
-    ).subscribe(({p, card}) => {
-      this.card = card;
-      console.log('ACTION CARD', this.card?.branch_geometry);
-      if (this.card?.branch_geometry) {
-        const geom: [number, number] = this.card.branch_geometry;        
-        this.center.emit(geom);
-      }
-      if (this.card) {
-        this.seo.setTitle(`${this.card.service_name} / ${this.card.organization_short_name || this.card.organization_name} | כל שירות`);
-        if (this.card.service_description) {
-          this.seo.setDescription(this.card.service_description);
+      map(({p, card}) => {
+        this.card = card;
+        console.log('ACTION CARD', this.card?.branch_geometry);
+        if (this.card?.branch_geometry) {
+          const geom: [number, number] = this.card.branch_geometry;        
+          this.center.emit(geom);
         }
-      }
-      const loc = this.document.location;
-      this.seo.setUrl(loc.href);
-      this.seo.setCanonicalUrl(`https://${loc.host}/c/${this.cardId}`);
-      this.calculateExitLink();
-      this.platform.browser(() => {
-        this.analytics.cardEvent(card, this.searchParams, this.isLandingPage);
-        (this.scrolled?.nativeElement as HTMLElement)?.scrollTo(0, 0);
-        timer(2000).subscribe(() => {
-          this.showQuickActions = true;
-        });  
-      });
-    });
+        if (this.card) {
+          this.seo.setTitle(`${this.card.service_name} / ${this.card.organization_short_name || this.card.organization_name} | כל שירות`);
+          if (this.card.service_description) {
+            this.seo.setDescription(this.card.service_description);
+          }
+        }
+        const loc = this.document.location;
+        this.seo.setUrl(loc.href);
+        this.seo.setCanonicalUrl(`https://${loc.host}/c/${this.cardId}`);
+        this.calculateExitLink();
+        this.platform.browser(() => {
+          (this.scrolled?.nativeElement as HTMLElement)?.scrollTo(0, 0);
+          timer(2000).subscribe(() => {
+            this.showQuickActions = true;
+          });  
+        });
+        return card;
+      }),
+      distinctUntilChanged((a, b) => a.card_id === b.card_id),
+      debounceTime(3000),
+      tap((card) => {
+        this.platform.browser(() => {
+          this.analytics.cardEvent(card, this.searchParams, this.isLandingPage);
+        });
+      })
+    ).subscribe();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
