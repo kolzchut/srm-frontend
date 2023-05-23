@@ -66,6 +66,7 @@
             *ngIf='stage === "card"' 
             [cardId]='card' 
             [searchParams]='searchParams'
+            [isLandingPage]='isLandingPage'
             (center)='centerMap($event)'
             (size)='branchSize = $event'
             (zoomout)='zoomOutMap($event)'

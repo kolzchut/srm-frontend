@@ -1,7 +1,6 @@
 import { DOCUMENT, Location } from '@angular/common'
 import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { fromEvent, Subscription, timer } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';

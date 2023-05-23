@@ -14,6 +14,7 @@ import { MapComponent } from '../map/map.component';
 import { PlatformService } from '../platform.service';
 import { swipe } from '../swipe';
 import { DOCUMENT } from '@angular/common';
+import { AnalyticsService } from '../analytics.service';
 
 
 type BranchCards = {cards: Card[], hidden: Card[]};
@@ -71,6 +72,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
 
   @Input() cardId = '';
   @Input() searchParams: SearchParams;
+  @Input() isLandingPage: boolean;
   @Output() center = new EventEmitter<LngLatLike>();
   @Output() size = new EventEmitter<number>();
   @Output() zoomout = new EventEmitter<ViewPort>();
@@ -90,6 +92,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
 
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
               private el: ElementRef, private seo: SeoSocialShareService, public platform: PlatformService,
+              private analytics: AnalyticsService,
               @Inject(DOCUMENT) private document: Document) {
     if (platform.safari) {
       this.showQuickActions = true;
@@ -127,6 +130,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
       this.seo.setCanonicalUrl(`https://${loc.host}/c/${this.cardId}`);
       this.calculateExitLink();
       this.platform.browser(() => {
+        this.analytics.cardEvent(card, this.searchParams, this.isLandingPage);
         (this.scrolled?.nativeElement as HTMLElement)?.scrollTo(0, 0);
       });
     });
