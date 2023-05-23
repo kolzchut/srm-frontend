@@ -13,8 +13,7 @@ import { DOCUMENT } from '@angular/common';
 import { PlatformService } from '../platform.service';
 import { LayoutService } from '../layout.service';
 import * as mapboxgl from 'mapbox-gl';
-
-declare const window: any;
+import { AnalyticsService } from '../analytics.service';
 
 class SearchParamCalc {
   acId: string;
@@ -104,7 +103,7 @@ export class PageComponent implements OnInit {
   didYouMean: {display: string, link: string} | null = null;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
-              private platform: PlatformService, public layout: LayoutService,
+              private platform: PlatformService, public layout: LayoutService, private analytics: AnalyticsService,
               @Inject(DOCUMENT) private document: any) {
 
     this.searchParamsCalc.pipe(
@@ -280,23 +279,9 @@ export class PageComponent implements OnInit {
           // this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
         }      
       }),
-      debounceTime(3000),
+      debounceTime(this.platform.browser() ? 3000 : 0),
     ).subscribe((params: SearchParams) => {
-      if (params.original_query && window.gtag) {
-        const title = params.original_query;
-        console.log('EVENT search', title);
-        const responseCount = (params.filter_responses || []).length;
-        window.gtag({
-          event: 'srm:search',
-          search_term: title,
-          filter_count: params.allTaxonomyIds.filter(x => !!x).length - responseCount,
-          filter_responses_count: responseCount,
-          filter_response_categories_count: (params.filter_response_categories || []).length,
-          filter_national: params.national ? 1 : 0,
-          landing_page: this.isLandingPage ? 1 : 0,
-          search_structured: !!params.query ? 0 : 1,
-        });
-      }
+      this.analytics.searchEvent(params, this.isLandingPage);
     });
     route.params.pipe(
       untilDestroyed(this),

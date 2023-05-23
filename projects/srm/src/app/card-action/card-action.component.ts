@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { AnalyticsService } from '../analytics.service';
+import { Card } from '../consts';
 
 @Component({
   selector: 'app-card-action',
@@ -7,6 +9,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class CardActionComponent implements OnInit {
 
+  @Input() card: Card;
   @Input() kind: string;
   @Input() display: string;
   @Input() action: string;
@@ -14,13 +17,14 @@ export class CardActionComponent implements OnInit {
   @Input() primary = false;
   @Input() org = false;
   
-  constructor() { }
+  constructor(private analytics: AnalyticsService) { }
 
   ngOnInit(): void {
   }
 
   onclick() {
     if (this.action) {
+      this.analytics.cardActionEvent(this.card, this.kind, this.action);
       window.open(this.action, '_blank');
     }
   }
