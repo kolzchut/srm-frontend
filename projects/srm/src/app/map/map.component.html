@@ -1,4 +1,7 @@
-<div class='map' #map aria-hidden="true" role='presentation'></div>
+<div class='map-container'>
+    <img class='map-hotjar' aria-hidden="true" role='presentation' [src]='mapImgCopy'/>
+    <div class='map data-hj-suppress' #map aria-hidden="true" role='presentation'></div>
+</div>
 <div class='map-popup-container' style="display: none;">
     <div class='map-popup' #stablePopup *ngIf='stablePopupProps'>
         <app-map-popup-stable [props]='stablePopupProps' [searchParams]='searchParams'></app-map-popup-stable>

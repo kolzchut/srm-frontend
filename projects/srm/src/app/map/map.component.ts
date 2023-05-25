@@ -14,6 +14,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ApiService } from '../api.service';
 import { Router } from '@angular/router';
 import { getPointCards, PointCards } from '../branch-container/branch-card-utils';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 // declare var mapboxgl: any;
 
 export type CenterZoomType = [number, number, number];
@@ -142,13 +143,17 @@ export class MapComponent implements OnChanges, AfterViewInit {
   hoverPopupProps: any = null;
   pointsHover = new Subject<any>();
   hoveredPoint: any = null;
+
+  mapImgCopy: SafeResourceUrl | null = null;
+  mapImgCopyQueue = new Subject<void>();
   
   constructor(private mapboxService: MapboxService, 
               private api: ApiService,
               private platform: PlatformService,
               private layout: LayoutService,
-              private router: Router
-             ) {
+              private router: Router,
+              private sanitizer: DomSanitizer
+  ) {
       
   }
 
@@ -264,6 +269,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
           attributionControl: false,
           bounds: [[34.578046, 32.162327], [35.356111, 31.690073]],
           maxBounds: [[30, 27], [40, 38]],
+          preserveDrawingBuffer: true,
         };
         this.map = new mapboxgl.Map(mapParams);
         this.map.addControl(new mapboxgl.AttributionControl(), 'top-right');
@@ -525,6 +531,13 @@ export class MapComponent implements OnChanges, AfterViewInit {
               this.setCenter(this.map.getCenter(), this.map.getZoom());
             }
             this.processAction();
+            this.mapImgCopyQueue.next();
+          });
+          this.mapImgCopyQueue.pipe(
+            untilDestroyed(this),
+            debounceTime(3000),
+          ).subscribe((img) => {
+            this.mapImgCopy = this.sanitizer.bypassSecurityTrustResourceUrl(this.map.getCanvas().toDataURL('image/jpeg', 0.5));
           });
           this.bounds = this.map.getBounds();
           timer(100).subscribe(() => {
