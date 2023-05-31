@@ -261,7 +261,7 @@ export class PageComponent implements OnInit {
       distinctUntilChanged((a, b) => {
         return a.original_query === b.original_query && a.ac_query === b.ac_query;
       }),
-      delay<SearchParams>(platform.server() ? 0 : 1000),
+      delay<SearchParams>(platform.browser() ? 1000 : 0),
       tap((params: SearchParams) => {
         // console.log('ACTION CHANGED TO', params.original_query, params.ac_bounds);
         if (params.ac_bounds) {
@@ -279,10 +279,7 @@ export class PageComponent implements OnInit {
           // this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
         }      
       }),
-      debounceTime(this.platform.browser() ? 3000 : 0),
-    ).subscribe((params: SearchParams) => {
-      this.analytics.searchEvent(params, this.isLandingPage);
-    });
+    ).subscribe();
     route.params.pipe(
       untilDestroyed(this),
     ).subscribe(params => {

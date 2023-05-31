@@ -14,9 +14,9 @@ export class AnalyticsService {
 
   constructor(private platform: PlatformService) { }
 
-  searchEvent(params: SearchParams, isLandingPage: boolean) {
+  searchEvent(params: SearchParams, isLandingPage: boolean, numTotalResults: number) {
     const title = params.original_query;
-    console.log('EVENT search', title);
+    console.log('EVENT search', title, isLandingPage, numTotalResults);
     if (title && window.gtag && this.platform.browser()) {
       const responseCount = (params.filter_responses || []).length;
       window.gtag({
@@ -28,6 +28,7 @@ export class AnalyticsService {
         filter_national: params.national ? 1 : 0,
         landing_page: isLandingPage ? 1 : 0,
         search_structured: !!params.query ? 0 : 1,
+        num_results_total: numTotalResults,
       });
     }
   }

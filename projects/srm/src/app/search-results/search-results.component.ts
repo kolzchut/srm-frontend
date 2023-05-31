@@ -1,11 +1,12 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
-import { UntilDestroy } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
 import { forkJoin, from, ReplaySubject, Subject, Subscription, throwError, timer } from 'rxjs';
-import { catchError, concatMap, debounceTime, delay, filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, debounceTime, delay, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';
 import { PlatformService } from '../platform.service';
+import { AnalyticsService } from '../analytics.service';
 
 
 export type SearchParamsOffset = {
@@ -31,6 +32,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   @Input() searchParams: SearchParams;
   @Input() active = false;
   @Input() didYouMean: {display: string, link: string} | null = null;
+  @Input() isLandingPage = true;
   @Output() zoomout = new EventEmitter<ViewPort>();
   @Output() nationalCount = new EventEmitter<number>();
   @Output() visibleCount = new EventEmitter<number>();
@@ -49,8 +51,9 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   obs: IntersectionObserver;
   fetchQueue = new Subject<SearchParamsOffset>();
   paramsQueue = new ReplaySubject<SearchParams>(1);
+  resultsParamsQueue = new Subject<{params: SearchParams, totalCount: number}>();
   resultsSubscription: Subscription | null = null;
-
+  
   hasCounts = false;
   totalVisibleCount = 0;
   totalCount = 0;
@@ -58,7 +61,8 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   loading: boolean = true;
   viewport: ViewPort;
 
-  constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService, private seo: SeoSocialShareService) {
+  constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService,
+      private seo: SeoSocialShareService, private analytics: AnalyticsService) {
   }
 
   ngOnInit(): void {
@@ -83,6 +87,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
               }
             }),
             map(() => {
+              this.resultsParamsQueue.next({params, totalCount: this.totalCount});
               return params;
             })
           );
@@ -108,25 +113,41 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         }),
         concatMap((params) => {
           this.loading = true;
-          return this.api.getCards(params.p, params.offset);
+          return this.api.getCards(params.p, params.offset)
+            .pipe(
+              map((results) => {
+                return {params, results};
+              })
+            );
         }),
         catchError((err) => {
           return from([]);
-        })
-      ).subscribe((results) => {
-        this.loading = false;
-        this.results = this.results.filter(x => !!x).concat(results);
-        this.offset = this.results.length;
-        this.hasCounts = true;
-        if (this.results.length > 0) {
-          this.totalVisibleCount =  ((this.results[0] as any)['__counts']['total_overall'] - this.totalNationalCount) || 0;
-          this.visibleCount.emit(this.totalVisibleCount);
-        } else {
-          this.totalVisibleCount = 0;
-        }
-      });
+        }),
+        tap(({params, results}) => {
+          this.loading = false;
+          this.results = this.results.filter(x => !!x).concat(results);
+          this.offset = this.results.length;
+          this.hasCounts = true;
+          if (this.results.length > 0) {
+            this.totalVisibleCount =  ((this.results[0] as any)['__counts']['total_overall'] - this.totalNationalCount) || 0;
+            this.visibleCount.emit(this.totalVisibleCount);
+          } else {
+            this.totalVisibleCount = 0;
+          }
+        }),
+      ).subscribe();
       this.fetch();
-    });       
+    });
+    this.resultsParamsQueue.pipe(
+      untilDestroyed(this),
+      distinctUntilChanged((a, b) => {
+        return a.params.original_query === b.params.original_query && a.params.ac_query === b.params.ac_query;
+      }),  
+      debounceTime(this.platform.browser() ? 3000 : 0),
+      tap((item) => {
+        this.analytics.searchEvent(item.params, this.isLandingPage, item.totalCount);  
+      })
+    ).subscribe();
   }
 
   ngOnChanges(): void {
