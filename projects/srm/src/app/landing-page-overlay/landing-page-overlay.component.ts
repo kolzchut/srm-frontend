@@ -32,7 +32,7 @@ export class LandingPageOverlayComponent implements OnChanges {
     this.platform.browser(() => {
       this.ready.pipe(
         distinctUntilChanged(),
-        debounceTime(3000),
+        debounceTime(this.platform.browser() ? 3000 : 0),
         switchMap((token) => {
           if (this.cardId) {
             return this.api.getCard(this.cardId).pipe(

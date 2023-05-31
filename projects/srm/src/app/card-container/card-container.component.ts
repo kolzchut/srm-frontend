@@ -135,7 +135,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
         return card;
       }),
       distinctUntilChanged((a, b) => a.card_id === b.card_id),
-      debounceTime(3000),
+      debounceTime(this.platform.browser() ? 3000 : 0),
       tap((card) => {
         this.platform.browser(() => {
           this.analytics.cardEvent(card, this.searchParams, this.isLandingPage);
