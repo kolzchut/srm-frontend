@@ -97,7 +97,7 @@ export class SearchFiltersComponent implements OnChanges {
       untilDestroyed(this),
       filter((params) => !!params),
       filter((params) => !params.hasFilters),
-      debounceTime(3000),
+      debounceTime(this.platform.browser() ? 3000 : 0),
       switchMap((params) => this.api.getDistinct(params, true)),
     ).subscribe((result) => {
       this.checkDiscoveryNeeded(result);

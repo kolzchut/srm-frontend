@@ -533,12 +533,14 @@ export class MapComponent implements OnChanges, AfterViewInit {
             this.processAction();
             this.mapImgCopyQueue.next();
           });
-          this.mapImgCopyQueue.pipe(
-            untilDestroyed(this),
-            debounceTime(3000),
-          ).subscribe((img) => {
-            this.mapImgCopy = this.sanitizer.bypassSecurityTrustResourceUrl(this.map.getCanvas().toDataURL('image/jpeg', 0.5));
-          });
+          if (this.platform.browser()) {
+            this.mapImgCopyQueue.pipe(
+              untilDestroyed(this),
+              debounceTime(3000),
+            ).subscribe((img) => {
+              this.mapImgCopy = this.sanitizer.bypassSecurityTrustResourceUrl(this.map.getCanvas().toDataURL('image/jpeg', 0.5));
+            });
+          }
           this.bounds = this.map.getBounds();
           timer(100).subscribe(() => {
             this.newMap.next(this);
