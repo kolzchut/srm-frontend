@@ -5,6 +5,7 @@ import { filter, distinctUntilChanged, switchMap, takeUntil, tap, debounceTime, 
 import { ApiService } from '../api.service';
 import { DistinctItem, QueryCardResult, SearchParams, SITUATION_FILTERS, TaxonomyItem } from '../consts';
 import { SearchFiltersMoreButtonComponent } from '../search-filters-more-button/search-filters-more-button.component';
+import { PlatformService } from '../platform.service';
 
 @UntilDestroy()
 @Component({
@@ -51,7 +52,7 @@ export class SearchFiltersComponent implements OnChanges {
 
   showDiscovery: boolean | null = null;
   
-  constructor(private api: ApiService) {
+  constructor(private api: ApiService, private platform: PlatformService) {
     forkJoin([this.api.getSituations(), this.api.getResponses()])
     .subscribe(([situationData, responseData]) => {
       this.situationsMap = {};
@@ -194,6 +195,9 @@ export class SearchFiltersComponent implements OnChanges {
 
   checkDiscoveryNeeded(result: QueryCardResult): void {
     const THRESHOLD = 40;
+    if (this.platform.server()) {
+      return;
+    }
     if (result.search_counts._current.total_overall > THRESHOLD) {
       const possibleFilters = [...(result.situations || []), ...(result.responses || [])].filter(x => (x.doc_count || 0) < THRESHOLD);
       if (possibleFilters.length < 3) {
