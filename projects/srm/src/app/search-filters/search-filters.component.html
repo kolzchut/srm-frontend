@@ -5,8 +5,7 @@
                 [response]='response' 
                 [selected]='isResponseCategorySelected(response)'
                 [disabled]='isResponseCategoryDisabled(response)'
-                [link]='false'
-                [selectable]='true'
+                [dynamic]='true'
                 (clicked)='toggleResponseCategory(response)'
         ></app-response>
     </div>
@@ -20,25 +19,7 @@
                 <div class='title'>סוגי שירות:</div>
                 <a class='clear' (activated)='currentSearchParams.filter_responses = []; pushSearchParams()' clickOnReturn role='button' tabindex="0" aria-label="ניקוי המסננים לסוגי השירותים">ניקוי</a>
             </div>
-            <div class='tags responses'>
-                <app-response *ngFor='let response of responseItems.slice(0, NUM_RESPONSES)' 
-                        [response]='response' 
-                        [selected]='isResponseSelected(response)'
-                        [link]='false'
-                        [selectable]='true'
-                        (clicked)='toggleResponse(response)'
-                ></app-response>
-                <app-search-filters-more-button *ngIf='responseItems.length > NUM_RESPONSES' [count]='responseItems.length - NUM_RESPONSES' [style]='"response"' #moreResponses></app-search-filters-more-button>
-                <ng-container *ngIf='moreResponses?.expanded'>
-                    <app-response *ngFor='let response of responseItems.slice(NUM_RESPONSES)' 
-                            [response]='response' 
-                            [selected]='isResponseSelected(response)'
-                            [link]='false'
-                            [selectable]='true'
-                            (clicked)='toggleResponse(response)'
-                    ></app-response>
-                </ng-container>
-            </div>
+            <app-response-selection-widget [responses]='responseItems'></app-response-selection-widget>
         </div>
         <app-search-filters-situation-section title='קהלי יעד' [situations]='audiences' [searchParams]='currentSearchParams' [field]='"filter_situations"' (push)='pushSearchParams()'></app-search-filters-situation-section>
         <app-search-filters-situation-section title='מצבים רפואיים ומוגבלויות' [situations]='health_issues' [searchParams]='currentSearchParams' [field]='"filter_health"' (push)='pushSearchParams()'></app-search-filters-situation-section>

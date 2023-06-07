@@ -1,0 +1,9 @@
+<div class='tags responses'>
+    <app-response *ngFor='let response of responses' 
+            [response]='response' 
+            [selected]='selectedResponseId === response.id'
+            [active]='!!selectedResponseId && response.id?.indexOf(selectedResponseId) === 0'
+            [dynamic]='true'
+            (clicked)='toggleResponse(response)'
+    ></app-response>
+</div>

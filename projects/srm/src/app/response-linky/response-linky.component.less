@@ -27,7 +27,7 @@
         font-size: 16px;
         line-height: 16px;
         color: @color-gray-1;
-        padding-left: 6px;
+        padding-left: 4px;
         &.small {
             font-size: 13px;
             line-height: 13px;
@@ -41,20 +41,21 @@
         &.disabled {
             color: @color-gray-3;
         }
+    }
 
-        &.selected {
-            padding-left: 2px;
-            font-weight: 400;
-        }
+    .point, .link {
+        .font-rag-sans;
+        flex: 0 0 auto;
+        width: 16px;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: center;
     }
 
     .point {
-        .font-rag-sans;
-        flex: 0 0 auto;
-        width: 18px;
         display: flex;
         flex-flow: column;
-        justify-content: center;
         align-items: center;
         span {
             display: block;
@@ -64,25 +65,14 @@
             border: 2px solid @color-white;
             border-radius: 5px;
         }
-        span.selected:not(.disabled) {
-            width: 10px;
-            height: 10px;    
-            border-width: 0;
-            // &.disabled {
-            //     width: 4px;
-            //     height: 4px;
-            // }
-        }
     }
 
-    .icon {
-        flex: 0 0 auto;
-        .background-image;
-        display: inline-block;
-        background-image: url(../../assets/img/icon-response-deselect.svg);
-        background-size: 16px;
-        width: 16px;
-        height: 16px;
-        margin-left: 2px;
+    .link {
+        height: 100%;
+        background: #27AE6020;
+        cursor: pointer;
+        span {
+            transform: rotate(135deg);
+        }
     }
 }

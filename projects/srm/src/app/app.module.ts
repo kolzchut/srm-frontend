@@ -56,6 +56,8 @@ import { SearchFiltersSituationSectionComponent } from './search-filters-situati
 import { SearchFiltersMoreButtonComponent } from './search-filters-more-button/search-filters-more-button.component';
 import { CardActionEmailComponent } from './card-action-email/card-action-email.component';
 import { SearchFiltersButtonComponent } from './search-filters-button/search-filters-button.component';
+import { ResponseSelectionWidgetComponent } from './response-selection-widget/response-selection-widget.component';
+import { ResponseLinkyComponent } from './response-linky/response-linky.component';
 
 @NgModule({
   declarations: [
@@ -107,7 +109,9 @@ import { SearchFiltersButtonComponent } from './search-filters-button/search-fil
     SearchFiltersSituationSectionComponent,
     SearchFiltersMoreButtonComponent,
     CardActionEmailComponent,
-    SearchFiltersButtonComponent
+    SearchFiltersButtonComponent,
+    ResponseSelectionWidgetComponent,
+    ResponseLinkyComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

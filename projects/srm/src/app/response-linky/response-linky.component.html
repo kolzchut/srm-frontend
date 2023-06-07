@@ -1,0 +1,24 @@
+<a class='response'
+    [style.background-color]='bgColor'
+    [style.border-color]='borderColor'
+    [routerLink]='search ? ["/q"] : ["/s", responseQuery]'
+    [queryParams]='search ? {q: response.name} : null'
+    [class.small]='small'
+    [attr.aria-label]='response.name + " - לחצו לחיפוש באתר"'
+    (mouseover)='hover = true' (mouseleave)='hover = false'
+>
+    <span class='point'>
+        <span
+            [style.background]='pointBgColor'
+            [style.border-color]='pointBorderColor'
+        ></span>
+    </span>
+    <span class='name'
+        [class.small]='small'
+        [style.font-weight]='fontWeight'
+        [style.color]='textColor'
+    >{{response.name}}</span>
+    <span class='link'
+        [style.background-color]='linkBgColor'
+    ><span [style.color]='linkColor'>←</span></span>
+</a>

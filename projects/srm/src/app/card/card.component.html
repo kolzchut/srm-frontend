@@ -9,7 +9,7 @@
     <div class='responses'>
         <h2 i18n>מהות השירות:</h2>
         <div class='list'>
-            <app-response *ngFor='let response of card.responses' [response]='response' [link]='true'></app-response>
+            <app-response-linky *ngFor='let response of card.responses' [response]='response'></app-response-linky>
         </div>
     </div>
     <div class='situations' *ngIf='card.situations && card.situations.length'>
