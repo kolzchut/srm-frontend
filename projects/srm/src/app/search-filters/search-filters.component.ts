@@ -115,7 +115,7 @@ export class SearchFiltersComponent implements OnChanges {
         tap((data) => {
           if (this.active_) {
             this.situations = data.situations;
-            this.responses = data.responses;
+            this.responses = this.sortResponses(data.responses, data.categories);
             this.audiences = this.situations
               .filter(x => !!x && !!x.key)
               .filter(x => 
@@ -263,6 +263,21 @@ export class SearchFiltersComponent implements OnChanges {
     return ret;
   }
   
+  sortResponses(responses: DistinctItem[], categories: DistinctItem[]) {
+    const categoryOrder: any = {};
+    categories.forEach((c, i) => categoryOrder[c.key || ''] = i);
+    responses.sort((a, b) => {
+      const catA = a.key?.split(':')[1] || '';
+      const catB = b.key?.split(':')[1] || '';
+      if (catA === catB) {
+        return a.key?.localeCompare(b.key || '') || 0;
+      } else {
+        return (categoryOrder[catA] || 0) - (categoryOrder[catB] || 0);
+      }
+    });
+    return responses;
+  }
+
   isResponseSelected(response: TaxonomyItem) {
     if (response.id && this.currentSearchParams?.filter_responses) {
       return this.currentSearchParams.filter_responses.indexOf(response.id) !== -1;

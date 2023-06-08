@@ -1,32 +1,11 @@
-<a class='response' *ngIf='link' 
-    [style.background-color]='bgColor'
-    [style.border-color]='borderColor'
-    [routerLink]='search ? ["/q"] : ["/s", responseQuery]'
-    [queryParams]='search ? {q: response.name} : null'
-    [class.small]='small'
-    [attr.aria-label]='response.name + " - לחצו לחיפוש באתר"'
-    (mouseover)='hover = true' (mouseleave)='hover = false'
->
-    <span class='point'>
-        <span
-            [style.background]='pointBgColor'
-            [style.border-color]='pointBorderColor'
-        ></span>
-    </span>
-    <span class='name'
-        [class.small]='small'
-        [style.font-weight]='fontWeight'
-        [style.color]='textColor'
-    >{{response.name}}</span>
-    <span class='link' *ngIf='suffix'
-        [style.background-color]='linkBgColor'
-    ><span [style.color]='linkColor'>←</span></span>
-</a>
-<div class='response selectable' *ngIf='!link && selectable' 
+<div class='bg' [style.transitionDelay]='transitionDelay + "ms"'></div>
+<div class='response dynamic' *ngIf='dynamic' 
     [style.background]='bgColor'
     [style.border-color]='borderColor'
+    [style.transitionDelay]='transitionDelay + "ms"'
     (click)='onClick()'
     [class.small]='small'
+    [class.visible]='visible'
     role='button'
     [attr.aria-label]='selected ? ("ביטול סינון לפי נושא " + response.name) : ("הפעלת סינון לפי נושא " + response.name)'
     tabindex="0"
@@ -46,10 +25,11 @@
         [class.disabled]='disabled'
         [style.color]='textColor'
         [style.font-weight]='fontWeight'
-    >{{response.name}}</span>
-    <span class='icon' *ngIf='selected'></span>
+    >{{response.name + (expanded ? ':': '')}}</span>
+    <span class='icon close' *ngIf='selected'></span>
+    <span class='icon expand' *ngIf='expandable && !selected && !expanded'></span>
 </div>
-<div class='response' *ngIf='!link && !selectable' 
+<div class='response' *ngIf='!dynamic' 
     [style.background]='bgColor'
     [style.border-color]='borderColor'
     [class.small]='small'

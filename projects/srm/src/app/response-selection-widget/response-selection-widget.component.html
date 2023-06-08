@@ -1,0 +1,14 @@
+<div class='tags responses'>
+    <app-response *ngFor='let response of responses; let i = index' 
+            [response]='response' 
+            [selected]='isSelected(response)'
+            [active]='isActive(response)'
+            [visible]='isVisible(response)'
+            [expandable]='isExpandable(response)'
+            [expanded]='isExpanded(response)'
+            [dynamic]='true'
+            [transitionDelay]='transitionDelay(response)'
+            (clicked)='toggleResponse(response)'
+            [style.zIndex]='responses.length - i'
+    ></app-response>
+</div>

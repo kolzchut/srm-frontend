@@ -1,0 +1,78 @@
+@import '../../common.less';
+
+:host {
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.response {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    background: #27AE6010; //TODO
+    border: 1px solid #27AE6020; //TODO
+    border-radius: 4px;
+    overflow: hidden;
+    height: 24px;
+
+    &.small {
+        height: 18px;
+    }
+
+    .name {
+        .font-rag-sans;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 16px;
+        line-height: 16px;
+        color: @color-gray-1;
+        padding-left: 4px;
+        &.small {
+            font-size: 13px;
+            line-height: 13px;
+        }
+
+        ::ng-deep {
+            em {
+                font-weight: 600;
+            }
+        }
+        &.disabled {
+            color: @color-gray-3;
+        }
+    }
+
+    .point, .link {
+        .font-rag-sans;
+        flex: 0 0 auto;
+        width: 16px;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .point {
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        span {
+            display: block;
+            width: 10px;
+            height: 10px;
+            // background: #27AE60; //TODO
+            border: 2px solid @color-white;
+            border-radius: 5px;
+        }
+    }
+
+    .link {
+        height: 100%;
+        background: #27AE6020;
+        cursor: pointer;
+        span {
+            transform: rotate(135deg);
+        }
+    }
+}

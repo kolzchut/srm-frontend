@@ -1,48 +1,54 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { getResponseIdColor } from '../colors';
 import { prepareQuery, TaxonomyItem } from '../consts';
+import { ResponseBase } from './response-base';
 
 @Component({
   selector: 'app-response',
   templateUrl: './response.component.html',
-  styleUrls: ['./response.component.less']
+  styleUrls: ['./response.component.less'],
+  host: {
+    '[class.visible]': 'visible',
+  }
 })
-export class ResponseComponent implements OnChanges {
+export class ResponseComponent extends ResponseBase implements OnChanges {
 
   @Input() response: TaxonomyItem = {};
-  @Input() link = true;
-  @Input() search = true;
-  @Input() suffix = true;
-  @Input() selectable = false;
+
   @Input() selected = false;
+  @Input() active = false;
   @Input() disabled = false;
   @Input() small = false;
+  @Input() visible = true;
+  @Input() expandable = false;
+  @Input() expanded = false;
+
+  @Input() dynamic = false;
+
+  @Input() suffix = '';
+
+  @Input() transitionDelay = 0;
+
   @Output() clicked = new EventEmitter<void>();
 
-  color: string;
-  textColor: string;
-  bgColor: string;
-  borderColor: string;
-  pointBorderColor: string;
-  pointBgColor: string;
-  linkColor: string;
-  linkBgColor: string;
-  fontWeight = 400;
-  hover_ = false;
-
-  constructor() { }
+  constructor() {
+    super();
+  }
 
   ngOnChanges(): void {
-    this.color = getResponseIdColor(this.response?.id || null);
-    if (this.selected) {
-      this.textColor = '#333231';
+    this.initColors(this.response);
+    this.recalcColors();
+  }
+
+  recalcColors(): void {
+    if (this.active) {
+      this.textColor = '#000000';
       this.bgColor = this.shade(10);
       this.borderColor = this.color;
       this.pointBorderColor = '#fff';
       this.pointBgColor = this.color;
       this.linkColor = this.textColor;
       this.linkBgColor = this.shade(42);
-      this.fontWeight = 400;
+      this.fontWeight = this.selected ? 600 : 400;
     } else if (this.disabled) {
       this.textColor = '#767573';
       this.bgColor = '#FFFCF5';
@@ -52,52 +58,20 @@ export class ResponseComponent implements OnChanges {
       this.linkColor = this.textColor;
       this.linkBgColor = this.shade(42);
       this.fontWeight = 300;
-    } else if (this.hover) {
-      this.textColor = '#333231';
-      this.bgColor = this.shade(10);
-      this.borderColor = this.shade(30);
-      this.pointBorderColor = '#fff';
-      this.pointBgColor = this.color;
-      this.linkColor = this.textColor;
-      this.linkBgColor = this.shade(42);
-      this.fontWeight = 300;
     } else {
-      this.textColor = '#333231';
-      this.bgColor = this.shade(5);
-      this.borderColor = this.shade(20);
-      this.pointBorderColor = '#fff';
-      this.pointBgColor = this.color;
-      this.linkColor = this.shade(70);
-      this.linkBgColor = this.bgColor;
-      this.fontWeight = 300;
+      super.recalcColors();
     }
   }
 
-  shade(opacity: number) {
-    opacity = Math.ceil(opacity * 2.55);
-    let hex = opacity.toString(16);
-    if (hex.length === 1) {
-      hex = '0' + hex;
-    }
-    return this.color + hex;
-  }
-  
   onClick() {
-    if (!this.link) {
-      this.clicked.emit();
-    }
-  }
-
-  get responseQuery() {
-    return prepareQuery(this.response.name || '');
+    this.clicked.emit();
   }
 
   set hover(value: boolean) {
-    this.hover_ = value;
-    this.ngOnChanges();
+    super.hover = value;
   }
 
   get hover() {
-    return this.hover_ && !this.disabled;
+    return super.hover && !this.disabled;
   }
 }

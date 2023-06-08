@@ -28,7 +28,7 @@
             <div class='slide' data-slide='0'>
                 <h3><strong>{{numResponses}} סוגי שירותים,</strong> כמו למשל:</h3>
                 <div class='staggered' [class.seen-once]='!!seenOnce[0]'>
-                    <app-response *ngFor='let r of responses' [response]='r' [link]='true'></app-response>
+                    <app-response-linky *ngFor='let r of responses' [response]='r'></app-response-linky>
                 </div>
             </div>
             <div class='slide' data-slide='1'>
