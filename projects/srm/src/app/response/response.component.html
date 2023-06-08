@@ -1,8 +1,11 @@
+<div class='bg' [style.transitionDelay]='transitionDelay + "ms"'></div>
 <div class='response dynamic' *ngIf='dynamic' 
     [style.background]='bgColor'
     [style.border-color]='borderColor'
+    [style.transitionDelay]='transitionDelay + "ms"'
     (click)='onClick()'
     [class.small]='small'
+    [class.visible]='visible'
     role='button'
     [attr.aria-label]='selected ? ("ביטול סינון לפי נושא " + response.name) : ("הפעלת סינון לפי נושא " + response.name)'
     tabindex="0"
@@ -22,8 +25,9 @@
         [class.disabled]='disabled'
         [style.color]='textColor'
         [style.font-weight]='fontWeight'
-    >{{response.name}}</span>
-    <span class='icon' *ngIf='selected'></span>
+    >{{response.name + (expanded ? ':': '')}}</span>
+    <span class='icon close' *ngIf='selected'></span>
+    <span class='icon expand' *ngIf='expandable && !selected && !expanded'></span>
 </div>
 <div class='response' *ngIf='!dynamic' 
     [style.background]='bgColor'

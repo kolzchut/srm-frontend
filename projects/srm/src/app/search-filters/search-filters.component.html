@@ -19,7 +19,7 @@
                 <div class='title'>סוגי שירות:</div>
                 <a class='clear' (activated)='currentSearchParams.filter_responses = []; pushSearchParams()' clickOnReturn role='button' tabindex="0" aria-label="ניקוי המסננים לסוגי השירותים">ניקוי</a>
             </div>
-            <app-response-selection-widget [responses]='responseItems'></app-response-selection-widget>
+            <app-response-selection-widget [responses]='responseItems' [selectedResponses]='this.currentSearchParams?.filter_responses || []' (toggle)='toggleResponse($event)'></app-response-selection-widget>
         </div>
         <app-search-filters-situation-section title='קהלי יעד' [situations]='audiences' [searchParams]='currentSearchParams' [field]='"filter_situations"' (push)='pushSearchParams()'></app-search-filters-situation-section>
         <app-search-filters-situation-section title='מצבים רפואיים ומוגבלויות' [situations]='health_issues' [searchParams]='currentSearchParams' [field]='"filter_health"' (push)='pushSearchParams()'></app-search-filters-situation-section>

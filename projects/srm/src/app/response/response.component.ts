@@ -5,7 +5,10 @@ import { ResponseBase } from './response-base';
 @Component({
   selector: 'app-response',
   templateUrl: './response.component.html',
-  styleUrls: ['./response.component.less']
+  styleUrls: ['./response.component.less'],
+  host: {
+    '[class.visible]': 'visible',
+  }
 })
 export class ResponseComponent extends ResponseBase implements OnChanges {
 
@@ -15,10 +18,15 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
   @Input() active = false;
   @Input() disabled = false;
   @Input() small = false;
+  @Input() visible = true;
+  @Input() expandable = false;
+  @Input() expanded = false;
 
   @Input() dynamic = false;
 
   @Input() suffix = '';
+
+  @Input() transitionDelay = 0;
 
   @Output() clicked = new EventEmitter<void>();
 
