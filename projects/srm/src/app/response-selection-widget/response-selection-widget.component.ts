@@ -14,6 +14,7 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
   @Output() toggle = new EventEmitter<TaxonomyItem>();
 
   active_: any = {};
+  semiactive_: any = {};
   selected_: any = {};
   visible_: any = {};
   delays_: any = {};
@@ -27,6 +28,7 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
   ngOnChanges(): void {
     this.delays_ = {};
     this.expanded_ = {};
+    this.semiactive_ = {};
     let delay = 0;
     this.responses.forEach(r => {
       const id = r.id;
@@ -50,9 +52,13 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
         if (parts.length > 2) {
           this.expandable_[category] = true;
         }
-        if (this.visible_[id]) {
-          for (let i = 2; i < parts.length - 1; i++) {
-            this.expanded_[parts.slice(0, i + 1).join(':')] = true;
+        for (let i = 1; i < parts.length - 1; i++) {
+          const parent = parts.slice(0, i + 1).join(':');
+          if (this.visible_[id]) {
+            this.expanded_[parent] = true;
+          }
+          if (this.selected_[id]) {
+            this.semiactive_[parent] = true;
           }
         }
       }
@@ -72,6 +78,10 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
 
   isActive(response: TaxonomyItem) {
     return !!response.id && this.active_[response.id];
+  }
+
+  isSemiActive(response: TaxonomyItem) {
+    return !!response.id && this.semiactive_[response.id];
   }
 
   isVisible(response: TaxonomyItem) {

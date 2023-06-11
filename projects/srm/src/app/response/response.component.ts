@@ -16,6 +16,7 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
 
   @Input() selected = false;
   @Input() active = false;
+  @Input() semiactive = false;
   @Input() disabled = false;
   @Input() small = false;
   @Input() visible = true;
@@ -49,6 +50,15 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
       this.linkBgColor = this.shade(42);
       this.textColor = this.selected ? '#000000' : '#333231';
       this.fontWeight = this.selected ? 600 : 400;
+    } else if (this.semiactive) {
+      this.bgColor = this.shade(10);
+      this.borderColor = this.color;
+      this.pointBorderColor = '#fff';
+      this.pointBgColor = this.color;
+      this.linkColor = this.textColor;
+      this.linkBgColor = this.shade(42);
+      this.textColor = '#767573';
+      this.fontWeight = 600;
     } else if (this.disabled) {
       this.textColor = '#767573';
       this.bgColor = '#FFFCF5';
@@ -60,6 +70,7 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
       this.fontWeight = 300;
     } else {
       super.recalcColors();
+      this.textColor = '#767573';
     }
   }
 
