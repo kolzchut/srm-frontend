@@ -315,6 +315,7 @@ export class SearchFiltersComponent implements OnChanges {
     this.currentSearchParams.filter_responses = this.currentSearchParams.filter_responses.filter(x => x !== item.id);
     if (checked && item.id) {
       this.currentSearchParams.filter_responses = this.currentSearchParams.filter_responses.filter(x => item.id?.indexOf(x) !== 0);
+      this.currentSearchParams.filter_responses = this.currentSearchParams.filter_responses.filter(x => x.indexOf(item.id || 'xxx') !== 0);
       this.currentSearchParams.filter_responses.push(item.id);
     }
     this.pushSearchParams();
