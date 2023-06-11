@@ -18,6 +18,7 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
   visible_: any = {};
   delays_: any = {};
   expandable_: any = {};
+  expanded_: any = {};
 
   selectedCategory = 'none';
 
@@ -25,6 +26,7 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
 
   ngOnChanges(): void {
     this.delays_ = {};
+    this.expanded_ = {};
     let delay = 0;
     this.responses.forEach(r => {
       const id = r.id;
@@ -48,12 +50,17 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
         if (parts.length > 2) {
           this.expandable_[category] = true;
         }
+        if (this.visible_[id]) {
+          for (let i = 2; i < parts.length - 1; i++) {
+            this.expanded_[parts.slice(0, i + 1).join(':')] = true;
+          }
+        }
       }
     });
   }
 
   toggleResponse(response: TaxonomyItem) {
-    if (!this.isSelected(response)) {
+    if (!this.isSelected(response) || this.selectedCategory === 'none') {
       this.selectedCategory = this.category(response);
     }
     this.toggle.emit(response);
@@ -76,7 +83,7 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
   }
 
   isExpanded(response: TaxonomyItem) {
-    return this.isExpandable(response) && this.selectedCategory === this.category(response);
+    return !!response.id && this.expanded_[response?.id];
   }
 
   transitionDelay(response: TaxonomyItem) {
