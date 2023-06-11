@@ -1,4 +1,7 @@
-<div class='bg' [style.transitionDelay]='transitionDelay + "ms"'></div>
+<div class='bg' 
+    [style.transitionDelay]='transitionDelay + "ms"'
+    [class.visible]='visible'
+></div>
 <div class='response dynamic' *ngIf='dynamic' 
     [style.background]='bgColor'
     [style.border-color]='borderColor'

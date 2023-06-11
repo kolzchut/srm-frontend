@@ -66,8 +66,21 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
   }
 
   toggleResponse(response: TaxonomyItem) {
-    if (!this.isSelected(response) || this.selectedCategory === 'none') {
-      this.selectedCategory = this.category(response);
+    const category = this.category(response);
+    if (!this.isSelected(response)) {
+      if (response.id === category &&
+          this.selectedCategory !== category &&
+          Object.keys(this.selected_).filter(x => this.selected_[x] && x.indexOf(category) === 0).length > 0) {
+        console.log('ONLY SWITCHING CATEGORY');
+        this.selectedCategory = category;
+        this.ngOnChanges();
+        return;
+      }
+      this.selectedCategory = category;
+    } else {
+      if (response.id === this.selectedCategory) {
+        this.selectedCategory = 'none';
+      }
     }
     this.toggle.emit(response);
   }

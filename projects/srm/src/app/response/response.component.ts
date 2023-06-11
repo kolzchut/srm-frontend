@@ -52,12 +52,12 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
       this.fontWeight = this.selected ? 600 : 400;
     } else if (this.semiactive) {
       this.bgColor = this.shade(10);
-      this.borderColor = this.color;
+      this.borderColor = 'transparent';
       this.pointBorderColor = '#fff';
       this.pointBgColor = this.color;
       this.linkColor = this.textColor;
       this.linkBgColor = this.shade(42);
-      this.textColor = '#767573';
+      this.textColor = '#555452';
       this.fontWeight = 600;
     } else if (this.disabled) {
       this.textColor = '#767573';
@@ -70,7 +70,7 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
       this.fontWeight = 300;
     } else {
       super.recalcColors();
-      this.textColor = '#767573';
+      this.textColor = '#555452';
     }
   }
 
