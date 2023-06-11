@@ -41,13 +41,13 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
 
   recalcColors(): void {
     if (this.active) {
-      this.textColor = '#000000';
       this.bgColor = this.shade(10);
       this.borderColor = this.color;
       this.pointBorderColor = '#fff';
       this.pointBgColor = this.color;
       this.linkColor = this.textColor;
       this.linkBgColor = this.shade(42);
+      this.textColor = this.selected ? '#000000' : '#333231';
       this.fontWeight = this.selected ? 600 : 400;
     } else if (this.disabled) {
       this.textColor = '#767573';
