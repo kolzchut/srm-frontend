@@ -1,6 +1,6 @@
 <a [routerLink]='["c", result.card_id]' [queryParamsHandling]='"merge"'
    (mouseover)='hover.next(result)'
-   [attr.aria-label]='result.service_name + " - פתיחת עמוד השירות"'
+   [attr.aria-label]='ariaLabel(result)'
    class='branch' [class.collapsible]='collapsible'>
     <div class='branch-headers'>
         <ng-container *ngIf='result.branch_city && !result.national_service'>
@@ -30,7 +30,7 @@
     <ng-container *ngFor='let extra of result.collapse_hits?.slice(1, showCount + 1) || []; let i = index;'>
         <a [routerLink]='["c", extra.card_id]' [queryParamsHandling]='"merge"'
            (mouseover)='hover.next(extra)' 
-           [attr.aria-label]='"פתיחת עמוד השירות " + result.service_name + " של " + extra.organization_name + " ב" + extra.branch_address'
+           [attr.aria-label]='ariaLabel(extra)'
            class='bookend' [style.zIndex]='1000 - i'>
             <span class='org'>{{orgName(extra)}}</span>
             <span class='separator'>&nbsp;/&nbsp;</span>

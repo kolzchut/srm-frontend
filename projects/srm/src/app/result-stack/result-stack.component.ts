@@ -71,4 +71,19 @@ export class ResultStackComponent implements OnInit {
   orgName(card: Card) {
     return card.organization_name_parts?.primary || card.organization_short_name || card.organization_name;
   }
+
+  ariaLabel(card: Card) {
+    let ret = '';
+    if (card.national_service) {
+      ret += 'שירות ארצי: ';
+    } else if (card.branch_city) {
+      ret += card.branch_city + ' ';
+    }
+    ret += card.service_name;
+    if (card.organization_name_parts?.primary) {
+      ret += ' של ' + card.organization_name_parts.primary;
+    }
+    ret += ' - פתיחת עמוד השירות';
+    return ret;
+  }
 }

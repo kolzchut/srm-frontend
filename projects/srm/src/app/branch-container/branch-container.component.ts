@@ -15,6 +15,7 @@ import { swipe } from '../swipe';
 import { DOCUMENT } from '@angular/common';
 import { LayoutService } from '../layout.service';
 import { BranchCards, getPointCards } from './branch-card-utils';
+import { A11yService } from '../a11y.service';
 
 
 type AuxParams = {
@@ -62,6 +63,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
 
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
               private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService, private layout: LayoutService,
+              private a11y: A11yService,
               @Inject(DOCUMENT) private document: any) { }
 
   ngOnInit(): void {
@@ -84,7 +86,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
       this.cardBranch = cardBranch;
       this.card = selectedCard;
       if (p.cardId && this.card) {
-        this.seo.setTitle(`${this.card.service_name} / ${this.card.organization_short_name || this.card.organization_name} | כל שירות`);
+        this.a11y.setSeoTitle(`${this.card.service_name} / ${this.card.organization_short_name || this.card.organization_name} | כל שירות`);
         if (this.card.service_description) {
           this.seo.setDescription(this.card.service_description);
         }

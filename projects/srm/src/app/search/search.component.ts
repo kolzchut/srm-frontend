@@ -9,6 +9,7 @@ import { ApiService } from '../api.service';
 import { prepareQuery, _h } from '../consts';
 import { LayoutService } from '../layout.service';
 import { PlatformService } from '../platform.service';
+import { A11yService } from '../a11y.service';
 
 export type ResultType = {
   link: string[] | string | null,
@@ -39,7 +40,7 @@ export class SearchComponent implements OnInit {
   noResults = false;
 
   constructor(private api: ApiService, public location: Location, private route: ActivatedRoute, private router: Router,
-      private platform: PlatformService, public layout: LayoutService, private seo: SeoSocialShareService) {
+      private platform: PlatformService, public layout: LayoutService, private seo: SeoSocialShareService, private a11y: A11yService) {
     api.getPresets().subscribe(presets => {
       console.table(presets);
       this.presets = presets.map((preset) => {
@@ -107,7 +108,7 @@ export class SearchComponent implements OnInit {
         el.focus();
       });  
     });
-    this.seo.setTitle('כל שירות | חיפוש שירותים ומענים חברתיים');
+    this.a11y.setSeoTitle('כל שירות | חיפוש שירותים ומענים חברתיים');
   }
 
   get query() {

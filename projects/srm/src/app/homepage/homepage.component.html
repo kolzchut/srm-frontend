@@ -16,7 +16,7 @@
         <p class='layout-desktop'>
             <strong>אספנו וסיווגנו {{totalServices.toLocaleString()}} שירותים חברתיים</strong> מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים.
         </p>
-        <a class='searchbox' [routerLink]='["/q"]' [class.cta]='slide === 3' tabindex="0">
+        <a class='searchbox' [routerLink]='["/q"]' [class.cta]='slide === 3' tabindex="0" aria-label='ביצוע חיפוש מענים חברתיים באתר'>
             <div class='title' [class.active]='slide === 0'>כל שירות</div>
             <div class='subtitle'>
                 <span [class.active]='slide === 1' class='situation'>לכל מצב</span>

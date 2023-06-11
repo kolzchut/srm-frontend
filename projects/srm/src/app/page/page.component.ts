@@ -14,6 +14,7 @@ import { PlatformService } from '../platform.service';
 import { LayoutService } from '../layout.service';
 import * as mapboxgl from 'mapbox-gl';
 import { AnalyticsService } from '../analytics.service';
+import { A11yService } from '../a11y.service';
 
 class SearchParamCalc {
   acId: string;
@@ -104,6 +105,7 @@ export class PageComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
               private platform: PlatformService, public layout: LayoutService, private analytics: AnalyticsService,
+              public a11y: A11yService,
               @Inject(DOCUMENT) private document: any) {
 
     this.searchParamsCalc.pipe(
@@ -329,7 +331,7 @@ export class PageComponent implements OnInit {
       this.drawerState = DrawerState.Half;
       this.pushSearchParamsCalc();
       if (['about', 'search', 'homepage'].indexOf(this.stage) >= 0) {
-        this.seo.setTitle(`כל שירות | כל השירותים החברתיים, לכל מצב, בכל מקום`);
+        this.a11y.setSeoTitle(`כל שירות | כל השירותים החברתיים, לכל מצב, בכל מקום`);
         this.seo.setUrl(this.document.location.href);
         this.api.getTotalServices().subscribe((totalServices: number) => {
           this.seo.setDescription(`אספנו וסיווגנו ${totalServices.toLocaleString()} שירותים חברתיים מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים. אנחנו בטוחים שנמצא גם משהו בשבילך!`);

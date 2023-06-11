@@ -1,9 +1,9 @@
 <div class='trigger' [class.visible]='triggerVisible'></div>
 <div class='counts' *ngIf='hasCounts && !searchParams?.national'>
     <div class='line' *ngIf='totalCount > 0'>
-        <span class='strong'>{{totalVisibleCount.toLocaleString()}} תוצאות על המפה</span>
-        <span *ngIf='totalCount - totalNationalCount > 0'>מתוך {{totalCount.toLocaleString()}} <a (activated)='zoomout.emit(viewport)' clickOnReturn role="button" aria-label="הצגת כלל התוצאות הרלוונטיות לכל הארץ" tabindex="0">בכל הארץ</a></span>
-        <span *ngIf='totalCount - totalNationalCount === 0'>מתוך {{totalCount.toLocaleString()}} בכל הארץ</span>
+        <span class='strong' aria-live='polite'>{{totalVisibleCount.toLocaleString()}} תוצאות על המפה</span>
+        <span *ngIf='totalCount - totalNationalCount - totalVisibleCount > 0'>מתוך {{totalCount.toLocaleString()}} <a (activated)='zoomout.emit(viewport)' clickOnReturn role="button" aria-label="הצגת כלל התוצאות הרלוונטיות לכל הארץ" tabindex="0">בכל הארץ</a></span>
+        <span *ngIf='totalCount - totalNationalCount - totalVisibleCount === 0'>מתוך {{totalCount.toLocaleString()}} בכל הארץ</span>
     </div>
     <ng-container *ngIf='searchParams.hasFilters'>
         <span *ngIf='totalVisibleCount === 0 && totalCount === 0'>לא נמצאו תוצאות בכל הארץ, מומלץ  לשנות את הסינון או <a href="/q">לחפש מחדש</a></span>

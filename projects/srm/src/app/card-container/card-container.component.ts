@@ -15,6 +15,7 @@ import { PlatformService } from '../platform.service';
 import { swipe } from '../swipe';
 import { DOCUMENT } from '@angular/common';
 import { AnalyticsService } from '../analytics.service';
+import { A11yService } from '../a11y.service';
 
 
 type BranchCards = {cards: Card[], hidden: Card[]};
@@ -92,7 +93,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
 
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
               private el: ElementRef, private seo: SeoSocialShareService, public platform: PlatformService,
-              private analytics: AnalyticsService,
+              private analytics: AnalyticsService, private a11y: A11yService,
               @Inject(DOCUMENT) private document: Document) {
     if (platform.safari) {
       this.showQuickActions = true;
@@ -120,7 +121,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
           this.center.emit(geom);
         }
         if (this.card) {
-          this.seo.setTitle(`${this.card.service_name} / ${this.card.organization_short_name || this.card.organization_name} | כל שירות`);
+          this.a11y.setSeoTitle(`${this.card.service_name} / ${this.card.organization_short_name || this.card.organization_name} | כל שירות`);
           if (this.card.service_description) {
             this.seo.setDescription(this.card.service_description);
           }

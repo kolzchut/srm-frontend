@@ -8,6 +8,8 @@ import { Component, Input, OnInit } from '@angular/core';
     '[class.layout-desktop]': '!footer',
     '[class.footer]': 'footer',
     '[class.homepage]': 'homepage',
+    'role': 'navigation',
+    'aria-label': 'קישורים כלליים'
   }
 })
 export class DesktopMenuLinksComponent implements OnInit {
