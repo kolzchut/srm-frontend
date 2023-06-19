@@ -31,6 +31,8 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
 
   @Output() clicked = new EventEmitter<void>();
 
+  expandColor = '#fff';
+
   constructor() {
     super();
   }
@@ -41,6 +43,7 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
   }
 
   recalcColors(): void {
+    this.expandColor = this.color;
     if (this.active) {
       this.bgColor = this.shade(10);
       this.borderColor = this.color;
@@ -59,6 +62,7 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
       this.linkBgColor = this.shade(42);
       this.textColor = '#555452';
       this.fontWeight = 600;
+      this.expandColor = '#333231';
     } else if (this.disabled) {
       this.textColor = '#767573';
       this.bgColor = '#FFFCF5';
