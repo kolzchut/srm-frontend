@@ -153,8 +153,9 @@ export class PageComponent implements OnInit {
       map((spc) => {
         console.log('SEARCH PARAMS CALC', spc);
         if (this.stage === 'search-results') {
-          this.seo.setTitle(`${spc.resolvedQuery} | כל שירות`)
+          this.seo.setTitle(`${spc.resolvedQuery} | כל שירות`);
           this.seo.setUrl(this.document.location.href);
+          this.a11y.setTitle(`תוצאות חיפוש עבור ${spc.resolvedQuery} | כל שירות`);
         }
 
         const fs = spc.fs?.split('|').map(x => 'human_situations:' + x) || [];
