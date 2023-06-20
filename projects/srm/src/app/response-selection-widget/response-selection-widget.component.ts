@@ -26,10 +26,10 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
   constructor() { }
 
   ngOnChanges(): void {
-    this.delays_ = {};
     this.expanded_ = {};
     this.active_ = {};
     this.semiactive_ = {};
+    const changedIds: string[] = [];
     let delay = 0;
     this.responses.forEach(r => {
       const id = r.id;
@@ -51,9 +51,8 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
         // Visible responses - either selected or root or category is selected
         const prevVisible = this.visible_[id];
         this.visible_[id] = this.selected_[id] || parts.length === 2 || category === this.selectedCategory;
-        if (this.visible_[id] !== prevVisible) {
-          this.delays_[id] = delay;
-          delay += 300;
+        if (prevVisible !== this.visible_[id]) {
+          changedIds.push(id);
         }
 
         // Expandable are roots or categories which are not active
@@ -72,6 +71,19 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
             this.semiactive_[parent] = true;
           }
         }
+      }
+    });
+    this.delays_ = {};
+    changedIds.forEach(id => {
+      if (this.visible_[id]) {
+        this.delays_[id] = delay;
+        delay += 200;
+      }
+    });
+    changedIds.forEach(id => {
+      if (!this.visible_[id]) {
+        this.delays_[id] = delay;
+        delay += 100;
       }
     });
   }
