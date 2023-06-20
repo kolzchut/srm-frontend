@@ -21,7 +21,7 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
   expandable_: any = {};
   expanded_: any = {};
 
-  selectedCategory = 'none';
+  selectedCategories: any = {};
 
   constructor() { }
 
@@ -50,21 +50,21 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
 
         // Visible responses - either selected or root or category is selected
         const prevVisible = this.visible_[id];
-        this.visible_[id] = this.selected_[id] || parts.length === 2 || category === this.selectedCategory;
+        this.visible_[id] = this.selected_[id] || parts.length === 2 || this.selectedCategories[category];
         if (prevVisible !== this.visible_[id]) {
           changedIds.push(id);
         }
 
         // Expandable are roots or categories which are not active
         if (parts.length < 3) {
-          this.expandable_[id] = category !== this.selectedCategory;
+          this.expandable_[id] = !this.selectedCategories[category];
         }
         // Iterate parents of response -
         //   Expanded are parents of selected responses or parents of any responses in the selected category
         //   Semiactive are parents of selected responses
         for (let i = 1; i < parts.length - 1; i++) {
           const parent = parts.slice(0, i + 1).join(':');
-          if (this.visible_[id] || category === this.selectedCategory) {
+          if (this.visible_[id] || this.selectedCategories[category]) {
             this.expanded_[parent] = true
           }
           if (this.selected_[id]) {
@@ -92,17 +92,17 @@ export class ResponseSelectionWidgetComponent implements OnChanges {
     const category = this.category(response);
     if (!this.isSelected(response)) {
       if (response.id === category &&
-          this.selectedCategory !== category &&
+          !this.selectedCategories[category] &&
           Object.keys(this.selected_).filter(x => this.selected_[x] && x.indexOf(category) === 0).length > 0) {
         console.log('ONLY SWITCHING CATEGORY');
-        this.selectedCategory = category;
+        this.selectedCategories[category] = true;
         this.ngOnChanges();
         return;
       }
-      this.selectedCategory = category;
+      this.selectedCategories[category] = true;
     } else {
-      if (response.id === this.selectedCategory) {
-        this.selectedCategory = 'none';
+      if (response.id && this.selectedCategories[response.id]) {
+        this.selectedCategories[response.id] = false;
       }
     }
     this.toggle.emit(response);
