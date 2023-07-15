@@ -17,7 +17,7 @@ export class AnalyticsService {
   searchEvent(params: SearchParams, isLandingPage: boolean, numTotalResults: number) {
     const title = params.original_query;
     console.log('EVENT search', title, isLandingPage, numTotalResults);
-    if (title && window.gtag && this.platform.browser()) {
+    if (title && this.platform.browser() && window.gtag) {
       const responseCount = (params.filter_responses || []).length;
       window.gtag({
         event: 'srm:search',
@@ -35,7 +35,7 @@ export class AnalyticsService {
 
   cardEvent(card: Card, params: SearchParams | null, isLandingPage: boolean) {
     console.log('EVENT card', card);
-    if (window.gtag && this.platform.browser()) {
+    if (this.platform.browser() && window.gtag) {
       window.gtag({
         event: 'srm:card',
         card_id: card.card_id,
