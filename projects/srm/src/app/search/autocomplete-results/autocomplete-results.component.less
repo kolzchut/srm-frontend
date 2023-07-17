@@ -1,0 +1,89 @@
+@import url(../search.less);
+:host {
+    .mobile({
+        width: 100%;
+    });
+    .desktop({
+        width: 60%;
+        min-width: calc(@mobile-threshold - 88px);
+        margin-right: 88px;
+        margin-top: 10px;
+        z-index: 1;
+        box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.16), 0px 4px 24px rgba(0, 0, 0, 0.08);
+        border-radius: 4px;
+        overflow: hidden;
+    });
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    
+    .result {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        width: 100%;
+        padding: 16px;
+        .mobile({
+            padding-right: 12px;
+        });
+        .desktop({
+            padding-right: 8px;
+            border-bottom: 1px solid @color-gray-6;
+        });
+        height: 56px;
+        background: @color-white;
+
+        .result-title {
+            flex: 0 1 100%;
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            .mobile({
+                gap: 12px;
+            });
+            .desktop({
+                gap: 8px;
+            });
+            overflow: hidden;
+
+            .result-icon {
+                flex: 0 0 auto;
+                .search-icon;
+                background-image: url(../../../assets/img/icon-search-gray-4.svg);
+                background-size: 18px;
+            }
+
+            .text {
+                .font-rag-sans;
+                font-style: normal;
+                font-weight: 600;
+                font-size: 20px;
+                color: @color-gray-1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                direction: ltr;
+
+                ::ng-deep {
+                    em {
+                        font-weight: 300;
+                    }
+                }
+            }
+        }
+
+        .result-arrow {
+            flex: 0 0 auto;
+            .search-icon;
+            background-image: url(../../../assets/img/icon-arrow-top-right-gray-4.svg);
+            &.direct {
+                background-image: url(../../../assets/img/icon-arrow-left-gray-4.svg);
+            }
+        }
+    }
+
+    .result:has(a:focus) {
+        background: @color-gray-6;
+    }
+
+}

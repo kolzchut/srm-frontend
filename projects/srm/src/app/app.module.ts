@@ -18,7 +18,7 @@ import { ResponseComponent } from './response/response.component';
 import { SituationComponent } from './situation/situation.component';
 import { BranchContainerComponent } from './branch-container/branch-container.component';
 import { SearchboxHeaderComponent } from './searchbox-header/searchbox-header.component';
-import { SearchResultsComponent } from './search-results/search-results.component';
+import { SearchResultsComponent } from './autocomplete-results/search-results.component';
 import { ResultStackComponent } from './result-stack/result-stack.component';
 import { ResultCardComponent } from './result-card/result-card.component';
 import { SearchFiltersComponent } from './search-filters/search-filters.component';
@@ -58,6 +58,8 @@ import { CardActionEmailComponent } from './card-action-email/card-action-email.
 import { SearchFiltersButtonComponent } from './search-filters-button/search-filters-button.component';
 import { ResponseSelectionWidgetComponent } from './response-selection-widget/response-selection-widget.component';
 import { ResponseLinkyComponent } from './response-linky/response-linky.component';
+import { SearchBarComponent } from './search/search-bar/search-bar.component';
+import { AutocompleteResultsComponent } from './search/autocomplete-results/autocomplete-results.component';
 
 @NgModule({
   declarations: [
@@ -111,7 +113,9 @@ import { ResponseLinkyComponent } from './response-linky/response-linky.componen
     CardActionEmailComponent,
     SearchFiltersButtonComponent,
     ResponseSelectionWidgetComponent,
-    ResponseLinkyComponent
+    ResponseLinkyComponent,
+    SearchBarComponent,
+    AutocompleteResultsComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

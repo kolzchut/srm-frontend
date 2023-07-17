@@ -1,41 +1,7 @@
 <div class='container' appArrowToTab role='dialog' aria-modal='true' (keydown)='keydown($event)' aria-label="תיבת החיפוש באתר">
-    <div class='search-bar'>
-        <a class='logo layout-desktop' [routerLink]='["/"]' aria-label='חזרה לעמוד הבית'></a>
-        <button class='back-button layout-mobile' (activated)='location.back()' clickOnReturn aria-label="סגירת תיבת החיפוש וחזרה לעמוד הקודם"></button>
-        <div class='searchbox'>
-            <input type='search' placeholder='ניתן לחפש לפי שם, סוג מענה, מיקום...' [(ngModel)]='query' enterkeyhint='חיפוש' #input (keydown)='changed($event)' class='focusable'
-                aria-label='חיפוש שירותים באתר כל שירות. ניתן להשתמש בחיצים על מנת לנווט באפשרויות או באמצעות טאב אם משתמשים בקורא מסך.'  role='textbox'
-            >
-            <button class='clear-button' (click)='query=""' *ngIf='!!query' aria-label="ניקוי החיפוש"></button>    
-        </div>
-        <app-desktop-menu-links></app-desktop-menu-links>
-    </div>
+    <app-search-bar [config]='searchConfig'></app-search-bar>
     <div class='overlay layout-desktop' (click)='location.back()' tabindex="-1" role="presentation">
         <div class='closer-text' role='button' aria-label='סגירת תיבת החיפוש וחזרה לעמוד הקודם' clickOnReturn tabindex="0"><img src='../../assets/img/icon-close-black.svg'></div>
     </div>
-    <div class='results' role='list'>
-        <div class='result' *ngFor='let result of (query ? results : presets)' role='listitem'>
-            <a class='result-title focusable' [routerLink]='result.link' [queryParams]='result.linkParams' tabindex="0">
-                <span class='result-icon'>
-                </span>
-                <span class='text'><span [innerHtml]='result.display'></span></span>
-            </a>
-            <a class='result-arrow direct'
-               *ngIf='result.direct'
-               [routerLink]='result.link'
-               [queryParams]='result.linkParams'
-               role='link'
-               [attr.aria-label]='"הצגה בתוצאות החיפוש של " + result.display'
-               tabindex="0"
-            ></a>
-            <a class='result-arrow'
-               *ngIf='!result.direct'
-               (activated)='result.query && query = result.query'
-               role='button'
-               [attr.aria-label]='"עדכון מחרוזת החיפוש להיות " + result.query'
-               clickOnReturn
-               tabindex="0"
-            ></a>
-        </div>
-    </div>
+    <app-autocomplete-results [config]='searchConfig'></app-autocomplete-results>
 </div>

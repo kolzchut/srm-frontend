@@ -101,19 +101,14 @@
 
             .desktop({
                 align-self: center;
-                max-width: 376px;
+                max-width: 520px;
                 margin-top: 48px;
+                margin-bottom: 48px;
             });
             gap: 20px;
 
             .mobile({
                 flex: 0 0 auto;
-                &.cta {
-                    .background-image;
-                    background-image: url(../../assets/img/hp-cta.svg);
-                    background-po   ion: left 14px top 75px;
-                    background-size: 78px 199px;
-                }    
             });
 
             h3 {
@@ -146,20 +141,17 @@
                 flex-flow: column;
                 align-items: flex-start;
                 justify-content: center;
-                padding: 0 24px;
+                padding: 0 48px;
                 height: 64px;
                 width: 100%;
                 background: #FFFFFF;            
                 border: 1px solid @color-blue-1;
                 box-shadow: 0px 24px 24px rgba(0, 0, 0, 0.02), 0px 12px 12px rgba(0, 0, 0, 0.04), 0px 4px 4px rgba(0, 0, 0, 0.08);
-                border-radius: 32px;
+                border-radius: 8px;
                 .background-image;
-                background-image: url(../../assets/img/icon-search-gray-4.svg);
-                background-position: left 24px center;
+                background-image: url(../../assets/img/icon-search-black.svg);
+                background-position: right 12px center;
                 background-size: 24px;
-                &.cta {
-                    background-image: url(../../assets/img/icon-search-black.svg);
-                }    
                 
                 .title {
                     .font-rag-sans;
@@ -204,157 +196,13 @@
                     background-image: url(../../assets/img/icon-search-blue-1.svg);
                 }
             }
-            .slides {
-                padding: 0 16px;
-                display: flex;
-                flex-flow: row;
-                gap: 32px;
-                align-items: flex-start;
-                width: 100%;
-                overflow-x: scroll;
-                .no-scrollbars;    
-                scroll-snap-type: x mandatory;
-                overscroll-behavior-x: none;
-                overscroll-behavior-y: none;
-                    
-                .slide {
-                    width: 100%;
-                    flex: 0 0 auto;
-                    scroll-snap-align: center;
-                    scroll-snap-stop: always;
-
-                    h3, p {
-                        padding: 0 8px;
-                    }
-        
-                    .place {
-                        .font-rag-sans;
-                        font-weight: 400;
-                        font-size: 16px;
-                        line-height: 20px;
-                        display: flex;
-                        align-items: center;
-                        color: #333333;
-                        padding-right: 16px;
-                        padding-left: 8px;
-                        height: 24px;
-                        .background-image;
-                        background-image: url(../../assets/img/icon-place-gray-4.svg);
-                        background-size: 12px;
-                        background-position: right 2px center;
-                    }
-
-                    .situation {
-                        .font-rag-sans;
-                        font-weight: 400;
-                        font-size: 16px;
-                        line-height: 20px;
-                        display: flex;
-                        align-items: center;
-                        color: #333333;
-                        padding-right: 16px;
-                        padding-left: 8px;
-                        height: 24px;
-                        background: @color-white;
-                        border: 1px solid #E0E0E0;
-                        border-radius: 4px;
-                        .background-image;
-                        background-image: url(../../assets/img/icon-situation.svg);
-                        background-size: 10px 8px;
-                        background-position: right 3px center;
-                    }
-
-                    .staggered { 
-                        margin-top: 8px;
-                        display: flex;
-                        flex-flow: row wrap;
-                        gap: 8px 4px;
-
-                        & > * {
-                            opacity: 0;
-                        }
-                        &.seen-once {
-                            & > * {
-                                animation: show 0.1s both;
-                                &:nth-child(1) { animation-delay: 1 * @staggering; }
-                                &:nth-child(2) { animation-delay: 2 * @staggering; }
-                                &:nth-child(3) { animation-delay: 3 * @staggering; }
-                                &:nth-child(4) { animation-delay: 4 * @staggering; }
-                                &:nth-child(5) { animation-delay: 5 * @staggering; }
-                                &:nth-child(6) { animation-delay: 6 * @staggering; }
-                                &:nth-child(7) { animation-delay: 7 * @staggering; }
-                                &:nth-child(8) { animation-delay: 8 * @staggering; }
-                                &:nth-child(9) { animation-delay: 9 * @staggering; }
-                                &:nth-child(10) { animation-delay: 10 * @staggering; }
-                                &:nth-child(11) { animation-delay: 11 * @staggering; }
-                                &:nth-child(12) { animation-delay: 12 * @staggering; }
-                                &:nth-child(13) { animation-delay: 13 * @staggering; }
-                                &:nth-child(14) { animation-delay: 14 * @staggering; }
-                                &:nth-child(15) { animation-delay: 15 * @staggering; }
-                            }
-                        }
-                    }
-                }
-            }
-            .pager {
-                margin-top: 32px;
-                display: flex;
-                flex-flow: row;
-                align-items: center;
-                justify-content: center;
-                gap: 32px;
-                animation: show 0.5s both;
-                animation-delay: 20 * @staggering;
+            .examples {
                 .desktop({
-                    &.cta {
-                        animation: hide 0.5s both;
-                        animation-delay: 0;
-                    }    
+                    min-height: 100px;
                 });
-
-                .chevron {
-                    width: 32px;
-                    height: 32px;
-                    flex: 0 0 auto;
-                    cursor: pointer;
-                    .background-image;
-                    background-size: 24px;
-
-                    &.left {
-                        background-image: url(../../assets/img/chevron-left-gray-4.svg);
-                        &.active {
-                            background-image: url(../../assets/img/chevron-left-gray-2.svg);
-                        }
-                    }
-                    &.right {
-                        background-image: url(../../assets/img/chevron-right-gray-4.svg);
-                        &.active {
-                            background-image: url(../../assets/img/chevron-right-gray-2.svg);
-                        }
-                    }
-                }
-
-                .dots {
-                    display: flex;
-                    flex-flow: row;
-                    align-items: center;
-                    gap: 8px;
-                    .dot {
-                        flex: 0 0 auto;
-                        width: 4px;
-                        height: 4px;
-                        background-color: @color-gray-4;
-                        border-radius: 2px;
-
-                        &.active {
-                            width: 8px;
-                            height: 8px;
-                            background-color: @color-gray-3;
-                            border-radius: 4px;
-                            margin: -2px 0;
-                        }
-                    }    
-                }
+                .mobile({
+                    min-height: 120px;
+                });
             }
         }
         .logos {
@@ -428,24 +276,5 @@
                 }
             }
         }
-    }
-}
-
-@keyframes show {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes hide {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-        pointer-events: none;
     }
 }

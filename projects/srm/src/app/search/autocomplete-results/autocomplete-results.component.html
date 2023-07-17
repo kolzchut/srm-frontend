@@ -1,0 +1,25 @@
+<!-- <div class='results' role='list'> -->
+    <div class='result' *ngFor='let result of (config.query ? config.results : config.presets)' role='listitem'>
+        <a class='result-title focusable' [routerLink]='result.link' [queryParams]='result.linkParams' tabindex="0">
+            <span class='result-icon'>
+            </span>
+            <span class='text'><span [innerHtml]='result.display'></span></span>
+        </a>
+        <a class='result-arrow direct'
+           *ngIf='result.direct'
+           [routerLink]='result.link'
+           [queryParams]='result.linkParams'
+           role='link'
+           [attr.aria-label]='"הצגה בתוצאות החיפוש של " + result.display'
+           tabindex="0"
+        ></a>
+        <a class='result-arrow'
+           *ngIf='!result.direct'
+           (activated)='result.query && config.query = result.query'
+           role='button'
+           [attr.aria-label]='"עדכון מחרוזת החיפוש להיות " + result.query'
+           clickOnReturn
+           tabindex="0"
+        ></a>
+    </div>
+<!-- </div> -->

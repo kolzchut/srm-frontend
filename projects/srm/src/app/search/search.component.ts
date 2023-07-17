@@ -10,14 +10,7 @@ import { prepareQuery, _h } from '../consts';
 import { LayoutService } from '../layout.service';
 import { PlatformService } from '../platform.service';
 import { A11yService } from '../a11y.service';
-
-export type ResultType = {
-  link: string[] | string | null,
-  linkParams?: Params,
-  display: string,
-  query: string | null,
-  direct: boolean,
-};
+import { SearchConfig } from './search-config';
 
 
 @UntilDestroy()
@@ -28,69 +21,15 @@ export type ResultType = {
 })
 export class SearchComponent implements OnInit {
 
-  @ViewChild('input') inputEl: any;
-
-  autoCompleteResults: ResultType[] = [];
-  topCards: ResultType[] = [];
-  presets: ResultType[] = [];
-  results_: ResultType[] | null = null;
-  query_ = '';
-  queries = new Subject<string>();
-  typedQueries = new Subject<string>();
-  noResults = false;
+  public searchConfig: SearchConfig;
 
   constructor(private api: ApiService, public location: Location, private route: ActivatedRoute, private router: Router,
       private platform: PlatformService, public layout: LayoutService, private seo: SeoSocialShareService, private a11y: A11yService) {
-    api.getPresets().subscribe(presets => {
-      console.table(presets);
-      this.presets = presets.map((preset) => {
-        return {
-          link: ['/s', prepareQuery(preset.title)],
-          display: `<em>${preset.title}</em>`,
-          query: preset.title,
-          direct: false,
-        };
-      });
-    });
-    this.typedQueries.pipe(
-      untilDestroyed(this),
-      debounceTime(this.platform.browser() ? 500 : 0),
-    ).subscribe((query) => {
-      this.queries.next(query);
-    });
-    this.queries.pipe(
-      untilDestroyed(this),
-      switchMap(query => api.getAutoComplete(query)),
-    ).subscribe(results => {
-      this.autoCompleteResults = results.map((result) => {
-        return {
-          link: ['/s', result.id],
-          display: _h(result, 'query'),
-          query: result.query,
-          direct: false,
-        };
-      });
-      this.noResults = this.autoCompleteResults.length === 0;
-      this.results_ = null;
-    });
-    this.queries.pipe(
-      untilDestroyed(this),
-      switchMap(query => api.getTopCards(query)),
-    ).subscribe(results => {
-      this.topCards = results.map((result) => {
-        return {
-          link: ['/c', result.card_id],
-          display: `${_h(result, 'service_name')} (${_h(result, 'branch_name')})`,
-          query: null,
-          direct: true,
-        };
-      });
-      this.results_ = null;
-    });
+    this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform);
     route.queryParams.subscribe(params => {
       timer(0).subscribe(() => {
-        this.query_ = params.q || '';
-        this.queries.next(this.query_);
+        this.searchConfig.query_ = params.q || '';
+        this.searchConfig.queries.next(this.searchConfig.query_);
       });
     });
   }
@@ -99,79 +38,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.platform.browser(() => {
-      timer(0).subscribe(() => {
-        const el = this.inputEl.nativeElement as HTMLInputElement;
-        if (this.query_) {
-          el.setSelectionRange(0, this.query_.length);
-        }
-        el.focus();
-      });  
-    });
     this.a11y.setSeoTitle('כל שירות | חיפוש שירותים ומענים חברתיים');
-  }
-
-  get query() {
-    return this.query_;
-  }
-
-  set query(query: string) {
-    if (this.query_ === '' && query) {
-      this.inputEl?.nativeElement?.focus();
-    }
-    this.query_ = query;
-    this.noResults = false;
-    this.router.navigate([], {
-      queryParams: {
-        q: query
-      },
-      replaceUrl: true,
-    });
-  }
-
-  get results(): ResultType[] {
-    if (this.results_ === null) {
-      // console.table('RESULTS', this.autoCompleteResults, this.topCards);
-      this.results_ = [
-        ...this.autoCompleteResults.slice(0, 5 - this.topCards.length),
-        ...this.topCards
-      ];
-      this.results_ = [
-        ...this.results_.filter(r => r.query !== this.query),
-        ...this.results_.filter(r => r.query === this.query)
-      ];
-      const lastPart = this.query.split(' ').slice(-1)[0];
-      this.results_.forEach((r) => {
-        r.display = r.display.replace(new RegExp(`^(${lastPart})`), '<em>$1</em>');
-        r.display = r.display.replace(new RegExp(`(\\s${lastPart})`), '<em>$1</em>');
-      });
-      if (this.noResults && this.query?.length > 0) {
-        this.results_.push({
-          link: ['/s', '_'],
-          linkParams: {q: prepareQuery(this.query)},
-          display: `<em>${this.query}</em>`,
-          query: null,
-          direct: true,
-        });
-      }
-    }
-    return this.results_;
-  }
-
-  changed(event: KeyboardEvent) {
-    if (event.key === 'Enter' && this.query?.length > 0) {
-      let found = false;
-      for (const result of this.autoCompleteResults) {
-        if (result.query === this.query.trim()) {
-          this.router.navigate(result.link as string[], {queryParams: result.linkParams});
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        this.router.navigate(['/s', '_'], {queryParams: {q: prepareQuery(this.query)}});
-      }
-    }
   }
 
   keydown(event: KeyboardEvent) {

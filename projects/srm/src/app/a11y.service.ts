@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
 import { SeoSocialShareService } from 'ngx-seo';
-import { ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject, delay } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class A11yService {
 
-  title = new ReplaySubject<string>(1);
+  private title_ = new ReplaySubject<string>(1);
+  title: Observable<string> = this.title_.pipe(delay(0));
   
   constructor(private seo: SeoSocialShareService) {}
 
   setTitle(title: string) {
-    this.title.next(title);
+    this.title_.next(title);
   }
 
   setSeoTitle(title: string) {
