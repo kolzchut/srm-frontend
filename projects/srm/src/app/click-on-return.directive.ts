@@ -9,15 +9,20 @@ export class ClickOnReturnDirective implements AfterViewInit{
   constructor(private el: ElementRef) {}
 
   ngAfterViewInit() {
-    this.el.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
+    const el: HTMLElement = this.el.nativeElement;
+    el.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.keyCode === 13 || event.keyCode === 32) {
         event.preventDefault();
         this.activated.emit(event);
       }
     });
-    this.el.nativeElement.addEventListener('click', (event: KeyboardEvent) => {
+    el.addEventListener('click', (event: MouseEvent) => {
       this.activated.emit(event);
     });
+    el.setAttribute('tabindex', '0');
+    if (el.tagName !== 'button') {
+      el.setAttribute('role', 'button');
+    }
   }
 
 }

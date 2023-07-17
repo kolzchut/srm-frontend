@@ -40,6 +40,7 @@
                 <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name_parts.primary}}</span>
                 <span *ngIf='card.organization_name_parts.secondary'> - {{card.organization_name_parts.secondary}}</span>
             </div>
+            <a class='opener' [class.open]='orgOpen' role='button' aria-label='הרחבת פרטי הארגון' clickOnReturn (activated)='orgOpen = !orgOpen'></a>
             <div class='org-name' *ngIf='!card.organization_name_parts'>
                 <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name}}</a>
                 <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name}}</span>
@@ -51,7 +52,6 @@
             <div class='org-branches' *ngIf='card.organization_branch_count > 1'>
                 <a (click)='showAllBranches()' clickOnReturn aria-label="הצגת כל סניפי הארגון">{{card.organization_branch_count}} סניפים בארץ ←</a>
             </div>
-            <a class='opener' [class.open]='orgOpen' role='button' aria-label='הרחבת פרטי הארגון' clickOnReturn (activated)='orgOpen = !orgOpen'></a>
         </div>
     </div>
     <div class='data-sources'>
