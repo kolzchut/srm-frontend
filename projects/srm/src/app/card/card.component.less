@@ -57,7 +57,7 @@
         .implements {
             min-height: 48px;
             width: 100%;
-            background: #F2F7FF; 
+            background: @color-blue-7; 
             border-radius: 4px;
             .background-image;
             background-size: 24px;
@@ -92,81 +92,76 @@
             }
         }
         .org {
-            color: @color-gray-2;
-            font-weight: 600;
-            display: flex;
-            flex-flow: column;
-            gap: 8px;
-            padding: 16px 0;
+            .org-container {
+                color: @color-gray-2;
+                font-weight: 600;
+                display: flex;
+                flex-flow: column;
+                gap: 8px;
+                padding: 8px 12px;
+                border-radius: 8px;
+                background: @color-blue-7;   
+                position: relative;             
 
-            .org-name {
-                span, a {
-                    font-size: 16px;
+                .org-name {
+                    span, a {
+                        font-size: 16px;
+                    }
+                    span {
+                        font-weight: 400;
+                        color: @color-gray-1;
+                    }
+                    a {
+                        cursor: pointer;
+                        display: inline-block;
+                        padding-left: 16px;
+                        .background-image;
+                        background-size: 12px;
+                        background-position: center left 4px;
+                        background-image: url(../../assets/img/icon-external-link-blue.svg);
+                        font-weight: 600;
+                        font-size: 16px;
+                        line-height: 20px;
+                        &:hover {
+                            text-decoration-line: underline;
+                        }
+                        color: @color-blue-1;
+                    }
                 }
-                span {
+                .org-branches {
+                    .font-rag-sans;
                     font-weight: 400;
-                    color: @color-gray-1;
-                }
-                a {
-                    cursor: pointer;
-                    display: inline-block;
-                    padding-left: 16px;
-                    .background-image;
-                    background-size: 12px;
-                    background-position: center left 4px;
-                    background-image: url(../../assets/img/icon-external-link-blue.svg);
-                    font-weight: 600;
                     font-size: 16px;
                     line-height: 20px;
-                    &:hover {
+                    a:hover {
                         text-decoration-line: underline;
                     }
                     color: @color-blue-1;
+                    cursor: pointer;
+                    margin-top: 8px;
+                }
+                .opener {
+                    position: absolute;
+                    .background-image;
+                    width: 16px;
+                    height: 16px;
+                    background-size: 16px;
+                    background-image: url(../../assets/img/icon-chevron-down-blue-700.svg);
+                    cursor: pointer;
+                    left: 20px;
+                    top: 24px;
+
+                    &.open {
+                        transform: rotate(180deg);
+                    }
                 }
             }
-            .address {
-                font-size: 13px;
-                .primary {
-                    font-weight: 600;
-                }
-                .secondary {
-                    font-weight: 400;
-                }
-                .national-service {
-                    font-weight: 600;
-                    color: @color-blue-1;
-                }
-            }
+        }
+        .org, .contact {
             .actions {
                 display: flex;
                 flex-flow: column;
                 gap: 8px;
-
-                // & > * {
-                //     flex: 0 1 auto;
-                // }
-
-                // & > app-card-action-phone {
-                //     width: 100%;
-                // }
-                // & > :not(app-card-action-phone) {
-                //     width: calc(50% ~'-' 4px);
-                // }
-                // &.odd > :not(app-card-action-phone) {
-                //     width: 100%;
-                // }
-            }
-            .org-branches {
-                .font-rag-sans;
-                font-weight: 400;
-                font-size: 16px;
-                line-height: 20px;
-                a:hover {
-                    text-decoration-line: underline;
-                }
-                color: @color-blue-1;
-                cursor: pointer;
-                margin-top: 8px;
             }
         }
         .data-sources {

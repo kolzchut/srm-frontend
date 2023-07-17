@@ -13,6 +13,7 @@ export class CardActionEmailComponent implements OnChanges {
 
   @Input() card: Card;
   @Input() org = false;
+  @Input() compact = false;
 
   action = '';
   display = '';
@@ -33,7 +34,7 @@ export class CardActionEmailComponent implements OnChanges {
     this.active = false;
     if (email && email.length) {
       this.action = 'mailto:' + email;
-      this.display = this.org ? email : 'מייל';
+      this.display = this.compact ? email : 'מייל';
       this.active = true;
     }
   }

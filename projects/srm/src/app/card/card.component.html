@@ -24,24 +24,34 @@
         <div [innerHTML]='card.service_details' *ngIf='card.service_details'></div>
         <div [innerHTML]='card.service_payment_details' *ngIf='card.service_payment_details'></div>
     </div>
+    <div class='contact'>
+        <h2 i18n>פרטי התקשרות:</h2>
+        <div class='actions'>
+            <app-card-action-phone [card]='card' [compact]='true'></app-card-action-phone>
+            <app-card-action-email [card]='card' [compact]='true'></app-card-action-email>
+            <app-card-action-nav [card]='card' [compact]='true'></app-card-action-nav>
+        </div>
+    </div>
     <div class='org'>
         <h2 i18n>השירות ניתן ע״י:</h2>
-        <div class='org-name' *ngIf='card.organization_name_parts'>
-            <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href' target='_blank'>{{card.organization_name_parts.primary}}</a>
-            <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name_parts.primary}}</span>
-            <span *ngIf='card.organization_name_parts.secondary'> - {{card.organization_name_parts.secondary}}</span>
-        </div>
-        <div class='org-name' *ngIf='!card.organization_name_parts'>
-            <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name}}</a>
-            <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name}}</span>
-        </div>
-        <div class='actions'>
-            <app-card-action-phone [card]='card' [org]='true'></app-card-action-phone>
-            <app-card-action-email [card]='card' [org]='true'></app-card-action-email>
-            <app-card-action-nav [card]='card' [org]='true'></app-card-action-nav>
-        </div>
-        <div class='org-branches' *ngIf='card.organization_branch_count > 1'>
-            <a (click)='showAllBranches()' clickOnReturn aria-label="הצגת כל סניפי הארגון">{{card.organization_branch_count}} סניפים בארץ ←</a>
+        <div class='org-container' [class.open]='orgOpen'>
+            <div class='org-name' *ngIf='card.organization_name_parts'>
+                <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href' target='_blank'>{{card.organization_name_parts.primary}}</a>
+                <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name_parts.primary}}</span>
+                <span *ngIf='card.organization_name_parts.secondary'> - {{card.organization_name_parts.secondary}}</span>
+            </div>
+            <div class='org-name' *ngIf='!card.organization_name_parts'>
+                <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name}}</a>
+                <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name}}</span>
+            </div>
+            <div class='actions' *ngIf='orgOpen'>
+                <app-card-action-phone [card]='card' [org]='true' [compact]='true'></app-card-action-phone>
+                <app-card-action-email [card]='card' [org]='true' [compact]='true'></app-card-action-email>
+            </div>
+            <div class='org-branches' *ngIf='card.organization_branch_count > 1'>
+                <a (click)='showAllBranches()' clickOnReturn aria-label="הצגת כל סניפי הארגון">{{card.organization_branch_count}} סניפים בארץ ←</a>
+            </div>
+            <a class='opener' [class.open]='orgOpen' role='button' aria-label='הרחבת פרטי הארגון' clickOnReturn (activated)='orgOpen = !orgOpen'></a>
         </div>
     </div>
     <div class='data-sources'>

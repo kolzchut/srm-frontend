@@ -15,7 +15,7 @@ export class CardActionComponent implements OnInit {
   @Input() action: string;
   @Input() label: string;
   @Input() primary = false;
-  @Input() org = false;
+  @Input() compact = false;
   
   constructor(private analytics: AnalyticsService) { }
 

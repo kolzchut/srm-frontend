@@ -51,7 +51,7 @@
     cursor: pointer;
 }
 
-.button:not(.org).primary {
+.button:not(.compact).primary {
     &.kind-url {
         .icon {
             background-image: url(../../assets/img/icon-external-link-white.svg);
@@ -83,7 +83,7 @@
     }
 }
 
-.button:not(.org) {
+.button:not(.compact) {
     flex: 1 1 auto;
     height: 40px;
     background: @color-white;
@@ -130,7 +130,7 @@
     });
 }
 
-.button.org {
+.button.compact {
     display: flex;
     flex-flow: row;
     align-items: center;

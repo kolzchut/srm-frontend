@@ -15,6 +15,8 @@ export class CardComponent implements OnInit {
   @Input() card: Card;
   @Output() zoomout = new EventEmitter<ViewPort>();
 
+  orgOpen = false;
+
   constructor(private api: ApiService, private router: Router, @Inject(DOCUMENT) private document: Document) { }
 
   ngOnInit(): void {

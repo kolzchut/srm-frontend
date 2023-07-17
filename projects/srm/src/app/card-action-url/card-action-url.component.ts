@@ -13,6 +13,7 @@ export class CardActionUrlComponent implements OnChanges {
 
   @Input() card: Card;
   @Input() org = false;
+  @Input() compact = false;
 
   action = '';
   active = false;
