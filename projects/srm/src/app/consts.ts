@@ -115,6 +115,8 @@ export type Preset = {
     link: string,
     title: string,
     style: string,
+    preset: boolean,
+    example: boolean,
 };
 
 export type AutoComplete = {

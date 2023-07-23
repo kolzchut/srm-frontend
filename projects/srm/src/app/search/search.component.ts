@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
 import { Subject, timer } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { debounceTime, first, switchMap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { prepareQuery, _h } from '../consts';
 import { LayoutService } from '../layout.service';
@@ -26,15 +26,27 @@ export class SearchComponent implements OnInit {
   constructor(private api: ApiService, public location: Location, private route: ActivatedRoute, private router: Router,
       private platform: PlatformService, public layout: LayoutService, private seo: SeoSocialShareService, private a11y: A11yService) {
     this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform);
-    route.queryParams.subscribe(params => {
-      timer(0).subscribe(() => {
-        this.searchConfig.query_ = params.q || '';
-        this.searchConfig.queries.next(this.searchConfig.query_);
+    this.searchConfig.queries.pipe(
+      untilDestroyed(this),
+    ).subscribe((query) => {
+      this.router.navigate([], {
+        queryParams: {
+          q: query
+        },
+        replaceUrl: true,
       });
     });
   }
 
   ngOnInit(): void {
+    this.route.queryParams.pipe(
+      first()
+    ).subscribe(params => {
+      timer(0).subscribe(() => {
+        this.searchConfig.query_ = params.q || '';
+        this.searchConfig.queries.next(this.searchConfig.query_);
+      });
+    });
   }
 
   ngAfterViewInit() {

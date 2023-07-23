@@ -1,4 +1,4 @@
-@import '../../common.less';
+@import './search.less';
 
 
 :host {
@@ -46,5 +46,44 @@
                 opacity: 1;
             }
         }
+    }
+
+    .search-bar {
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        width: 100%;
+        .mobile({
+            padding: 12px 8px;
+            padding-right: 12px;
+        });
+        .desktop({
+            padding: 8px 24px;
+            z-index: 1;
+        });
+        gap: 4px;
+        background: @color-white;
+        border: 1px solid @color-gray-5;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+    
+        .logo {
+            flex: 0 0 auto;
+            .background-image;
+            background-image: url(../../assets/img/logo.svg);
+            height: 36px;
+            width: 58px;
+        }
+    
+        .back-button {
+            .search-icon;
+            background-image: url(../../assets/img/icon-arrow-right.svg);
+        }
+    }
+    app-autocomplete-results {
+        .desktop({
+            min-width: calc(@mobile-threshold - 88px);
+            margin-right: 88px;
+            margin-top: 10px;    
+        });
     }
 }

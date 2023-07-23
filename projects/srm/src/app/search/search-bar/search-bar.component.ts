@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { SearchConfig } from '../search-config';
 import { PlatformService } from '../../platform.service';
 import { timer } from 'rxjs';
@@ -12,6 +12,8 @@ import { timer } from 'rxjs';
 export class SearchBarComponent implements OnInit, AfterViewInit {
 
   @Input() config: SearchConfig;
+
+  @Output() focus = new EventEmitter<boolean>();
 
   @ViewChild('input') inputEl: any;
 

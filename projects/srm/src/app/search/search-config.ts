@@ -28,6 +28,8 @@ export class SearchConfig {
   queries = new Subject<string>();
   typedQueries = new Subject<string>();
 
+  autoFocus = true;
+
   constructor(private container: any, private router: Router, private api: ApiService, private platform: PlatformService) {
     api.getPresets().subscribe(presets => {
       console.table(presets);
@@ -87,19 +89,16 @@ export class SearchConfig {
     }
     this.query_ = query;
     this.noResults = false;
-    this.router.navigate([], {
-      queryParams: {
-        q: query
-      },
-      replaceUrl: true,
-    });
+    this.queries.next(query);
   }
 
   setInputEl(el: HTMLInputElement) {
     if (this.query_) {
       el.setSelectionRange(0, this.query_.length);
     }
-    el.focus();
+    if (this.autoFocus) {
+      el.focus();
+    }
     this.inputEl = el;
   }
 

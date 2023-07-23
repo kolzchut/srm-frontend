@@ -1,4 +1,4 @@
-<div class='main'>
+<div class='main' [class.searching]='searching'>
     <div class='header'>
         <div class='menu-button layout-mobile'>
             <app-menu-icon></app-menu-icon>
@@ -12,31 +12,54 @@
         </div>
         <app-desktop-menu-links [homepage]='true'></app-desktop-menu-links>
     </div>    
-    <div class='search' [class.cta]='slide === 3' role="main">
-        <p>
+    <div class='search' role="main">
+        <p class='hide-while-searching'>
             <strong>כל שירות</strong> הוא אתר המרכז את כל השירותים החברתיים בישראל שהמדינה, ארגונים וגופים שונים מעמידים לרשותינו, האזרחים. השירותים מסווגים לפי סוג, קהלי יעד ומיקום על המפה.
             <br/>
             <br/>
             <strong>נתחיל בחיפוש?</strong>
         </p>
-        <a class='searchbox' [routerLink]='["/q"]' [class.cta]='slide === 3' tabindex="0" aria-label='ביצוע חיפוש מענים חברתיים באתר'>
-            <div class='title' [class.active]='slide === 0'>כל שירות</div>
-            <div class='subtitle'>
-                <span [class.active]='slide === 1' class='situation'>לכל מצב</span>
-                <span class='separator'></span>
-                <span [class.active]='slide === 2' class='situation'>בכל מקום</span>
+        <div class='searchbox-container layout-desktop' [class.searching]='searching'>
+            <div class='searchbox desktop' *ngIf='!searching'>
+                <div class='title active'>כל שירות</div>
+                <div class='subtitle'>
+                    <span class='situation'>לכל מצב</span>
+                    <span class='separator'></span>
+                    <span class='situation'>בכל מקום</span>
+                </div>
             </div>
-        </a>
-        <div class='examples'>
-            
+            <app-search-bar [config]='searchConfig' (focus)='$event ? updateFocus($event) : null'></app-search-bar>
+            <app-autocomplete-results [config]='searchConfig'></app-autocomplete-results>
+        </div>
+        <div class='searchbox-container layout-mobile'>
+            <a class='searchbox' [routerLink]='["/q"]' tabindex="0" aria-label='ביצוע חיפוש מענים חברתיים באתר'>
+                <div class='title active'>כל שירות</div>
+                <div class='subtitle'>
+                    <span class='situation'>לכל מצב</span>
+                    <span class='separator'></span>
+                    <span class='situation'>בכל מקום</span>
+                </div>
+            </a>
+        </div>
+        <div class='examples hide-while-searching'>
+            <span class='explain'>לדוגמה אפשר לחפש:</span>
+            <div class='list'>
+                <a *ngFor='let example of examples' (activated)='startSearch(example.title)' clickOnReturn>{{example.title}}</a>
+            </div>
         </div>
     </div>
-    <div class='logos'>
+    <div class='logos hide-while-searching'>
         <div class='logo-block'>
             <a class='kolzchut' aria-label='מעבר לאתר של כל זכות בטאב חדש' href='https://www.kolzchut.org.il/he/%D7%A2%D7%9E%D7%95%D7%93_%D7%A8%D7%90%D7%A9%D7%99' target="_blank"></a>
             <a class='moj' aria-label='מעבר לאתר של משרד המשפטים בטאב חדש' href='https://www.gov.il/he/departments/ministry_of_justice/govil-landing-page' target="_blank"></a>
             <a class='digital-israel' aria-label='מעבר לאתר של מערך הדיגיטל הלאומי בטאב חדש' href='https://www.gov.il/he/departments/national-digital-agency/govil-landing-page' target="_blank"></a>    
         </div>
     </div>
+    <div class='backdrop layout-desktop' (focus)='updateFocus(false)' (click)='updateFocus(false)' tabindex="0">
+        <div class='top'></div>
+        <div class='bottom'>
+            <div class='close'></div>
+        </div>
+    </div>
 </div>
-<app-disclaimer-footer [homepage]='true'></app-disclaimer-footer>
+<app-disclaimer-footer [homepage]='true' *ngIf='!searching'></app-disclaimer-footer>
