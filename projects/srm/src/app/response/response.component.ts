@@ -65,8 +65,8 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
       this.expandColor = '#333231';
     } else if (this.disabled) {
       this.textColor = '#767573';
-      this.bgColor = '#FFFCF5';
-      this.borderColor = '#CCDDFC';
+      this.bgColor = '#FFFDF5';
+      this.borderColor = '#DAE5FE';
       this.pointBorderColor = '#fff';
       this.pointBgColor = this.color;
       this.linkColor = this.textColor;
