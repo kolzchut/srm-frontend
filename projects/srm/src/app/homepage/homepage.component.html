@@ -15,11 +15,11 @@
     <div class='search' role="main">
         <p class='hide-while-searching'>
             <strong>כל שירות</strong> הוא אתר המרכז את כל השירותים החברתיים בישראל שהמדינה, ארגונים וגופים שונים מעמידים לרשותינו, האזרחים. השירותים מסווגים לפי סוג, קהלי יעד ומיקום על המפה.
-            <br/>
-            <br/>
+        </p>
+        <p class='hide-while-searching'>
             <strong>נתחיל בחיפוש?</strong>
         </p>
-        <div class='searchbox-container layout-desktop' [class.searching]='searching'>
+        <div class='searchbox-container layout-desktop' [class.searching]='searching' appArrowToTab (keydown)='keydown($event)'>
             <div class='searchbox desktop' *ngIf='!searching'>
                 <div class='title active'>כל שירות</div>
                 <div class='subtitle'>
@@ -28,7 +28,7 @@
                     <span class='situation'>בכל מקום</span>
                 </div>
             </div>
-            <app-search-bar [config]='searchConfig' (focus)='$event ? updateFocus($event) : null'></app-search-bar>
+            <app-search-bar [config]='searchConfig' (focus)='$event ? updateFocus($event) : null' [homepage]='true'></app-search-bar>
             <app-autocomplete-results [config]='searchConfig'></app-autocomplete-results>
         </div>
         <div class='searchbox-container layout-mobile'>

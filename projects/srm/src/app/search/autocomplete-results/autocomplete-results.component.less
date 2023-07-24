@@ -7,7 +7,7 @@
         width: 60%;
         z-index: 1;
         box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.16), 0px 4px 24px rgba(0, 0, 0, 0.08);
-        border-radius: 4px;
+        border-radius: 8px;
         overflow: hidden;
     });
     display: flex;
@@ -47,7 +47,7 @@
                 flex: 0 0 auto;
                 .search-icon;
                 background-image: url(../../../assets/img/icon-search-gray-4.svg);
-                background-size: 18px;
+                background-size: 24px;
             }
 
             .text {
@@ -81,6 +81,11 @@
 
     .result:has(a:focus) {
         background: @color-gray-6;
+        .result-title {
+            .result-icon {
+                background-image: url(../../../assets/img/icon-search-gray-1.svg);   
+            }
+        }
     }
 
 }

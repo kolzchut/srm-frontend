@@ -12,6 +12,7 @@ import { timer } from 'rxjs';
 export class SearchBarComponent implements OnInit, AfterViewInit {
 
   @Input() config: SearchConfig;
+  @Input() homepage = false;
 
   @Output() focus = new EventEmitter<boolean>();
 

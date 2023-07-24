@@ -35,6 +35,7 @@ export class HomepageComponent {
       this.searching = true;
     } else {
       timer(100).subscribe(() => {
+        this.searchConfig.query_ = '';
         this.searching = false;
       });
     }
@@ -44,5 +45,11 @@ export class HomepageComponent {
     this.searching = true;
     this.searchConfig.query_ = query;
     this.searchConfig.queries.next(query);
+  }
+
+  keydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.updateFocus(false);
+    }
   }
 }

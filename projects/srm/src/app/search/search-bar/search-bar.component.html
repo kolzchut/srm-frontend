@@ -1,6 +1,6 @@
 <input type='search' placeholder='ניתן לחפש לפי שם, סוג מענה, מיקום...'  enterkeyhint='חיפוש' 
        role='textbox' aria-label='חיפוש שירותים באתר כל שירות. ניתן להשתמש בחיצים על מנת לנווט באפשרויות או באמצעות טאב אם משתמשים בקורא מסך.'
        #input class='focusable' [(ngModel)]='config.query' (keydown)='config.changed($event)' 
-       (focus)='focus.next(true)' (blur)='focus.next(false)' 
+       (focus)='focus.next(true)' (blur)='focus.next(false)' [class.homepage]='homepage'
 >
 <button class='clear-button' (click)='config.query=""' *ngIf='!!config.query' aria-label="ניקוי החיפוש"></button>    
