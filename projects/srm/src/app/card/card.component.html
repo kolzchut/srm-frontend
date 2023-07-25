@@ -34,13 +34,13 @@
     </div>
     <div class='org'>
         <h2 i18n>השירות ניתן ע״י:</h2>
-        <div class='org-container' [class.open]='orgOpen'>
+        <div class='org-container' [class.open]='orgOpen' aria-label='הרחבת פרטי הארגון' clickOnReturn (activated)='orgOpen = !orgOpen'>
             <div class='org-name' *ngIf='card.organization_name_parts'>
                 <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href' target='_blank'>{{card.organization_name_parts.primary}}</a>
                 <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name_parts.primary}}</span>
                 <span *ngIf='card.organization_name_parts.secondary'> - {{card.organization_name_parts.secondary}}</span>
             </div>
-            <a class='opener' [class.open]='orgOpen' role='button' aria-label='הרחבת פרטי הארגון' clickOnReturn (activated)='orgOpen = !orgOpen'></a>
+            <span class='opener' [class.open]='orgOpen'></span>
             <div class='org-name' *ngIf='!card.organization_name_parts'>
                 <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name}}</a>
                 <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name}}</span>

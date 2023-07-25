@@ -98,12 +98,14 @@
                 font-weight: 600;
                 display: flex;
                 flex-flow: column;
+                justify-content: center;
                 gap: 8px;
                 padding: 8px 12px;
                 border-radius: 8px;
                 background: @color-blue-8;
                 border: 1px solid @color-blue-7;
-                position: relative;             
+                position: relative;
+                min-height: 66px;
 
                 .org-name {
                     span, a {
@@ -140,7 +142,6 @@
                     }
                     color: @color-blue-1;
                     cursor: pointer;
-                    margin-top: 8px;
                 }
                 .opener {
                     position: absolute;
@@ -151,7 +152,7 @@
                     background-image: url(../../assets/img/icon-chevron-down-blue-700.svg);
                     cursor: pointer;
                     left: 20px;
-                    top: calc(50% ~'-' 8px);
+                    top: 24px;
 
                     &.open {
                         transform: rotate(180deg);
