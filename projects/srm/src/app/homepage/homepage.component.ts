@@ -37,6 +37,7 @@ export class HomepageComponent {
       timer(100).subscribe(() => {
         this.searchConfig.query_ = '';
         this.searching = false;
+        this.searchConfig.blur();
       });
     }
   }

@@ -102,6 +102,10 @@ export class SearchConfig {
     this.inputEl = el;
   }
 
+  blur() {
+    this.inputEl?.blur();
+  }
+
   changed(event: KeyboardEvent) {
     if (event.key === 'Enter' && this.query?.length > 0) {
       let found = false;
