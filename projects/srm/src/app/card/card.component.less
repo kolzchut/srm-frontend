@@ -57,7 +57,8 @@
         .implements {
             min-height: 48px;
             width: 100%;
-            background: @color-blue-8; 
+            background: @color-blue-8;
+            border: 1px solid @color-blue-7;
             border-radius: 4px;
             .background-image;
             background-size: 24px;
@@ -100,7 +101,8 @@
                 gap: 8px;
                 padding: 8px 12px;
                 border-radius: 8px;
-                background: @color-blue-8;   
+                background: @color-blue-8;
+                border: 1px solid @color-blue-7;
                 position: relative;             
 
                 .org-name {
@@ -149,7 +151,7 @@
                     background-image: url(../../assets/img/icon-chevron-down-blue-700.svg);
                     cursor: pointer;
                     left: 20px;
-                    top: 24px;
+                    top: calc(50% ~'-' 8px);
 
                     &.open {
                         transform: rotate(180deg);
