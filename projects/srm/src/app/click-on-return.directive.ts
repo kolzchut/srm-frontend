@@ -17,6 +17,7 @@ export class ClickOnReturnDirective implements AfterViewInit{
       }
     });
     el.addEventListener('click', (event: MouseEvent) => {
+      event.stopPropagation();
       this.activated.emit(event);
     });
     el.setAttribute('tabindex', '0');

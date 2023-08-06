@@ -70,12 +70,13 @@
     background-size: contain;
 }
 
-.button-image {
+.button-image(@color) {
     border: none;
-    background: none;
     margin: 0;
     padding: 0;
     cursor: pointer;
+    background: @color;
+    .background-image;
 }
 
 .tags-container {
