@@ -45,4 +45,8 @@ export class CardComponent implements OnInit {
       this.router.navigate(['/s', this.card.organization_id]);
     });
   }
+
+  hasOrgActions() {
+    return !!this.card?.organization_phone_numbers?.[0] || !!this.card?.organization_email_address;
+  }
 }

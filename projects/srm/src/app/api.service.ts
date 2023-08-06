@@ -381,7 +381,7 @@ export class ApiService {
       params.q = searchParams.query;
       this.fullTextParams(params, {no_highlight: true});
     }
-    let filter = this._filter(searchParams, false);
+    let filter = this._filter(searchParams, withBounds);
     if (searchParams.national) {
       filter = filter || {};
       filter.national_service = true;
@@ -389,9 +389,7 @@ export class ApiService {
     if (filter) {
       params.filter = JSON.stringify(filter);
     }
-    if (!withBounds) {
-      params.extra = 'viewport';
-    }
+    params.extra = 'viewport';
     return this.innerCache(`count-${params.filter}-${params.q}`, this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         return res as QueryCardResult;

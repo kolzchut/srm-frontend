@@ -44,6 +44,7 @@ export class SearchFiltersComponent implements OnChanges {
 
   currentSearchParams: SearchParams;
   resultCount = -1;
+  resultCountBounded = -1;
 
   incomingSearchParams = new Subject<SearchParams>();
   internalSearchParams = new Subject<SearchParams>();
@@ -71,13 +72,17 @@ export class SearchFiltersComponent implements OnChanges {
     })
     this.internalSearchParams.pipe(
       untilDestroyed(this),
-      distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
+      // distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
       tap((params) => {
         this.params.emit(this._copySearchParams(params));
       }),
-      switchMap((params) => this.api.getCounts(params))
-    ).subscribe((data) => {
+      switchMap((params) => forkJoin([
+        this.api.getCounts(params),
+        this.api.getCounts(params, true),
+      ]))
+    ).subscribe(([data, dataBounded]) => {
       this.resultCount = data.search_counts.cards.total_overall;
+      this.resultCountBounded = dataBounded.search_counts.cards.total_overall;
     });
     this.incomingSearchParams.pipe(
       untilDestroyed(this),
@@ -89,9 +94,10 @@ export class SearchFiltersComponent implements OnChanges {
     this.incomingSearchParams.pipe(
       untilDestroyed(this),
       filter((params) => !!params),
-      distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
+      distinctUntilChanged((a, b) => a.bounds === b.bounds),
     ).subscribe((params) => {
-      this.processSearchParams(params);
+      this.currentSearchParams.bounds = params.bounds;
+      this.pushSearchParams();
     });
     this.incomingSearchParams.pipe(
       untilDestroyed(this),
@@ -258,7 +264,9 @@ export class SearchFiltersComponent implements OnChanges {
       filter_responses: sp.filter_responses?.slice() || [],
       filter_response_categories: sp.filter_response_categories?.slice() || [],
 
-      national: !!sp.national
+      national: !!sp.national,
+
+      bounds: sp.bounds,
     });
     return ret;
   }
