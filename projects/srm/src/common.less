@@ -70,13 +70,18 @@
     background-size: contain;
 }
 
-.button-image(@color) {
+.button-image(@bg,@bghover) {
     border: none;
     margin: 0;
     padding: 0;
     cursor: pointer;
-    background: @color;
-    .background-image;
+    background: @bg;
+    &:hover {
+        background: @bghover;
+    }
+    &, &:hover {
+        .background-image;
+    }
 }
 
 .tags-container {

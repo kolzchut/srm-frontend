@@ -42,13 +42,16 @@
                 height: 56px;
                 padding: 0 8px;
                 .back {
-                    .button-image(@color-blue-8);
+                    flex: 0 0 auto;
+                    .button-image(@color-blue-8, @color-blue-7);
                     width: 40px;
                     height: 40px;
-                    background-image: url('../../assets/img/icon-back-blue-1.svg');
-                    background-size: 30px;
                     border-radius: 24px;
                     border: 1px solid @color-blue-6;
+                    &, &:hover {
+                        background-size: 30px;
+                        background-image: url('../../assets/img/icon-back-blue-1.svg');
+                    }
                 }
             });
         }

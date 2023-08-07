@@ -1,0 +1,20 @@
+<div class='container'>
+    <div class='selector'
+        [style.width]='selectorWidth + "px"'
+        [style.right]='selectorRight + "px"'
+    ></div>
+    <button class='map-region' clickOnReturn #mapRegion
+            [class.with-text]='showButtonText()'
+            [class.active]='isActive(false)'
+            (activated)='selectMapRegion()'
+    >באיזור המפה</button>
+    <button class='nation-wide' clickOnReturn #nationWide
+            [class.with-text]='showButtonText()'
+            [class.active]='isActive(true)'
+            (activated)='selectNationWide()'
+    >בכל הארץ</button>
+    <input class='area' #area
+           (focus)='startSearching()'
+           (blur)='stopSearching()'
+    />
+</div>

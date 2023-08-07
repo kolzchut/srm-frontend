@@ -13,9 +13,7 @@
 <ng-container *ngIf='active'>
     <div class='filtering-header layout-desktop'>
         <button class='back' (activated)='clear()' aria-label='סגירת הסינון וחזרה לרשימת התוצאות' clickOnReturn></button>
-        <div class='geo-filter'>
-
-        </div>
+        <app-area-search-selector></app-area-search-selector>
     </div>
     <div class='situations-container'>
         <div class='situations'>

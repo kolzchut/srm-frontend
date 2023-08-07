@@ -60,6 +60,7 @@ import { ResponseSelectionWidgetComponent } from './response-selection-widget/re
 import { ResponseLinkyComponent } from './response-linky/response-linky.component';
 import { SearchBarComponent } from './search/search-bar/search-bar.component';
 import { AutocompleteResultsComponent } from './search/autocomplete-results/autocomplete-results.component';
+import { AreaSearchSelectorComponent } from './area-search-selector/area-search-selector.component';
 
 @NgModule({
   declarations: [
@@ -116,6 +117,7 @@ import { AutocompleteResultsComponent } from './search/autocomplete-results/auto
     ResponseLinkyComponent,
     SearchBarComponent,
     AutocompleteResultsComponent,
+    AreaSearchSelectorComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
