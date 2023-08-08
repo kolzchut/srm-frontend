@@ -6,6 +6,7 @@ import { ApiService } from '../api.service';
 import { DistinctItem, QueryCardResult, SearchParams, SITUATION_FILTERS, TaxonomyItem } from '../consts';
 import { SearchFiltersMoreButtonComponent } from '../search-filters-more-button/search-filters-more-button.component';
 import { PlatformService } from '../platform.service';
+import { AreaSearchState } from '../area-search-selector/area-search-selector.component';
 
 @UntilDestroy()
 @Component({
@@ -52,7 +53,8 @@ export class SearchFiltersComponent implements OnChanges {
   ready = new ReplaySubject<boolean>(1);
 
   showDiscovery: boolean | null = null;
-  
+  areaSearchState: AreaSearchState;
+
   constructor(private api: ApiService, private platform: PlatformService) {
     forkJoin([this.api.getSituations(), this.api.getResponses()])
     .subscribe(([situationData, responseData]) => {
@@ -108,6 +110,7 @@ export class SearchFiltersComponent implements OnChanges {
     ).subscribe((result) => {
       this.checkDiscoveryNeeded(result);
     });
+    this.areaSearchState = new AreaSearchState(api);
   }
 
   ngOnChanges(): void {

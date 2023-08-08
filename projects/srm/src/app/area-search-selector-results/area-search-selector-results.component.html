@@ -1,0 +1,12 @@
+<div class='results' [style.width]='(state.resultsWidth | async) + "px"' *ngIf='state.showResults | async'
+    (focus)='state.focusResults()' (blur)='state.blurResults()'
+>
+    <ng-container *ngIf='(state.results | async) === null'>
+        <app-area-search-selector-result-my-location [state]='state'></app-area-search-selector-result-my-location>
+        <app-area-search-selector-result-nation-wide [state]='state'></app-area-search-selector-result-nation-wide>
+        <app-area-search-selector-result-place [place]='place' [state]='state' *ngFor='let place of presets'></app-area-search-selector-result-place>
+    </ng-container>
+    <ng-container *ngIf='(state.results | async) !== null'>
+        <app-area-search-selector-result-place [place]='place' [state]='state' *ngFor='let place of (state.results | async)'></app-area-search-selector-result-place>
+    </ng-container>
+</div>

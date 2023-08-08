@@ -135,6 +135,14 @@ export type AutoComplete = {
     bounds: [number, number, number, number] | null,
 };
 
+export type Place = {
+    query: string,
+    bounds: [number, number, number, number];
+    _highlights?: {
+        query: string,
+    };
+};
+
 export type ViewPort = { top_left: { lat: number; lon: number; }; bottom_right: { lat: number; lon: number; }; }
 
 export type SearchResult<T extends any> = {
@@ -168,6 +176,7 @@ export type QueryPresetResult = SearchResult<Preset>;
 export type QueryAutoCompleteResult = SearchResult<AutoComplete>;
 export type QueryCardResult = SearchResult<Card>;
 export type QueryTaxonomyItemResult = SearchResult<TaxonomyItem>;
+export type QueryPlaceResult = SearchResult<Place>;
 
 export const SITUATION_FILTERS = [
     'situations', 'age_groups', 'languages', 'health', 'benefit_holders',

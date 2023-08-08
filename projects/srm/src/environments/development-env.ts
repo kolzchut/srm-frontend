@@ -8,7 +8,7 @@ export const devEnv: any = {
   // pointsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/points',
   // countCategoriesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/count',
   // clusterDataURL: 'https://srm-staging.datacity.org.il/dataset/2902488f-da99-4836-9a90-1582958cfba4/resource/4c5ea1c5-af92-4930-914e-4c835ab25fb7/download/geo_data.geojson',
-  // placesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/places',
+  placesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/places',
   responsesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/responses',
   situationsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/situations',
   // orgsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/orgs',

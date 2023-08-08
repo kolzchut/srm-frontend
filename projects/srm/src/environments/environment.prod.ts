@@ -9,7 +9,7 @@ export const environment = {
   // countCategoriesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/count',
   // clusterDataSourceURL: 'https://srm.datacity.org.il/dataset/0f51648d-b5dd-4981-88d1-c47023f14585/resource/0457d754-7acb-405f-ac36-37128e84c2ef/download/geo_data.geojson',
   // clusterDataURL: '/clusters.json',
-  // placesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/places',
+  placesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/places',
   responsesURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/responses',
   situationsURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/situations',
   // orgsURL: 'https://srm-production-api.whiletrue.industries/api/idx/search/orgs',

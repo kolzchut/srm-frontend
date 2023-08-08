@@ -14,7 +14,7 @@
             ></app-search-filter-checkbox>
         </div>
         <app-search-filters-more-button *ngIf='situations.length > NUM_SITUATIONS' [count]='situations.length - NUM_SITUATIONS' [style]='"situation"' #moreSituations></app-search-filters-more-button>
-        <ng-container *ngIf='moreSituations?.expanded'>
+        <ng-container *ngIf='!!(moreSituations?.expanded)'>
             <div *ngFor='let situation of situations.slice(NUM_SITUATIONS)'>
                 <app-search-filter-checkbox
                     [item]='situation'

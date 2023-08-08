@@ -1,5 +1,6 @@
 <div class='container'>
     <div class='selector'
+        [class.hide]='!(state.selectorVisible | async)'
         [style.width]='selectorWidth + "px"'
         [style.right]='selectorRight + "px"'
     ></div>
@@ -13,8 +14,11 @@
             [class.active]='isActive(true)'
             (activated)='selectNationWide()'
     >בכל הארץ</button>
-    <input class='area' #area
-           (focus)='startSearching()'
-           (blur)='stopSearching()'
+    <input class='area focusable' #area
+           [placeholder]='inputPlaceholder'
+           aria-label='חיפוש איזורים בארץ'
+           (focus)='state.focusInput()'
+           (blur)='state.blurInput()'
+           [(ngModel)]='state.area_'
     />
 </div>

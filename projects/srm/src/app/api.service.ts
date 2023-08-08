@@ -4,7 +4,7 @@ import { catchError, delay, finalize, map, switchMap, tap } from 'rxjs/operators
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult, CARD_SNIPPET_FIELDS, TaxonomyItem, SearchParams, DistinctItem, QueryTaxonomyItemResult, SITUATION_FILTERS } from './consts';
+import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult, CARD_SNIPPET_FIELDS, TaxonomyItem, SearchParams, DistinctItem, QueryTaxonomyItemResult, SITUATION_FILTERS, Place, QueryPlaceResult } from './consts';
 import { makeStateKey, TransferState} from '@angular/platform-browser';
 import { PlatformService } from './platform.service';
 import * as memoryCache from 'memory-cache';
@@ -647,5 +647,25 @@ export class ApiService {
       ), true
     );
   }
+
+  getPlaces(query: string): Observable<Place[]> {
+    const params: any = {
+      size: 50,
+      offset: 0,
+      q: query,
+      highlight: 'query',
+    };
+    return this.http.get(environment.placesURL, {params}).pipe(
+      map((res: any) => {
+        const qpr = res as QueryPlaceResult;
+        const results = qpr.search_results;
+        const ret = results.map((r: any) => {
+          return r.source;
+        });
+        return ret;
+      })
+    );
+  }
+
 }
 

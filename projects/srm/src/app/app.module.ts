@@ -61,6 +61,11 @@ import { ResponseLinkyComponent } from './response-linky/response-linky.componen
 import { SearchBarComponent } from './search/search-bar/search-bar.component';
 import { AutocompleteResultsComponent } from './search/autocomplete-results/autocomplete-results.component';
 import { AreaSearchSelectorComponent } from './area-search-selector/area-search-selector.component';
+import { AreaSearchSelectorResultsComponent } from './area-search-selector-results/area-search-selector-results.component';
+import { AreaSearchSelectorResultComponent } from './area-search-selector-result/area-search-selector-result.component';
+import { AreaSearchSelectorResultPlaceComponent } from './area-search-selector-result-place/area-search-selector-result-place.component';
+import { AreaSearchSelectorResultNationWideComponent } from './area-search-selector-result-nation-wide/area-search-selector-result-nation-wide.component';
+import { AreaSearchSelectorResultMyLocationComponent } from './area-search-selector-result-my-location/area-search-selector-result-my-location.component';
 
 @NgModule({
   declarations: [
@@ -118,6 +123,11 @@ import { AreaSearchSelectorComponent } from './area-search-selector/area-search-
     SearchBarComponent,
     AutocompleteResultsComponent,
     AreaSearchSelectorComponent,
+    AreaSearchSelectorResultsComponent,
+    AreaSearchSelectorResultComponent,
+    AreaSearchSelectorResultPlaceComponent,
+    AreaSearchSelectorResultNationWideComponent,
+    AreaSearchSelectorResultMyLocationComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
