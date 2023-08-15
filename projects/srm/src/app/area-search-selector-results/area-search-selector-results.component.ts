@@ -1,10 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PlaceResult } from '../area-search-selector-result-place/area-search-selector-result-place.component';
-import { Subject } from 'rxjs';
-import { AreaSearchState } from '../area-search-selector/area-search-selector.component';
+import { AreaSearchState } from '../area-search-selector/area-search-state';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 
 
+
+@UntilDestroy()
 @Component({
   selector: 'app-area-search-selector-results',
   templateUrl: './area-search-selector-results.component.html',

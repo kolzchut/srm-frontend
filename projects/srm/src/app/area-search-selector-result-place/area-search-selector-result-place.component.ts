@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { LngLatBoundsLike } from 'mapbox-gl';
-import { AreaSearchState } from '../area-search-selector/area-search-selector.component';
+import { AreaSearchState } from '../area-search-selector/area-search-state';
 
 export type PlaceResult = {
   name: string;

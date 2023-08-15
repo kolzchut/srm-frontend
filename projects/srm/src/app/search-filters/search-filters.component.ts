@@ -6,7 +6,7 @@ import { ApiService } from '../api.service';
 import { DistinctItem, QueryCardResult, SearchParams, SITUATION_FILTERS, TaxonomyItem } from '../consts';
 import { SearchFiltersMoreButtonComponent } from '../search-filters-more-button/search-filters-more-button.component';
 import { PlatformService } from '../platform.service';
-import { AreaSearchState } from '../area-search-selector/area-search-selector.component';
+import { AreaSearchState } from '../area-search-selector/area-search-state';
 
 @UntilDestroy()
 @Component({

@@ -11,7 +11,6 @@ export class ArrowToTabDirective implements AfterViewInit {
 
   ngAfterViewInit() {
     this.el.nativeElement.addEventListener('keydown', (event: KeyboardEvent) => {
-      console.log('keydown', event.key);
       if (event.key === 'ArrowDown') {
         event.preventDefault();
         this.updateIndex();

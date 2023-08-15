@@ -1,6 +1,6 @@
 <div class='result'>
     <div [class]='"icon " + icon'></div>
     <a class='title focusable' [innerHTML]='display' clickOnReturn [attr.aria-label]='name + " - מיקוד המפה לשם"'
-        (focus)='state.focusResults()' (blur)='state.blurResults()'
+        (focus)='state.focusResults()' (blur)='state.blurResults()' (activated)='state.area_ = name'
     ></a>
 </div>

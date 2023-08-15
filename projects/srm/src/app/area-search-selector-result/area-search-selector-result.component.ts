@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AreaSearchState } from '../area-search-selector/area-search-selector.component';
+import { AreaSearchState } from '../area-search-selector/area-search-state';
 
 @Component({
   selector: 'app-area-search-selector-result',
