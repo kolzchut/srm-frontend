@@ -3,7 +3,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ReplaySubject, Subject, forkJoin, fromEvent, merge } from 'rxjs';
 import { filter, distinctUntilChanged, switchMap, takeUntil, tap, debounceTime, first } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { DistinctItem, QueryCardResult, SearchParams, SITUATION_FILTERS, TaxonomyItem } from '../consts';
+import { DistinctItem, QueryCardResult, SearchParams, SITUATION_FILTERS, TaxonomyItem, ViewPort } from '../consts';
 import { SearchFiltersMoreButtonComponent } from '../search-filters-more-button/search-filters-more-button.component';
 import { PlatformService } from '../platform.service';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
@@ -24,6 +24,7 @@ export class SearchFiltersComponent implements OnChanges {
   @Input() searchParams: SearchParams;
   @Output() params = new EventEmitter<SearchParams>();
   @Output() activate = new EventEmitter<boolean>();
+  @Output() zoomout = new EventEmitter<ViewPort>();
 
   @ViewChild('moreResponses') moreResponses: SearchFiltersMoreButtonComponent;
 
@@ -85,6 +86,7 @@ export class SearchFiltersComponent implements OnChanges {
     ).subscribe(([data, dataBounded]) => {
       this.resultCount = data.search_counts.cards.total_overall;
       this.resultCountBounded = dataBounded.search_counts.cards.total_overall;
+      this.areaSearchState.viewport = data.viewport;
     });
     this.incomingSearchParams.pipe(
       untilDestroyed(this),
@@ -111,6 +113,9 @@ export class SearchFiltersComponent implements OnChanges {
       this.checkDiscoveryNeeded(result);
     });
     this.areaSearchState = new AreaSearchState(api);
+    this.areaSearchState.bounds.subscribe((bounds) => {
+      this.zoomout.next(bounds);
+    });
   }
 
   ngOnChanges(): void {

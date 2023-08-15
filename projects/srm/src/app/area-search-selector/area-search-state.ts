@@ -1,21 +1,32 @@
 import { BehaviorSubject, Subject, filter, debounceTime, switchMap, timer } from "rxjs";
 import { ApiService } from "../api.service";
+import { LngLatBoundsLike } from "mapbox-gl";
+import { ViewPort } from "../consts";
 
 export class AreaSearchState {
+
+  // Layout and UI
   resultsWidth = new BehaviorSubject<number>(200);
-  results = new BehaviorSubject<any[] | null>(null);
   showResults = new BehaviorSubject<boolean>(false);
-  searching = new BehaviorSubject<boolean>(false);
   inputPlaceholder = new BehaviorSubject<string>('חיפוש');
   selectorVisible = new BehaviorSubject<boolean>(true);
+
+  // Results
+  results = new BehaviorSubject<any[] | null>(null);
+  searching_ = false;
+
+  // State
   area = new BehaviorSubject<string | null>(null);
   nationWide = new BehaviorSubject<boolean>(false);
   queries = new BehaviorSubject<string | null>(null);
+  bounds = new Subject<ViewPort>();
 
+  // Focus ref count
   inputFocus: boolean;
   resultsFocus = 0;
 
   areaInputEl: HTMLInputElement;
+  viewport: ViewPort;
 
   constructor(private api: ApiService) {
     this.queries.pipe(
@@ -118,6 +129,7 @@ export class AreaSearchState {
   }
 
   set area_(value: string | null) {
+    console.log('SET AREA', value);
     this.stopSearching();
     this.area.next(value);
   }
@@ -142,13 +154,13 @@ export class AreaSearchState {
     return this.selectorVisible.value;
   }
 
-  set searching_(value: boolean) {
-    this.searching.next(value);
-  }
+  // set searching_(value: boolean) {
+  //   this.searching.next(value);
+  // }
 
-  get searching_(): boolean {
-    return this.searching.value;
-  }
+  // get searching_(): boolean {
+  //   return this.searching.value;
+  // }
 
   set inputPlaceholder_(value: string) {
     this.inputPlaceholder.next(value);

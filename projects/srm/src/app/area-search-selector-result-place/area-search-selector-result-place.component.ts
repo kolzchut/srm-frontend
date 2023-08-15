@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { LngLatBoundsLike } from 'mapbox-gl';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
+import { ViewPort } from '../consts';
 
 export type PlaceResult = {
   name: string;
   display: string;
-  bounds: LngLatBoundsLike;
+  bounds: [number, number, number, number];
 };
 
 @Component({
@@ -21,6 +22,21 @@ export class AreaSearchSelectorResultPlaceComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  select() {
+    const bounds: [number, number, number, number] = this.place.bounds;;
+    const vp: ViewPort = {
+      top_left: {
+        lat: bounds[3],
+        lon: bounds[0]
+      },
+      bottom_right: {
+        lat: bounds[1],
+        lon: bounds[2]
+      }
+    };
+    this.state.bounds.next(vp);
   }
 
 }

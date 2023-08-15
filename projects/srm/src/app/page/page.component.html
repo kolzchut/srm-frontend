@@ -30,6 +30,7 @@
                         [searchParams]='searchParams'
                         (params)='setSearchParams($event)'
                         (activate)='setFiltersVisible($event)'
+                        (zoomout)='zoomOutMap($event)'
                         #searchFilters
                     ></app-search-filters>
                 </div>

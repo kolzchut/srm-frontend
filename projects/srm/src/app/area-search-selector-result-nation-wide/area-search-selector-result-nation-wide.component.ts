@@ -15,4 +15,8 @@ export class AreaSearchSelectorResultNationWideComponent implements OnInit {
   ngOnInit(): void {
   }
 
+
+  select() {
+    this.state.bounds.next(this.state.viewport);
+  }
 }

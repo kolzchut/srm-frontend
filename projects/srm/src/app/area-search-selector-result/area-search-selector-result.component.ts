@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 
 @Component({
@@ -11,12 +11,20 @@ export class AreaSearchSelectorResultComponent implements OnInit {
   @Input() icon: string;
   @Input() name: string;
   @Input() display: string;
-  @Input() bounds: number[][];
   @Input() state: AreaSearchState;
 
+  @Output() selected = new EventEmitter<void>();
+  
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  select() {
+    if (this.state) {
+      console.log('SETT', this.name, !!this.state);
+      this.state.area_ = this.name;
+      this.selected.emit();
+    }
+  }
 }
