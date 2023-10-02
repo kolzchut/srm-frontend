@@ -83,11 +83,11 @@ export class Card {
     __props: any;
 
     get collapsed(): boolean {
-        return !!this.collapse_hits && this.collapse_hits.length > 1;
+        return !!this.collapse_hits && this.collapse_hits.length > 0;
     }
 
     get collapsed_count(): number {
-        return this.collapsed ? (this.collapse_hits?.length || 1)- 1 : 0;
+        return this.collapse_hits?.length || 0;
     }
 };
 

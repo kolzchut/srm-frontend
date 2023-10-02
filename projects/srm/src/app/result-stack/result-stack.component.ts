@@ -21,13 +21,11 @@ export class ResultStackComponent implements OnInit {
   constructor(public layout: LayoutService) { }
 
   ngOnInit(): void {
-    if (this.showCount === -1 && this.collapsibleCount > 0) {
-      this.showCount = this.collapsibleCount > 4 ? 4 : this.collapsibleCount;
-    }
     if (this.result?.collapse_hits) {
       const cityNames: any = {};
       // const orgName = this.orgName(this.result);
       // this.showOrgs = this.result.collapse_hits.some((h) => this.orgName(h) !== orgName);
+      this.result.collapse_hits = this.result.collapse_hits.filter((h) => h.card_id !== this.result.card_id);
       this.result.collapse_hits.forEach((h) => {
         const cityName = this.cityName(h);
         if (cityName) {
@@ -37,10 +35,13 @@ export class ResultStackComponent implements OnInit {
             cityNames[cityName] = 1;
           }
         }
-        (h as any)['__city_count'] = cityName ? cityNames[cityName] : 0;
+        (h as any)['__city_count'] = h.national_service ? 9999 : (cityNames[cityName] || 0);
       });
       // Sort collapse_hits by __city_count ascending
       this.result.collapse_hits.sort((a, b) => (a as any)['__city_count'] - (b as any)['__city_count']);
+    }
+    if (this.showCount === -1 && this.collapsibleCount > 0) {
+      this.showCount = this.collapsibleCount > 4 ? 4 : this.collapsibleCount;
     }
   }
 
@@ -65,7 +66,11 @@ export class ResultStackComponent implements OnInit {
   }
 
   cityName(card: Card) {
-    return card.address_parts?.primary || card.branch_address;
+    if (card.national_service) {
+      return 'שירות ארצי';
+    } else {
+      return card.address_parts?.primary || card.branch_address;
+    }
   }
 
   orgName(card: Card) {

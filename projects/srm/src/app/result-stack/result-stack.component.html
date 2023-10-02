@@ -31,15 +31,16 @@
         <app-result-card [card]='result' [searchParams]='searchParams'></app-result-card>
     </div>
 </a>
+<!-- <pre>{{collapsible}} {{showCount}} {{result.collapse_hits?.slice(0, showCount)?.length}}</pre> -->
 <div class='bookends' *ngIf='collapsible'>
-    <ng-container *ngFor='let extra of result.collapse_hits?.slice(1, showCount + 1) || []; let i = index;'>
+    <ng-container *ngFor='let extra of result.collapse_hits?.slice(0, showCount) || []; let i = index;'>
         <a [routerLink]='["c", extra.card_id]' [queryParamsHandling]='"merge"'
            (mouseover)='hover.next(extra)' 
            [attr.aria-label]='ariaLabel(extra)'
            class='bookend' [style.zIndex]='1000 - i'>
             <span class='org'>{{orgName(extra)}}</span>
             <span class='separator'>&nbsp;/&nbsp;</span>
-            <span class='city'>{{cityName(extra)}}</span>
+            <span class='city' [class.national]='extra.national_service'>{{cityName(extra)}}</span>
         </a>
     </ng-container>
     <a class='bookend more' *ngIf='moreAvailable > 0' (activated)='more()' role='button' aria-label='הצגת עוד 10 תוצאות דומות' clickOnReturn tabindex="0">+ {{moreAvailable}} שירותים דומים</a>
