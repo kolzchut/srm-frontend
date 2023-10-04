@@ -42,6 +42,9 @@ export class ResultStackComponent implements OnInit {
     }
     if (this.showCount === -1 && this.collapsibleCount > 0) {
       this.showCount = this.collapsibleCount > 4 ? 4 : this.collapsibleCount;
+      if (this.moreAvailable === 1) {
+        this.showCount += 1;
+      }
     }
   }
 
