@@ -46,6 +46,7 @@ export class HomepageComponent {
     this.searching = true;
     this.searchConfig.query_ = query;
     this.searchConfig.queries.next(query);
+    this.searchConfig.focus();
   }
 
   keydown(event: KeyboardEvent) {

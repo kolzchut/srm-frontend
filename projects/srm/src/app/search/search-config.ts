@@ -102,6 +102,10 @@ export class SearchConfig {
     this.inputEl = el;
   }
 
+  focus() {
+    this.inputEl?.focus();
+  }
+  
   blur() {
     this.inputEl?.blur();
   }
