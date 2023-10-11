@@ -34,6 +34,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
   moveDiff = 0;
   gesture = false;
   lastHostHeight = 800;
+  calcedHeight = 0;
 
   STICKINESS = 50;
 
@@ -45,6 +46,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   ngOnChanges(): void {
+    this.calcHeight();
   }
 
   get hostHeight(): number {
@@ -80,6 +82,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     if (ret > hostHeight) {
       ret = hostHeight;
     }
+    this.calcedHeight = ret;
     return ret
   }
 
@@ -135,6 +138,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
                 this.moveSub.unsubscribe();
                 this.moveSub = null;
               }
+              this.calcHeight();
             }
           }),
           map(() => scrollableEl.scrollTop === 0),
@@ -184,10 +188,12 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     const diff = endY - this.startY;
     this.moveDiff = Math.abs(diff) < this.STICKINESS ? 0 : diff;
     this.gesture = Math.abs(diff) > this.STICKINESS / 2;
+    this.calcHeight();
   }
 
   handleGestureEnd(event: MouseEvent | TouchEvent): void {
     this.moveDiff = 0;
+    this.calcHeight();
     if (this.moveSub !== null) {
       this.moveSub.unsubscribe();
       this.moveSub = null;

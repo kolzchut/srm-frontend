@@ -1,7 +1,7 @@
 <div class='map-window'
     [class.gesture]='gesture'
     [class.national]='state === DrawerState.National'
-    [style.height]='calcHeight() + "px"'>
+    [style.height]='calcedHeight + "px"'>
 
     <ng-container *ngIf='nationalCount > 0'>
         <a class='national-services' [routerLink]='["."]' [queryParams]="{national: 'yes'}" [queryParamsHandling]='"merge"' [preserveFragment]="true"
