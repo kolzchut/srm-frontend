@@ -6,6 +6,7 @@ import { SearchConfig } from '../search/search-config';
 import { Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { timer } from 'rxjs';
+import { LayoutService } from '../layout.service';
 
 @UntilDestroy()
 @Component({
@@ -22,7 +23,7 @@ export class HomepageComponent {
   searching = false;
   examples: Preset[];
 
-  constructor(private api: ApiService, private platform: PlatformService, private router: Router) {
+  constructor(private api: ApiService, private platform: PlatformService, private router: Router, private layout: LayoutService) {
     this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform);
     this.searchConfig.autoFocus = false;
     this.api.getExamples().subscribe((examples) => {
@@ -43,10 +44,14 @@ export class HomepageComponent {
   }
 
   startSearch(query: string) {
-    this.searching = true;
-    this.searchConfig.query_ = query;
-    this.searchConfig.queries.next(query);
-    this.searchConfig.focus();
+    if (this.layout.desktop) {
+      this.searching = true;
+      this.searchConfig.query_ = query;
+      this.searchConfig.queries.next(query);
+      this.searchConfig.focus();  
+    } else {
+      this.router.navigate(['/q'], {queryParams: {q: query}});
+    }
   }
 
   keydown(event: KeyboardEvent) {
