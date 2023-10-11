@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-area-search-selector-result-nation-wide',
@@ -17,6 +18,6 @@ export class AreaSearchSelectorResultNationWideComponent implements OnInit {
 
 
   select() {
-    this.state.bounds.next(this.state.viewport);
+    this.state.selectNationWide();
   }
 }

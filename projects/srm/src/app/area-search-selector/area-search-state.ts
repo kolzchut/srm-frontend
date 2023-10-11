@@ -1,7 +1,7 @@
-import { BehaviorSubject, Subject, filter, debounceTime, switchMap, timer } from "rxjs";
+import { BehaviorSubject, Subject, filter, debounceTime, switchMap, timer, Observable, first, distinctUntilChanged, Subscription, delay, tap } from "rxjs";
 import { ApiService } from "../api.service";
 import { LngLatBoundsLike } from "mapbox-gl";
-import { ViewPort } from "../consts";
+import { SearchParams, ViewPort } from "../consts";
 
 export class AreaSearchState {
 
@@ -27,8 +27,9 @@ export class AreaSearchState {
 
   areaInputEl: HTMLInputElement;
   viewport: ViewPort;
+  mapMoveSubscription: Subscription | null = null;
 
-  constructor(private api: ApiService) {
+  constructor(private api: ApiService, private searchParams: Observable<SearchParams>) {
     this.queries.pipe(
       filter((value) => !!value && value.length > 1),
       debounceTime(200),
@@ -132,6 +133,24 @@ export class AreaSearchState {
     console.log('SET AREA', value);
     this.stopSearching();
     this.area.next(value);
+    if (value) {
+      this.mapMoveSubscription = timer(3000).pipe(
+        switchMap(() => this.searchParams),
+        distinctUntilChanged((a, b) => a.geoHash.localeCompare(b.geoHash) === 0),
+        first(),
+        tap(() => {
+          this.selectMapRegion();
+        }),
+        delay(500),        
+      ).subscribe(() => {
+        console.log('MAP MOVED');
+        // this.init();
+      });  
+    } else {
+      console.log('MAP UNSUB');
+      this.mapMoveSubscription?.unsubscribe();
+      this.mapMoveSubscription = null;
+    }
   }
 
   get area_(): string | null {
@@ -140,6 +159,9 @@ export class AreaSearchState {
 
   set nationWide_(value: boolean) {
     this.nationWide.next(value);
+    if (value) {
+      this.bounds.next({top_left: {lon: 34.2675, lat: 33.3328}, bottom_right: {lon: 35.8961, lat: 29.4967}});
+    }
   }
 
   get nationWide_(): boolean {

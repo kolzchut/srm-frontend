@@ -112,7 +112,7 @@ export class SearchFiltersComponent implements OnChanges {
     ).subscribe((result) => {
       this.checkDiscoveryNeeded(result);
     });
-    this.areaSearchState = new AreaSearchState(api);
+    this.areaSearchState = new AreaSearchState(api, this.incomingSearchParams);
     this.areaSearchState.bounds.subscribe((bounds) => {
       this.zoomout.next(bounds);
     });

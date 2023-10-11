@@ -222,6 +222,10 @@ export class SearchParams {
         this.filter_responses?.join('|'), this.filter_response_categories?.join('|'), this.national].map(x => x || '').join('|');
     }
 
+    get geoHash(): string {
+        return this.bounds?.map((x) => x.join(',')).join('|') || '';
+    }
+
     get hasFilters(): boolean {
         return !!SITUATION_FILTERS.find((f) => (this as any)['filter_' + f]?.length) || 
                 !!this.filter_responses?.length || 

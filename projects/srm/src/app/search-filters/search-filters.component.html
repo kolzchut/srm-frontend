@@ -50,10 +50,11 @@
                     <strong *ngIf='resultCount === 1'>תוצאה אחת</strong>
                     <strong *ngIf='resultCount === 0'>אין תוצאות</strong>    
                 </span>
-                <span *ngIf='resultCountBounded > 0 && resultCountBounded !== resultCount' class='bounded'>
+                <span *ngIf='resultCountBounded >= 0 && resultCountBounded !== resultCount && !areaSearchState.nationWide_' class='bounded'>
                     &nbsp;
                     <span *ngIf='resultCountBounded > 1'>({{resultCountBounded.toLocaleString()}} באיזור המפה)</span>
                     <span *ngIf='resultCountBounded === 1'>(אחת באיזור המפה)</span>
+                    <span *ngIf='resultCountBounded === 0'>(אין באיזור המפה)</span>
                 </span>
                 <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div>
             </button>
