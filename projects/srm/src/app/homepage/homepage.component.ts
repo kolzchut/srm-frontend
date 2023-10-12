@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
-import { Preset, TaxonomyItem } from '../consts';
+import { Preset, TaxonomyItem, prepareQuery } from '../consts';
 import { PlatformService } from '../platform.service';
 import { SearchConfig } from '../search/search-config';
 import { Router } from '@angular/router';
@@ -22,12 +22,16 @@ export class HomepageComponent {
   public searchConfig: SearchConfig;
   searching = false;
   examples: Preset[];
+  emergencies: Preset[];
 
   constructor(private api: ApiService, private platform: PlatformService, private router: Router, private layout: LayoutService) {
     this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform);
     this.searchConfig.autoFocus = false;
     this.api.getExamples().subscribe((examples) => {
       this.examples = examples;
+    });
+    this.api.getEmergencies().subscribe((emergencies) => {
+      this.emergencies = emergencies;
     });
   }
 
@@ -43,14 +47,18 @@ export class HomepageComponent {
     }
   }
 
-  startSearch(query: string) {
-    if (this.layout.desktop) {
-      this.searching = true;
-      this.searchConfig.query_ = query;
-      this.searchConfig.queries.next(query);
-      this.searchConfig.focus();  
+  startSearch(query: string, direct=false) {
+    if (direct) {
+      this.router.navigate(['/s', prepareQuery(query)]);
     } else {
-      this.router.navigate(['/q'], {queryParams: {q: query}});
+      if (this.layout.desktop) {
+        this.searching = true;
+        this.searchConfig.query_ = query;
+        this.searchConfig.queries.next(query);
+        this.searchConfig.focus();  
+      } else {
+        this.router.navigate(['/q'], {queryParams: {q: query}});
+      }  
     }
   }
 

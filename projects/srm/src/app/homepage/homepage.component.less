@@ -226,10 +226,10 @@
                     }
                 }
             }
-            .examples {
+            .examples-block {
                 display: flex;
                 flex-flow: column;
-                gap: 8px;
+                gap: 12px;
                 padding: 0 16px;
 
                 .desktop({
@@ -238,6 +238,11 @@
                 .mobile({
                     min-height: 120px;
                 });
+            }
+            .examples, .emergencies {
+                display: flex;
+                flex-flow: column;
+                gap: 8px;
                 .explain {
                     color: @color-gray-1;
                     .font-rag-sans;
@@ -260,6 +265,7 @@
                     a {
                         color: @color-blue-1;
                         .font-rag-sans;
+                        display: inline-block;
                         font-size: 16px;
                         font-weight: 300;
                         line-height: 20px;
@@ -268,7 +274,19 @@
                         background: rgba(31, 55, 246, 0.10);   
                         white-space: nowrap;
                         cursor: pointer;
-                        pointer-events: all;                 
+                        pointer-events: all;            
+                    }
+                }
+            }
+            .emergencies {
+                .explain {
+                    font-weight: 600;
+                }
+                .list {
+                    a {
+                        color: #9B0000;
+                        font-weight: 600;
+                        background: rgba(253, 202, 72, 0.30);
                     }
                 }
             }

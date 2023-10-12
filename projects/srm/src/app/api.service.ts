@@ -161,6 +161,21 @@ export class ApiService {
     ).pipe(
       map((presets) => presets.filter((r: Preset) => r.example))
     );
+  }  
+  
+  getEmergencies(): Observable<Preset[]> {
+    const params = {size: 17, order: 'score'};
+    return this.innerCache(
+      'presets',
+      this.http.get(environment.presetsURL, {params}).pipe(
+        map((res) => {
+          const results = res as QueryPresetResult;
+          return results.search_results.map((r: any) => r.source)
+        })
+      ), true
+    ).pipe(
+      map((presets) => presets.filter((r: Preset) => r.emergency))
+    );
   }
 
   getAutoComplete(query: string): Observable<AutoComplete[]> {

@@ -117,6 +117,7 @@ export type Preset = {
     style: string,
     preset: boolean,
     example: boolean,
+    emergency: boolean,
 };
 
 export type AutoComplete = {

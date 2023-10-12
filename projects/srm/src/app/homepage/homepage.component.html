@@ -41,11 +41,19 @@
                 </div>
             </a>
         </div>
-        <div class='examples hide-while-searching'>
-            <span class='explain'>לדוגמה אפשר לחפש:</span>
-            <div class='list'>
-                <a *ngFor='let example of examples' (activated)='startSearch(example.title)' clickOnReturn>{{example.title}}</a>
+        <div class='examples-block hide-while-searching'>
+            <div class='emergencies hide-while-searching'>
+                <span class='explain'>ניתן לאתר שירותים למצב חירום המלחמתי כמו:</span>
+                <div class='list'>
+                    <a *ngFor='let emergency of emergencies' (activated)='startSearch(emergency.title, true)' clickOnReturn>{{emergency.title}}</a>
+                </div>
             </div>
+            <div class='examples hide-while-searching'>
+                <span class='explain'>בנוסף, ניתן לחפש באתר גם שירותי שגרה כמו:</span>
+                <div class='list'>
+                    <a *ngFor='let example of examples' (activated)='startSearch(example.title)' clickOnReturn>{{example.title}}</a>
+                </div>
+            </div>    
         </div>
     </div>
     <div class='logos hide-while-searching'>
