@@ -66,6 +66,7 @@ import { AreaSearchSelectorResultComponent } from './area-search-selector-result
 import { AreaSearchSelectorResultPlaceComponent } from './area-search-selector-result-place/area-search-selector-result-place.component';
 import { AreaSearchSelectorResultNationWideComponent } from './area-search-selector-result-nation-wide/area-search-selector-result-nation-wide.component';
 import { AreaSearchSelectorResultMyLocationComponent } from './area-search-selector-result-my-location/area-search-selector-result-my-location.component';
+import { MenuPopupMissingComponent } from './menu/menu-popup/menu-popup-missing/menu-popup-missing.component';
 
 @NgModule({
   declarations: [
@@ -128,6 +129,7 @@ import { AreaSearchSelectorResultMyLocationComponent } from './area-search-selec
     AreaSearchSelectorResultPlaceComponent,
     AreaSearchSelectorResultNationWideComponent,
     AreaSearchSelectorResultMyLocationComponent,
+    MenuPopupMissingComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

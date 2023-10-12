@@ -14,6 +14,9 @@ const routes: Routes = [
     path: 'about/contact', component: PageComponent, data: {group: 'flow', stage: 'about:contact'},
   },
   {
+    path: 'about/missing', component: PageComponent, data: {group: 'flow', stage: 'about:missing'},
+  },
+  {
     path: 'q', component: PageComponent, data: {group: 'flow', stage: 'search'},
   },
   {
