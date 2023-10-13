@@ -134,7 +134,7 @@ export class ApiService {
   }
 
   getPresets(): Observable<Preset[]> {
-    const params = {size: 17, order: 'score'};
+    const params = {size: 99, order: 'score'};
     return this.innerCache(
       'presets',
       this.http.get(environment.presetsURL, {params}).pipe(
@@ -149,7 +149,7 @@ export class ApiService {
   }
 
   getExamples(): Observable<Preset[]> {
-    const params = {size: 17, order: 'score'};
+    const params = {size: 99, order: 'score'};
     return this.innerCache(
       'presets',
       this.http.get(environment.presetsURL, {params}).pipe(
@@ -164,7 +164,7 @@ export class ApiService {
   }  
   
   getEmergencies(): Observable<Preset[]> {
-    const params = {size: 17, order: 'score'};
+    const params = {size: 99, order: 'score'};
     return this.innerCache(
       'presets',
       this.http.get(environment.presetsURL, {params}).pipe(
