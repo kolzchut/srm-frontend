@@ -6,6 +6,9 @@ import { timer } from 'rxjs';
   selector: 'app-menu-popup',
   templateUrl: './menu-popup.component.html',
   styleUrls: ['./menu-popup.component.less'],
+  host: {
+    '(click)': 'closeMe()'
+  }
 })
 export class MenuPopupComponent implements OnInit {
 
