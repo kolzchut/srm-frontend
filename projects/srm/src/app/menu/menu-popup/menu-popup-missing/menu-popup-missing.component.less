@@ -22,12 +22,38 @@
         font-weight: 700;
         line-height: 20px;
         margin: 0;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
     }
 
     p, ul {
         margin: 0;
-        margin-bottom: 8px;
+        margin-bottom: 16px;
         font-weight: 300;
+    }
+
+    .bottom {
+        margin-top: auto;
+        width: 100%;
+        box-shadow: 0px 0px 12px 0px #D9D9D9;
+        padding: 8px 24px;
+
+        .button {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 20px;
+            background-color: @color-blue-1;
+            color: white;
+            font-weight: 600;
+            .font-rag-sans;
+            font-size: 16px;
+            font-weight: 600;
+            img {
+                width: 24px;
+                height: 24px;
+            }
+        }
     }
 }

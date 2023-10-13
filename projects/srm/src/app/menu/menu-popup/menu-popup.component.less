@@ -33,57 +33,72 @@
         transform: translateY(100%);
     }
 
-    .container {
+    .dialog {
         display: flex;
         flex-flow: column;
         align-items: flex-start;
-        .mobile({
-            width: 100%;
-            height: 100%;
-            padding: 56px 24px 0px;    
-        });
-        .desktop({
-            width: 50%;
-            padding: 48px;
-        });
-        overflow: auto;
         background: @color-white;
         .card-shadow-base;
         border-radius: 8px;
+        overflow: hidden;
         position: relative;
 
-        .header {
-            h1 {
-                .font-rag-sans;
-                font-weight: 600;
-                font-size: 24px;
-                line-height: 28px;
-                color: @color-gray-1;
-                margin: 0;
-            }
+        .mobile({
+            width: 100%;
+            height: 100%;
+        });
+        .desktop({
+            width: 50%;
+            max-height: 80%;
+        });
+        .container {
+            display: flex;
+            flex-flow: column;
+            align-items: flex-start;
+            width: 100%;
+            height: 100%;
+            .mobile({
+                padding: 56px 24px 0px;    
+            });
+            .desktop({
+                padding: 48px;
+            });
     
-            h2 {
-                .font-rag-sans;
-                font-weight: 400;
-                font-size: 20px;
-                line-height: 20px;
-                color: @color-gray-1;
-                margin: 0;
+            .header {
+                h1 {
+                    .font-rag-sans;
+                    font-weight: 600;
+                    font-size: 24px;
+                    line-height: 28px;
+                    color: @color-gray-1;
+                    margin: 0;
+                }
+        
+                h2 {
+                    .font-rag-sans;
+                    font-weight: 400;
+                    font-size: 20px;
+                    line-height: 20px;
+                    color: @color-gray-1;
+                    margin: 0;
+                }
+                padding-bottom: 32px;
             }
-            padding-bottom: 32px;
-        }
-    }
 
-    .closer {
-        cursor: pointer;
-        .background-image;
-        width: 24px;
-        height: 24px;
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        background-image: url(../../../assets/img/icon-close.svg);
-        opacity: 0.8;
+            overflow: scroll;
+        }
+    
+        .closer {
+            cursor: pointer;
+            .background-image;
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background-image: url(../../../assets/img/icon-close.svg);
+            opacity: 0.8;
+        }
     }
 }
 
