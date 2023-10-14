@@ -68,9 +68,13 @@ export class SearchConfig {
       switchMap(query => api.getTopCards(query)),
     ).subscribe(results => {
       this.topCards = results.map((result) => {
+        let display = _h(result, 'service_name');
+        if (result.branch_name) {
+          display += ` (${_h(result, 'branch_name')})`;
+        }
         return {
           link: ['/c', result.card_id],
-          display: `${_h(result, 'service_name')} (${_h(result, 'branch_name')})`,
+          display,
           query: null,
           direct: true,
         };
@@ -105,7 +109,7 @@ export class SearchConfig {
   focus() {
     this.inputEl?.focus();
   }
-  
+
   blur() {
     this.inputEl?.blur();
   }
