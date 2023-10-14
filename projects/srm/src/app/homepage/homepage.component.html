@@ -43,7 +43,7 @@
         </div>
         <div class='examples-block hide-while-searching'>
             <div class='emergencies hide-while-searching'>
-                <span class='explain'>ניתן לאתר שירותים למצב חירום המלחמתי כמו:</span>
+                <span class='explain'>ניתן לאתר שירותים <a (activated)='startSearch("שירותים למצב החירום", true)' clickOnReturn>למצב חירום המלחמתי</a> כמו:</span>
                 <div class='list'>
                     <a *ngFor='let emergency of emergencies' (activated)='startSearch(emergency.title, true)' clickOnReturn>{{emergency.title}}</a>
                 </div>
