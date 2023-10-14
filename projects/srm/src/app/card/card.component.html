@@ -21,8 +21,8 @@
     <ng-content></ng-content>
     <div class='terms' *ngIf='card.service_details || card.service_payment_details'>
         <h2 i18n>תנאים לקבלת השירות:</h2>
-        <div [innerHTML]='card.service_details' *ngIf='card.service_details'></div>
-        <div [innerHTML]='card.service_payment_details' *ngIf='card.service_payment_details'></div>
+        <div [innerHTML]='format(card.service_details)' *ngIf='card.service_details'></div>
+        <div [innerHTML]='format(card.service_payment_details)' *ngIf='card.service_payment_details'></div>
     </div>
     <div class='contact'>
         <h2 i18n>פרטי התקשרות:</h2>

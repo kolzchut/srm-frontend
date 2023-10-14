@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';
+import { replaceUrlsWithLinks } from './text-utils';
 
 @Component({
   selector: 'app-card',
@@ -48,5 +49,9 @@ export class CardComponent implements OnInit {
 
   hasOrgActions() {
     return !!this.card?.organization_phone_numbers?.[0] || !!this.card?.organization_email_address;
+  }
+
+  format(text: string) {
+    return replaceUrlsWithLinks(text);
   }
 }

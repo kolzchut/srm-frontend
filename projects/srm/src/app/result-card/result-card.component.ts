@@ -126,6 +126,7 @@ export class ResultCardComponent implements OnChanges {
         for (const r of this.card.responses) {
           if (r.category === requiredCategory) {
             this.selectedResponses = [r, ...this.selectedResponses.filter((sr) => sr.id !== r.id)];
+            r.__selected = true;
             break;
           }
         }
@@ -133,6 +134,7 @@ export class ResultCardComponent implements OnChanges {
     }
 
     let deselectedCount = 0;
+    this.deselectedSituations = [];
     this.card.situations?.forEach((s: TaxonomyItem) => {
       if (!s.__selected && deselectedCount < 2) {
         this.deselectedSituations.push({
@@ -145,6 +147,7 @@ export class ResultCardComponent implements OnChanges {
       }
     });
     deselectedCount = 0;
+    this.deselectedResponses = [];
     let categories = this.selectedResponses.map((r) => r.category);
     this.card.responses?.forEach((r: TaxonomyItem) => {
       if (!r.__selected && deselectedCount < 2 && !categories.includes(r.category)) {
