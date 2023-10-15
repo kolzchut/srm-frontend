@@ -33,14 +33,19 @@ export class SearchConfig {
   constructor(private container: any, private router: Router, private api: ApiService, private platform: PlatformService) {
     api.getPresets().subscribe(presets => {
       console.table(presets);
-      this.presets = presets.map((preset) => {
+      this.presets = [{
+        link: ['/s', 'שירותים_למצב_החירום'],
+        display: '<span class="emergency">שירותים למצב החירום המלחמתי</span>',
+        query: 'שירותים למצב החירום',
+        direct: false,
+      }, ...presets.map((preset) => {
         return {
           link: ['/s', prepareQuery(preset.title)],
           display: `<em>${preset.title}</em>`,
           query: preset.title,
           direct: false,
         };
-      });
+      })];
     });
     this.typedQueries.pipe(
       untilDestroyed(this.container),
