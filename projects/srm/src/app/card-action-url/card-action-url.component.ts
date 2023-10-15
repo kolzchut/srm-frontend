@@ -6,7 +6,7 @@ import { Card } from '../consts';
   templateUrl: './card-action-url.component.html',
   styleUrls: ['./card-action-url.component.less'],
   host: {
-    '[class.active]': 'active',
+    '[class.visible]': 'active',
   }
 })
 export class CardActionUrlComponent implements OnChanges {

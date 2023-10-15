@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit } from '@angular/core';
 import { Card } from '../consts';
 
 @Component({
@@ -6,13 +6,16 @@ import { Card } from '../consts';
   templateUrl: './quick-actions.component.html',
   styleUrls: ['./quick-actions.component.less']
 })
-export class QuickActionsComponent implements OnInit {
+export class QuickActionsComponent implements AfterViewInit {
 
   @Input() card: Card;
   
-  constructor() { }
+  constructor(private el: ElementRef) { }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    const first = this.el.nativeElement.querySelector('.visible app-card-action a') as HTMLElement;
+    first.classList.add('primary');
+
   }
 
 }
