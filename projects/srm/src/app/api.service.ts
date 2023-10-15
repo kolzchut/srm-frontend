@@ -240,7 +240,7 @@ export class ApiService {
     ));
   }
 
-  getCards(searchParams: SearchParams, offset=0): Observable<Card[]> {
+  getCards(searchParams: SearchParams, offset=0, zoomedIn=true): Observable<Card[]> {
     const params: any = {
       size: 10,
       offset: offset,
@@ -253,10 +253,11 @@ export class ApiService {
       params.q = searchParams.structured_query;
       params.match_operator = 'or';
     }
+    const extra = zoomedIn ? 'national-services|collapse' : 'collapse';
     if (offset === 0) {
-      params.extra = 'national-services|collapse|collapse-collect';
+      params.extra = extra + '|collapse-collect';
     } else {
-      params.extra = 'national-services|collapse';
+      params.extra = extra;
     }
     const filters = [];
     if (!searchParams.national) {

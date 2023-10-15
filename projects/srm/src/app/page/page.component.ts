@@ -374,7 +374,8 @@ export class PageComponent implements OnInit {
       }
     });
     this.route.fragment.pipe(
-      first(),
+      // first(),
+      untilDestroyed(this),
     ).subscribe((fragment) => {
       if (fragment?.length && fragment[0] === 'g') {
         const parts = fragment.slice(1).split('/');
@@ -451,6 +452,7 @@ export class PageComponent implements OnInit {
         national: searchParams.national ? 'yes' : null
       },
       replaceUrl: true,
+      preserveFragment: true
     });
   }
 
@@ -591,7 +593,8 @@ export class PageComponent implements OnInit {
     }
     if (visible && this.point && this.platform.browser()) {
       timer(0).pipe(
-        switchMap(() => from(this.router.navigate(['/s', this.searchParams.ac_query], {queryParamsHandling: 'preserve'}))),
+        switchMap(() => 
+          from(this.router.navigate(['/s', this.searchParams.ac_query], {queryParamsHandling: 'preserve'}))),
         filter((x) => !!x),
         delay(100),
       ).subscribe(() => {

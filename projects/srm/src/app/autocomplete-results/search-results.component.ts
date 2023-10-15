@@ -113,7 +113,8 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         }),
         concatMap((params) => {
           this.loading = true;
-          return this.api.getCards(params.p, params.offset)
+          const zoomedIn = this.searchParams.requiredCenter && this.searchParams.requiredCenter[2] > 9;
+          return this.api.getCards(params.p, params.offset, zoomedIn)
             .pipe(
               map((results) => {
                 return {params, results};
