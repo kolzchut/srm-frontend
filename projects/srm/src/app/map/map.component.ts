@@ -245,8 +245,8 @@ export class MapComponent implements OnChanges, AfterViewInit {
     if (!this.pointId && !this.cardId) {
       this.setActivePoint(null);
     }
-    if (this.changed(changes, 'searchParams') && changes?.searchParams?.currentValue) {
-      this.searchParamsQueue.next(changes?.searchParams?.currentValue);
+    if (this.changed(changes, 'searchParams') && changes?.searchParams?.currentValue && this.searchParams) {
+      this.searchParamsQueue.next(this.searchParams);
     }
     this.setPopup(true, null);
   }
