@@ -17,6 +17,7 @@ export class CardActionUrlComponent implements OnChanges {
 
   action = '';
   active = false;
+  display = 'אתר';
 
   constructor() { }
 
@@ -31,6 +32,17 @@ export class CardActionUrlComponent implements OnChanges {
     if (link && link.length) {
       this.action = link;
       this.active = true;
+    }
+    this.display = 'אתר';
+    if (link?.startsWith('http')) {
+      const url = new URL(link);
+      const hostname = url.hostname;
+      const parts = link.split('/');
+      if (hostname?.indexOf('form') > 0 || parts.indexOf('forms') > 0) {
+        this.display = 'טופס פניה';
+      } else if (hostname?.indexOf('whatsapp') > 0) {
+        this.display = 'פניה בווטסאפ';
+      }
     }
   }
 }
