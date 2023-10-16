@@ -41,7 +41,7 @@ export class CardActionUrlComponent implements OnChanges {
       if (hostname?.indexOf('form') > 0 || parts.indexOf('forms') > 0) {
         this.display = 'טופס פניה';
       } else if (hostname?.indexOf('whatsapp') > 0) {
-        this.display = 'פניה בווטסאפ';
+        this.display = 'פניה בוואטסאפ';
       }
     }
   }
