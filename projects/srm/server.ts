@@ -54,8 +54,8 @@ export function app(): express.Express {
         { provide: APP_BASE_HREF, useValue: req.baseUrl }
       ]
     }, (error, html) => {
+      console.log(`${new Date().toISOString()} | ${res.statusCode} | ${error?.name || 'OK'} | ${req.url} | ${req.headers['user-agent']}}`);      
       if (error) {
-        console.error(Date.now(), error);
         res.status(500).send(error);
       } else if (!res.headersSent && !res.finished) {
         res.send(html);
