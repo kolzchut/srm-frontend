@@ -332,10 +332,10 @@ export class PageComponent implements OnInit {
       this.drawerState = DrawerState.Half;
       this.pushSearchParamsCalc();
       if (['about', 'search', 'homepage'].indexOf(this.stage) >= 0) {
-        this.a11y.setSeoTitle(`כל שירות | כל השירותים החברתיים, לכל מצב, בכל מקום`);
+        this.a11y.setSeoTitle(`כל שירות | במתכונת חירום | כל השירותים החברתיים, לכל מצב, בכל מקום`);
         this.seo.setUrl(this.document.location.href);
         this.api.getTotalServices().subscribe((totalServices: number) => {
-          this.seo.setDescription(`אספנו וסיווגנו ${totalServices.toLocaleString()} שירותים חברתיים מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים. אנחנו בטוחים שנמצא גם משהו בשבילך!`);
+          this.seo.setDescription(`כל השירותים למצב החירום המלחמתי וגם לשגרה. אספנו וסיווגנו ${totalServices.toLocaleString()} שירותים חברתיים מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים. אנחנו בטוחים שנמצא גם משהו בשבילך!`);
         });
       }
       if (this.searchFilters) {
