@@ -49,7 +49,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
 
   results: (Card | null)[] = [];
   obs: IntersectionObserver;
-  fetchQueue = new Subject<SearchParamsOffset>();
+  fetchQueue = new ReplaySubject<SearchParamsOffset>(1);
   paramsQueue = new ReplaySubject<SearchParams>(1);
   resultsParamsQueue = new Subject<{params: SearchParams, totalCount: number}>();
   resultsSubscription: Subscription | null = null;
@@ -103,8 +103,9 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         this.resultsSubscription.unsubscribe();
         this.resultsSubscription = null;
       }
-      this.fetchQueue = new Subject<SearchParamsOffset>();
-      this.resultsSubscription = this.fetchQueue.pipe(
+      this.fetchQueue = new ReplaySubject<SearchParamsOffset>(1);
+      this.resultsSubscription = timer(2000).pipe(
+        switchMap(() => this.fetchQueue),
         filter((params) => {
           return params.offset > this.fetchedOffset;
         }),
