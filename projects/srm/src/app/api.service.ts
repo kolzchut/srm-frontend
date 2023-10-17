@@ -1,5 +1,5 @@
 import { Injectable, NgZone, Optional, Inject } from '@angular/core';
-import { from, Observable, ReplaySubject } from 'rxjs';
+import { EMPTY, from, Observable, ReplaySubject } from 'rxjs';
 import { catchError, delay, finalize, map, switchMap, tap } from 'rxjs/operators';
 
 import { environment } from '../environments/environment';
@@ -241,6 +241,9 @@ export class ApiService {
   }
 
   getCards(searchParams: SearchParams, offset=0, zoomedIn=true): Observable<Card[]> {
+    if (this.platform.server()) {
+      return from([]);
+    }
     const params: any = {
       size: 10,
       offset: offset,
