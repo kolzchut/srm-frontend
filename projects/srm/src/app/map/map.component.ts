@@ -327,6 +327,8 @@ export class MapComponent implements OnChanges, AfterViewInit {
           colorStyle.push('#444444');
           this.map.setPaintProperty(LAYER_POINTS_ON_CENTER, 'circle-color', colorStyle);
           this.map.setPaintProperty(LAYER_POINTS_STROKE_ON, 'circle-stroke-color', colorStyle);
+          this.map.setPaintProperty(LAYER_POINTS_ACTIVE, 'circle-color', colorStyle);
+          this.map.setPaintProperty(LAYER_POINTS_STROKE_ACTIVE, 'circle-stroke-color', colorStyle);
 
           this.map.getStyle().layers?.filter((l) => LAYERS_CLICKABLE.indexOf(l.id) >= 0).forEach((layer) => {
             const layerName = layer.id;
