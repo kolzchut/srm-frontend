@@ -46,6 +46,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   // done = false;
   triggerVisible = false;
   searchHash: string | null = null;
+  geoHash: string | null = null;
 
   results: (Card | null)[] = [];
   obs: IntersectionObserver;
@@ -71,7 +72,16 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
     this.paramsQueue.pipe(
       filter((params) => !!params),
       delay(1),
+      debounceTime(this.platform.browser() ? 2000 : 0),
       switchMap((params) => {
+        if (params.searchHash === this.searchHash && params.geoHash === this.geoHash) {
+          return from([]);
+        } else {
+          return from([params]);
+        }
+      }),
+      switchMap((params) => {
+        this.geoHash = params.geoHash;
         if (params.searchHash === this.searchHash) {
           return from([params]);
         } else {
@@ -93,7 +103,6 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           );
         }
       }),
-      debounceTime(this.platform.browser() ? 500 : 0),
     ).subscribe((params) => {
       this.offset = 0;
       this.fetchedOffset = -1;
@@ -104,7 +113,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         this.resultsSubscription = null;
       }
       this.fetchQueue = new ReplaySubject<SearchParamsOffset>(1);
-      this.resultsSubscription = timer(2000).pipe(
+      this.resultsSubscription = timer(1).pipe(
         switchMap(() => this.fetchQueue),
         filter((params) => {
           return params.offset > this.fetchedOffset;

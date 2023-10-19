@@ -135,6 +135,9 @@ export class PageComponent implements OnInit {
 
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
+      filter((spc) => {
+        return this.stage === 'search-results';
+      }),
       debounceTime(platform.browser() ? 100 : 0),
       delay(1),
       map((spc) => {

@@ -120,19 +120,21 @@
                                 box-shadow: 0px 0px 12px 0px rgba(171, 199, 255, 0.50);
                             });
                         }
-        
-                        app-search-results {
-                            transform: translateY(0%);
-                            animation: 0.2s ease-in-out 1 forwards;
-                            animation-fill-mode: forwards;
-                            transition: transform 0.2s ease-in-out;
-                            &.shown {
-                                animation-name: show-results;
+
+                        .mobile({
+                            app-search-results {
+                                transform: translateY(0%);
+                                animation: 0.2s ease-in-out 1 forwards;
+                                animation-fill-mode: forwards;
+                                transition: transform 0.2s ease-in-out;
+                                &.shown {
+                                    animation-name: show-results;
+                                }
+                                &.hidden {
+                                    animation-name: hide-results;
+                                }
                             }
-                            &.hidden {
-                                animation-name: hide-results;
-                            }
-                        }
+                        });
 
                         app-disclaimer-footer {
                             margin-top: auto;

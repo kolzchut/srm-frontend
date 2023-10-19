@@ -224,7 +224,7 @@ export class SearchParams {
     }
 
     get geoHash(): string {
-        return this.bounds?.map((x) => x.join(',')).join('|') || '';
+        return this.bounds?.map((x) => x.map((xx) => xx.toFixed(4)).join(',')).join('|') || '';
     }
 
     get hasFilters(): boolean {
