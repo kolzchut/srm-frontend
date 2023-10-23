@@ -69,7 +69,7 @@ export class PageComponent implements OnInit {
   point = '';
   query = '';
   searchParams: SearchParams;
-  map_: MapComponent;
+  map_: MapComponent | null = null;
 
   DrawerState = DrawerState;
   drawerState = DrawerState.Half;
@@ -277,7 +277,7 @@ export class PageComponent implements OnInit {
           }, 'search-by-location-' + params.city_name);
           this.queueMapAction((map) => {
             this.mapMoved = false;
-            this.map.processAction();  
+            this.map?.processAction();  
           }, 'map-moved-reset');
         } else if (params.requiredCenter && params.requiredCenter.length === 3) {
           const rc = params.requiredCenter;
@@ -305,7 +305,7 @@ export class PageComponent implements OnInit {
                 zoom: map.getZoom()
               };
             }
-            this.map.processAction();
+            this.map?.processAction();
           }, 'save-map-state');
         } else if (prevCard !== this.card) {
           this.savedState = null
@@ -392,7 +392,7 @@ export class PageComponent implements OnInit {
     });
     this.easeToQueue.pipe(
       untilDestroyed(this),
-      debounceTime(platform.browser() ? 100 : 0),
+      debounceTime(platform.browser() ? 1000 : 0),
     ).subscribe((params) => {
       this.easeToProps = {};
       this.queueMapAction((map) => {
@@ -466,7 +466,11 @@ export class PageComponent implements OnInit {
     this.searchParamsCalc.next(spc);
   }
 
-  set map(map: MapComponent) {
+  set map(map: MapComponent | null) {
+    if (!map) {
+      this.map_ = map;
+      return;
+    }
     if (!this.map_) {
       this.route.fragment.pipe(
         untilDestroyed(this),
@@ -490,7 +494,7 @@ export class PageComponent implements OnInit {
     // this.setPadding();
     this.pushSearchParamsCalc();
     for (const {action, description} of this.pendingActions) {
-      this.map.queueAction(action, description);
+      this.map_.queueAction(action, description);
     }
     this.pendingActions = [];
     // timer(500).subscribe(() => {
@@ -500,7 +504,7 @@ export class PageComponent implements OnInit {
     // });
   }
 
-  get map(): MapComponent {
+  get map(): MapComponent | null {
     return this.map_;
   }
 
@@ -616,13 +620,15 @@ export class PageComponent implements OnInit {
   }
 
   centerMap(center: LngLatLike) {
-    if (this.map?.map?.getZoom() < 12) {
-      console.log('ACTION CENTERING+ZOOMING', center);
-      this.easeTo({center, zoom: 12, duration: 3000, curve: 1.42, easing: (t: number) => 1 - Math.pow(1 - t, 5)});
-    } else {
-      console.log('ACTION CENTERING', center);
-      this.easeTo({center, duration: 3000, curve: 1.42, easing: (t: number) => 1 - Math.pow(1 - t, 5)});
-    }
+    timer(100).subscribe(() => {
+      if (!this.map_ || this.map_.map?.getZoom() < 12) {
+        console.log('ACTION CENTERING+ZOOMING', center);
+        this.easeTo({center, zoom: 12, duration: 3000, curve: 1.42, easing: (t: number) => 1 - Math.pow(1 - t, 5)});
+      } else {
+        console.log('ACTION CENTERING', center);
+        this.easeTo({center, duration: 3000, curve: 1.42, easing: (t: number) => 1 - Math.pow(1 - t, 5)});
+      }
+    });
   }
 
   zoomOutMap(viewport: ViewPort) {

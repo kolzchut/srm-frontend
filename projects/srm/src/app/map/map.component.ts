@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
 import { MapboxService } from '../mapbox.service';
 
 import { from, Observable, ReplaySubject, Subject, timer } from 'rxjs';
@@ -104,7 +104,7 @@ BASE_FILTERS[LAYER_CLUSTERS_INACCURATE_ON] = ['>', ['get', 'branch_count'], ['nu
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.less']
 })
-export class MapComponent implements OnChanges, AfterViewInit {
+export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
 
   STYLE = environment.mapStyle;
 
@@ -114,7 +114,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
   @Input() markerProps: any;
   // @Output('points') points = new EventEmitter<SRMPoint | null>();
   // @Output('hover') pointsHover = new EventEmitter<string | null>();
-  @Output('map') newMap = new EventEmitter<MapComponent>();
+  @Output('map') newMap = new EventEmitter<MapComponent | null>();
   @Output('mapBounds') mapBounds = new EventEmitter<number[][]>();
   
   @ViewChild('map') mapEl: ElementRef;
@@ -255,6 +255,11 @@ export class MapComponent implements OnChanges, AfterViewInit {
       this.mapboxService.init.subscribe(() => {
         this.initialize();
       });
+  }
+
+  ngOnDestroy(): void {
+      console.log('DESTROY MAP');
+      this.newMap.emit(null);
   }
 
   initialize() {
@@ -551,6 +556,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
             this.newMap.next(this);
             this.ngOnChanges(this.savedChanges);
             this.updateBounds();
+            this.processAction();
           });
         });
       } catch (e) {
