@@ -29,7 +29,7 @@ export class CardActionPhoneComponent implements OnChanges {
     } else {
       phone = this.card?.service_phone_numbers?.[0] || this.card?.branch_phone_numbers?.[0] || this.card?.organization_phone_numbers?.[0];
     }
-    this.orgname = this.card?.organization_name_parts?.primary || this.card?.organization_short_name || this.card?.organization_name || 'ארגון';
+    this.orgname = this.card?.organization_short_name || this.card?.organization_name_parts?.primary || this.card?.organization_name || 'ארגון';
     this.active = false;
     if (phone && phone.length) {
       this.action = 'tel:' + phone;

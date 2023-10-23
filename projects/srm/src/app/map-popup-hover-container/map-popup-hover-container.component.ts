@@ -52,7 +52,7 @@ export class MapPopupHoverContainerComponent implements OnInit {
             if (!card) {
               card = branch.cards[0];
             }
-            this.multiProps.full_title = branch.cards[0].organization_name_parts?.primary || branch.cards[0].organization_name;
+            this.multiProps.full_title = branch.cards[0].organization_short_name || branch.cards[0].organization_name_parts?.primary || branch.cards[0].organization_name;
           });
           if (this.multiProps.service_count === 1) {
             this.card = card;

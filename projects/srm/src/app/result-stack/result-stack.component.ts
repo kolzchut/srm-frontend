@@ -72,12 +72,12 @@ export class ResultStackComponent implements OnInit {
     if (card.national_service) {
       return 'שירות ארצי';
     } else {
-      return card.address_parts?.primary || card.branch_address;
+      return _h(card.address_parts, 'primary') || _h(card, 'branch_address');
     }
   }
 
   orgName(card: Card) {
-    return card.organization_name_parts?.primary || card.organization_short_name || card.organization_name;
+    return _h(card, 'organization_short_name') || _h(card.organization_name_parts, 'primary') || _h(card, 'organization_name');
   }
 
   ariaLabel(card: Card) {

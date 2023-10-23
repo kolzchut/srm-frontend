@@ -166,7 +166,7 @@ export type SearchResult<T extends any> = {
 };
 
 export function _h(sr: any, f: string) {
-    return sr._highlights?.[f] || sr[f];
+    return sr && (sr._highlights?.[f] || sr[f]);
 }
 
 export function prepareQuery(query: string) {

@@ -3,29 +3,9 @@
    [attr.aria-label]='ariaLabel(result)'
    class='branch' [class.collapsible]='collapsible'>
     <div class='branch-headers'>
-        <ng-container *ngIf='result.branch_city && !result.national_service'>
-            <ng-container *ngIf='result.organization_short_name'>
-                <span class='org' [innerHTML]="_h(result, 'organization_short_name') + '&nbsp;/&nbsp;'"></span>
-            </ng-container>
-            <ng-container *ngIf='!result.organization_short_name'>
-                <span class='org' [innerHTML]="_h(result, 'organization_name') + '&nbsp;/&nbsp;'"></span>
-            </ng-container>
-            <span class='city'>{{result.branch_city}}</span>
-        </ng-container>
-        <ng-container *ngIf='!result.branch_city'>
-            <ng-container *ngIf='result.organization_short_name'>
-                <span class='org' [innerHTML]="_h(result, 'organization_short_name') + '&nbsp;/&nbsp;'"></span>
-            </ng-container>
-            <ng-container *ngIf='!result.organization_short_name'>
-                <span class='org' [innerHTML]="_h(result, 'organization_name') + '&nbsp;/&nbsp;'"></span>
-            </ng-container>
-            <ng-container *ngIf='!result.national_service'>
-                <span class='city'>{{result.branch_name}}</span>
-            </ng-container>
-            <ng-container *ngIf='result.national_service'>
-                <span class='national-service'>שירות ארצי</span>
-            </ng-container>
-        </ng-container>
+        <span class='org' [innerHTML]='orgName(result)'></span>
+        <span class='separator'>&nbsp;/&nbsp;</span>
+        <span class='city' [class.national-service]='result.national_service' [innerHTML]='cityName(result)'></span>
     </div>
     <div class='cards'>
         <app-result-card [card]='result' [searchParams]='searchParams'></app-result-card>
@@ -38,7 +18,7 @@
            (mouseover)='hover.next(extra)' 
            [attr.aria-label]='ariaLabel(extra)'
            class='bookend' [style.zIndex]='1000 - i'>
-            <span class='org'>{{orgName(extra)}}</span>
+            <span class='org' [innerHTML]='orgName(extra)'></span>
             <span class='separator'>&nbsp;/&nbsp;</span>
             <span class='city' [class.national]='extra.national_service'>{{cityName(extra)}}</span>
         </a>

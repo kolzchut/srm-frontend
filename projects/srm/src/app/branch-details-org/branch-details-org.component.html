@@ -1,6 +1,7 @@
 <h2 class='branch-name' [class.compact]='compact'>
     <ng-container *ngIf='!card.organization_name_parts'>
-        <span class='primary'>{{card.organization_name}}</span>
+        <span class='primary' *ngIf='!card.organization_short_name'>{{card.organization_name}}</span>
+        <span class='primary' *ngIf='card.organization_short_name'>{{card.organization_short_name}}</span>
     </ng-container>
     <ng-container *ngIf='card.organization_name_parts'>
         <span class='primary'>{{card.organization_name_parts.primary}}</span>
