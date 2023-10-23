@@ -123,11 +123,21 @@
         }
 
         &.national {
-            background: fade(@color-blue-1, 55%);
-            mix-blend-mode: normal;
-            backdrop-filter: blur(4px);
             padding: 8px;
             pointer-events: all;
+
+            .national-bg {
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: fade(@color-blue-1, 55%);
+                mix-blend-mode: normal;
+                backdrop-filter: blur(4px);
+                z-index: 0;
+            }
 
             .national-services {
                 position: static;
@@ -135,7 +145,8 @@
 
                 .mobile({
                     width: 100%;
-                })
+                });
+                z-index: 1;
             }
             .national-services-explanation {
                 .font-rag-sans;
@@ -143,6 +154,7 @@
                 font-size: 16px;
                 line-height: 20px;
                 color: @color-white;
+                z-index: 1;
             }
         }
     }

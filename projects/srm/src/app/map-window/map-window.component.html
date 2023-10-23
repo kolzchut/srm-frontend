@@ -7,7 +7,7 @@
         [attr.role]='link ? "button" : "presentation"'
         [attr.aria-label]='link ? "צפייה בכל השירותים שבסניף זה" : null'
         [attr.aria-hidden]='link ? "false" : "true"'
-        queryParamsHandling='preserve'>
+    >
     <div class='message-blur' *ngIf='mode === MapWindowMode.Inaccurate || mode === MapWindowMode.NationalService'>&nbsp;</div>
     <div class='message' *ngIf='mode === MapWindowMode.Inaccurate'>*שימו לב: הכתובת שבידינו אינה מדויקת</div>
     <div class='message' *ngIf='mode === MapWindowMode.NationalService'>השירות ניתן בכל הארץ</div>

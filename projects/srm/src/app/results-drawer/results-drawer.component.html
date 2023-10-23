@@ -2,19 +2,19 @@
     [class.gesture]='gesture'
     [class.national]='state === DrawerState.National'
     [style.height]='calcedHeight + "px"'>
-
     <ng-container *ngIf='nationalCount > 0'>
+        <a *ngIf='state === DrawerState.National' class='national-bg' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" role='presentation' tabindex="-1">&nbsp;</a>
         <a class='national-services' [routerLink]='["."]' [queryParams]="{national: 'yes'}" [queryParamsHandling]='"merge"' [preserveFragment]="true"
             *ngIf='state !== DrawerState.National' role='button' aria-label='סינון התוצאות להצגת שירותים כלל ארציים בלבד'>
-         <span>+ {{ nationalCount }} שירותים כלל ארציים</span>
-     </a>
-     <div class='national-services' *ngIf='state === DrawerState.National'>
-         <span>+ {{ nationalCount }} שירותים כלל ארציים</span>
-         <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" *ngIf='!scrollAll' aria-label='סינון התוצאות להצגת גם שירותים מקומיים וגם כלל ארציים'></a>
-     </div>
-     <div class='national-services-explanation layout-desktop' *ngIf='state === DrawerState.National'>
-        *השירותים ניתנים בכל הארץ
-     </div>
+             <span>+ {{ nationalCount }} שירותים כלל ארציים</span>
+        </a>
+        <div class='national-services' *ngIf='state === DrawerState.National'>
+            <span>+ {{ nationalCount }} שירותים כלל ארציים</span>
+            <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" *ngIf='!scrollAll' aria-label='סינון התוצאות להצגת גם שירותים מקומיים וגם כלל ארציים' clickOnReturn></a>
+        </div>
+        <div class='national-services-explanation layout-desktop' *ngIf='state === DrawerState.National'>
+            *השירותים ניתנים בכל הארץ
+        </div>
     </ng-container>
 </div>
 <div class='content' #handleEl role="presentation">
