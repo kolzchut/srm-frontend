@@ -45,7 +45,7 @@
             <div class='emergencies hide-while-searching'>
                 <span class='explain'>ניתן לאתר שירותים <a (activated)='startSearch("שירותים למצב החירום", true)' clickOnReturn>למצב החירום המלחמתי</a> כמו:</span>
                 <div class='list'>
-                    <a *ngFor='let emergency of emergencies' (activated)='startSearch(emergency.title, true)' clickOnReturn>{{emergency.title}}</a>
+                    <a *ngFor='let emergency of emergencies' (activated)='startSearch(emergency.title, true)' clickOnReturn>{{emergency.alternative_text || emergency.title}}</a>
                 </div>
             </div>
             <div class='examples hide-while-searching'>
