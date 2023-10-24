@@ -13,11 +13,11 @@
         <app-desktop-menu-links [homepage]='true'></app-desktop-menu-links>
     </div>    
     <div class='search' role="main">
-        <p class='hide-while-searching'>
-            <strong>כל שירות</strong> הוא אתר המרכז את כל השירותים החברתיים בישראל שהמדינה, ארגונים וגופים שונים מעמידים לרשותינו, האזרחים. השירותים מסווגים לפי סוג, קהלי יעד ומיקום על המפה.
+        <p class='intro hide-while-searching'>
+            <strong>כל שירות מבית כל זכות</strong><br/>הוא אתר המרכז את כל השירותים החברתיים בישראל.
         </p>
-        <p class='hide-while-searching'>
-            <strong>נתחיל בחיפוש?</strong>
+        <p class='intro  hide-while-searching'>
+            חפשו שירותים באתר:
         </p>
         <div class='searchbox-container layout-desktop' [class.searching]='searching' appArrowToTab (keydown)='keydown($event)'>
             <div class='searchbox desktop' *ngIf='!searching'>
