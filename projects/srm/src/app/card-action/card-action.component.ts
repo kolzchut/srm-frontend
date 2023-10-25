@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AnalyticsService } from '../analytics.service';
-import { Card } from '../consts';
+import { Card, SearchParams } from '../consts';
 
 @Component({
   selector: 'app-card-action',

@@ -11,6 +11,7 @@ export class ResultStackComponent implements OnInit {
 
   @Input() result: Card;
   @Input() searchParams: SearchParams;
+  @Input() index = 0;
   @Output() hover = new EventEmitter<Card>();
 
   _h = _h;

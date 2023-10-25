@@ -30,7 +30,7 @@
 
 <ng-container *ngFor='let result of results; let i=index'>
     <ng-container *ngIf='!!result'>
-        <app-result-stack [result]='result' [searchParams]='searchParams' (hover)='hoverCard.next($event)'></app-result-stack>
+        <app-result-stack [result]='result' [searchParams]='searchParams' [index]='i + 1' (hover)='hoverCard.next($event)'></app-result-stack>
     </ng-container>
     <div class='placeholder loading' *ngIf='!result'></div>
 </ng-container>

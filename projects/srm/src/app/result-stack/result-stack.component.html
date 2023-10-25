@@ -1,4 +1,4 @@
-<a [routerLink]='["c", result.card_id]' [queryParamsHandling]='"merge"'
+<a [routerLink]='["c", result.card_id]' [queryParamsHandling]='"merge"' [queryParams]="{li: index}"
    (mouseover)='hover.next(result)'
    [attr.aria-label]='ariaLabel(result)'
    class='branch' [class.collapsible]='collapsible'>
@@ -14,7 +14,7 @@
 <!-- <pre>{{collapsible}} {{showCount}} {{result.collapse_hits?.slice(0, showCount)?.length}}</pre> -->
 <div class='bookends' *ngIf='collapsible'>
     <ng-container *ngFor='let extra of result.collapse_hits?.slice(0, showCount) || []; let i = index;'>
-        <a [routerLink]='["c", extra.card_id]' [queryParamsHandling]='"merge"'
+        <a [routerLink]='["c", extra.card_id]' [queryParamsHandling]='"merge"' [queryParams]="{li: index}"
            (mouseover)='hover.next(extra)' 
            [attr.aria-label]='ariaLabel(extra)'
            class='bookend' [style.zIndex]='1000 - i'>

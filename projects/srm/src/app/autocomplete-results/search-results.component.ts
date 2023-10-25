@@ -52,7 +52,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   obs: IntersectionObserver;
   fetchQueue = new ReplaySubject<SearchParamsOffset>(1);
   paramsQueue = new ReplaySubject<SearchParams>(1);
-  resultsParamsQueue = new Subject<{params: SearchParams, totalCount: number}>();
+  resultsParamsQueue = new Subject<{params: SearchParams, totalCount: number, items: Card[]}>();
   resultsSubscription: Subscription | null = null;
   
   hasCounts = false;
@@ -97,7 +97,6 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
               }
             }),
             map(() => {
-              this.resultsParamsQueue.next({params, totalCount: this.totalCount});
               return params;
             })
           );
@@ -127,6 +126,9 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           return this.api.getCards(params.p, params.offset, zoomedIn)
             .pipe(
               map((results) => {
+                if (params.offset === 0) {
+                  this.resultsParamsQueue.next({params: params.p, totalCount: this.totalCount, items: results});
+                }
                 return {params, results};
               })
             );
@@ -156,7 +158,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       }),  
       debounceTime(this.platform.browser() ? 3000 : 0),
       tap((item) => {
-        this.analytics.searchEvent(item.params, this.isLandingPage, item.totalCount);  
+        this.analytics.searchEvent(item.params, this.isLandingPage, item.totalCount, item.items);  
       })
     ).subscribe();
   }

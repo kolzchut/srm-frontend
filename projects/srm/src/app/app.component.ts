@@ -23,7 +23,7 @@ export class AppComponent {
       if (environment.gaTag) {
         this.router.events.pipe(
           filter((event) => event instanceof NavigationEnd),
-          debounceTime(250)
+          debounceTime(2500)
         ).subscribe((event_) => {
           platform.browser(() => {
             const event = event_ as NavigationEnd;
