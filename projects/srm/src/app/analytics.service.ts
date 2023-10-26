@@ -14,7 +14,7 @@ export class AnalyticsService {
 
   constructor(private platform: PlatformService) { }
 
-  cardToItem(card: Card, idx: number, item_list_name?: string | null, action?: string): any {
+  cardToItem(card: Card, idx: number, item_list_name?: string | null): any {
     const address = card.address_parts ? 
       (card.address_parts.primary + (card.address_parts.secondary ? ', ' + card.address_parts.secondary : '')) :
       card.branch_address;
@@ -39,19 +39,15 @@ export class AnalyticsService {
         categories.push(situation.id);
       }
     }
-    let item: any = {
-      item_name: card.service_name,
-      item_brand: card.organization_name,
-      item_variant: address,
-    };
+    const item_name = card.service_name.split('"').join('');
+    const item_brand = card.organization_name.split('"').join('');
+    const item_variant = address.split('"').join('');
+    let item: any = { item_name, item_brand, item_variant };
     if (idx && idx > 0) {
       item.index = idx;
     }
     if (item_list_name) {
       item.item_list_name = item_list_name;
-    }
-    if (action) {
-      item.cta_action = action;
     }
     if (categories[0]) {
       item.item_category = categories[0];
@@ -97,7 +93,7 @@ export class AnalyticsService {
     }
   }
 
-  cardEvent(card: Card, params: SearchParams | null, isLandingPage: boolean, index: number) {
+  cardEvent(card: Card, params: SearchParams | null, isLandingPage: boolean, index: number, select=false) {
     console.log('EVENT card', card);
     if (this.platform.browser() && window.gtag) {
       window.gtag({
@@ -110,10 +106,18 @@ export class AnalyticsService {
         search_structured: !!params?.query ? 0 : 1,
       });
 
-      window.gtag({
-        event: 'view_item',
-        items: [this.cardToItem(card, index, params?.original_query)]
-      });
+      if (select) {
+        window.gtag({
+          event: 'select_item',
+          item_list_name: params?.original_query,
+          items: [this.cardToItem(card, index)]
+        });  
+      } else {
+        window.gtag({
+          event: 'view_item',
+          items: [this.cardToItem(card, index, params?.original_query)]
+        });  
+      }
     }
   }
 
@@ -131,7 +135,8 @@ export class AnalyticsService {
 
       window.gtag({
         event: 'add_to_cart',
-        items: [this.cardToItem(card, 0, null, action)]
+        cta_action: action,
+        items: [this.cardToItem(card, 0)]
       });
     }
   }

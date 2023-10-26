@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Card, SearchParams, _h } from '../consts';
 import { LayoutService } from '../layout.service';
+import { AnalyticsService } from '../analytics.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-result-stack',
@@ -19,7 +21,7 @@ export class ResultStackComponent implements OnInit {
   showCount = -1;
   // showOrgs = true;
 
-  constructor(public layout: LayoutService) { }
+  constructor(public layout: LayoutService, private analytics: AnalyticsService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     if (this.result?.collapse_hits) {
@@ -94,5 +96,15 @@ export class ResultStackComponent implements OnInit {
     }
     ret += ' - פתיחת עמוד השירות';
     return ret;
+  }
+
+  selectedItem(card: Card, extra?: any) {
+    let card_ = card;
+    if (extra) {
+      card_ = Object.assign({}, card, extra);
+    }
+    this.analytics.cardEvent(card_, this.searchParams, false, this.index, true);
+    this.router.navigate(['c', card_.card_id], { relativeTo: this.route, queryParams: {li: this.index}, queryParamsHandling: 'merge', preserveFragment: true });
+    return false;
   }
 }
