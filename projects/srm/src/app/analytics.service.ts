@@ -87,8 +87,10 @@ export class AnalyticsService {
 
       window.gtag({
         event: 'view_item_list',
-        item_list_name: title,
-        items: items.map((item, idx) => this.cardToItem(item, idx + 1))
+        ecommerce: {
+          item_list_name: title,
+          items: items.map((item, idx) => this.cardToItem(item, idx + 1))
+        }
       });
     }
   }
@@ -109,13 +111,17 @@ export class AnalyticsService {
       if (select) {
         window.gtag({
           event: 'select_item',
-          item_list_name: params?.original_query,
-          items: [this.cardToItem(card, index)]
+          ecommerce: {
+            item_list_name: params?.original_query,
+            items: [this.cardToItem(card, index)]
+          }
         });  
       } else {
         window.gtag({
           event: 'view_item',
-          items: [this.cardToItem(card, index, params?.original_query)]
+          ecommerce: {
+            items: [this.cardToItem(card, index, params?.original_query)]
+          }
         });  
       }
     }
@@ -136,7 +142,9 @@ export class AnalyticsService {
       window.gtag({
         event: 'add_to_cart',
         cta_action: action,
-        items: [this.cardToItem(card, 0)]
+        ecommerce: {
+          items: [this.cardToItem(card, 0)]
+        }
       });
     }
   }
