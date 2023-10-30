@@ -10,11 +10,7 @@
     >
         <div class='branch'>
             <app-branch-header [card]='card' [link]='branchLink' [cardId]='cardId' [landingPage]='landingPage' [compact]='false'></app-branch-header>
-            <app-card *ngIf='card' [card]='card' (zoomout)='zoomout.emit($event)'>
-                <div class='quick-actions'>
-                    <app-quick-actions [card]='card'></app-quick-actions>
-                </div>    
-            </app-card>
+            <app-card *ngIf='card' [card]='card' (zoomout)='zoomout.emit($event)'></app-card>
         </div>
     </div>
     <div class='controls layout-mobile'>

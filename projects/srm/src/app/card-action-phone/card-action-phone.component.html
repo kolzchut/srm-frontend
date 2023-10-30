@@ -1,1 +1,1 @@
-<app-card-action kind='phone' [card]='card' [display]='display' [action]='action' [compact]='compact' [label]='"ביצוע שיחת טלפון ל" + orgname + " במספר " + display'></app-card-action>
+<app-card-action kind='phone' [card]='card' [display]='display' [action]='action' [fullwidth]='fullwidth' [compact]='compact' [label]='"ביצוע שיחת טלפון ל" + orgname + " במספר " + display' (copied)='copied.emit("מספר הטלפון הועתק")'></app-card-action>

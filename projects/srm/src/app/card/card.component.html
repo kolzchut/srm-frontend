@@ -18,19 +18,19 @@
             <app-situation *ngFor='let situation of card.situations' [situation]='situation' [link]='true'></app-situation>
         </div>
     </div>
-    <ng-content></ng-content>
+    <div class='contact'>
+        <h2 i18n>פרטי התקשרות:</h2>
+        <div class='actions'>
+            <app-card-action-phone [card]='card' [fullwidth]='true' (copied)='snack($event)'></app-card-action-phone>
+            <app-card-action-email [card]='card' [fullwidth]='true' (copied)='snack($event)'></app-card-action-email>
+            <app-card-action-url [card]='card' [fullwidth]='true' (copied)='snack($event)'></app-card-action-url>
+            <app-card-action-nav [card]='card' [fullwidth]='true' (copied)='snack($event)'></app-card-action-nav>
+        </div>
+    </div>
     <div class='terms' *ngIf='card.service_details || card.service_payment_details'>
         <h2 i18n>תנאים לקבלת השירות:</h2>
         <div [innerHTML]='format(card.service_details)' *ngIf='card.service_details'></div>
         <div [innerHTML]='format(card.service_payment_details)' *ngIf='card.service_payment_details'></div>
-    </div>
-    <div class='contact'>
-        <h2 i18n>פרטי התקשרות:</h2>
-        <div class='actions'>
-            <app-card-action-phone [card]='card' [compact]='true'></app-card-action-phone>
-            <app-card-action-email [card]='card' [compact]='true'></app-card-action-email>
-            <app-card-action-nav [card]='card' [compact]='true'></app-card-action-nav>
-        </div>
     </div>
     <div class='org'>
         <h2 i18n>השירות ניתן ע״י:</h2>
@@ -68,3 +68,9 @@
 </div>
 <app-card-branch-services [card]='card'></app-card-branch-services>
 <app-disclaimer-footer></app-disclaimer-footer>
+<div class='snack' [class.visible]='snackVisible'>
+    {{ snackMessage }}
+</div>
+<div class='quick-actions' [class.visible]='quickActionsVisible'>
+    <app-quick-actions [card]='card'></app-quick-actions>
+</div>    

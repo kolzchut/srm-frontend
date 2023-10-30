@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Card } from '../consts';
 
 @Component({
@@ -13,7 +13,9 @@ export class CardActionPhoneComponent implements OnChanges {
 
   @Input() card: Card;
   @Input() org = false;
+  @Input() fullwidth = false;
   @Input() compact = false;
+  @Output() copied = new EventEmitter<string>();
 
   action = '';
   display = '';

@@ -1,1 +1,1 @@
-<app-card-action kind='email' [card]='card' [display]='display' [action]='action' [primary]='false' [compact]='compact' [label]='"שליחת דואר אלקטרוני ל" + this.orgname + " בכתובת " + action.slice(7)'></app-card-action>
+<app-card-action kind='email' [card]='card' [display]='display' [action]='action' [primary]='false' [fullwidth]='fullwidth' [compact]='compact' [label]='"שליחת דואר אלקטרוני ל" + this.orgname + " בכתובת " + action.slice(7)' (copied)='copied.emit("כתובת המייל הועתקה")'></app-card-action>

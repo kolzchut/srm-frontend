@@ -5,22 +5,37 @@ import { environment } from '../../environments/environment';
 import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';
 import { replaceUrlsWithLinks } from './text-utils';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.less']
 })
-export class CardComponent implements OnInit {
+export class CardComponent implements OnInit, AfterViewInit {
 
   @Input() card: Card;
   @Output() zoomout = new EventEmitter<ViewPort>();
 
   orgOpen = false;
+  snackMessage = '';
+  snackVisible = false;
+  snackSubscription: Subscription | null = null;
+  quickActionsVisible = false;
+  obs: IntersectionObserver;
 
-  constructor(private api: ApiService, private router: Router, @Inject(DOCUMENT) private document: Document) { }
+  constructor(private api: ApiService, private router: Router, private el: ElementRef, @Inject(DOCUMENT) private document: Document) {}
 
   ngOnInit(): void {
+    this.obs = new IntersectionObserver((entries) => {
+      this.quickActionsVisible = !(entries && entries.length && entries[0].isIntersecting);
+    }, { threshold: [0] });
+  }
+
+  ngAfterViewInit(): void {
+    const first = this.el.nativeElement.querySelector('.visible app-card-action a') as HTMLElement;
+    first.classList.add('primary');
+    this.obs.observe(first);
   }
 
   get suggestChangesForm() {
@@ -53,5 +68,15 @@ export class CardComponent implements OnInit {
 
   format(text: string) {
     return replaceUrlsWithLinks(text);
+  }
+
+  snack(message: string) {
+    this.snackMessage = message;
+    this.snackVisible = true;
+    this.snackSubscription?.unsubscribe();
+    this.snackSubscription = timer(3000).subscribe(() => {
+      this.snackVisible = false;
+      this.snackSubscription = null;
+    });
   }
 }

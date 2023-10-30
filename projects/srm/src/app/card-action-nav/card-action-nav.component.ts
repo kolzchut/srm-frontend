@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { Card } from '../consts';
 
 @Component({
@@ -13,7 +13,9 @@ export class CardActionNavComponent implements OnChanges {
 
   @Input() card: Card;
   @Input() org: boolean;
+  @Input() fullwidth: boolean;
   @Input() compact: boolean;
+  @Output() copied = new EventEmitter<string>();
 
   action = '';
   active = false;
@@ -29,7 +31,7 @@ export class CardActionNavComponent implements OnChanges {
       if (coords.length === 2 && latLng && latLng.length) {
         this.action = `https://www.google.com/maps/search/?api=1&query=${latLng}`;
         this.active = true;
-        if (this.compact) {
+        if (this.fullwidth || this.compact) {
           this.display = this.card.branch_address;
         }
       }

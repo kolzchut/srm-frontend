@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { Card } from '../consts';
 
 @Component({
@@ -13,7 +13,9 @@ export class CardActionUrlComponent implements OnChanges {
 
   @Input() card: Card;
   @Input() org = false;
+  @Input() fullwidth = false;
   @Input() compact = false;
+  @Output() copied = new EventEmitter<string>();
 
   action = '';
   active = false;
@@ -33,7 +35,7 @@ export class CardActionUrlComponent implements OnChanges {
       this.action = link;
       this.active = true;
     }
-    this.display = 'אתר';
+    this.display = (this.fullwidth || this.compact) ? link : 'אתר';
     if (link?.startsWith('http')) {
       const url = new URL(link);
       const hostname = url.hostname;

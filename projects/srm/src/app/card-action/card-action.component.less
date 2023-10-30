@@ -5,6 +5,11 @@
     flex-flow: row;
     align-items: stretch;
     justify-content: stretch;
+    gap: 8px;
+
+    &.fullwidth {
+        height: 40px;
+    }
 }
 
 .button {
@@ -112,7 +117,24 @@
         font-size: 16px;
         line-height: 21px;
         color: @color-blue-1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
+
+    &.fullwidth {
+        justify-content: flex-start;
+        padding-right: 8px;
+        padding-left: 16px;
+        overflow: hidden;
+        &:not(.kind-nav) {
+            justify-content: space-between;
+            .label {
+                direction: ltr;
+            }
+        }    
+    }
+
     &.primary {
         .label {
             color: @color-white;
@@ -154,3 +176,23 @@
     }
 }
 
+
+.button.fullwidth {
+    // width: 100%;
+}
+
+.copy {
+    width: 40px;
+    height: 40px;
+    .background-image;
+    background-size: 32px;
+    background-image: url(../../assets/img/icon-copy-gray-35.svg);
+    cursor: pointer;
+    border-radius: 8px;
+    border: 1px solid @color-gray-5;
+    .desktop({
+        &:hover {
+            .card-hover-shadow;
+        }    
+    });
+}

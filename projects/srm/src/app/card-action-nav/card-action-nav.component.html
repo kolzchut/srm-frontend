@@ -1,1 +1,1 @@
-<app-card-action kind='nav' [card]='card' [action]='action' [compact]='compact' [display]='display' [label]='"ניווט לכתובת " + display'></app-card-action>
+<app-card-action kind='nav' [card]='card' [action]='action' [fullwidth]='fullwidth' [compact]='compact' [display]='display' [label]='"ניווט לכתובת " + display' (copied)='copied.emit("הכתובת הועתקה")'></app-card-action>

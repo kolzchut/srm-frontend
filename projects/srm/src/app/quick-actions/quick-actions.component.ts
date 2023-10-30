@@ -15,7 +15,6 @@ export class QuickActionsComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const first = this.el.nativeElement.querySelector('.visible app-card-action a') as HTMLElement;
     first.classList.add('primary');
-
   }
 
 }

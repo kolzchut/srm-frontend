@@ -237,4 +237,47 @@
         border-top: 1px solid @color-blue-5;
         padding-bottom: 56px;
     }
+
+    .snack {
+        position: fixed;
+        bottom: 8px;
+        padding: 12px 16px;
+        color: @color-white;
+        .font-rag-sans;
+        font-weight: 300;
+        font-size: 16px;
+        line-height: 20px;
+        z-index: 201;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.70);
+        align-self: center;
+        transition: opacity 0.3s ease-in-out;
+        opacity: 0;
+
+        &.visible {
+            opacity: 1;
+        }
+    }
+
+    .quick-actions {
+        position: fixed;
+        .mobile({
+            width: 100%;
+        });
+        .desktop({
+            width: @desktop-right-side-width;
+        });
+        height: 56px;
+        bottom: 0;
+        right: 0;
+        z-index: 200;
+
+        transition: transform 0.3s ease-in-out;
+        transform: translateY(100%);
+
+        &.visible {
+            transform: translateY(0%);
+        }
+
+    }
 }

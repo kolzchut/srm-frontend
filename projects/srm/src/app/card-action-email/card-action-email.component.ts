@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { Card } from '../consts';
 
 @Component({
@@ -13,7 +13,9 @@ export class CardActionEmailComponent implements OnChanges {
 
   @Input() card: Card;
   @Input() org = false;
+  @Input() fullwidth = false;
   @Input() compact = false;
+  @Output() copied = new EventEmitter<string>();
 
   action = '';
   display = '';
@@ -34,7 +36,7 @@ export class CardActionEmailComponent implements OnChanges {
     this.active = false;
     if (email && email.length) {
       this.action = 'mailto:' + email;
-      this.display = this.compact ? email : 'מייל';
+      this.display = (this.fullwidth || this.compact) ? email : 'מייל';
       this.active = true;
     }
   }
