@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { SeoSocialShareService } from 'ngx-seo';
-import { debounceTime, filter } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
 import { environment } from '../environments/environment';
 import { PlatformService } from './platform.service';
 
@@ -23,14 +23,15 @@ export class AppComponent {
       if (environment.gaTag) {
         this.router.events.pipe(
           filter((event) => event instanceof NavigationEnd),
-          debounceTime(2500)
-        ).subscribe((event_) => {
+          map((event) => (event as NavigationEnd).urlAfterRedirects),
+          map((urlAfterRedirects) => this.cleanUrl(urlAfterRedirects)),
+          distinctUntilChanged()
+        ).subscribe((urlAfterRedirects) => {
           platform.browser(() => {
-            const event = event_ as NavigationEnd;
-            console.log('PAGE VIEW', event.urlAfterRedirects);
+            console.log('PAGE VIEW', urlAfterRedirects);
             window.gtag && window.gtag({
               event: 'page_view',
-              page_path: event.urlAfterRedirects
+              page_path: urlAfterRedirects
             });
           })
         });
@@ -45,5 +46,16 @@ export class AppComponent {
       type: 'website',
       author: 'כל זכות',
     });
+  }
+
+  cleanUrl(url: string) {
+    const parsed = new URL(url, window.location.href);
+    if (parsed.pathname === '/q') {
+      parsed.searchParams.delete('q');
+    }
+    parsed.searchParams.delete('li');
+    parsed.hash = '';
+    const ret = parsed.toString().slice(window.location.origin.length);
+    return ret;
   }
 }

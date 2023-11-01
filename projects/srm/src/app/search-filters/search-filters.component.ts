@@ -7,6 +7,7 @@ import { DistinctItem, QueryCardResult, SearchParams, SITUATION_FILTERS, Taxonom
 import { SearchFiltersMoreButtonComponent } from '../search-filters-more-button/search-filters-more-button.component';
 import { PlatformService } from '../platform.service';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
+import { Location } from '@angular/common';
 
 @UntilDestroy()
 @Component({
@@ -56,7 +57,7 @@ export class SearchFiltersComponent implements OnChanges {
   showDiscovery: boolean | null = null;
   areaSearchState: AreaSearchState;
 
-  constructor(private api: ApiService, private platform: PlatformService) {
+  constructor(private api: ApiService, private platform: PlatformService, public location: Location) {
     forkJoin([this.api.getSituations(), this.api.getResponses()])
     .subscribe(([situationData, responseData]) => {
       this.situationsMap = {};

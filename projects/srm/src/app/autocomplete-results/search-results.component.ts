@@ -52,7 +52,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   obs: IntersectionObserver;
   fetchQueue = new ReplaySubject<SearchParamsOffset>(1);
   paramsQueue = new ReplaySubject<SearchParams>(1);
-  resultsParamsQueue = new Subject<{params: SearchParams, totalCount: number, items: Card[]}>();
+  resultsParamsQueue = new Subject<{params: SearchParams, totalCount: number, items: Card[], offset: number}>();
   resultsSubscription: Subscription | null = null;
   
   hasCounts = false;
@@ -126,9 +126,9 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           return this.api.getCards(params.p, params.offset, zoomedIn)
             .pipe(
               map((results) => {
-                if (params.offset === 0) {
-                  this.resultsParamsQueue.next({params: params.p, totalCount: this.totalCount, items: results});
-                }
+                // if (params.offset === 0) {
+                this.resultsParamsQueue.next({params: params.p, totalCount: this.totalCount, items: results, offset: params.offset});
+                // }
                 return {params, results};
               })
             );
@@ -154,11 +154,10 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
     this.resultsParamsQueue.pipe(
       untilDestroyed(this),
       distinctUntilChanged((a, b) => {
-        return a.params.original_query === b.params.original_query && a.params.ac_query === b.params.ac_query;
+        return a.params.original_query === b.params.original_query && a.params.ac_query === b.params.ac_query && a.offset === b.offset;
       }),  
-      debounceTime(this.platform.browser() ? 3000 : 0),
       tap((item) => {
-        this.analytics.searchEvent(item.params, this.isLandingPage, item.totalCount, item.items);  
+        this.analytics.searchEvent(item.params, this.isLandingPage, item.totalCount, item.items, item.offset);  
       })
     ).subscribe();
   }

@@ -27,11 +27,15 @@
                     <span class='situation'>בכל מקום</span>
                 </div>
             </div>
-            <app-search-bar [config]='searchConfig' (focus)='$event ? updateFocus($event) : null' [homepage]='true'></app-search-bar>
+            <app-search-bar [config]='searchConfig' (focus)='$event ? updateFocus($event) : null' [homepage]='true'
+                            interactionEvent='homepage-searchbar' interactionEventWhere='homepage'        
+            ></app-search-bar>
             <app-autocomplete-results [config]='searchConfig'></app-autocomplete-results>
         </div>
         <div class='searchbox-container layout-mobile'>
-            <a class='searchbox' [routerLink]='["/q"]' tabindex="0" aria-label='ביצוע חיפוש מענים חברתיים באתר'>
+            <a class='searchbox' [routerLink]='["/q"]' tabindex="0" aria-label='ביצוע חיפוש מענים חברתיים באתר'
+               interactionEvent='homepage-searchbar' interactionEventWhere='homepage'
+            >
                 <div class='title active'>כל שירות</div>
                 <div class='subtitle'>
                     <span class='situation'>לכל מצב</span>
@@ -44,13 +48,17 @@
             <div class='emergencies hide-while-searching'>
                 <span class='explain'>ניתן לאתר שירותים <a (activated)='startSearch("שירותים למצב החירום", true)' clickOnReturn>למצב החירום המלחמתי</a> כמו:</span>
                 <div class='list'>
-                    <a *ngFor='let emergency of emergencies' (activated)='startSearch(emergency.title, true)' clickOnReturn>{{emergency.alternative_text || emergency.title}}</a>
+                    <a *ngFor='let emergency of emergencies' (activated)='startSearch(emergency.title, true)' clickOnReturn
+                       interactionEvent='homepage-example-emergency' interactionEventWhere='homepage' [interactionEventContent]='emergency.title'
+                    >{{emergency.alternative_text || emergency.title}}</a>
                 </div>
             </div>
             <div class='examples hide-while-searching'>
                 <span class='explain'>בנוסף, ניתן לחפש באתר גם שירותי שגרה כמו:</span>
                 <div class='list'>
-                    <a *ngFor='let example of examples' (activated)='startSearch(example.title)' clickOnReturn>{{example.title}}</a>
+                    <a *ngFor='let example of examples' (activated)='startSearch(example.title)' clickOnReturn
+                       interactionEvent='homepage-example-regular' interactionEventWhere='homepage' [interactionEventContent]='example.title'
+                    >{{example.title}}</a>
                 </div>
             </div>    
         </div>

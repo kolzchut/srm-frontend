@@ -1,5 +1,8 @@
 <ng-container *ngIf='!active'>
-    <app-search-filters-button [totalFilters]='totalFilters' [showDiscovery]='!!showDiscovery' (activate)='active = true'></app-search-filters-button>
+    <app-search-filters-button [totalFilters]='totalFilters' [showDiscovery]='!!showDiscovery' (activate)='active = true'
+        interactionEvent='open-filters' [interactionEventWhere]='location.path(false)' [searchParams]='searchParams'
+    
+    ></app-search-filters-button>
     <div class='tags header' *ngIf='responseCategoryItems && false'> <!-- todo #483 -->
         <app-response *ngFor='let response of responseCategoryItems' 
                 [response]='response' 

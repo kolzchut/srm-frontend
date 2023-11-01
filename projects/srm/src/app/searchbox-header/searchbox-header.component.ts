@@ -3,6 +3,7 @@ import { debounceTime, filter, Subject, switchMap, tap, throttleTime } from 'rxj
 import { ApiService } from '../api.service';
 import { SearchParams, TaxonomyItem } from '../consts';
 import { LayoutService } from '../layout.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-searchbox-header',
@@ -24,7 +25,7 @@ export class SearchboxHeaderComponent implements OnChanges {
   situationDisplay: string | null = null;
   orgDisplay: string | null = null;
 
-  constructor(private api: ApiService, public layout: LayoutService) {
+  constructor(private api: ApiService, public layout: LayoutService, public location: Location) {
   }
 
   ngOnChanges(): void {

@@ -3,6 +3,7 @@
     <app-menu-icon *ngIf='layout.mobile'></app-menu-icon>
     <a class='clickable' [routerLink]='["/q"]' [queryParams]='{q: searchParams?.original_query}' [title]='searchParams?.original_query'
        aria-label='ביצוע חיפוש חדש באתר כל שירות'
+       interactionEvent='regular-searchbar' [interactionEventWhere]='location.path(false)' [searchParams]='searchParams'
         >
         <div class='search-params' *ngIf='placeholder'>
             <span class='placeholder'>{{placeholder}}</span>
