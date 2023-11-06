@@ -163,7 +163,6 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   ngOnChanges(): void {
-
     this.paramsQueue.next(this.searchParams);
   }
 

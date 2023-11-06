@@ -1,0 +1,13 @@
+<div class='bookends'>
+    <div class='bookend' *ngFor='let tag of tags; let idx=index'
+        [style.zIndex]='48-idx'>
+        <div class='bookend-inner'
+            [style.background]='colors[idx].bgColor'
+            [style.border-color]='colors[idx].borderColor'
+            [style.zIndex]='48-idx'
+        ></div>
+    </div>
+</div>
+<div class='count'>
+    <span>+{{count}}</span>
+</div>

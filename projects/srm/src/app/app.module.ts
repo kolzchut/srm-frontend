@@ -68,6 +68,7 @@ import { AreaSearchSelectorResultNationWideComponent } from './area-search-selec
 import { AreaSearchSelectorResultMyLocationComponent } from './area-search-selector-result-my-location/area-search-selector-result-my-location.component';
 import { MenuPopupMissingComponent } from './menu/menu-popup/menu-popup-missing/menu-popup-missing.component';
 import { InteractionEventDirective } from './interaction-event.directive';
+import { TagEndingComponent } from './result-card/tag-ending/tag-ending.component';
 
 @NgModule({
   declarations: [
@@ -132,6 +133,7 @@ import { InteractionEventDirective } from './interaction-event.directive';
     AreaSearchSelectorResultMyLocationComponent,
     MenuPopupMissingComponent,
     InteractionEventDirective,
+    TagEndingComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

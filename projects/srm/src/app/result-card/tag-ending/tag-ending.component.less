@@ -1,0 +1,71 @@
+@import '../../../common.less';
+
+:host {
+    height: 24px;
+    width: 20px;
+    position: relative;
+
+    &.small {
+        height: 18px;
+    }
+
+    .bookends {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-flow: row;
+        align-items: stretch;
+        justify-content: space-evenly;
+        .bookend {
+            height: 100%;
+            flex: 1 1 100%;
+            border: 0px solid white;
+            background: white;
+            border-right: none;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            margin-left: -4px;
+
+            .bookend-inner {
+                height: 100%;
+                width: 100%;
+                border: 1px solid black;
+                border-right: none;
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+            }
+        }
+    }
+
+    .count {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        padding-right: 4px;
+
+        span {
+            .font-rag-sans;
+            color: @color-gray-3;
+            font-weight: 300;
+            font-size: 16px;
+            line-height: 20px;
+        }
+    }
+
+    &.small {
+        .count {
+            .span {
+                font-weight: 400;
+                font-size: 13px;
+                line-height: 16px;
+            }
+        }
+    }
+}
