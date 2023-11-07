@@ -6,6 +6,8 @@ import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';
 import { replaceUrlsWithLinks } from './text-utils';
 import { Subscription, timer } from 'rxjs';
+import { MarkdownService } from '../markdown.service';
+import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-card',
@@ -24,8 +26,9 @@ export class CardComponent implements OnInit, OnChanges, AfterViewInit {
   quickActionsVisible = false;
   obs: IntersectionObserver;
   nonOfficial = false;
+  dataSources: SafeHtml[] = [];
 
-  constructor(private api: ApiService, private router: Router, private el: ElementRef, @Inject(DOCUMENT) private document: Document) {}
+  constructor(private api: ApiService, private router: Router, private el: ElementRef, @Inject(DOCUMENT) private document: Document, public md: MarkdownService) {}
 
   ngOnInit(): void {
     this.obs = new IntersectionObserver((entries) => {
@@ -35,6 +38,7 @@ export class CardComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngOnChanges(): void {
     this.nonOfficial = !this.card?.organization_kind && this.card?.organization_id?.indexOf('srm9') === 0;
+    this.dataSources = this.card?.data_sources?.map(ds => this.md._(ds) || '') || [];
   }
 
   ngAfterViewInit(): void {

@@ -4,6 +4,7 @@ import { SeoSocialShareService } from 'ngx-seo';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
 import { environment } from '../environments/environment';
 import { PlatformService } from './platform.service';
+import { marked } from 'marked';
 
 declare const window: any;
 
