@@ -88,6 +88,32 @@
             }
         }
 
+        .non-official-warning {
+            min-height: 48px;
+            width: 100%;
+            background: @color-gray-7;
+            border: 1px solid @color-gray-5;
+            border-radius: 4px;
+            .background-image;
+            background-size: 32px;
+            background-position: center right 8px;
+            background-image: url(../../assets/img/icon-warning-gray-1.svg);
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            padding: 8px;
+            padding-right: 48px;
+            margin-top: 8px;
+            
+            span, ::ng-deep a {
+                .font-rag-sans;
+                font-weight: 400;
+                font-size: 13px;
+                line-height: 16px;
+                color: @color-gray-1;
+            }
+        }
+
         .responses, .situations {
             .list {
                 display: flex;

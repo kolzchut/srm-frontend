@@ -6,6 +6,12 @@
             <br/><a [href]='implementingLink()' target='_blank'>למידע נוסף על השירות</a>
         </span>
     </div>
+    <div class='non-official-warning' *ngIf='nonOfficial'>
+        <span>
+            <strong>שימו לב:</strong><br/>
+            <span>השירות אינו מופעל ע״י רשות ציבורית או עמותה רשומה</span>
+        </span>
+    </div>
     <div class='responses'>
         <h2 i18n>מהות השירות:</h2>
         <div class='list'>
@@ -62,7 +68,8 @@
     <div class='error-report'>
         <a [href]='suggestChangesForm' target='_blank'>
             <div class='icon'></div>
-            <span i18n>מצאתי טעות בנתונים</span>
+            <span i18n *ngIf='!nonOfficial'>מצאתי טעות בנתונים</span>
+            <span i18n *ngIf='nonOfficial'>מצאתי בעיה בשירות או טעות בנתונים</span>
         </a>
     </div>
 </div>

@@ -22,7 +22,7 @@ export const environment = {
   // taxonomyResponsesURL: '/responses.json',
   suggestChangesForm: 'https://form.jotform.com/222203528302038',
   mapStyle: 'mapbox://styles/srm-kolzchut/ckzwhyzwr000t14mkynmw94zw',
-  gaTag: 'UA-16990732-9',
+  gaTag: 'GTM-N6QJLRL',
 
   externalUrl: 'https://www.kolsherut.org.il',
   // gaTag: 'G-0FXK63SSNX',

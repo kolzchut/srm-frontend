@@ -1,5 +1,5 @@
 import { DOCUMENT, Location } from '@angular/common'
-import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { ApiService } from '../api.service';
@@ -12,7 +12,7 @@ import { Subscription, timer } from 'rxjs';
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.less']
 })
-export class CardComponent implements OnInit, AfterViewInit {
+export class CardComponent implements OnInit, OnChanges, AfterViewInit {
 
   @Input() card: Card;
   @Output() zoomout = new EventEmitter<ViewPort>();
@@ -23,6 +23,7 @@ export class CardComponent implements OnInit, AfterViewInit {
   snackSubscription: Subscription | null = null;
   quickActionsVisible = false;
   obs: IntersectionObserver;
+  nonOfficial = false;
 
   constructor(private api: ApiService, private router: Router, private el: ElementRef, @Inject(DOCUMENT) private document: Document) {}
 
@@ -30,6 +31,10 @@ export class CardComponent implements OnInit, AfterViewInit {
     this.obs = new IntersectionObserver((entries) => {
       this.quickActionsVisible = !(entries && entries.length && entries[0].isIntersecting);
     }, { threshold: [0] });
+  }
+
+  ngOnChanges(): void {
+    this.nonOfficial = !this.card?.organization_kind && this.card?.organization_id?.indexOf('srm9') === 0;
   }
 
   ngAfterViewInit(): void {

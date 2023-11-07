@@ -20,6 +20,7 @@ export class AppComponent {
       private platform: PlatformService, 
       private seo: SeoSocialShareService) {
     platform.browser(() => {
+      let initial = true;
       if (environment.gaTag) {
         this.router.events.pipe(
           filter((event) => event instanceof NavigationEnd),
@@ -28,7 +29,11 @@ export class AppComponent {
           distinctUntilChanged()
         ).subscribe((urlAfterRedirects) => {
           platform.browser(() => {
-            console.log('PAGE VIEW', urlAfterRedirects);
+            if (initial && window.gtag) {
+              window.gtag(['config', 'G-SSW46Z8STP', {'send_page_view': false}]);
+              initial = false;
+            }
+            console.log('PAGE_VIEW', urlAfterRedirects);
             window.gtag && window.gtag({
               event: 'page_view',
               page_path: urlAfterRedirects
