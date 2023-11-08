@@ -2,13 +2,14 @@ import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { TaxonomyItem } from '../../consts';
 import { getResponseIdColor } from '../../colors';
 import { ResponseBase } from '../../response/response-base';
+import { LayoutService } from '../../layout.service';
 
 @Component({
   selector: 'app-tag-ending',
   templateUrl: './tag-ending.component.html',
   styleUrls: ['./tag-ending.component.less'],
   host: {
-    '[class.small]': 'small',
+    '[class.small]': 'smaller',
   }
 })
 export class TagEndingComponent implements OnChanges {
@@ -19,7 +20,7 @@ export class TagEndingComponent implements OnChanges {
 
   colors: ResponseBase[] = [];
 
-  constructor() { }
+  constructor(private layout: LayoutService) { }
 
   ngOnChanges(): void {
     this.colors = [];
@@ -36,4 +37,7 @@ export class TagEndingComponent implements OnChanges {
     });
   }
 
+  get smaller() {
+    return this.small || this.layout.mobile;
+  }
 }

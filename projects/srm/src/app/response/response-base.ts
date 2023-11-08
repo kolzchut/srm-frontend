@@ -11,7 +11,7 @@ export class ResponseBase {
   pointBgColor: string;
   linkColor: string;
   linkBgColor: string;
-  fontWeight = 400;
+  fontWeight = 300;
   hover_ = false;
 
   initColors(response?: TaxonomyItem) {
@@ -27,7 +27,6 @@ export class ResponseBase {
       this.pointBgColor = this.color;
       this.linkColor = this.textColor;
       this.linkBgColor = this.shade(42);
-      this.fontWeight = 300;
     } else {
       this.textColor = '#333231';
       this.bgColor = this.shade(5);
@@ -36,7 +35,6 @@ export class ResponseBase {
       this.pointBgColor = this.color;
       this.linkColor = this.shade(70);
       this.linkBgColor = this.bgColor;
-      this.fontWeight = 300;
     }
   }
 

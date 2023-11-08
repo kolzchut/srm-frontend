@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { prepareQuery, TaxonomyItem } from '../consts';
 import { ResponseBase } from './response-base';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-response',
@@ -33,7 +34,7 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
 
   expandColor = '#fff';
 
-  constructor() {
+  constructor(private layout: LayoutService) {
     super();
   }
 
@@ -44,6 +45,7 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
 
   recalcColors(): void {
     this.expandColor = this.color;
+    this.fontWeight = this.layout.mobile ? 400 : 300;
     if (this.active) {
       this.bgColor = this.shade(10);
       this.borderColor = this.color;
@@ -52,7 +54,7 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
       this.linkColor = this.textColor;
       this.linkBgColor = this.shade(42);
       this.textColor = this.selected ? '#000000' : '#333231';
-      this.fontWeight = this.selected ? 600 : 400;
+      this.fontWeight = this.selected ? 600 : this.fontWeight;
     } else if (this.semiactive) {
       this.bgColor = this.shade(10);
       this.borderColor = 'transparent';
@@ -71,7 +73,6 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
       this.pointBgColor = this.color;
       this.linkColor = this.textColor;
       this.linkBgColor = this.shade(42);
-      this.fontWeight = 300;
     } else {
       super.recalcColors();
       this.textColor = '#555452';
@@ -88,5 +89,9 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
 
   get hover() {
     return super.hover && !this.disabled;
+  }
+
+  get smaller() {
+    return this.small || this.layout.mobile;
   }
 }

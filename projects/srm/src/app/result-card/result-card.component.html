@@ -8,7 +8,7 @@
             <ng-container *ngIf='idx===selectedResponses.length-1'>
                 <span class='last' [style.zIndex]='100-idx'>
                     <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'></app-response>
-                    <app-response [response]='rr' [small]='smaller' [style.zIndex]='49-idx2' *ngFor='let rr of deselectedResponses; let idx2=index'></app-response>
+                    <app-tag-ending *ngIf='deselectedResponses.length' [tags]='deselectedResponses' [count]='card.responses.length - selectedResponses.length' [small]='smaller' [style.zIndex]='49'></app-tag-ending>
                 </span>
             </ng-container>
         </ng-container>
@@ -19,7 +19,7 @@
             <ng-container *ngIf='idx===selectedSituations.length-1'>
                 <span class='last' [style.zIndex]='100-idx'>
                     <app-situation [situation]='s' [small]='smaller' [style.zIndex]='50'></app-situation>
-                    <app-situation [situation]='ss' [small]='smaller' [style.zIndex]='49-idx2' *ngFor='let ss of deselectedSituations; let idx2=index'></app-situation>
+                    <app-tag-ending *ngIf='deselectedSituations.length' [tags]='deselectedSituations' [count]='card.situations.length - selectedSituations.length' [small]='smaller' [style.zIndex]='49'></app-tag-ending>
                 </span>
             </ng-container>
         </ng-container>

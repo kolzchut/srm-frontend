@@ -1,7 +1,7 @@
 <div class='situation' [class.small]='small'
     [routerLink]='link ? ["/q"] : null'
     [queryParams]='link ? {q: situation.name} : null'
-    [class.small]='small'
+    [class.small]='smaller'
     [class.linkable]='link'
     [attr.aria-label]='situation.name + " - לחצו לחיפוש באתר"'
 >

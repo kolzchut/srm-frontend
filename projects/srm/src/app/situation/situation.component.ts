@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TaxonomyItem } from '../consts';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-situation',
@@ -14,9 +15,13 @@ export class SituationComponent implements OnInit {
 
   hover = false;
 
-  constructor() { }
+  constructor(private layout: LayoutService) { }
 
   ngOnInit(): void {
+  }
+
+  get smaller() {
+    return this.small || this.layout.mobile;
   }
 
 }

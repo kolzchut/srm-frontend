@@ -7,7 +7,7 @@
     [style.border-color]='borderColor'
     [style.transitionDelay]='transitionDelay + "ms"'
     (click)='onClick()'
-    [class.small]='small'
+    [class.small]='smaller'
     [class.visible]='visible'
     role='button'
     [attr.aria-label]='selected ? ("ביטול סינון לפי נושא " + response.name) : ("הפעלת סינון לפי נושא " + response.name)'
@@ -23,7 +23,7 @@
         ></span>
     </span>
     <span class='name'
-        [class.small]='small'
+        [class.small]='smaller'
         [class.selected]='selected'
         [class.tight]='selected || expandable'
         [class.disabled]='disabled'
@@ -38,7 +38,7 @@
 <div class='response' *ngIf='!dynamic' 
     [style.background]='bgColor'
     [style.border-color]='borderColor'
-    [class.small]='small'
+    [class.small]='smaller'
     [class.visible]='visible'
 >
     <span class='point'>
@@ -48,7 +48,7 @@
         ></span>
     </span>
     <span class='name'
-        [class.small]='small'
+        [class.small]='smaller'
         [style.font-weight]='fontWeight'
         [style.color]='textColor'
         [innerHTML]='response.name'></span>
