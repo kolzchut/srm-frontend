@@ -36,8 +36,7 @@ export class AppComponent {
             }
             console.log('PAGE_VIEW', urlAfterRedirects);
             window.gtag && window.gtag({
-              event: 'page_view',
-              srm_internal: 'yes',
+              event: 'srm:page_view',
               page_path: urlAfterRedirects
             });
           })
