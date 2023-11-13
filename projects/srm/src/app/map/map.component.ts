@@ -279,10 +279,10 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
           preserveDrawingBuffer: true,
         };
         this.map = new mapboxgl.Map(mapParams);
-        this.map.addControl(new mapboxgl.AttributionControl(), 'top-right');
         if (this.layout.desktop) {
-          this.map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'top-left');
+          this.map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'bottom-left');
         }
+        this.map.addControl(new mapboxgl.AttributionControl({compact: true}), 'bottom-left');
         this.map.dragRotate.disable();
         this.map.touchZoomRotate.disableRotation();
         this.map.touchPitch.disable();

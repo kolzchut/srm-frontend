@@ -23,6 +23,7 @@ export class SearchFiltersComponent implements OnChanges {
   NUM_RESPONSES = 8;
   
   @Input() searchParams: SearchParams;
+  @Input() areaSearchState: AreaSearchState;
   @Output() params = new EventEmitter<SearchParams>();
   @Output() activate = new EventEmitter<boolean>();
   @Output() zoomout = new EventEmitter<ViewPort>();
@@ -55,7 +56,6 @@ export class SearchFiltersComponent implements OnChanges {
   ready = new ReplaySubject<boolean>(1);
 
   showDiscovery: boolean | null = null;
-  areaSearchState: AreaSearchState;
 
   constructor(private api: ApiService, private platform: PlatformService, public location: Location) {
     forkJoin([this.api.getSituations(), this.api.getResponses()])
@@ -87,8 +87,7 @@ export class SearchFiltersComponent implements OnChanges {
     ).subscribe(([data, dataBounded]) => {
       this.resultCount = data.search_counts.cards.total_overall;
       this.resultCountBounded = dataBounded.search_counts.cards.total_overall;
-      this.areaSearchState.viewport = data.viewport;
-    });
+``    });
     this.incomingSearchParams.pipe(
       untilDestroyed(this),
       filter((params) => !!params),
@@ -112,10 +111,6 @@ export class SearchFiltersComponent implements OnChanges {
       switchMap((params) => this.api.getDistinct(params, true)),
     ).subscribe((result) => {
       this.checkDiscoveryNeeded(result);
-    });
-    this.areaSearchState = new AreaSearchState(api, this.incomingSearchParams);
-    this.areaSearchState.bounds.subscribe((bounds) => {
-      this.zoomout.next(bounds);
     });
   }
 

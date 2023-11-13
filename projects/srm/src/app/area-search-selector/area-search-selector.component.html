@@ -4,16 +4,16 @@
         [style.width]='selectorWidth + "px"'
         [style.right]='selectorRight + "px"'
     ></div>
-    <button class='map-region' clickOnReturn #mapRegion
-            [class.with-text]='showButtonText()'
-            [class.active]='isActive(false)'
-            (activated)='selectMapRegion()'
-    >באיזור המפה</button>
     <button class='nation-wide' clickOnReturn #nationWide
             [class.with-text]='showButtonText()'
             [class.active]='isActive(true)'
             (activated)='selectNationWide()'
     >בכל הארץ</button>
+    <button class='map-region' clickOnReturn #mapRegion
+            [class.with-text]='showButtonText()'
+            [class.active]='isActive(false)'
+            (activated)='selectMapRegion()'
+    >באיזור המפה</button>
     <input class='area focusable' #area
            [placeholder]='inputPlaceholder'
            aria-label='חיפוש איזורים בארץ'

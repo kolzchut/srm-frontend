@@ -12,6 +12,7 @@ export class AreaSearchSelectorResultComponent implements OnInit {
   @Input() name: string;
   @Input() display: string;
   @Input() state: AreaSearchState;
+  @Input() wait = false;
 
   @Output() selected = new EventEmitter<void>();
   
@@ -22,8 +23,10 @@ export class AreaSearchSelectorResultComponent implements OnInit {
 
   select() {
     if (this.state) {
-      console.log('SETT', this.name, !!this.state);
-      this.state.area_ = this.name;
+      console.log('SETT', this.name, !!this.state, this.wait);
+      if (!this.wait) {
+        this.state.area_ = this.name;
+      }
       this.selected.emit();
     }
   }

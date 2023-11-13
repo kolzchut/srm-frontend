@@ -15,6 +15,7 @@ import { LayoutService } from '../layout.service';
 import * as mapboxgl from 'mapbox-gl';
 import { AnalyticsService } from '../analytics.service';
 import { A11yService } from '../a11y.service';
+import { AreaSearchState } from '../area-search-selector/area-search-state';
 
 class SearchParamCalc {
   acId: string;
@@ -69,6 +70,7 @@ export class PageComponent implements OnInit {
   point = '';
   query = '';
   searchParams: SearchParams;
+  seatchParamsQueue = new Subject<SearchParams>();
   map_: MapComponent | null = null;
 
   DrawerState = DrawerState;
@@ -102,6 +104,7 @@ export class PageComponent implements OnInit {
   isLandingPage = true;
 
   didYouMean: {display: string, link: string} | null = null;
+  areaSearchState: AreaSearchState;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
               private platform: PlatformService, public layout: LayoutService, private analytics: AnalyticsService,
@@ -240,6 +243,7 @@ export class PageComponent implements OnInit {
           });
         }
         this.searchParams = ret;
+        this.seatchParamsQueue.next(ret);
         return ret;
       }),
       switchMap((searchParams: SearchParams) => {
@@ -407,6 +411,11 @@ export class PageComponent implements OnInit {
     if (this.platform.server()) {
       this.showLandingPageOverlay = false;
     }
+    this.areaSearchState = new AreaSearchState(api, this.seatchParamsQueue);
+    this.areaSearchState.bounds.subscribe((bounds) => {
+      this.zoomOutMap(bounds);
+    });
+
   }
 
   ngOnInit(): void {

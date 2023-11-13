@@ -16,6 +16,7 @@
             <app-results-drawer
                 [state]='stage === "point" ? (searchParams?.ac_query && !card ? DrawerState.Minimal : DrawerState.Hidden) : (searchParams?.national ? DrawerState.National : drawerState)'
                 [nationalCount]='nationalCount'
+                [areaSearchState]='areaSearchState'
                 *ngIf='searchParams'
                 [class.visible]='stage === "point" || stage === "search-results"'
                 [scrollAll]='!!filtersVisible'
@@ -28,9 +29,9 @@
                 >
                     <app-search-filters 
                         [searchParams]='searchParams'
+                        [areaSearchState]='areaSearchState'
                         (params)='setSearchParams($event)'
                         (activate)='setFiltersVisible($event)'
-                        (zoomout)='zoomOutMap($event)'
                         #searchFilters
                     ></app-search-filters>
                 </div>

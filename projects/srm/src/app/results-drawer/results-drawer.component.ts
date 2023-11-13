@@ -5,6 +5,7 @@ import { delay, distinctUntilChanged, first, map, tap, throttleTime, filter } fr
 import { DrawerState } from '../consts';
 import { LayoutService } from '../layout.service';
 import { WindowService } from '../window.service';
+import { AreaSearchState } from '../area-search-selector/area-search-state';
 
 @UntilDestroy()
 @Component({
@@ -21,6 +22,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
   @Input() state: DrawerState = DrawerState.Half;
   @Input() scrollAll = false;
   @Input() nationalCount = 0;
+  @Input() areaSearchState: AreaSearchState;
   @Output() handle = new EventEmitter<string>();
   @Output() scrollTop = new EventEmitter<boolean>();
   @Output() size = new EventEmitter<number>();

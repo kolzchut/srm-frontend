@@ -24,9 +24,9 @@ export class AreaSearchState {
   // Focus ref count
   inputFocus: boolean;
   resultsFocus = 0;
+  refGeoHash: string | null = null;
 
   areaInputEl: HTMLInputElement;
-  viewport: ViewPort;
   mapMoveSubscription: Subscription | null = null;
 
   constructor(private api: ApiService, private searchParams: Observable<SearchParams>) {
@@ -50,6 +50,12 @@ export class AreaSearchState {
       });
       this.results.next(places);
     });
+    searchParams.pipe(
+      delay(100),
+    ).subscribe((params) => {
+      console.log('LLL REF GEO HASH', params?.geoHash);
+      this.refGeoHash = params?.geoHash;
+    });
   }
 
   init() {
@@ -68,12 +74,14 @@ export class AreaSearchState {
     this.area_ = null;
     this.nationWide_ = false;
     this.selectorVisible_ = true;
+    this.waitForMapArea(false);
   }
 
   selectNationWide(): void {
     this.area_ = null;
     this.nationWide_ = true;
     this.selectorVisible_ = true;
+    this.waitForMapArea(true);
   }
 
   focusInput() {
@@ -111,7 +119,7 @@ export class AreaSearchState {
     this.inputPlaceholder_ = 'חפש שירותים בישוב או איזור מוגדר';
     this.selectorVisible_ = false;
     timer(500).subscribe(() => {
-      this.resultsWidth.next(this.areaInputEl.offsetWidth);
+      this.resultsWidth.next(this.areaInputEl.offsetWidth - 24);
       this.showResults_ = true;
     });
   }
@@ -133,23 +141,9 @@ export class AreaSearchState {
     console.log('SET AREA', value);
     this.stopSearching();
     this.area.next(value);
+    console.log('LLL SET AREA', value);
     if (value) {
-      this.mapMoveSubscription = timer(3000).pipe(
-        switchMap(() => this.searchParams),
-        distinctUntilChanged((a, b) => a.geoHash.localeCompare(b.geoHash) === 0),
-        first(),
-        tap(() => {
-          this.selectMapRegion();
-        }),
-        delay(500),        
-      ).subscribe(() => {
-        console.log('MAP MOVED');
-        // this.init();
-      });  
-    } else {
-      console.log('MAP UNSUB');
-      this.mapMoveSubscription?.unsubscribe();
-      this.mapMoveSubscription = null;
+      this.waitForMapArea(true);
     }
   }
 
@@ -203,6 +197,33 @@ export class AreaSearchState {
 
   get query_(): string {
     return this.queries.value || this.area.value || '';
+  }
+
+  waitForMapArea(subscribe: boolean) {
+    if (subscribe) {
+      if (this.mapMoveSubscription) {
+        this.mapMoveSubscription.unsubscribe();
+      }
+      console.log('LLL MAP SUB');
+      this.mapMoveSubscription = timer(5000).pipe(
+        switchMap(() => this.searchParams),
+        tap((params) => {
+          console.log('LLL MAP SEARCH PARAMS', params.geoHash, this.refGeoHash);
+        }),
+        filter((params) => params.geoHash !== this.refGeoHash),
+        first(),
+        tap(() => {
+          console.log('LLL MAP SELECT REGION');
+          this.selectMapRegion();
+        }),
+      ).subscribe(() => {
+        console.log('LLL MAP MOVED');
+      });  
+    } else {
+      console.log('LLL MAP UNSUB');
+      this.mapMoveSubscription?.unsubscribe();
+      this.mapMoveSubscription = null;
+    }
   }
 
 }

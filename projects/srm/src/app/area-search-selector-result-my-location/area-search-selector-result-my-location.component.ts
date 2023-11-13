@@ -10,6 +10,8 @@ export class AreaSearchSelectorResultMyLocationComponent implements OnInit {
 
   @Input() state: AreaSearchState;
 
+  NAME = 'קרוב למיקום הנוכחי שלי';
+
   constructor() { }
 
   ngOnInit(): void {
@@ -33,6 +35,7 @@ export class AreaSearchSelectorResultMyLocationComponent implements OnInit {
               lon: lon + radius,
             }
           };
+          this.state.area_ = this.NAME;
           this.state.bounds.next(bounds);
         }
       }
