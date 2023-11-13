@@ -1,4 +1,4 @@
-<div class='container'>
+<div class='container' [class.searching]='state.searching'>
     <div class='selector'
         [class.hide]='!(state.selectorVisible | async)'
         [style.width]='selectorWidth + "px"'
@@ -21,4 +21,7 @@
            (blur)='state.blurInput()'
            [(ngModel)]='state.query_'
     />
+    <a class='clear' *ngIf='state.searching || !!state.area_' (activated)='selectMapRegion()' clickOnReturn>
+
+    </a>
 </div>
