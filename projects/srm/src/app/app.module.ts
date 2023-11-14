@@ -70,6 +70,7 @@ import { MenuPopupMissingComponent } from './menu/menu-popup/menu-popup-missing/
 import { InteractionEventDirective } from './interaction-event.directive';
 import { TagEndingComponent } from './result-card/tag-ending/tag-ending.component';
 import { AreaSearchComponent } from './area-search/area-search.component';
+import { SearchFiltersBarComponent } from './search-filters-bar/search-filters-bar.component';
 
 @NgModule({
   declarations: [
@@ -136,6 +137,7 @@ import { AreaSearchComponent } from './area-search/area-search.component';
     InteractionEventDirective,
     TagEndingComponent,
     AreaSearchComponent,
+    SearchFiltersBarComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

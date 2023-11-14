@@ -16,6 +16,7 @@ import * as mapboxgl from 'mapbox-gl';
 import { AnalyticsService } from '../analytics.service';
 import { A11yService } from '../a11y.service';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
+import { FiltersState } from '../search-filters/filters-state';
 
 class SearchParamCalc {
   acId: string;
@@ -70,7 +71,7 @@ export class PageComponent implements OnInit {
   point = '';
   query = '';
   searchParams: SearchParams;
-  seatchParamsQueue = new Subject<SearchParams>();
+  searchParamsQueue = new Subject<SearchParams>();
   map_: MapComponent | null = null;
 
   DrawerState = DrawerState;
@@ -105,6 +106,7 @@ export class PageComponent implements OnInit {
 
   didYouMean: {display: string, link: string} | null = null;
   areaSearchState: AreaSearchState;
+  filtersState: FiltersState;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
               private platform: PlatformService, public layout: LayoutService, private analytics: AnalyticsService,
@@ -131,8 +133,8 @@ export class PageComponent implements OnInit {
       }),
     ).subscribe((spc) => {
       console.log('NATIONAL CHANGED', spc.national);
-      if (this.searchFilters) {
-        this.searchFilters.active = false;
+      if (this.filtersState) {
+        this.filtersState.active = false;
       }
     });
 
@@ -243,7 +245,7 @@ export class PageComponent implements OnInit {
           });
         }
         this.searchParams = ret;
-        this.seatchParamsQueue.next(ret);
+        this.searchParamsQueue.next(ret);
         return ret;
       }),
       switchMap((searchParams: SearchParams) => {
@@ -345,8 +347,8 @@ export class PageComponent implements OnInit {
           this.seo.setDescription(`כל השירותים למצב החירום המלחמתי וגם לשגרה. אספנו וסיווגנו ${totalServices.toLocaleString()} שירותים חברתיים מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים. אנחנו בטוחים שנמצא גם משהו בשבילך!`);
         });
       }
-      if (this.searchFilters) {
-        this.searchFilters.active = false;
+      if (this.filtersState) {
+        this.filtersState.active = false;
       }
       timer(100).subscribe(() => {
         this.setPadding();
@@ -411,11 +413,23 @@ export class PageComponent implements OnInit {
     if (this.platform.server()) {
       this.showLandingPageOverlay = false;
     }
-    this.areaSearchState = new AreaSearchState(api, this.seatchParamsQueue);
-    this.areaSearchState.bounds.subscribe((bounds) => {
+    this.areaSearchState = new AreaSearchState(api, this.searchParamsQueue);
+    this.areaSearchState.bounds.pipe(
+      untilDestroyed(this),
+    ).subscribe((bounds) => {
       this.zoomOutMap(bounds);
     });
-
+    this.filtersState = new FiltersState(this.api, this.searchParamsQueue, this, this.platform);
+    this.filtersState.params.pipe(
+      untilDestroyed(this),
+    ).subscribe((params) => {
+      this.setSearchParams(params);
+    });
+    this.filtersState.activate.pipe(
+      untilDestroyed(this),
+    ).subscribe((active) => {
+      this.setFiltersVisible(active);
+    });
   }
 
   ngOnInit(): void {
@@ -614,7 +628,7 @@ export class PageComponent implements OnInit {
         filter((x) => !!x),
         delay(100),
       ).subscribe(() => {
-        this.searchFilters.active = true;
+        this.filtersState.active = true;
       });
     }  
   }

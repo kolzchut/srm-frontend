@@ -1,0 +1,13 @@
+<app-search-filters-button [totalFilters]='filtersState.totalFilters' [showDiscovery]='!!filtersState.showDiscovery' (activate)='filtersState.active = true'
+interactionEvent='open-filters' [interactionEventWhere]='location.path(false)' [searchParams]='filtersState.searchParams'
+
+></app-search-filters-button>
+<div class='tags header' *ngIf='filtersState.responseCategoryItems && false'> <!-- todo #483 -->
+<app-response *ngFor='let response of filtersState.responseCategoryItems' 
+        [response]='response' 
+        [selected]='filtersState.isResponseCategorySelected(response)'
+        [disabled]='filtersState.isResponseCategoryDisabled(response)'
+        [dynamic]='true'
+        (clicked)='filtersState.toggleResponseCategory(response)'
+></app-response>
+</div>

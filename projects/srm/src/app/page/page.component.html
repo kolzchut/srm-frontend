@@ -27,11 +27,12 @@
                     [class.visible]='stage === "search-results" || (stage === "point" && !card)'
                     [class.filters]='filtersVisible'
                 >
+                    <app-search-filters-bar *ngIf='!filtersVisible' [filtersState]='filtersState'></app-search-filters-bar>
                     <app-search-filters 
+                        *ngIf='filtersVisible'
                         [searchParams]='searchParams'
                         [areaSearchState]='areaSearchState'
-                        (params)='setSearchParams($event)'
-                        (activate)='setFiltersVisible($event)'
+                        [filtersState]='filtersState'
                         #searchFilters
                     ></app-search-filters>
                 </div>

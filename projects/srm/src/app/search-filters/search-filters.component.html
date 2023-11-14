@@ -1,68 +1,51 @@
-<ng-container *ngIf='!active'>
-    <app-search-filters-button [totalFilters]='totalFilters' [showDiscovery]='!!showDiscovery' (activate)='active = true'
-        interactionEvent='open-filters' [interactionEventWhere]='location.path(false)' [searchParams]='searchParams'
-    
-    ></app-search-filters-button>
-    <div class='tags header' *ngIf='responseCategoryItems && false'> <!-- todo #483 -->
-        <app-response *ngFor='let response of responseCategoryItems' 
-                [response]='response' 
-                [selected]='isResponseCategorySelected(response)'
-                [disabled]='isResponseCategoryDisabled(response)'
-                [dynamic]='true'
-                (clicked)='toggleResponseCategory(response)'
-        ></app-response>
-    </div>
-</ng-container>
-<ng-container *ngIf='active'>
-    <div class='filtering-header layout-desktop'>
-        <button class='back' (activated)='clear()' aria-label='סגירת הסינון וחזרה לרשימת התוצאות' clickOnReturn></button>
-    </div>
-    <div class='situations-container'>
-        <div class='situations'>
-            <div class='section' *ngIf='responseItems && responseItems.length'>
-                <div class='section-header'>
-                    <!-- <div class='title' *ngIf='!searchParams.response'>סוגי שירות:</div>
-                    <div class='title' *ngIf='!!searchParams.response'>סוגי שירות נוספים:</div> -->
-                    <div class='title'>סוגי שירות:</div>
-                    <a class='clear' (activated)='currentSearchParams.filter_responses = []; pushSearchParams()' clickOnReturn role='button' tabindex="0" aria-label="ניקוי המסננים לסוגי השירותים">ניקוי</a>
-                </div>
-                <app-response-selection-widget [responses]='responseItems' [selectedResponses]='this.currentSearchParams?.filter_responses || []' (toggle)='toggleResponse($event)'></app-response-selection-widget>
+<div class='filtering-header layout-desktop'>
+    <button class='back' (activated)='filtersState.clear()' aria-label='סגירת הסינון וחזרה לרשימת התוצאות' clickOnReturn></button>
+</div>
+<div class='situations-container'>
+    <div class='situations'>
+        <div class='section' *ngIf='filtersState.responseItems && filtersState.responseItems.length'>
+            <div class='section-header'>
+                <!-- <div class='title' *ngIf='!searchParams.response'>סוגי שירות:</div>
+                <div class='title' *ngIf='!!searchParams.response'>סוגי שירות נוספים:</div> -->
+                <div class='title'>סוגי שירות:</div>
+                <a class='clear' (activated)='filtersState.currentSearchParams.filter_responses = []; filtersState.pushSearchParams()' clickOnReturn role='button' tabindex="0" aria-label="ניקוי המסננים לסוגי השירותים">ניקוי</a>
             </div>
-            <app-search-filters-situation-section title='קהלי יעד' [situations]='audiences' [searchParams]='currentSearchParams' [field]='"filter_situations"' (push)='pushSearchParams()'></app-search-filters-situation-section>
-            <app-search-filters-situation-section title='מצבים רפואיים ומוגבלויות' [situations]='health_issues' [searchParams]='currentSearchParams' [field]='"filter_health"' (push)='pushSearchParams()'></app-search-filters-situation-section>
-            <app-search-filters-situation-section title='מוכרות ממשלתית' [situations]='others.benefit_holders' [searchParams]='currentSearchParams' [field]='"filter_benefit_holders"' (push)='pushSearchParams()'></app-search-filters-situation-section>
-            <app-search-filters-situation-section title='מצב תעסוקתי' [situations]='others.employment' [searchParams]='currentSearchParams' [field]='"filter_employment"' (push)='pushSearchParams()'></app-search-filters-situation-section>
-            <app-search-filters-situation-section title='אירועי חיים' [situations]='others.life_events' [searchParams]='currentSearchParams' [field]='"filter_life_events"' (push)='pushSearchParams()'></app-search-filters-situation-section>
-            <app-search-filters-situation-section title='דחיפות' [situations]='others.urgency' [searchParams]='currentSearchParams' [field]='"filter_urgency"' (push)='pushSearchParams()'></app-search-filters-situation-section>
-            <app-search-filters-situation-section title='קהילה' [situations]='others.community' [searchParams]='currentSearchParams' [field]='"filter_community"' (push)='pushSearchParams()'></app-search-filters-situation-section>
-            <app-search-filters-situation-section title='תפקיד' [situations]='others.role' [searchParams]='currentSearchParams' [field]='"filter_role"' (push)='pushSearchParams()'></app-search-filters-situation-section>
-            <app-search-filters-situation-section title='קבוצות גיל' [situations]='age_groups' [searchParams]='currentSearchParams' [field]='"filter_age_groups"' (push)='pushSearchParams()'></app-search-filters-situation-section>
-            <app-search-filters-situation-section title='מיועד עבור' [situations]='others.gender' [searchParams]='currentSearchParams' [field]='"filter_gender"' (push)='pushSearchParams()'></app-search-filters-situation-section>
-            <app-search-filters-situation-section title='לדוברי שפות (שאינן עברית)' [situations]='languages' [searchParams]='currentSearchParams' [field]='"filter_languages"' (push)='pushSearchParams()'></app-search-filters-situation-section>
-        </div>    
-    </div>
-    <div class='submit'>
-        <div class='inner'>
-            <button class='main' (click)='closeWithParams()'>
-                <span aria-live='polite'>
-                    <strong *ngIf='resultCount > 1'>{{resultCount.toLocaleString()}} תוצאות</strong>
-                    <strong *ngIf='resultCount === 1'>תוצאה אחת</strong>
-                    <strong *ngIf='resultCount === 0'>אין תוצאות</strong>    
-                </span>
-                <span *ngIf='resultCountBounded >= 0 && resultCountBounded !== resultCount && !areaSearchState.nationWide_' class='bounded'>
-                    &nbsp;
-                    <span *ngIf='resultCountBounded > 1'>({{resultCountBounded.toLocaleString()}} באיזור המפה)</span>
-                    <span *ngIf='resultCountBounded === 1'>(אחת באיזור המפה)</span>
-                    <span *ngIf='resultCountBounded === 0'>(אין באיזור המפה)</span>
-                </span>
-                <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div>
-            </button>
-            <a class='cancel' (activated)='clear()' *ngIf='totalFilters' clickOnReturn role='button' tabindex="0" aria-label="ניקוי כלל המסננים">
-                ניקוי
-            </a>
-            <a class='cancel' (activated)='clear()' *ngIf='!totalFilters' clickOnReturn role='button' tabindex="0" aria-label="סגירת אפשרויות הסינון ללא שמירה">
-                ביטול
-            </a>
-        </div>  
-    </div>
-</ng-container>
+            <app-response-selection-widget [responses]='filtersState.responseItems' [selectedResponses]='this.filtersState.currentSearchParams?.filter_responses || []' (toggle)='filtersState.toggleResponse($event)'></app-response-selection-widget>
+        </div>
+        <app-search-filters-situation-section title='קהלי יעד' [situations]='filtersState.audiences' [searchParams]='filtersState.currentSearchParams' [field]='"filter_situations"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מצבים רפואיים ומוגבלויות' [situations]='filtersState.health_issues' [searchParams]='filtersState.currentSearchParams' [field]='"filter_health"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מוכרות ממשלתית' [situations]='filtersState.others.benefit_holders' [searchParams]='filtersState.currentSearchParams' [field]='"filter_benefit_holders"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מצב תעסוקתי' [situations]='filtersState.others.employment' [searchParams]='filtersState.currentSearchParams' [field]='"filter_employment"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='אירועי חיים' [situations]='filtersState.others.life_events' [searchParams]='filtersState.currentSearchParams' [field]='"filter_life_events"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='דחיפות' [situations]='filtersState.others.urgency' [searchParams]='filtersState.currentSearchParams' [field]='"filter_urgency"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='קהילה' [situations]='filtersState.others.community' [searchParams]='filtersState.currentSearchParams' [field]='"filter_community"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='תפקיד' [situations]='filtersState.others.role' [searchParams]='filtersState.currentSearchParams' [field]='"filter_role"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='קבוצות גיל' [situations]='filtersState.age_groups' [searchParams]='filtersState.currentSearchParams' [field]='"filter_age_groups"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מיועד עבור' [situations]='filtersState.others.gender' [searchParams]='filtersState.currentSearchParams' [field]='"filter_gender"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='לדוברי שפות (שאינן עברית)' [situations]='filtersState.languages' [searchParams]='filtersState.currentSearchParams' [field]='"filter_languages"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+    </div>    
+</div>
+<div class='submit'>
+    <div class='inner'>
+        <button class='main' (click)='filtersState.closeWithParams()'>
+            <span aria-live='polite'>
+                <strong *ngIf='filtersState.resultCount > 1'>{{filtersState.resultCount.toLocaleString()}} תוצאות</strong>
+                <strong *ngIf='filtersState.resultCount === 1'>תוצאה אחת</strong>
+                <strong *ngIf='filtersState.resultCount === 0'>אין תוצאות</strong>    
+            </span>
+            <span *ngIf='filtersState.resultCountBounded >= 0 && filtersState.resultCountBounded !== filtersState.resultCount && !areaSearchState.nationWide_' class='bounded'>
+                &nbsp;
+                <span *ngIf='filtersState.resultCountBounded > 1'>({{filtersState.resultCountBounded.toLocaleString()}} באיזור המפה)</span>
+                <span *ngIf='filtersState.resultCountBounded === 1'>(אחת באיזור המפה)</span>
+                <span *ngIf='filtersState.resultCountBounded === 0'>(אין באיזור המפה)</span>
+            </span>
+            <div class='count' *ngIf='filtersState.totalFilters'>{{filtersState.totalFilters}}</div>
+        </button>
+        <a class='cancel' (activated)='filtersState.clear()' *ngIf='filtersState.totalFilters' clickOnReturn role='button' tabindex="0" aria-label="ניקוי כלל המסננים">
+            ניקוי
+        </a>
+        <a class='cancel' (activated)='filtersState.clear()' *ngIf='!filtersState.totalFilters' clickOnReturn role='button' tabindex="0" aria-label="סגירת אפשרויות הסינון ללא שמירה">
+            ביטול
+        </a>
+    </div>  
+</div>
