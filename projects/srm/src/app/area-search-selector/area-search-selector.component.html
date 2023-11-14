@@ -15,7 +15,7 @@
             (activated)='selectMapRegion()'
     >באיזור המפה</button>
     <input class='area focusable' #area
-           [placeholder]='inputPlaceholder'
+           [placeholder]='state.inputPlaceholder | async'
            aria-label='חיפוש איזורים בארץ'
            (focus)='state.focusInput()'
            (blur)='state.blurInput()'
