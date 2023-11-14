@@ -54,9 +54,9 @@
             line-height: 20px; 
             white-space: nowrap;
 
-            &.with-text {
-                width: 140px;
-            }
+            // &.with-text {
+            //     width: 140px;
+            // }
             .mobile({
                 &:not(.with-text) {
                     width: 40px;
@@ -130,8 +130,10 @@
                 background-position: right 12px center;
                 background-image: url(../../assets/img/icon-search-blue-0.svg);
                 font-size: 20px;
+                color: @color-blue-1;
+
                 &::placeholder {
-                    color: @color-blue-0;
+                    color: @color-blue-2;
                     .font-rag-sans;
                     font-size: 16px;
                     font-weight: 300;
