@@ -2,7 +2,7 @@
     [class.gesture]='gesture'
     [class.national]='state === DrawerState.National'
     [style.height]='calcedHeight + "px"'>
-    <app-area-search [areaSearchState]='areaSearchState'></app-area-search>
+    <app-area-search [areaSearchState]='areaSearchState' *ngIf='layout.desktop && state !== DrawerState.National'></app-area-search>
     <ng-container *ngIf='nationalCount > 0'>
         <a *ngIf='state === DrawerState.National' class='national-bg' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" role='presentation' tabindex="-1">&nbsp;</a>
         <a class='national-services' [routerLink]='["."]' [queryParams]="{national: 'yes'}" [queryParamsHandling]='"merge"' [preserveFragment]="true"

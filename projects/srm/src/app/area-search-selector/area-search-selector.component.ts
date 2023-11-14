@@ -36,13 +36,13 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
       map(() => !!this.state.area_ ? this.areaEl :
         (this.state.nationWide_ ? this.nationWideEl : this.mapRegionEl)),
       tap((ref) => this.updateSelector(ref)),
-      delay(125),
+      delay(60),
       tap((ref) => this.updateSelector(ref)),
-      delay(125),
+      delay(60),
       tap((ref) => this.updateSelector(ref)),
-      delay(125),
+      delay(60),
       tap((ref) => this.updateSelector(ref)),
-      delay(125),
+      delay(60),
       tap((ref) => this.updateSelector(ref)),
     ).subscribe();
   }

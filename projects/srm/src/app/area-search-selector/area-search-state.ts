@@ -53,7 +53,6 @@ export class AreaSearchState {
     searchParams.pipe(
       delay(100),
     ).subscribe((params) => {
-      console.log('LLL REF GEO HASH', params?.geoHash);
       this.refGeoHash = params?.geoHash;
     });
   }
@@ -119,7 +118,7 @@ export class AreaSearchState {
     this.inputPlaceholder_ = 'חפש שירותים בישוב או איזור מוגדר';
     this.selectorVisible_ = false;
     timer(500).subscribe(() => {
-      this.resultsWidth.next(this.areaInputEl.offsetWidth);
+      this.resultsWidth.next(this.areaInputEl.offsetWidth - 2);
       this.showResults_ = true;
     });
   }
@@ -131,6 +130,7 @@ export class AreaSearchState {
     this.searching_ = false;
     this.inputPlaceholder_ = 'חיפוש';
     this.showResults_ = false;
+    this.resultsFocus = 0;
     this.query_ = null;
     timer(500).subscribe(() => {    
       this.init();  
@@ -138,10 +138,8 @@ export class AreaSearchState {
   }
 
   set area_(value: string | null) {
-    console.log('SET AREA', value);
     this.stopSearching();
     this.area.next(value);
-    console.log('LLL SET AREA', value);
     if (value) {
       this.waitForMapArea(true);
     }
@@ -204,23 +202,16 @@ export class AreaSearchState {
       if (this.mapMoveSubscription) {
         this.mapMoveSubscription.unsubscribe();
       }
-      console.log('LLL MAP SUB');
       this.mapMoveSubscription = timer(5000).pipe(
         switchMap(() => this.searchParams),
-        tap((params) => {
-          console.log('LLL MAP SEARCH PARAMS', params.geoHash, this.refGeoHash);
-        }),
         filter((params) => params.geoHash !== this.refGeoHash),
         first(),
         tap(() => {
-          console.log('LLL MAP SELECT REGION');
           this.selectMapRegion();
         }),
       ).subscribe(() => {
-        console.log('LLL MAP MOVED');
       });  
     } else {
-      console.log('LLL MAP UNSUB');
       this.mapMoveSubscription?.unsubscribe();
       this.mapMoveSubscription = null;
     }
