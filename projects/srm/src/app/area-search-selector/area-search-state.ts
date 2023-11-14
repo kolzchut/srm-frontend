@@ -115,7 +115,7 @@ export class AreaSearchState {
       return;
     }
     this.searching_ = true;
-    this.inputPlaceholder_ = 'חפש שירותים בישוב או איזור מוגדר';
+    this.inputPlaceholder_ = 'ניתן לחפש ישוב או איזור מוגדר';
     this.selectorVisible_ = false;
     timer(500).subscribe(() => {
       this.resultsWidth.next(this.areaInputEl.offsetWidth - 2);
