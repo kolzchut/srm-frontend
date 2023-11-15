@@ -100,16 +100,6 @@ export class AnalyticsService {
   cardEvent(card: Card, params: SearchParams | null, isLandingPage: boolean, index: number, select=false) {
     console.log('EVENT card', card);
     if (this.platform.browser() && window.gtag) {
-      window.gtag({
-        event: 'srm:card',
-        card_id: card.card_id,
-        card_name: card.service_name,
-        card_org: card.organization_id,
-        landing_page: isLandingPage ? 'yes' : 'no',
-        search_term: params?.original_query,
-        search_structured: !!params?.query ? 'no' : 'yes',
-      });
-
       if (select) {
         window.gtag({
           event: 'select_item',
@@ -119,6 +109,16 @@ export class AnalyticsService {
           }
         });  
       } else {
+        window.gtag({
+          event: 'srm:card',
+          card_id: card.card_id,
+          card_name: card.service_name,
+          card_org: card.organization_id,
+          landing_page: isLandingPage ? 'yes' : 'no',
+          search_term: params?.original_query,
+          search_structured: !!params?.query ? 'no' : 'yes',
+        });
+  
         window.gtag({
           event: 'view_item',
           ecommerce: {
