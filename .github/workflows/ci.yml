@@ -5,8 +5,21 @@ jobs:
   ci:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v2
-    - env:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - name: Build and upload source maps (in production only)
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: |
+        if [[ "${GITHUB_REF}" =~ ^refs/tags/.* ]]; then
+          npm install
+          npm run build
+          npm run upload-sourcemaps
+        fi
+    - name: Build Docker
+      env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SRM_DEVOPS_DEPLOY_KEY: ${{ secrets.SRM_DEVOPS_DEPLOY_KEY }}
         IMAGE_NAME: srm-frontend

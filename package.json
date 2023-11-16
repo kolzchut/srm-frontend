@@ -10,7 +10,8 @@
     "dev:ssr": "ng run srm:serve-ssr",
     "serve:ssr": "node dist/srm/server/main.js",
     "build:ssr": "ng build && ng run srm:server",
-    "prerender": "ng run srm:prerender"
+    "prerender": "ng run srm:prerender",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org phonaris --project kolsherut ./dist/srm/browser && sentry-cli sourcemaps upload --org phonaris --project kolsherut ./dist/srm/browser"
   },
   "private": true,
   "dependencies": {
@@ -26,6 +27,7 @@
     "@ngneat/until-destroy": "^9.2.2",
     "@nguniversal/express-engine": "^13.1.1",
     "@sentry/angular-ivy": "^7.80.1",
+    "@sentry/cli": "^2.21.5",
     "compression": "^1.7.4",
     "express": "^4.15.2",
     "mapbox-gl": "^2.10.0",

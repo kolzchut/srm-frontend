@@ -40,7 +40,8 @@
             "styles": [
               "projects/srm/src/styles.less"
             ],
-            "scripts": []
+            "scripts": [],
+            "sourceMap": true
           },
           "configurations": {
             "production": {
