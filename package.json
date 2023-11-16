@@ -25,6 +25,7 @@
     "@angular/router": "~13.3.11",
     "@ngneat/until-destroy": "^9.2.2",
     "@nguniversal/express-engine": "^13.1.1",
+    "@sentry/angular-ivy": "^7.80.1",
     "compression": "^1.7.4",
     "express": "^4.15.2",
     "mapbox-gl": "^2.10.0",

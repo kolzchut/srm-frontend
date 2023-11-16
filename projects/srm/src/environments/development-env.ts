@@ -20,6 +20,7 @@ export const devEnv: any = {
   suggestChangesForm: 'https://form.jotform.com/222203528302038',
   mapStyle: 'mapbox://styles/srm-kolzchut/ckzwhyzwr000t14mkynmw94zw/draft',
   gaTag: 'UA-16990732-9',
+  sentry: false,
 
   externalUrl: 'http://localhost:4200',
   // gaTag: 'G-0FXK63SSNX',

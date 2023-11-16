@@ -1,5 +1,7 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
+import { Router } from "@angular/router";
+import * as Sentry from "@sentry/angular-ivy";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -148,7 +150,23 @@ import { SearchFiltersBarComponent } from './search-filters-bar/search-filters-b
     AppRoutingModule
   ],
   providers: [
-    {provide: RouteReuseStrategy, useClass: CustomReuseStrategy}
+    {provide: RouteReuseStrategy, useClass: CustomReuseStrategy},
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        showDialog: true,
+      }),
+    },
+    {
+      provide: Sentry.TraceService,
+      deps: [Router],
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => () => {},
+      deps: [Sentry.TraceService],
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

@@ -23,6 +23,7 @@ export const environment = {
   suggestChangesForm: 'https://form.jotform.com/222203528302038',
   mapStyle: 'mapbox://styles/srm-kolzchut/ckzwhyzwr000t14mkynmw94zw',
   gaTag: 'GTM-N6QJLRL',
+  sentry: true,
 
   externalUrl: 'https://www.kolsherut.org.il',
   // gaTag: 'G-0FXK63SSNX',
