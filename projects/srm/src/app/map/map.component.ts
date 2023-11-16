@@ -121,6 +121,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
   @ViewChild('stablePopup') stablePopupEl: ElementRef;
   @ViewChild('hoverPopup') hoverPopupEl: ElementRef;
 
+  ready = new ReplaySubject<boolean>(1);
   map: mapboxgl.Map;
   addedImages: {[key: string]: boolean} = {};
 
@@ -554,6 +555,8 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
           this.bounds = this.map.getBounds();
           timer(100).subscribe(() => {
             this.newMap.next(this);
+            this.ready.next(true);
+            this.ready.complete();
             this.ngOnChanges(this.savedChanges);
             this.updateBounds();
             this.processAction();
@@ -729,27 +732,29 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   applyFilters() {
-    const filters: any[] = [];
-    if (this.activePointFilter && this.activePointFilter.length) {
-      filters.push(this.activePointFilter);
-    }
-    if (this.pointIdsFilter && this.pointIdsFilter.length) {
-      filters.push(this.pointIdsFilter);
-    }
-    for (const layer of LAYERS_FILTERABLE) {
-      let layerFilters: any[] | null = filters.slice();
-      if (BASE_FILTERS[layer]) {
-        layerFilters.push(BASE_FILTERS[layer]);
+    this.ready.pipe(first()).subscribe(() => {      
+      const filters: any[] = [];
+      if (this.activePointFilter && this.activePointFilter.length) {
+        filters.push(this.activePointFilter);
       }
-      if (layerFilters.length > 1) {
-        layerFilters.unshift('all');
-      } else if (layerFilters.length === 1) {
-        layerFilters = layerFilters[0];
-      } else {
-        layerFilters = null;
+      if (this.pointIdsFilter && this.pointIdsFilter.length) {
+        filters.push(this.pointIdsFilter);
       }
-      this.map.setFilter(layer, layerFilters);
-    }
+      for (const layer of LAYERS_FILTERABLE) {
+        let layerFilters: any[] | null = filters.slice();
+        if (BASE_FILTERS[layer]) {
+          layerFilters.push(BASE_FILTERS[layer]);
+        }
+        if (layerFilters.length > 1) {
+          layerFilters.unshift('all');
+        } else if (layerFilters.length === 1) {
+          layerFilters = layerFilters[0];
+        } else {
+          layerFilters = null;
+        }
+        this.map.setFilter(layer, layerFilters);
+      }
+    });
   }
 
   setActivePoint(props: any) {
