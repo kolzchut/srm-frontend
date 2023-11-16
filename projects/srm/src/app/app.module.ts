@@ -154,7 +154,7 @@ import { SearchFiltersBarComponent } from './search-filters-bar/search-filters-b
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler({
-        showDialog: true,
+        showDialog: false,
       }),
     },
     {
