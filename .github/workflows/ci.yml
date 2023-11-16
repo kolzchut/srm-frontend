@@ -16,7 +16,7 @@ jobs:
         if [[ "${GITHUB_REF}" =~ ^refs/tags/.* ]]; then
           npm install
           npm run build
-          npm run upload-sourcemaps
+          npm run sentry:sourcemaps
         fi
     - name: Build Docker
       env:
