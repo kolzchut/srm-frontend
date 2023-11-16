@@ -43,8 +43,10 @@ export class CardComponent implements OnInit, OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     const first = this.el.nativeElement.querySelector('.visible app-card-action a') as HTMLElement;
-    first?.classList.add('primary');
-    this.obs.observe(first);
+    if (first) {
+      first.classList.add('primary');
+      this.obs.observe(first);
+    }
   }
 
   get suggestChangesForm() {
