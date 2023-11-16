@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*json /app/
 RUN apt-get update
-RUN apt-get install ca-certificates
+RUN apt-get install -y ca-certificates
 RUN npm install -g npm@7
 RUN npm install
 
