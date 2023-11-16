@@ -3,6 +3,8 @@ FROM node:lts-buster-slim as build
 WORKDIR /app
 
 COPY package*json /app/
+RUN apt-get update
+RUN apt-get install ca-certificates
 RUN npm install -g npm@7
 RUN npm install
 
