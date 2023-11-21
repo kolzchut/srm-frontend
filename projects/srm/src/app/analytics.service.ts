@@ -72,18 +72,22 @@ export class AnalyticsService {
     const title = params.original_query;
     console.log('EVENT search', title, isLandingPage, numTotalResults);
     if (title && this.platform.browser() && window.gtag) {
+      const responseCount = (params.filter_responses || []).length;
+      const eventParams = {
+        search_term: title,
+        filter_count: params.allTaxonomyIds.filter(x => !!x).length - responseCount,
+        filter_responses_count: responseCount,
+        filter_response_categories_count: (params.filter_response_categories || []).length,
+        filter_national: params.national ? 'yes' : 'no',
+        landing_page: isLandingPage ? 'yes' : 'no',
+        search_structured: !!params.query ? 'no' : 'yes',
+        num_results_total: numTotalResults,
+      };
+
       if (offset === 0) {
-        const responseCount = (params.filter_responses || []).length;
         window.gtag({
           event: 'srm:search',
-          search_term: title,
-          filter_count: params.allTaxonomyIds.filter(x => !!x).length - responseCount,
-          filter_responses_count: responseCount,
-          filter_response_categories_count: (params.filter_response_categories || []).length,
-          filter_national: params.national ? 'yes' : 'no',
-          landing_page: isLandingPage ? 'yes' : 'no',
-          search_structured: !!params.query ? 'no' : 'yes',
-          num_results_total: numTotalResults,
+          ...eventParams
         });
       }
 
@@ -92,7 +96,8 @@ export class AnalyticsService {
         ecommerce: {
           item_list_name: title,
           items: items.map((item, idx) => this.cardToItem(item, idx + 1 + offset))
-        }
+        },
+        ...eventParams
       });
     }
   }
@@ -109,21 +114,25 @@ export class AnalyticsService {
           }
         });  
       } else {
-        window.gtag({
-          event: 'srm:card',
+        const eventParams = {
           card_id: card.card_id,
           card_name: card.service_name,
           card_org: card.organization_id,
           landing_page: isLandingPage ? 'yes' : 'no',
           search_term: params?.original_query,
           search_structured: !!params?.query ? 'no' : 'yes',
+        };
+        window.gtag({
+          event: 'srm:card',
+          ...eventParams
         });
   
         window.gtag({
           event: 'view_item',
           ecommerce: {
             items: [this.cardToItem(card, index, params?.original_query)]
-          }
+          },
+          ...eventParams
         });  
       }
     }
@@ -132,13 +141,17 @@ export class AnalyticsService {
   cardActionEvent(card: Card, action: string, action_url: string) {
     console.log('EVENT card action', action, action_url, card);
     if (window.gtag && this.platform.browser()) {
-      window.gtag({
-        event: 'srm:card_action',
+      const eventParams = {
         card_id: card.card_id,
         card_name: card.service_name,
         card_org: card.organization_id,
         action_type: action,
         action_url: action_url
+      };
+
+      window.gtag({
+        event: 'srm:card_action',
+        ...eventParams
       });
 
       window.gtag({
@@ -146,7 +159,8 @@ export class AnalyticsService {
         cta_action: action,
         ecommerce: {
           items: [this.cardToItem(card, 0)]
-        }
+        },
+        ...eventParams
       });
     }
   }
