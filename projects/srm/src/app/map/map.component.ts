@@ -597,7 +597,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
     const layerIndex = oldLayers.findIndex(l => l.id === layerId);
     const layerDef: any = oldLayers[layerIndex];
     const before = oldLayers[layerIndex + 1] && oldLayers[layerIndex + 1].id;
-    layerDef['source-layer'] = accurate ? 'geo_data_staging' : 'geo_data_inaccurate_staging';
+    layerDef['source-layer'] = accurate ? 'point_data_staging' : 'point_data_inaccurate_staging';
     map.removeLayer(layerId);
     map.addLayer(layerDef, before);
   }
