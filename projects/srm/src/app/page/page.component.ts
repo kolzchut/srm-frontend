@@ -455,7 +455,9 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.surveyMutationObserver.disconnect();
+    this.platform.browser(() => {
+      this.surveyMutationObserver.disconnect();
+    });
   }
 
   needsDidYouMean(searchParams: SearchParams) {
