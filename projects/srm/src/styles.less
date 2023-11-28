@@ -69,17 +69,19 @@ input[type="search"]::-webkit-search-results-decoration {
   -webkit-appearance:none;
 }
 
-// HotJar style fixes
-._hj-widget-theme-light._hj-widget-container  * {
-    font-family: RAG Sans,sans-serif !important;
-    text-align: right !important;
-}
+html {
+    /* HotJar style fixes */
+    ._hj-widget-theme-light._hj-widget-container  * {
+        font-family: 'RAG Sans' ,sans-serif !important;
+        text-align: right !important;
+    }
 
-._hj-widget-theme-light._hj-widget-container  input[type=range] {
-    direction: ltr !important;
-    transform: rotate(180deg);
-}
+    ._hj-widget-theme-light._hj-widget-container  input[type=range] {
+        direction: ltr !important;
+        transform: rotate(180deg);
+    }
 
-._hj-widget-theme-light._hj-widget-container  datalist > option {
-    text-align: center !important;
+    ._hj-widget-theme-light._hj-widget-container  datalist > option {
+        text-align: center !important;
+    }
 }
