@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-search-filters-button',
@@ -15,5 +15,4 @@ export class SearchFiltersButtonComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }
