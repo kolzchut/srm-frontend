@@ -178,9 +178,8 @@
         display: flex;
         flex-flow: column;
         justify-content: flex-end;
-        // height: 400px;
+        height: 400px;
         max-width: 100%;
-        width: 360px;
         position: absolute;
         pointer-events: none;
         margin: 0;
@@ -194,20 +193,25 @@
 
         &.visible {
             transform: translateY(0%);
-            // box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+            background: white;
+            box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
         }
 
         .desktop({
             bottom: -16px;
             left: 50px;
+            width: 360px;
         });
         .mobile({
             bottom: -20px;
             left: 0;
+            width: 100%px;
         });
         ::ng-deep {
             * {
                 pointer-events: all;
+                box-shadow: none;
+                text-align: right !important
             }
         }
     }
