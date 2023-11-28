@@ -173,6 +173,41 @@
         clip: rect(1px, 1px, 1px, 1px);
         white-space: nowrap;
     }
+
+    .survey {
+        height: 200px;
+        max-width: 100%;
+        width: 360px;
+        position: absolute;
+        pointer-events: none;
+        margin: 0;
+        background: none;
+        // border: 1px solid black;
+        z-index: 1000;
+        border-radius: 4px;
+        overflow: hidden;
+        transition: transform 0.2s ease-in-out;
+        transform: translateY(calc(100% ~'+' 20px));
+
+        &.visible {
+            transform: translateY(0%);
+            box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+        }
+
+        .desktop({
+            bottom: 4px;
+            left: 50px;
+        });
+        .mobile({
+            bottom: 0;
+            left: 0;
+        });
+        ::ng-deep {
+            * {
+                pointer-events: all;
+            }
+        }
+    }
 }
 
 @keyframes hide-results {

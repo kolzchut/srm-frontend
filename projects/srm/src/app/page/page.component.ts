@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LngLatLike } from 'mapbox-gl';
@@ -64,7 +64,7 @@ class SearchParamCalc {
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.less']
 })
-export class PageComponent implements OnInit {
+export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   stage = '';
   card = '';
@@ -107,6 +107,10 @@ export class PageComponent implements OnInit {
   didYouMean: {display: string, link: string} | null = null;
   areaSearchState: AreaSearchState;
   filtersState: FiltersState;
+
+  @ViewChild('survey') survey: ElementRef;
+  surveyMutationObserver: MutationObserver;
+  surveyVisible = false;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
               private platform: PlatformService, public layout: LayoutService, private analytics: AnalyticsService,
@@ -433,6 +437,23 @@ export class PageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
+    this.surveyMutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          this.surveyVisible = (this.survey.nativeElement as HTMLElement).childElementCount > 0;
+        }
+      });
+    });
+    this.surveyMutationObserver.observe(this.survey.nativeElement, {
+      childList: true,
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.surveyMutationObserver.disconnect();
   }
 
   needsDidYouMean(searchParams: SearchParams) {
