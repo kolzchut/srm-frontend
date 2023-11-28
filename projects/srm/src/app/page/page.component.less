@@ -178,7 +178,7 @@
         display: flex;
         flex-flow: column;
         justify-content: flex-end;
-        height: 400px;
+        height: wrap-content;
         max-width: 100%;
         position: absolute;
         pointer-events: none;
@@ -187,7 +187,7 @@
         // border: 1px solid black;
         z-index: 1000;
         border-radius: 4px;
-        overflow: hidden;
+        // overflow: hidden;
         transition: transform 0.2s ease-in-out;
         transform: translateY(calc(100% ~'+' 20px));
 
@@ -214,10 +214,13 @@
                 text-align: right !important;
                 font-family: 'RAG Sans', sans-serif !important;
             }
-            ._hj-widget-container > * > * {
-                font-family: 'RAG Sans', sans-serif !important;
-                * {
+            ._hj-widget-container {
+                box-shadow: none !important;
+                & > * > * {
                     font-family: 'RAG Sans', sans-serif !important;
+                    * {
+                        font-family: 'RAG Sans', sans-serif !important;
+                    }
                 }
             }
         }
