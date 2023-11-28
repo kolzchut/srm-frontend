@@ -440,15 +440,17 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.surveyMutationObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'childList') {
-          this.surveyVisible = (this.survey.nativeElement as HTMLElement).childElementCount > 0;
-        }
+    this.platform.browser(() => {
+      this.surveyMutationObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'childList') {
+            this.surveyVisible = (this.survey.nativeElement as HTMLElement).childElementCount > 0;
+          }
+        });
       });
-    });
-    this.surveyMutationObserver.observe(this.survey.nativeElement, {
-      childList: true,
+      this.surveyMutationObserver.observe(this.survey.nativeElement, {
+        childList: true,
+      });
     });
   }
 
