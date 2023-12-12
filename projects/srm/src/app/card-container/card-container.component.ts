@@ -199,4 +199,9 @@ export class CardContainerComponent implements OnInit, OnChanges {
   get nationalService(): boolean {
     return !!this.card?.national_service;
   }
+
+  navigateBack(): void {
+    this.router.navigate(['../../'], {relativeTo: this.route, queryParamsHandling: 'preserve'});
+  }
+
 }

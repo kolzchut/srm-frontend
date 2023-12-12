@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Card } from '../consts';
 import { LayoutService } from '../layout.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-branch-header',
@@ -16,9 +17,21 @@ export class BranchHeaderComponent implements OnInit {
   @Input() compact = true;
   @Input() landingPage = false;
 
-  constructor(public layout: LayoutService) { }
+  constructor(public layout: LayoutService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
   }
 
+  navigate(): void {
+    const link = this.layout.mobile() ? this.link : (this.landingPage ? null : ["../.."]);
+    const relativeTo = link && link[0][0] === '.' ? this.route : null;
+    const params: any = {queryParamsHandling: 'preserve'};
+    console.log('navigate', link, relativeTo);
+    if (link) {
+      if (relativeTo) {
+        params.relativeTo = relativeTo;
+      }
+      this.router.navigate(link, params);
+    }
+  }
 }

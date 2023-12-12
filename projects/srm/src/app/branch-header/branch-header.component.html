@@ -1,10 +1,10 @@
 <a class='header'
-    [routerLink]='layout.mobile() ? link : (landingPage ? null : ["../.."])' 
-    queryParamsHandling='preserve'
     *ngIf='card'
     [class.point]='!!pointId'
     [attr.role]='layout.mobile() ? "button" : (landingPage ? null : "button")'
     [attr.aria-label]='layout.mobile() ? (!!pointId ? "מעבר לתצוגת שירות בודד" : "מעבר לתצוגת סניף שלם") : (landingPage ? null : "חזרה לעמוד הקודם")'
+    (activated)='navigate()'
+    clickOnReturn
 >
     <button class='back-icon layout-desktop' [class.card]='!!cardId' [class.point]='!!pointId' *ngIf='!landingPage' aria-label="סגירת עמוד השירות וחזרה לעמוד הקודם"></button>
     <div class='spacer layout-desktop' *ngIf='landingPage'></div>

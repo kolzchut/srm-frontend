@@ -15,6 +15,8 @@ export class ResponseLinkyComponent extends ResponseBase implements OnChanges {
   @Input() search = true;
   @Input() small = false;
 
+  responseQuery = '';
+
   constructor() {
     super();
   }
@@ -22,9 +24,6 @@ export class ResponseLinkyComponent extends ResponseBase implements OnChanges {
   ngOnChanges(): void {
     this.initColors(this.response);
     this.recalcColors();
-  }
-
-  get responseQuery() {
-    return prepareQuery(this.response.name || '');
+    this.responseQuery = prepareQuery(this.response.name || '');
   }
 }
