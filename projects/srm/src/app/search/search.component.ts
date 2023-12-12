@@ -29,7 +29,8 @@ export class SearchComponent implements OnInit {
     this.searchConfig.queries.pipe(
       untilDestroyed(this),
     ).subscribe((query) => {
-      this.router.navigate([], {
+      this.router.navigate(['.'], {
+        relativeTo: this.route,
         queryParams: {
           q: query
         },

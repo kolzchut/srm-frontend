@@ -71,15 +71,20 @@
     background-size: contain;
 }
 
+.hover-bg-image(@bg) when not (@bg = none) {
+    &:hover {
+        background-image: @bg;
+    }
+}
+
 .button-image(@bg,@bghover) {
     border: none;
     margin: 0;
     padding: 0;
     cursor: pointer;
     background: @bg;
-    &:hover {
-        background: @bghover;
-    }
+
+    .hover-bg-image(@bghover);
     &, &:hover {
         .background-image;
     }
