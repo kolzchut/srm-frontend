@@ -70,8 +70,11 @@ export class ResultCardComponent implements OnChanges {
       }  
     }
 
+    const cardSituations = this.card.situations?.map((s) => Object.assign({}, s)) || [];
+    const cardResponses = this.card.responses?.map((r) => Object.assign({}, r)) || [];
+
     this.selectedSituations = [];
-    this.card.situations?.forEach((s: TaxonomyItem) => {
+    cardSituations.forEach((s: TaxonomyItem) => {
       if (this.searchParams?.allTaxonomyIds.includes(s.id || '')) {
         s.__selected = true;
         s.name = '<em>' + s.name + '</em>';
@@ -79,7 +82,7 @@ export class ResultCardComponent implements OnChanges {
       }
     });
     this.selectedResponses = [];
-    this.card.responses?.forEach((r: TaxonomyItem) => {
+    cardResponses.forEach((r: TaxonomyItem) => {
       if (this.searchParams?.allTaxonomyIds.includes(r.id || '')) {
         r.__selected = true;
         r.name = '<em>' + r.name + '</em>';
@@ -90,7 +93,7 @@ export class ResultCardComponent implements OnChanges {
     if (this.card?._highlights && this.card?._highlights['situations.name.hebrew']) {
       const highlighted = this.card._highlights['situations.name.hebrew'];
       if (highlighted.length === this.card?.situations?.length) {
-        this.card.situations.forEach((s, i) => {
+        cardSituations.forEach((s, i) => {
           if (!s.__selected && highlighted[i]?.indexOf('<em>') >= 0) {
             s.name = highlighted[i];
             s.__selected = true;
@@ -102,7 +105,7 @@ export class ResultCardComponent implements OnChanges {
     if (this.card?._highlights && this.card?._highlights['responses.name.hebrew']) {
       const highlighted = this.card._highlights['responses.name.hebrew'];
       if (highlighted.length === this.card?.responses?.length) {
-        this.card.responses.forEach((r, i) => {
+        cardResponses.forEach((r, i) => {
           if (!r.__selected && highlighted[i]?.indexOf('<em>') >= 0) {
             r.name = highlighted[i];
             r.__selected = true;
@@ -111,19 +114,19 @@ export class ResultCardComponent implements OnChanges {
         });
       }
     }
-    if (this.selectedSituations.length === 0 && this.card.situations?.length > 0) {
-      this.card.situations[0].__selected = true;
-      this.selectedSituations.push(this.card.situations[0]);
+    if (this.selectedSituations.length === 0 && cardSituations.length > 0) {
+      cardSituations[0].__selected = true;
+      this.selectedSituations.push(cardSituations[0]);
     }
-    if (this.card.responses?.length > 0) {
-      this.card.responses.forEach((r) => {
+    if (cardResponses.length > 0) {
+      cardResponses.forEach((r) => {
         r.category = r.id?.split(':')[1];
       });
       const requiredCategory = this.searchParams?.filter_response_categories?.length === 1 ? 
           this.searchParams.filter_response_categories[0].slice('human_services:'.length) : 
           this.card.response_category;
       if ((this.selectedResponses.length > 0 && requiredCategory !== this.selectedResponses[0].category) || this.selectedResponses.length === 0) {
-        for (const r of this.card.responses) {
+        for (const r of cardResponses) {
           if (r.category === requiredCategory) {
             this.selectedResponses = [r, ...this.selectedResponses.filter((sr) => sr.id !== r.id)];
             r.__selected = true;
@@ -135,7 +138,7 @@ export class ResultCardComponent implements OnChanges {
 
     let deselectedCount = 0;
     this.deselectedSituations = [];
-    this.card.situations?.forEach((s: TaxonomyItem) => {
+    cardSituations.forEach((s: TaxonomyItem) => {
       if (!s.__selected && deselectedCount < 2) {
         this.deselectedSituations.push({
           id: s.id,
@@ -149,7 +152,7 @@ export class ResultCardComponent implements OnChanges {
     deselectedCount = 0;
     this.deselectedResponses = [];
     let categories = this.selectedResponses.map((r) => r.category);
-    this.card.responses?.forEach((r: TaxonomyItem) => {
+    cardResponses.forEach((r: TaxonomyItem) => {
       if (!r.__selected && deselectedCount < 2 && !categories.includes(r.category)) {
         this.deselectedResponses.push({
           id: r.id,
@@ -162,7 +165,7 @@ export class ResultCardComponent implements OnChanges {
       }
     });
     if (deselectedCount < 2) {
-      this.card.responses?.forEach((r: TaxonomyItem) => {
+      cardResponses.forEach((r: TaxonomyItem) => {
         if (!r.__selected && deselectedCount < 2) {
           this.deselectedResponses.push({
             id: r.id,
