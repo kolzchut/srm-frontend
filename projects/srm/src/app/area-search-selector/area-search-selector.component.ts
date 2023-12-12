@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { AreaSearchState } from './area-search-state';
 import { delay, map, tap, timer } from 'rxjs';
+import { PlatformService } from '../platform.service';
 
 @UntilDestroy()
 @Component({
@@ -23,7 +24,7 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
 
   inputPlaceholder = 'חיפוש';
   
-  constructor(private el: ElementRef) {
+  constructor(private el: ElementRef, private ps: PlatformService) {
   }
 
   ngOnInit(): void {
@@ -65,7 +66,7 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
 
   updateSelector(ref: ElementRef): void {
     const el = ref.nativeElement as HTMLDivElement;
-    if (el !== null) {
+    if (!!el && this.ps.browser()) {
       const width = el.offsetWidth;
       const boundingRect = el.getBoundingClientRect();
       const hostBoundingRect = this.el.nativeElement.getBoundingClientRect();

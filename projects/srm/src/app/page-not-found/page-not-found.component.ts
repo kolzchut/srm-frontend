@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { REQUEST } from '@nguniversal/express-engine/tokens';
+import { REQUEST } from '../../express.tokens';
 import { PlatformService } from '../platform.service';
 import { Request } from 'express';
 

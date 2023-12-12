@@ -1,31 +1,34 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { WindowService } from './window.service';
 import { fromEvent } from 'rxjs';
+import { PlatformService } from './platform.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LayoutService {
 
-  mobile = false;
-  desktop = true;
+  mobile = signal(false);
+  desktop = signal(false);
 
-  constructor(private window: WindowService) {
-    if (this.window._) {
-      fromEvent(this.window._, 'resize').subscribe(() => {
-        this._check();
-      });
-    }
-    this._check();
+  constructor(private window: WindowService, private ps: PlatformService) {
+    this.ps.browser(() => {
+      if (this.window._) {
+        fromEvent(this.window._, 'resize').subscribe(() => {
+          this._check();
+        });
+      }
+      this._check();
+    });
   }
 
   private _check() {
     if (this.window._?.innerWidth) {
-      this.mobile = this.window._.innerWidth < 768;
-      this.desktop = this.window._.innerWidth >= 768;
+      this.mobile.set(this.window._.innerWidth < 1000);
+      this.desktop.set(!this.mobile());
     } else {
-      this.mobile = false;
-      this.desktop = true;
+      this.mobile.set(false);
+      this.desktop.set(true);
     }
   }
 

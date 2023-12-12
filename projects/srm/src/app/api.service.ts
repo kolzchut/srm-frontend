@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult, CARD_SNIPPET_FIELDS, TaxonomyItem, SearchParams, DistinctItem, QueryTaxonomyItemResult, SITUATION_FILTERS, Place, QueryPlaceResult } from './consts';
 import { PlatformService } from './platform.service';
 import * as memoryCache from 'memory-cache';
-import { REQUEST } from '@nguniversal/express-engine/tokens';
+import { REQUEST } from '../express.tokens';
 import { Request } from 'express';
 import { LngLatBounds } from 'mapbox-gl';
 import { Router } from '@angular/router';

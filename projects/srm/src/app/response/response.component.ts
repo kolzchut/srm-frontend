@@ -45,7 +45,7 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
 
   recalcColors(): void {
     this.expandColor = this.color;
-    this.fontWeight = this.layout.mobile ? 400 : 300;
+    this.fontWeight = this.layout.mobile() ? 400 : 300;
     if (this.active) {
       this.bgColor = this.shade(10);
       this.borderColor = this.color;
@@ -92,6 +92,6 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
   }
 
   get smaller() {
-    return this.small || this.layout.mobile;
+    return this.small || this.layout.mobile();
   }
 }

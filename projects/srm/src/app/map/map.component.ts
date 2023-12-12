@@ -280,7 +280,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
           preserveDrawingBuffer: true,
         };
         this.map = new mapboxgl.Map(mapParams);
-        if (this.layout.desktop) {
+        if (this.layout.desktop()) {
           this.map.addControl(new mapboxgl.NavigationControl({showCompass: false}), 'bottom-left');
         }
         this.map.addControl(new mapboxgl.AttributionControl({compact: true}), 'bottom-left');
@@ -359,10 +359,10 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
                   if (this.searchParams?.ac_query) {
                     route.push('s', this.searchParams?.ac_query);
                   }
-                  if (newCardId && this.layout.desktop) {
+                  if (newCardId && this.layout.desktop()) {
                     route.push('c', newCardId);
                   } else {
-                    if (this.layout.mobile) {
+                    if (this.layout.mobile()) {
                       if (this.cardId && (!this.pointId || this.pointId === props.point_id)) {
                         route.push('c', this.cardId, 'p', props.point_id);
                       } else if (this.pointId === props.point_id && this.markerProps.card_id) {
@@ -386,7 +386,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
               e.preventDefault();
             });
             this.map.on('mousemove', layerName, (e: mapboxgl.MapLayerMouseEvent) => {
-              if (e.defaultPrevented || this.layout.mobile) {
+              if (e.defaultPrevented || this.layout.mobile()) {
                 return;
               }
               e.preventDefault();
@@ -451,7 +451,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
             item.setAttribute('tabindex', '-1'); 
           });
           this.map.on('mousemove', (e: mapboxgl.MapLayerMouseEvent) => {
-            if (e.defaultPrevented || this.layout.mobile) {
+            if (e.defaultPrevented || this.layout.mobile()) {
               return;
             }
             e.preventDefault();
@@ -459,7 +459,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
             this.map.getCanvas().style.cursor = '';
           });
           this.map.on('click', (e: mapboxgl.MapLayerMouseEvent) => {
-            if (e.defaultPrevented || this.layout.mobile) {
+            if (e.defaultPrevented || this.layout.mobile()) {
               return;
             }
             e.preventDefault();

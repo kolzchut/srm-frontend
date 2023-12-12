@@ -1,37 +1,31 @@
-/***************************************************************************************************
- * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
- */
-import '@angular/localize/init';
-import 'zone.js/dist/zone-node';
 
-import { ngExpressEngine } from '@nguniversal/express-engine';
-import * as express from 'express';
-import { join } from 'path';
+import 'zone.js/node';
 
-import { AppServerModule } from './src/main.server';
 import { APP_BASE_HREF } from '@angular/common';
-import { existsSync } from 'fs';
-
+import { CommonEngine } from '@angular/ssr';
+import * as express from 'express';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { AppServerModule as bootstrap } from './src/main.server';
+import { REQUEST, RESPONSE } from './src/express.tokens';
 import { environment  } from './src/environments/environment';
 import fetch from 'node-fetch';
-import * as compression from 'compression';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
   const distFolder = join(process.cwd(), 'dist/srm/browser');
-  const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
+  const indexHtml = existsSync(join(distFolder, 'index.original.html'))
+    ? join(distFolder, 'index.original.html')
+    : join(distFolder, 'index.html');
 
-  server.use(compression());
-
-  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
-  server.engine('html', ngExpressEngine({
-    bootstrap: AppServerModule,
-  }));
+  const commonEngine = new CommonEngine();
 
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
+  // Example Express Rest API endpoints
+  // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
   server.get('*.*', express.static(distFolder, {
     maxAge: '1y'
@@ -44,28 +38,37 @@ export function app(): express.Express {
       )
     )
   });
+  // All regular routes use the Angular engine
+  server.get('*', (req, res, next) => {
+    const { protocol, originalUrl, baseUrl, headers } = req;
 
-  // All regular routes use the Universal engine
-  server.get('*', (req, res) => {
-    res.render(indexHtml, {
-      req, providers: [
-        { provide: APP_BASE_HREF, useValue: req.baseUrl }
-      ]
-    }, (error, html) => {
-      console.log(`${new Date().toISOString()} | ${res.statusCode} | ${error?.name || 'OK'} | ${req.url} | ${req.headers['user-agent']}}`);      
-      if (error) {
-        res.status(500).send(error);
-      } else if (!res.headersSent && !res.finished) {
-        res.send(html);
-      }
-    });
+    commonEngine
+      .render({
+        bootstrap,
+        documentFilePath: indexHtml,
+        url: `${protocol}://${headers.host}${originalUrl}`,
+        publicPath: distFolder,
+        providers: [
+          { provide: APP_BASE_HREF, useValue: baseUrl },
+          { provide: RESPONSE, useValue: res },
+          { provide: REQUEST, useValue: req }
+],
+      })
+      .then((html) => {
+        console.log(`${new Date().toISOString()} | ${res.statusCode} | OK | ${req.url} | ${req.headers['user-agent']}}`);
+        return res.send(html);
+      })
+      .catch((err) => {
+        console.log(`${new Date().toISOString()} | ${res.statusCode} | ${err?.name || 'OK'} | ${req.url} | ${req.headers['user-agent']}}`);
+        return next(err);
+      });
   });
 
   return server;
 }
 
 function run(): void {
-  const port = process.env.PORT || 4000;
+  const port = process.env['PORT'] || 4000;
 
   // Start up the Node server
   const server = app();
@@ -84,4 +87,4 @@ if (moduleFilename === __filename || moduleFilename.includes('iisnode')) {
   run();
 }
 
-export * from './src/main.server';
+export default bootstrap;

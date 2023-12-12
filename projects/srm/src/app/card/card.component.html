@@ -13,19 +13,19 @@
         </span>
     </div>
     <div class='responses'>
-        <h2 i18n>מהות השירות:</h2>
+        <h2>מהות השירות:</h2>
         <div class='list'>
             <app-response-linky *ngFor='let response of card.responses' [response]='response'></app-response-linky>
         </div>
     </div>
     <div class='situations' *ngIf='card.situations && card.situations.length'>
-        <h2 i18n>השירות מתאים עבור:</h2>
+        <h2>השירות מתאים עבור:</h2>
         <div class='list'>
             <app-situation *ngFor='let situation of card.situations' [situation]='situation' [link]='true'></app-situation>
         </div>
     </div>
     <div class='contact'>
-        <h2 i18n>פרטי התקשרות:</h2>
+        <h2>פרטי התקשרות:</h2>
         <div class='actions'>
             <app-card-action-phone [card]='card' [fullwidth]='true' (copied)='snack($event)'></app-card-action-phone>
             <app-card-action-email [card]='card' [fullwidth]='true' (copied)='snack($event)'></app-card-action-email>
@@ -34,12 +34,12 @@
         </div>
     </div>
     <div class='terms' *ngIf='card.service_details || card.service_payment_details'>
-        <h2 i18n>תנאים לקבלת השירות:</h2>
+        <h2>תנאים לקבלת השירות:</h2>
         <div [innerHTML]='format(card.service_details)' *ngIf='card.service_details'></div>
         <div [innerHTML]='format(card.service_payment_details)' *ngIf='card.service_payment_details'></div>
     </div>
     <div class='org'>
-        <h2 i18n>השירות ניתן ע״י:</h2>
+        <h2>השירות ניתן ע״י:</h2>
         <div class='org-container' [class.open]='orgOpen' aria-label='הרחבת פרטי הארגון' clickOnReturn (activated)='orgOpen = !orgOpen && hasOrgActions()'>
             <div class='org-name' *ngIf='card.organization_name_parts'>
                 <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href' target='_blank'>{{card.organization_name_parts.primary}}</a>
@@ -68,8 +68,8 @@
     <div class='error-report'>
         <a [href]='suggestChangesForm' target='_blank'>
             <div class='icon'></div>
-            <span i18n *ngIf='!nonOfficial'>מצאתי טעות בנתונים</span>
-            <span i18n *ngIf='nonOfficial'>מצאתי בעיה בשירות או טעות בנתונים</span>
+            <span *ngIf='!nonOfficial'>מצאתי טעות בנתונים</span>
+            <span *ngIf='nonOfficial'>מצאתי בעיה בשירות או טעות בנתונים</span>
         </a>
     </div>
 </div>

@@ -21,7 +21,7 @@ export class SituationComponent implements OnInit {
   }
 
   get smaller() {
-    return this.small || this.layout.mobile;
+    return this.small || this.layout.mobile();
   }
 
 }

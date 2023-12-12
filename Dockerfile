@@ -11,7 +11,7 @@ RUN npm install
 COPY . /app/
 
 ARG ENV_NAME
-RUN echo "Building with configuration ${ENV_NAME}" && npm run -- ng build -c ${ENV_NAME} && npm run -- ng run srm:server -c ${ENV_NAME}
+RUN echo "Building with configuration ${ENV_NAME}" && npm run -- ng build --configuration ${ENV_NAME} && npm run -- ng run srm:server --configuration ${ENV_NAME}
 ARG SENTRY_AUTH_TOKEN
 RUN test -z "${SENTRY_AUTH_TOKEN}" || SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} npm run sentry:sourcemaps
 

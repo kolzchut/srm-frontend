@@ -10,16 +10,16 @@
 >
     <div class='container'>
         <a class='logo' [routerLink]='["/"]' #menu aria-label="מעבר לדף הבית"></a>
-        <a class='menu-item' [routerLink]='["/"]' i18n>דף הבית</a>
-        <a class='menu-item' [routerLink]='["/about", "kolsherut"]' i18n>אודות</a>
-        <a class='menu-item' [routerLink]='["/about", "missing"]' i18n>הוסיפו שירות חסר</a>
-        <a class='menu-item' [routerLink]='["/about", "partners"]' i18n>שותפים</a>
-        <a class='menu-item' i18n  href='https://www.kolzchut.org.il/he/כל-זכות:כל-שירות_-_מדיניות_השימוש' target='_blank' (click)='closeMe(null)'
+        <a class='menu-item' [routerLink]='["/"]'>דף הבית</a>
+        <a class='menu-item' [routerLink]='["/about", "kolsherut"]'>אודות</a>
+        <a class='menu-item' [routerLink]='["/about", "missing"]'>הוסיפו שירות חסר</a>
+        <a class='menu-item' [routerLink]='["/about", "partners"]'>שותפים</a>
+        <a class='menu-item'  href='https://www.kolzchut.org.il/he/כל-זכות:כל-שירות_-_מדיניות_השימוש' target='_blank' (click)='closeMe(null)'
             aria-label='מדיניות האתר - נפתח בחלון חדש'
         >
             מדיניות האתר
         </a>
-        <a class='menu-item' [routerLink]='["/about", "contact"]' i18n>צרו קשר</a>
+        <a class='menu-item' [routerLink]='["/about", "contact"]'>צרו קשר</a>
     </div>
     <div class='closer' (activated)='closeMe(null)' clickOnReturn tabindex="0" role="button" aria-label="סגירת התפריט הראשי"></div>
 </div>

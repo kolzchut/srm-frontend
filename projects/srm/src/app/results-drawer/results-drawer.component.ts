@@ -64,7 +64,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     const hostHeight = this.hostHeight;
     let ret = hostHeight / 2;
     let moveDiff = this.moveDiff;
-    if (this.layout.desktop) {
+    if (this.layout.desktop()) {
       ret = hostHeight;
     } else if (this.state === DrawerState.Hidden) {
       ret = hostHeight;
@@ -97,7 +97,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     const el = this.handleEl.nativeElement as HTMLDivElement;
     if (el) {
       const doc = this.window.D || {};
-      if (this.layout.mobile) {
+      if (this.layout.mobile()) {
         if ('ontouchstart' in doc) {
           fromEvent(el, 'touchstart').pipe(
             untilDestroyed(this),
@@ -239,7 +239,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   // scrollToTop() {
-  //   if (this.layout.desktop) {
+  //   if (this.layout.desktop()) {
   //     (this.scrollable.nativeElement as HTMLDivElement)?.scrollTo({top: 0});
   //   }
   // }

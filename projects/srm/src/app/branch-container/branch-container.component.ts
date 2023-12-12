@@ -111,7 +111,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    if (this.layout.desktop) {
+    if (this.layout.desktop()) {
       this.goUp();
     };
     fromEvent<TouchEvent>(this.backToSearch.nativeElement, 'touchstart')

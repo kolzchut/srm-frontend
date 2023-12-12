@@ -1,14 +1,14 @@
 <div class='page-container' [class]='"stage-" + stage'>
     <app-homepage *ngIf='stage === "homepage"'></app-homepage>
     <app-search *ngIf='stage === "search"'></app-search>
-    <app-searchbox-header *ngIf='(stage === "search-results" || stage === "card" || stage.indexOf("about:") === 0) && layout.desktop' 
+    <app-searchbox-header *ngIf='(stage === "search-results" || stage === "card" || stage.indexOf("about:") === 0) && layout.desktop()' 
         [query]='query'
         [showCity]='!mapMoved'
-        [searchParams]='searchParams'        
+        [searchParams]='searchParams'
     ></app-searchbox-header>
     <div class='main-content' *ngIf='stage === "search-results" || stage === "card" || stage === "point"'>
         <div class='search-results'>
-            <app-searchbox-header *ngIf='stage === "search-results" && layout.mobile' 
+            <app-searchbox-header *ngIf='stage === "search-results" && layout.mobile()' 
                     [query]='query'
                     [showCity]='!mapMoved'
                     [searchParams]='searchParams'

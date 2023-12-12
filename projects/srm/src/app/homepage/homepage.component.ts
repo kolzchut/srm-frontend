@@ -51,7 +51,7 @@ export class HomepageComponent {
     if (direct) {
       this.router.navigate(['/s', prepareQuery(query)]);
     } else {
-      if (this.layout.desktop) {
+      if (this.layout.desktop()) {
         this.searching = true;
         this.searchConfig.query_ = query;
         this.searchConfig.queries.next(query);

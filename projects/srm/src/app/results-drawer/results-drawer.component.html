@@ -1,8 +1,8 @@
 <div class='map-window'
     [class.gesture]='gesture'
     [class.national]='state === DrawerState.National'
-    [style.height]='layout.desktop ? null : calcedHeight + "px"'>
-    <app-area-search [areaSearchState]='areaSearchState' *ngIf='layout.desktop && state !== DrawerState.National'></app-area-search>
+    [style.height]='layout.desktop() ? null : calcedHeight + "px"'>
+    <app-area-search [areaSearchState]='areaSearchState' *ngIf='layout.desktop() && state !== DrawerState.National'></app-area-search>
     <ng-container *ngIf='nationalCount > 0'>
         <a *ngIf='state === DrawerState.National' class='national-bg' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" role='presentation' tabindex="-1">&nbsp;</a>
         <a class='national-services' [routerLink]='["."]' [queryParams]="{national: 'yes'}" [queryParamsHandling]='"merge"' [preserveFragment]="true"
@@ -28,7 +28,7 @@
     <div class='scrollable' #scrollable>
         <ng-content select='content'></ng-content>
     </div>
-    <!-- <div class='non-scrollable' *ngIf='layout.desktop'>
+    <!-- <div class='non-scrollable' *ngIf='layout.desktop()'>
         <ng-content select='content-footer'></ng-content>
     </div> -->
 </div>

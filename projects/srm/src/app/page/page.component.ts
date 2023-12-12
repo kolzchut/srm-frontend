@@ -9,7 +9,6 @@ import { ApiService } from '../api.service';
 import { AutoComplete, Card, DrawerState, prepareQuery, SearchParams, SITUATION_FILTERS, ViewPort } from '../consts';
 import { MapComponent } from '../map/map.component';
 import { SearchFiltersComponent } from '../search-filters/search-filters.component';
-import { DOCUMENT } from '@angular/common';
 import { PlatformService } from '../platform.service';
 import { LayoutService } from '../layout.service';
 import * as mapboxgl from 'mapbox-gl';
@@ -17,6 +16,7 @@ import { AnalyticsService } from '../analytics.service';
 import { A11yService } from '../a11y.service';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import { FiltersState } from '../search-filters/filters-state';
+import { WindowService } from '../window.service';
 
 class SearchParamCalc {
   acId: string;
@@ -114,8 +114,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
               private platform: PlatformService, public layout: LayoutService, private analytics: AnalyticsService,
-              public a11y: A11yService,
-              @Inject(DOCUMENT) private document: any) {
+              public a11y: A11yService, private window: WindowService) {
 
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
@@ -166,7 +165,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log('SEARCH PARAMS CALC', spc);
         if (this.stage === 'search-results') {
           this.seo.setTitle(`חיפוש ${spc.resolvedQuery} | כל שירות`);
-          this.seo.setUrl(this.document.location.href);
+          this.seo.setUrl(this.window.D.location.href);
           this.a11y.setTitle(`תוצאות חיפוש עבור ${spc.resolvedQuery} | כל שירות`);
         }
 
@@ -346,7 +345,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.pushSearchParamsCalc();
       if (['about', 'search', 'homepage'].indexOf(this.stage) >= 0) {
         this.a11y.setSeoTitle(`כל שירות | במתכונת חירום | כל השירותים החברתיים, לכל מצב, בכל מקום`);
-        this.seo.setUrl(this.document.location.href);
+        this.seo.setUrl(this.window.D.location.href);
         this.api.getTotalServices().subscribe((totalServices: number) => {
           this.seo.setDescription(`כל השירותים למצב החירום המלחמתי וגם לשגרה. אספנו וסיווגנו ${totalServices.toLocaleString()} שירותים חברתיים מעשרות משרדי ממשלה, רשויות מקומיות, עמותות וארגונים אחרים. אנחנו בטוחים שנמצא גם משהו בשבילך!`);
         });
@@ -557,7 +556,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setPadding() {
-    if (this.layout.mobile) {
+    if (this.layout.mobile()) {
       const padding = this.branchSize + this.drawerSize;
       if (padding !== this.padding) {
         const params: any = {padding: {top: 0, bottom: padding, left: 0, right: 0}};
@@ -568,7 +567,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         this.padding = padding;
       }  
     } else {
-      const padding = this.stage === 'search-results' || this.stage === 'card' ?  window.innerWidth / 2 : 0;
+      const padding = this.stage === 'search-results' || this.stage === 'card' ?  (this.window._?.innerWidth || 1000) / 2 : 0;
       // if (padding !== this.padding) {
       const params: any = {};
       if (this.padding === -1) {
@@ -693,7 +692,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   hoverCard(card: Card) {
-    if (card?.branch_geometry && this.layout.desktop) {
+    if (card?.branch_geometry && this.layout.desktop()) {
       this.map?.pointsHover.next({
         point_id: card.point_id,      
       });
