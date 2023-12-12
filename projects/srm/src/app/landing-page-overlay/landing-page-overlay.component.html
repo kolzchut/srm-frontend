@@ -10,17 +10,17 @@
             <div class='main-text'>
                 אתר כל שירות מציג מידע על <strong>{{totalServices.toLocaleString()}} שירותים חברתיים</strong> שניתנים על ידי הממשלה, רשויות מקומיות, עמותות וארגונים נוספים.
                 <br/><br/>
-                <ng-container *ngIf='!cardId'>
-                    <ng-container *ngIf='searchParams?.ac_query === "_"'>
-                        בחיפוש <span class='search-term'>{{searchParams?.original_query}}</span> מצאנו {{visibleCount.toLocaleString()}} שירותים. שנציץ בהם?
+                <ng-container *ngIf='!cardId && searchParams'>
+                    <ng-container *ngIf='searchParams.ac_query === "_"'>
+                        בחיפוש <span class='search-term'>{{searchParams.original_query}}</span> מצאנו {{visibleCount.toLocaleString()}} שירותים. שנציץ בהם?
                     </ng-container>
                     <ng-container *ngIf='searchParams?.ac_query !== "_"'>
                         בחיפוש
                         <span class='search-term'>
-                            <ng-container>{{searchParams?.original_query}}</ng-container>
+                            <ng-container>{{searchParams.original_query}}</ng-container>
                         </span>
                         <ng-container *ngIf='searchParams?.city_name'>
-                            מצאנו {{visibleCount.toLocaleString()}} שירותים<span class='city-name'>באיזור {{searchParams?.city_name}}</span>.
+                            מצאנו {{visibleCount.toLocaleString()}} שירותים<span class='city-name'>באיזור {{searchParams.city_name}}</span>.
                         </ng-container>
                         <ng-container *ngIf='!searchParams?.city_name'>
                             מצאנו {{visibleCount.toLocaleString()}} שירותים באיזור זה של המפה.
@@ -28,8 +28,8 @@
                         שנציץ בהם?
                     </ng-container>
                 </ng-container>
-                <ng-container *ngIf='cardId'>
-                    אחד מהם הוא <strong>{{card?.service_name}}</strong>. שנציץ בו?
+                <ng-container *ngIf='cardId && card?.service_name'>
+                    אחד מהם הוא <strong>{{card.service_name}}</strong>. שנציץ בו?
                 </ng-container>
             </div>
         </div>

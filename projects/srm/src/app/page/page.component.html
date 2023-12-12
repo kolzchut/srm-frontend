@@ -14,7 +14,7 @@
                     [searchParams]='searchParams'
             ></app-searchbox-header>
             <app-results-drawer
-                [state]='stage === "point" ? (searchParams?.ac_query && !card ? DrawerState.Minimal : DrawerState.Hidden) : (searchParams?.national ? DrawerState.National : drawerState)'
+                [state]='stage === "point" ? (searchParams && searchParams.ac_query && !card ? DrawerState.Minimal : DrawerState.Hidden) : (searchParams && searchParams.national ? DrawerState.National : drawerState)'
                 [nationalCount]='nationalCount'
                 [areaSearchState]='areaSearchState'
                 *ngIf='searchParams'
