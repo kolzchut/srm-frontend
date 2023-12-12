@@ -28,7 +28,7 @@
     </a><span>?</span>
 </div>
 
-<ng-container *ngFor='let result of results; let i=index'>
+<ng-container *ngFor='let result of results; let i=index; trackBy:identify'>
     <ng-container *ngIf='!!result'>
         <app-result-stack [result]='result' [searchParams]='searchParams' [index]='i + 1' (hover)='hoverCard.next($event)'></app-result-stack>
     </ng-container>

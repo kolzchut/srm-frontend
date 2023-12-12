@@ -1,5 +1,5 @@
 import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
-import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
+import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { Router } from "@angular/router";
 import * as Sentry from "@sentry/angular-ivy";
 
@@ -142,14 +142,14 @@ import { SearchFiltersBarComponent } from './search-filters-bar/search-filters-b
     SearchFiltersBarComponent,
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'serverApp' }),
-    BrowserTransferStateModule,
+    BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule
   ],
   providers: [
+    provideClientHydration(),
     {provide: RouteReuseStrategy, useClass: CustomReuseStrategy},
     {
       provide: ErrorHandler,

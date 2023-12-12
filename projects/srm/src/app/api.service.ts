@@ -5,7 +5,6 @@ import { catchError, delay, finalize, map, switchMap, tap } from 'rxjs/operators
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult, CARD_SNIPPET_FIELDS, TaxonomyItem, SearchParams, DistinctItem, QueryTaxonomyItemResult, SITUATION_FILTERS, Place, QueryPlaceResult } from './consts';
-import { makeStateKey, TransferState} from '@angular/platform-browser';
 import { PlatformService } from './platform.service';
 import * as memoryCache from 'memory-cache';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
@@ -26,7 +25,6 @@ export class ApiService {
 
   constructor(
     private http: HttpClient,
-    private transferState: TransferState,
     private platform: PlatformService,
     private zone: NgZone,
     private router: Router,
@@ -34,26 +32,12 @@ export class ApiService {
   ) {}
 
   innerCache<T>(key: string, fetcher: Observable<T>, keep=false): Observable<T> {
-    const stateKey = makeStateKey<T | null>(key);
-    const cached = memoryCache.get(stateKey);
+    const cached = memoryCache.get(key);
       // console.log('GOT MEM CACHED', !!cached, stateKey);
     if (cached) {
       if (this.platform.server()) {
-        this.transferState.set(stateKey, cached);
       }
       return from([cached]);
-    }
-    if (this.transferState.hasKey(stateKey)) {
-      // console.log('GOT CACHED', stateKey);
-      const val: T | null = this.transferState.get<T | null>(stateKey, null);
-      if (!keep) {
-        this.transferState.remove(stateKey);
-      }
-      if (val !== null) {
-        return from([val]);
-      }
-    // } else {
-    //   console.log('MISS CACHED', stateKey);
     }
     if (this.waiting[key]) {
       return this.waiting[key];
@@ -61,13 +45,9 @@ export class ApiService {
     this.waiting[key] = new ReplaySubject<T>(1);
     fetcher.pipe(
       tap(val => {
-        this.platform.server(() => {
-          // console.log('SET CACHED', stateKey);
-          this.transferState.set(stateKey, val);
-        });
         const timeout = this.platform.server() ? (keep ? 3600000 : 60000) : 120000;
         this.zone.runOutsideAngular(() => {
-          memoryCache.put(stateKey, val, timeout);
+          memoryCache.put(key, val, timeout);
         });
         this.waiting[key].next(val);
         this.waiting[key].complete();

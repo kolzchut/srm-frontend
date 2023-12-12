@@ -214,4 +214,8 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       this.results = this.results.slice(0, index + 1).concat(null).concat(this.results.slice(index + 1));
     }
   }
+
+  identify(index: number, item: Card | null) {
+    return item?.collapse_key || index;
+  }
 }
