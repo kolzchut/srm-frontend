@@ -680,9 +680,11 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   zoomOutMap(viewport: ViewPort) {
     this.savedState = null;
-    this.queueMapAction((map) => {
-      map.fitBounds([viewport.top_left, viewport.bottom_right], {padding: {top: 70, bottom: 10, left: 10, right: 10}, maxZoom: 15});
-    }, 'zoom-out-map');
+    if (viewport) {
+      this.queueMapAction((map) => {
+        map.fitBounds([viewport.top_left, viewport.bottom_right], {padding: {top: 70, bottom: 10, left: 10, right: 10}, maxZoom: 15});
+      }, 'zoom-out-map');
+    }
   }
 
   easeTo(props: any) {
