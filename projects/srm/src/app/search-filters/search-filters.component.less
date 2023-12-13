@@ -13,31 +13,6 @@
     flex-flow: column;
     align-items: center;
 
-    .filtering-header {
-        width: 100%;
-        display: flex;
-        flex-flow: row;
-        gap: 8px;
-        align-items: center;
-        border-bottom: 1px solid @color-blue-7;
-        background: @color-white;
-        .desktop({
-            height: 56px;
-            padding: 0 8px;
-            .back {
-                flex: 0 0 auto;
-                .button-image(@color-blue-8, @color-blue-7);
-                width: 40px;
-                height: 40px;
-                border-radius: 24px;
-                border: 1px solid @color-blue-6;
-                &, &:hover {
-                    background-size: 30px;
-                    background-image: url('../../assets/img/icon-back-blue-1.svg');
-                }
-            }
-        });
-    }
     .situations-container {
         width: 100%;
         display: flex;

@@ -1,43 +1,46 @@
-<a class='logo layout-desktop' [routerLink]='["/"]' aria-label='חזרה לעמוד הבית'></a>
-<div class='searchbox'>
-    <app-menu-icon *ngIf='layout.mobile()'></app-menu-icon>
-    <a class='clickable' [routerLink]='["/q"]' [queryParams]='searchParams ? {q: searchParams.original_query} : {}' [title]='searchParams ? searchParams.original_query : ""'
-       aria-label='ביצוע חיפוש חדש באתר כל שירות'
-       interactionEvent='regular-searchbar' [interactionEventWhere]='location.path(false)' [searchParams]='searchParams'
-        >
-        <div class='search-params' *ngIf='placeholder'>
-            <span class='placeholder'>{{placeholder}}</span>
-        </div>
-        <div class='search-params' *ngIf='searchParams'>
-            <ng-container *ngIf='searchParams.query'>
-                <h1 class='query'>{{searchParams.query}}</h1>
-            </ng-container>
-            <ng-container *ngIf='!searchParams.query'>
-                <h1 class='query' *ngIf='responseDisplay'>{{responseDisplay}}</h1>
-                <h1 class='query dim' *ngIf='!responseDisplay'>כל שירות</h1>
-                <div class='extra-values'>
-                    <ng-container *ngIf='situationDisplay'>
-                        <span class='text'>עבור {{situationDisplay}}</span>
-                    </ng-container>
-                    <ng-container *ngIf='!situationDisplay'>
-                        <span class='text soft'>עבור כולם</span>
-                    </ng-container>
-                    <ng-container *ngIf='searchParams.city_name && showCity'>
-                        <span class='separator'></span>
-                        <span class='text'>באיזור {{searchParams.city_name}}</span>
-                    </ng-container>
-                    <ng-container *ngIf='!searchParams.city_name || !showCity'>
-                        <span class='separator'></span>
-                        <span class='text soft'>באיזור המפה</span>
-                    </ng-container>
-                    <ng-container *ngIf='orgDisplay'>
-                        <span class='separator'></span>
-                        <span class='text'>של {{orgDisplay}}</span>
-                    </ng-container>
-                </div>
-            </ng-container>    
-        </div>
-        <div class='search-icon'></div>    
-    </a>
+<div class='wrapper'>
+    <a class='logo layout-desktop' [routerLink]='["/"]' aria-label='חזרה לעמוד הבית'></a>
+    <div class='searchbox'>
+        <app-menu-icon *ngIf='layout.mobile()'></app-menu-icon>
+        <a class='clickable' [routerLink]='["/q"]' [queryParams]='searchParams ? {q: searchParams.original_query} : {}' [title]='searchParams ? searchParams.original_query : ""'
+           aria-label='ביצוע חיפוש חדש באתר כל שירות'
+           interactionEvent='regular-searchbar' [interactionEventWhere]='location.path(false)' [searchParams]='searchParams'
+            >
+            <div class='search-params' *ngIf='placeholder'>
+                <span class='placeholder'>{{placeholder}}</span>
+            </div>
+            <div class='search-params' *ngIf='searchParams'>
+                <ng-container *ngIf='searchParams.query'>
+                    <h1 class='query'>{{searchParams.query}}</h1>
+                </ng-container>
+                <ng-container *ngIf='!searchParams.query'>
+                    <h1 class='query' *ngIf='responseDisplay'>{{responseDisplay}}</h1>
+                    <h1 class='query dim' *ngIf='!responseDisplay'>כל שירות</h1>
+                    <div class='extra-values'>
+                        <ng-container *ngIf='situationDisplay'>
+                            <span class='text'>עבור {{situationDisplay}}</span>
+                        </ng-container>
+                        <ng-container *ngIf='!situationDisplay'>
+                            <span class='text soft'>עבור כולם</span>
+                        </ng-container>
+                        <ng-container *ngIf='searchParams.city_name && showCity'>
+                            <span class='separator'></span>
+                            <span class='text'>באיזור {{searchParams.city_name}}</span>
+                        </ng-container>
+                        <ng-container *ngIf='!searchParams.city_name || !showCity'>
+                            <span class='separator'></span>
+                            <span class='text soft'>באיזור המפה</span>
+                        </ng-container>
+                        <ng-container *ngIf='orgDisplay'>
+                            <span class='separator'></span>
+                            <span class='text'>של {{orgDisplay}}</span>
+                        </ng-container>
+                    </div>
+                </ng-container>    
+            </div>
+            <div class='search-icon'></div>    
+        </a>
+    </div>
+    <app-desktop-menu-links></app-desktop-menu-links>
 </div>
-<app-desktop-menu-links></app-desktop-menu-links>
+<ng-content></ng-content>

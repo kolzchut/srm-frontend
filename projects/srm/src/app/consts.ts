@@ -217,6 +217,7 @@ export class SearchParams {
     national?: boolean;
 
     selectedTaxonomyIds: string[] | null = null;
+    filteredSituationIds: string[] | null = null;
 
     get searchHash(): string {
       return [this.query, this.response, this.situation, this.org_id,
@@ -234,12 +235,9 @@ export class SearchParams {
                 !!this.filter_response_categories?.length;
     }
 
-    get allTaxonomyIds(): string[] {
-        if (!this.selectedTaxonomyIds) {
-            this.selectedTaxonomyIds = [
-                this.response || '',
-                this.situation || '',
-                ...(this.filter_responses || []),
+    get allFilteredSituations(): string[] {
+        if (!this.filteredSituationIds) {
+            this.filteredSituationIds = [
                 ...(this.filter_age_groups || []),
                 ...(this.filter_benefit_holders || []),
                 ...(this.filter_community || []),
@@ -251,6 +249,19 @@ export class SearchParams {
                 ...(this.filter_role || []),
                 ...(this.filter_situations || []),
                 ...(this.filter_urgency || [])
+            ];
+        }
+        return this.filteredSituationIds;
+    }
+
+
+    get allTaxonomyIds(): string[] {
+        if (!this.selectedTaxonomyIds) {
+            this.selectedTaxonomyIds = [
+                this.response || '',
+                this.situation || '',
+                ...(this.filter_responses || []),
+                ...(this.filteredSituationIds || []),
             ];
         }
         return this.selectedTaxonomyIds;

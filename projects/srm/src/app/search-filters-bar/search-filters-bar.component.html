@@ -1,8 +1,40 @@
+<button *ngIf='filtersState.active && !filtersState.totalFilters && layout.desktop()' class='back' (activated)='filtersState.toggle()' aria-label='סגירת הסינון וחזרה לרשימת התוצאות' clickOnReturn></button>
 <app-search-filters-button
-        [totalFilters]='filtersState.totalFilters'
-        [showDiscovery]='!!filtersState.showDiscovery' 
-        (activate)='filtersState.active = true'
-        interactionEvent='open-filters' 
-        [interactionEventWhere]='location.path(false)' 
-        [searchParams]='filtersState.searchParams'
+    [filtersState]='filtersState'
+    (activate)='filtersState.toggle()'
+    interactionEvent='open-filters' 
+    [interactionEventWhere]='location.path(false)' 
+    [searchParams]='filtersState.searchParams'
 ></app-search-filters-button>
+<ng-container *ngIf='filtersState.totalFilters > 0'>
+    <div class='selected' #scrolledList>
+        @for (response of filtersState.currentSearchParams.filter_responses; track response) {
+            <app-response
+                *ngIf='filtersState.responsesMap[response]'
+                [response]='filtersState.responsesMap[response]'
+                [selected]='true'
+                [dynamic]='true'
+                [active]='true'
+                (clicked)='filtersState.toggleResponse(filtersState.responsesMap[response])'
+            ></app-response>
+        }
+        @for (situation of filtersState.currentSearchParams.allFilteredSituations; track situation) {
+            <app-situation
+                *ngIf='filtersState.situationsMap[situation]'
+                [situation]='filtersState.situationsMap[situation]'
+                [selected]='true'
+                (clicked)='filtersState.clearOne(filtersState.situationsMap[situation])'
+            ></app-situation>
+        }
+    </div>
+    <div class='controls' [style.width]='scrolledList.clientWidth + "px"' *ngIf='layout.desktop()'>
+        <div class='shader right' (click)='scrolledList.scrollBy({behavior: "smooth", left: 100})'
+             *ngIf='scrolledList.scrollWidth > scrolledList.clientWidth && scrolledList.scrollLeft < 0'></div>
+        <div class='shader left' (click)='scrolledList.scrollBy({behavior: "smooth", left: -100})'
+             *ngIf='scrolledList.scrollWidth > scrolledList.clientWidth && scrolledList.scrollLeft > scrolledList.clientWidth - scrolledList.scrollWidth'></div>
+    </div>
+    <div class='controls' [style.width]='scrolledList.clientWidth + "px"' *ngIf='layout.mobile()'>
+        <div class='shader right' *ngIf='scrolledList.scrollWidth > scrolledList.clientWidth && scrolledList.scrollLeft < 0'></div>
+        <div class='shader left' *ngIf='scrolledList.scrollWidth > scrolledList.clientWidth && scrolledList.scrollLeft > scrolledList.clientWidth - scrolledList.scrollWidth'></div>
+    </div>
+</ng-container>

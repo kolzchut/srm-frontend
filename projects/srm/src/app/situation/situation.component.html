@@ -1,4 +1,4 @@
-<div class='situation' [class.small]='small'
+<div class='situation' [class.small]='small' *ngIf='!selected'
     [routerLink]='link ? ["/q"] : null'
     [queryParams]='link ? {q: situation.name} : null'
     [class.small]='smaller'
@@ -9,4 +9,15 @@
     ></span>
     <span class='link' *ngIf='link'
     ><span>←</span></span>
+</div>
+<div class='situation' *ngIf='selected'
+    [class.selected]='true'
+    [attr.aria-label]='situation.name + " - לחצו להסרת הסינון"'
+    (click)='onClick()'
+    role='button'
+    tabindex="0"
+>
+    <span class='text' [innerHTML]='situation.name'
+    ></span>
+    <span class='icon close'></span>
 </div>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TaxonomyItem } from '../consts';
 import { LayoutService } from '../layout.service';
 
@@ -12,6 +12,9 @@ export class SituationComponent implements OnInit {
   @Input() situation: TaxonomyItem = {};
   @Input() small = false;
   @Input() link = false;
+  @Input() selected = false;
+
+  @Output() clicked = new EventEmitter<void>();
 
   hover = false;
 
@@ -24,4 +27,7 @@ export class SituationComponent implements OnInit {
     return this.small || this.layout.mobile();
   }
 
+  onClick() {
+    this.clicked.emit();
+  }
 }
