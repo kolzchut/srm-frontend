@@ -3,64 +3,77 @@
 
 :host {
     position: relative;
+
     .open-modal {
         position: relative;
-        background-color: @color-white;
-        cursor: pointer;
-    
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        
-        .font-rag-sans;
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 21px;
-        color: @color-gray-3;
-    
-        height: 32px;
-        padding-left: 16px;
-        padding-right: 4px;
-    
-        border: 1px solid @color-gray-5;
-        border-radius: 16px;
-    
-        &.active {
-            border: 1px solid @color-gray-1;
-            color: @color-gray-1;
-        }
-    
-        img {
-            display: none;
-        }
-        &:hover {
-            color: @color-white;
-            background-color: @color-gray-1;
-            transform: translateY(-1px);
-            img.hover {
-                display: block;
-            }
+        width: 100%;
+        height: 28px;
 
-            .count {
-                top: -3px;
-                left: -3px;
-                width: 18px;
-                height: 18px;
-                border: 1px solid @color-white;
+        cursor: pointer;
+
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+
+        padding: 0 8px;
+        padding-right: 4px;
+
+        .img {
+            width: 24px;
+            height: 24px;
+            .background-image;
+            background-size: 24px;
+            background-position: center;
+        }
+        
+        border-radius: 4px;
+
+        .font-rag-sans;
+        font-size: 16px;
+        line-height: 20px;
+
+        &.state-default {
+            border: 1px solid @color-blue-5;
+            background-color: @color-blue-8;
+    
+            color: @color-blue-2;
+            font-weight: 600;
+
+            .img {
+                background-image: url('../../assets/img/icon-filter-blue-2.svg');
             }
         }
-        &:not(:hover) {
-            img.nohover {
-                display: block;
+
+        &.state-active {
+            border: 1px solid @color-blue-0;
+            background-color: @color-blue-8;
+    
+            color: @color-blue-0;
+            font-weight: 600;
+
+            .img {
+                background-image: url('../../assets/img/icon-filter-blue-0.svg');
             }
         }
+
+        &.state-inactive {
+            border: 1px solid @color-gray-6;
+            background: @color-white;
+
+            color: @color-gray-3;
+            font-weight: 300;
+        }
+
+
     }
     .discovery {
         position: absolute;
-        right: 0;
+        right: 50%;
+        transform: translateX(50%);
         width: 160px;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(31, 55, 246, 0.70);
         border-radius: 4px;
         padding: 4px 8px;
         cursor: pointer;
@@ -91,34 +104,19 @@
                 height: 16px;
                 border-top-left-radius: 4px;
                 transform-origin: 8px 8px;
-                background: rgba(0, 0, 0, 0.7);
+                background: rgba(31, 55, 246, 0.70);
             }
         }
 
-        .mobile({
+        top: 44px;
+        .arrow {
             top: -16px;
-            transform: translateY(-100%);
-            .arrow {
-                right: 20px;
-                top: 100%;
-                &::after {
-                    transform: rotate(-135deg);
-                    top: -9px;
-                    left: 2px;
-                }
+            right: calc(50% ~'-' 16px);
+            &::after {
+                transform: rotate(45deg);
+                top: 9px;
+                left: 2px;
             }
-        });
-        .desktop({
-            top: 48px;
-            .arrow {
-                top: -16px;
-                right: 20px;
-                &::after {
-                    transform: rotate(45deg);
-                    top: 9px;
-                    left: 2px;
-                }
-            }
-        })
+        }
     }
 }

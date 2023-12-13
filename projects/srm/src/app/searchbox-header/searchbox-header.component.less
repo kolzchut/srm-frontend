@@ -3,14 +3,24 @@
 :host {
     width: 100%;
     display: flex;
+    flex-flow: column;
+    align-items: stretch;
  
     background: @color-white;
-
     .mobile({
         border-bottom: 1px solid @color-gray-6;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
-        padding: 8px;
+        padding: 8px 0;
         gap: 8px;
+    });
+
+}
+.wrapper {
+    width: 100%;
+    display: flex;
+ 
+    .mobile({
+        padding: 0 8px;
         flex-flow: column;
     });
     .desktop({

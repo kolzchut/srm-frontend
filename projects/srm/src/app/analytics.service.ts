@@ -162,7 +162,7 @@ export class AnalyticsService {
         },
         ...eventParams
       });
-    }
+    } 
   }
 
   interactionEvent(what: string, where: string, content: string, params: SearchParams | null) {

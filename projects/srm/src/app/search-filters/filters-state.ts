@@ -84,8 +84,8 @@ export class FiltersState {
   } = {};
   responseItems: TaxonomyItem[];
   responseCategoryItems: TaxonomyItem[];
-  situationsMap: any = {};
-  responsesMap: any = {};
+  situationsMap: {[key: string]: TaxonomyItem} = {};
+  responsesMap: {[key: string]: TaxonomyItem} = {};
 
   currentSearchParams: SearchParams;
   resultCount = -1;
@@ -320,6 +320,13 @@ export class FiltersState {
     this.params.next(sp);
   }
 
+  clearOne(item: TaxonomyItem) {
+    SITUATION_FILTERS.forEach(f => {
+      (this.currentSearchParams as any)['filter_' + f] = (this.currentSearchParams as any)['filter_' + f].filter((x: string) => x !== item.id);
+    });
+    this.closeWithParams();
+  }
+
   clear() {
     SITUATION_FILTERS.forEach(f => (this.currentSearchParams as any)['filter_' + f] = []);
     this.currentSearchParams.filter_responses = [];
@@ -333,6 +340,14 @@ export class FiltersState {
     this.active = false;
   }
 
+  toggle() {
+    if (!this.active) {
+      this.active = true;
+    } else {
+      this.closeWithParams();
+    }
+  }
+  
   checkDiscoveryNeeded(result: QueryCardResult): void {
     const THRESHOLD = 40;
     if (this.platform.server()) {

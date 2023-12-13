@@ -12,9 +12,11 @@
                     [query]='query'
                     [showCity]='!mapMoved'
                     [searchParams]='searchParams'
-            ></app-searchbox-header>
+            >
+                <app-search-filters-bar [filtersState]='filtersState' *ngIf='layout.mobile()'></app-search-filters-bar>
+            </app-searchbox-header>
             <app-results-drawer
-                [state]='stage === "point" ? (searchParams && searchParams.ac_query && !card ? DrawerState.Minimal : DrawerState.Hidden) : (searchParams && searchParams.national ? DrawerState.National : drawerState)'
+                [state]='filtersVisible ? DrawerState.Full : (stage === "point" ? (searchParams && searchParams.ac_query && !card ? DrawerState.Minimal : DrawerState.Hidden) : (searchParams && searchParams.national ? DrawerState.National : drawerState))'
                 [nationalCount]='nationalCount'
                 [areaSearchState]='areaSearchState'
                 *ngIf='searchParams'
@@ -27,7 +29,7 @@
                     [class.visible]='stage === "search-results" || (stage === "point" && !card)'
                     [class.filters]='filtersVisible'
                 >
-                    <app-search-filters-bar *ngIf='!filtersVisible' [filtersState]='filtersState'></app-search-filters-bar>
+                    <app-search-filters-bar [filtersState]='filtersState' *ngIf='layout.desktop()'></app-search-filters-bar>
                     <app-search-filters 
                         *ngIf='filtersVisible'
                         [searchParams]='searchParams'
