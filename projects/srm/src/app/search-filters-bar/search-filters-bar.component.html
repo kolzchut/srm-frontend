@@ -18,7 +18,7 @@
                 (clicked)='filtersState.toggleResponse(filtersState.responsesMap[response])'
             ></app-response>
         }
-        @for (situation of filtersState.currentSearchParams.allFilteredSituations; track situation) {
+        @for (situation of allFilteredSituations; track situation) {
             <app-situation
                 *ngIf='filtersState.situationsMap[situation]'
                 [situation]='filtersState.situationsMap[situation]'

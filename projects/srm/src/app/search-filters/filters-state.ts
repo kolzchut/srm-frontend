@@ -97,6 +97,7 @@ export class FiltersState {
   ready = new ReplaySubject<boolean>(1);
 
   showDiscovery: boolean | null = null;
+  situationsOrder: {[key: string]: number} = {};
 
   updateParams(params: SearchParams) {
     this.searchParams = params;
@@ -107,7 +108,11 @@ export class FiltersState {
     const sp = this.currentSearchParams;
     this.currentSearchParams = this._copySearchParams(sp);
     this.fixSearchParams(sp);
-    this.internalSearchParams.next(sp);
+    if (this.active_) {
+      this.internalSearchParams.next(sp);
+    } else {
+      this.params.next(sp);
+    }
   }
 
   fixSearchParams(sp: SearchParams) {
@@ -297,6 +302,10 @@ export class FiltersState {
     this.pushSearchParams();
   }
 
+  touchSituation(id: string) {
+    this.situationsOrder[id || ''] = new Date().getTime();
+  }
+
   toggleResponse(item: TaxonomyItem) {
     const checked = !this.isResponseSelected(item);
     this.currentSearchParams.filter_responses = this.currentSearchParams.filter_responses || [];
@@ -324,7 +333,7 @@ export class FiltersState {
     SITUATION_FILTERS.forEach(f => {
       (this.currentSearchParams as any)['filter_' + f] = (this.currentSearchParams as any)['filter_' + f].filter((x: string) => x !== item.id);
     });
-    this.closeWithParams();
+    this.pushSearchParams();
   }
 
   clear() {
@@ -334,10 +343,8 @@ export class FiltersState {
   }
 
   closeWithParams() {
-    const sp = this._copySearchParams(this.currentSearchParams);
-    this.fixSearchParams(sp);
-    this.params.next(sp);
     this.active = false;
+    this.pushSearchParams();
   }
 
   toggle() {

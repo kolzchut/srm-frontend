@@ -92,6 +92,6 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
   }
 
   get smaller() {
-    return this.small || this.layout.mobile();
+    return this.small || (!this.dynamic && this.layout.mobile());
   }
 }

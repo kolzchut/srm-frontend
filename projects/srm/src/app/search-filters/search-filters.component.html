@@ -9,17 +9,17 @@
             </div>
             <app-response-selection-widget [responses]='filtersState.responseItems' [selectedResponses]='(this.filtersState.currentSearchParams && this.filtersState.currentSearchParams.filter_responses) || []' (toggle)='filtersState.toggleResponse($event)'></app-response-selection-widget>
         </div>
-        <app-search-filters-situation-section title='קהלי יעד' [situations]='filtersState.audiences' [searchParams]='filtersState.currentSearchParams' [field]='"filter_situations"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
-        <app-search-filters-situation-section title='מצבים רפואיים ומוגבלויות' [situations]='filtersState.health_issues' [searchParams]='filtersState.currentSearchParams' [field]='"filter_health"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
-        <app-search-filters-situation-section title='מוכרות ממשלתית' [situations]='filtersState.others.benefit_holders' [searchParams]='filtersState.currentSearchParams' [field]='"filter_benefit_holders"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
-        <app-search-filters-situation-section title='מצב תעסוקתי' [situations]='filtersState.others.employment' [searchParams]='filtersState.currentSearchParams' [field]='"filter_employment"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
-        <app-search-filters-situation-section title='אירועי חיים' [situations]='filtersState.others.life_events' [searchParams]='filtersState.currentSearchParams' [field]='"filter_life_events"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
-        <app-search-filters-situation-section title='דחיפות' [situations]='filtersState.others.urgency' [searchParams]='filtersState.currentSearchParams' [field]='"filter_urgency"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
-        <app-search-filters-situation-section title='קהילה' [situations]='filtersState.others.community' [searchParams]='filtersState.currentSearchParams' [field]='"filter_community"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
-        <app-search-filters-situation-section title='תפקיד' [situations]='filtersState.others.role' [searchParams]='filtersState.currentSearchParams' [field]='"filter_role"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
-        <app-search-filters-situation-section title='קבוצות גיל' [situations]='filtersState.age_groups' [searchParams]='filtersState.currentSearchParams' [field]='"filter_age_groups"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
-        <app-search-filters-situation-section title='מיועד עבור' [situations]='filtersState.others.gender' [searchParams]='filtersState.currentSearchParams' [field]='"filter_gender"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
-        <app-search-filters-situation-section title='לדוברי שפות (שאינן עברית)' [situations]='filtersState.languages' [searchParams]='filtersState.currentSearchParams' [field]='"filter_languages"' (push)='filtersState.pushSearchParams()'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='קהלי יעד' [situations]='filtersState.audiences' [filtersState]='filtersState' [field]='"filter_situations"'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מצבים רפואיים ומוגבלויות' [situations]='filtersState.health_issues' [filtersState]='filtersState' [field]='"filter_health"'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מוכרות ממשלתית' [situations]='filtersState.others.benefit_holders' [filtersState]='filtersState' [field]='"filter_benefit_holders"'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מצב תעסוקתי' [situations]='filtersState.others.employment' [filtersState]='filtersState' [field]='"filter_employment"'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='אירועי חיים' [situations]='filtersState.others.life_events' [filtersState]='filtersState' [field]='"filter_life_events"'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='דחיפות' [situations]='filtersState.others.urgency' [filtersState]='filtersState' [field]='"filter_urgency"'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='קהילה' [situations]='filtersState.others.community' [filtersState]='filtersState' [field]='"filter_community"'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='תפקיד' [situations]='filtersState.others.role' [filtersState]='filtersState' [field]='"filter_role"'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='קבוצות גיל' [situations]='filtersState.age_groups' [filtersState]='filtersState' [field]='"filter_age_groups"'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='מיועד עבור' [situations]='filtersState.others.gender' [filtersState]='filtersState' [field]='"filter_gender"'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='לדוברי שפות (שאינן עברית)' [situations]='filtersState.languages' [filtersState]='filtersState' [field]='"filter_languages"'></app-search-filters-situation-section>
     </div>    
 </div>
 <div class='submit'>

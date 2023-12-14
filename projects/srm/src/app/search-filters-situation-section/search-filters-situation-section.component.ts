@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { TaxonomyItem } from '../consts';
 import { SearchFiltersMoreButtonComponent } from '../search-filters-more-button/search-filters-more-button.component';
+import { FiltersState } from '../search-filters/filters-state';
 
 @Component({
   selector: 'app-search-filters-situation-section',
@@ -14,9 +15,7 @@ export class SearchFiltersSituationSectionComponent implements OnInit {
   @Input() situations: TaxonomyItem[] | null = null;
   @Input() title: string;
   @Input() field: string;
-  @Input() searchParams: any;
-
-  @Output() push = new EventEmitter<void>();
+  @Input() filtersState: FiltersState;
 
   @ViewChild('moreSituations') moreSituations: SearchFiltersMoreButtonComponent;
 
@@ -26,16 +25,24 @@ export class SearchFiltersSituationSectionComponent implements OnInit {
   }
 
   changed() {
-    this.push.emit();
+    this.filtersState.pushSearchParams();
   }
 
   toggled(checked: boolean, item: TaxonomyItem) {
-    let sits: string[] = this.searchParams[this.field] || [];
+    const sp = this.filtersState.currentSearchParams as any;
+    let sits: string[] = sp[this.field] || [];
     sits = sits.filter(x => x !== item.id);
     if (checked && item.id) {
       sits.push(item.id);
     }
-    this.searchParams[this.field] = sits;
+    sp[this.field] = sits;
+    if (item?.id) {
+      this.filtersState.touchSituation(item.id);
+    }
     this.changed();
+  }
+
+  get searchParams() {
+    return this.filtersState.currentSearchParams as any;
   }
 }
