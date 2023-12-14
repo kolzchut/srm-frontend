@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import { timer } from 'rxjs';
+import { AnalyticsService } from '../analytics.service';
 
 @Component({
   selector: 'app-area-search-selector-result-nation-wide',
@@ -11,7 +12,7 @@ export class AreaSearchSelectorResultNationWideComponent implements OnInit {
 
   @Input() state: AreaSearchState;
 
-  constructor() { }
+  constructor(private analytics: AnalyticsService) { }
 
   ngOnInit(): void {
   }
@@ -19,5 +20,6 @@ export class AreaSearchSelectorResultNationWideComponent implements OnInit {
 
   select() {
     this.state.selectNationWide();
+    this.analytics.interactionEvent('geo-nation-wide', 'geo-widget');
   }
 }

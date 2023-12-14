@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { LngLatBoundsLike } from 'mapbox-gl';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import { ViewPort } from '../consts';
+import { AnalyticsService } from '../analytics.service';
 
 export type PlaceResult = {
   name: string;
@@ -19,7 +20,7 @@ export class AreaSearchSelectorResultPlaceComponent implements OnInit {
   @Input() place: PlaceResult;
   @Input() state: AreaSearchState;
 
-  constructor() { }
+  constructor(private analytics: AnalyticsService) { }
 
   ngOnInit(): void {
   }
@@ -37,6 +38,7 @@ export class AreaSearchSelectorResultPlaceComponent implements OnInit {
       }
     };
     this.state.bounds.next(vp);
+    this.analytics.interactionEvent('select-place', 'geo-widget', this.place.display, null);
   }
 
 }

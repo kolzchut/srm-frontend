@@ -1,7 +1,9 @@
 <div class='map-window'
     [class.gesture]='gesture'
     [class.national]='state === DrawerState.National'
-    [style.height]='layout.desktop() ? null : calcedHeight + "px"'>
+    [style.height]='layout.desktop() ? null : calcedHeight + "px"'
+    #mapWindow
+>
     <app-area-search [areaSearchState]='areaSearchState' *ngIf='layout.desktop() && state !== DrawerState.National'></app-area-search>
     <ng-container *ngIf='nationalCount > 0'>
         <a *ngIf='state === DrawerState.National' class='national-bg' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" role='presentation' tabindex="-1">&nbsp;</a>
@@ -23,6 +25,7 @@
         <div class='handle layout-mobile' (click)='$event.stopPropagation()' role='presentation'>
             <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
         </div>
+        <app-area-search [areaSearchState]='areaSearchState' *ngIf='layout.mobile()'></app-area-search>
         <ng-content select='content-header'></ng-content>
     </div>
     <div class='scrollable' #scrollable>

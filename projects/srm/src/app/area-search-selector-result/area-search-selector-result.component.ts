@@ -23,7 +23,6 @@ export class AreaSearchSelectorResultComponent implements OnInit {
 
   select() {
     if (this.state) {
-      console.log('SETT', this.name, !!this.state, this.wait);
       if (!this.wait) {
         this.state.area_ = this.name;
       }

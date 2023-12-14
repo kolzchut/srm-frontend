@@ -1,12 +1,26 @@
-<div class='results' [style.width]='(state.resultsWidth | async) + "px"' *ngIf='state.showResults | async'
-    (focus)='state.focusResults()' (blur)='state.blurResults()'
+<div class='container' [style.width]='width | async' *ngIf='state.showResults | async'
+    [attr.aria-role]='layout.mobile() ? "modal" : null'
 >
-    <ng-container *ngIf='(state.results | async) === null'>
-        <app-area-search-selector-result-my-location [state]='state'></app-area-search-selector-result-my-location>
-        <app-area-search-selector-result-nation-wide [state]='state'></app-area-search-selector-result-nation-wide>
-        <app-area-search-selector-result-place [place]='place' [state]='state' *ngFor='let place of presets'></app-area-search-selector-result-place>
-    </ng-container>
-    <ng-container *ngIf='(state.results | async) !== null'>
-        <app-area-search-selector-result-place [place]='place' [state]='state' *ngFor='let place of (state.results | async)'></app-area-search-selector-result-place>
-    </ng-container>
+    <div class='mobile-input' *ngIf='layout.mobile()'>
+        <div class='back-button' (activated)='state.stopSearching()' clickOnReturn></div>
+        <input [placeholder]='state.inputPlaceholder | async'
+                aria-label='חיפוש איזורים בארץ'
+                (focus)='state.focusInput()'
+                (blur)='state.blurInput()'
+                [(ngModel)]='state.query_'
+                #mobileInput
+        />
+    </div>
+    <div class='results'
+       (focus)='state.focusResults()' (blur)='state.blurResults()'
+    >
+        <ng-container *ngIf='(state.results | async) === null'>
+            <app-area-search-selector-result-my-location [state]='state'></app-area-search-selector-result-my-location>
+            <app-area-search-selector-result-nation-wide [state]='state'></app-area-search-selector-result-nation-wide>
+            <app-area-search-selector-result-place [place]='place' [state]='state' *ngFor='let place of presets'></app-area-search-selector-result-place>
+        </ng-container>
+        <ng-container *ngIf='(state.results | async) !== null'>
+            <app-area-search-selector-result-place [place]='place' [state]='state' *ngFor='let place of (state.results | async)'></app-area-search-selector-result-place>
+        </ng-container>
+    </div>
 </div>

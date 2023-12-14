@@ -8,11 +8,15 @@
             [class.with-text]='showButtonText()'
             [class.active]='isActive(true)'
             (activated)='selectNationWide()'
+            [interactionEvent]='"geo-nation-wide"'
+            [interactionEventWhere]='"geo-widget"'
     >בכל הארץ</button>
     <button class='map-region' clickOnReturn #mapRegion
             [class.with-text]='showButtonText()'
             [class.active]='isActive(false)'
             (activated)='selectMapRegion()'
+            [interactionEvent]='"geo-map-area"'
+            [interactionEventWhere]='"geo-widget"'
     >באיזור המפה</button>
     <input class='area focusable' #area
            [placeholder]='state.inputPlaceholder | async'
@@ -20,8 +24,9 @@
            (focus)='state.focusInput()'
            (blur)='state.blurInput()'
            [(ngModel)]='state.query_'
+           [interactionEvent]='"geo-search"'
+           [interactionEventWhere]='"geo-widget"'
     />
     <a class='clear' *ngIf='state.searching || !!state.area_' (activated)='selectMapRegion()' clickOnReturn>
-
     </a>
 </div>

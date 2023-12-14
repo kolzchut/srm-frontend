@@ -95,7 +95,7 @@ export class AreaSearchState {
   blurInput() {
     this.inputFocus = false;
     timer(10).subscribe(() => {
-      if (!this.resultsFocus) {
+      if (!this.resultsFocus && !this.inputFocus) {
         this.stopSearching();
       }
     });

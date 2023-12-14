@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
+import { AnalyticsService } from '../analytics.service';
 
 @Component({
   selector: 'app-area-search-selector-result-my-location',
@@ -12,7 +13,7 @@ export class AreaSearchSelectorResultMyLocationComponent implements OnInit {
 
   NAME = 'קרוב למיקום הנוכחי שלי';
 
-  constructor() { }
+  constructor(private analytics: AnalyticsService) { }
 
   ngOnInit(): void {
   }
@@ -20,7 +21,6 @@ export class AreaSearchSelectorResultMyLocationComponent implements OnInit {
   select() {
     navigator?.geolocation.getCurrentPosition(
       (position) => {
-        console.log('GOT POSITION', position);
         if (position) {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
@@ -37,6 +37,7 @@ export class AreaSearchSelectorResultMyLocationComponent implements OnInit {
           };
           this.state.area_ = this.NAME;
           this.state.bounds.next(bounds);
+          this.analytics.interactionEvent('geo-my-location', 'geo-widget');
         }
       }
     );

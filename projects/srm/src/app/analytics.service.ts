@@ -165,7 +165,7 @@ export class AnalyticsService {
     } 
   }
 
-  interactionEvent(what: string, where: string, content: string, params: SearchParams | null) {
+  interactionEvent(what: string, where: string, content?: string, params?: SearchParams | null) {
     console.log('EVENT interaction', where, what);
     if (window.gtag && this.platform.browser()) {
       const event: any = {

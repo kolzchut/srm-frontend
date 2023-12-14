@@ -559,7 +559,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.layout.mobile()) {
       const padding = this.branchSize + this.drawerSize;
       if (padding !== this.padding) {
-        const params: any = {padding: {top: 0, bottom: padding, left: 0, right: 0}};
+        const params: any = {padding: {top: 100, bottom: padding, left: 0, right: 0}};
         if (this.padding === -1) {
           params.duration = 0;
         }

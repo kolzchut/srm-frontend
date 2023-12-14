@@ -44,6 +44,14 @@
             .img {
                 background-image: url('../../assets/img/icon-filter-blue-2.svg');
             }
+
+            &:hover {
+                border-color: @color-blue-4;
+                background-color: @color-blue-7;
+                .img {
+                    background-image: url('../../assets/img/icon-filter-blue-1.svg');
+                }
+            }
         }
 
         &.state-active {
@@ -56,6 +64,10 @@
             .img {
                 background-image: url('../../assets/img/icon-filter-blue-0.svg');
             }
+
+            &:hover {
+                background-color: @color-blue-7;
+            }
         }
 
         &.state-inactive {
@@ -65,8 +77,6 @@
             color: @color-gray-3;
             font-weight: 300;
         }
-
-
     }
     .discovery {
         position: absolute;

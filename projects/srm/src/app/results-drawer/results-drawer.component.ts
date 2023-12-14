@@ -27,6 +27,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
   @Output() scrollTop = new EventEmitter<boolean>();
   @Output() size = new EventEmitter<number>();
   @ViewChild('handleEl') handleEl: ElementRef;
+  @ViewChild('mapWindow') mapWindow: ElementRef;
   @ViewChild('scrollable') scrollable: ElementRef;
   
   startY: number;
@@ -119,16 +120,21 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
             });
           });  
         }
-        fromEvent(el, 'transitionstart').pipe(
+      }
+      const mapWindowEl: HTMLElement = this.mapWindow.nativeElement;
+      if (mapWindowEl) {
+        fromEvent(mapWindowEl, 'transitionstart').pipe(
           untilDestroyed(this),
         ).subscribe((ev: Event) => {
           const height = this.calcHeight();
           if (height !== this.currentHeight) {
             this.currentHeight = height;
-            this.size.emit(height);
+            this.size.emit(this.hostHeight - height);
           }
         });
-        const scrollableEl: HTMLElement = this.scrollable.nativeElement;
+      }
+      const scrollableEl: HTMLElement = this.scrollable.nativeElement;
+      if (scrollableEl) {
         fromEvent(scrollableEl, 'scroll').pipe(
           untilDestroyed(this),
           throttleTime(0, animationFrameScheduler),
