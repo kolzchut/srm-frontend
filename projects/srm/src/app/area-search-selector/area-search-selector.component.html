@@ -20,7 +20,7 @@
     >באיזור המפה</button>
     <input class='area focusable' #area
            [class.active]='state.searching || !!state.area_'
-           [placeholder]='layout.desktop() ? (state.inputPlaceholder | async) : ""'
+           [placeholder]='state.inputPlaceholder | async'
            aria-label='חיפוש איזורים בארץ'
            (focus)='state.focusInput()'
            (blur)='state.blurInput()'

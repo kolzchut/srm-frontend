@@ -106,6 +106,7 @@
             font-weight: 400;
             line-height: 20px;
              cursor: text;
+             container: area-select-input / inline-size;
 
             .background-image;
             background-size: 24px;
@@ -118,6 +119,10 @@
                 font-size: 16px;
                 font-weight: 400;
                 line-height: 20px;
+
+                @container area-select-input (max-width: 50px) {
+                    color: transparent;
+                }
             }
             &:focus {
                 outline: none;
