@@ -65,6 +65,7 @@
         position: fixed;
         bottom: 0;
         right: 0;
+        z-index: 100;
         .mobile({
             width: 100%;
         });
@@ -119,6 +120,9 @@
                 }
                 cursor: pointer;
 
+                &:hover {
+                    background-color: @color-blue-0;
+                }
             }
 
             .cancel {

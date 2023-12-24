@@ -22,7 +22,7 @@
                 [areaSearchState]='areaSearchState'
                 *ngIf='searchParams'
                 [class.visible]='stage === "point" || stage === "search-results"'
-                [scrollAll]='!!filtersVisible'
+                [scrollAll]='false'
                 (handle)='handleDrawer($event)'
                 (size)='drawerSize = $event'
             >

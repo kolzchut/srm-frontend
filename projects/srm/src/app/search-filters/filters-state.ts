@@ -88,6 +88,7 @@ export class FiltersState {
   responsesMap: {[key: string]: TaxonomyItem} = {};
 
   currentSearchParams: SearchParams;
+  restoreSearchParams: SearchParams;
   resultCount = -1;
   resultCountBounded = -1;
 
@@ -257,6 +258,7 @@ export class FiltersState {
     this.active_ = value;
     if (value) {
       this.processSearchParams(this.searchParams);
+      this.restoreSearchParams = this.currentSearchParams;
       this.pushSearchParams();
     }
   }
@@ -344,6 +346,14 @@ export class FiltersState {
 
   closeWithParams() {
     this.active = false;
+    this.pushSearchParams();
+  }
+
+  cancel() {
+    if (!this.active) {
+      return;
+    }
+    this.currentSearchParams = this.restoreSearchParams;
     this.pushSearchParams();
   }
 

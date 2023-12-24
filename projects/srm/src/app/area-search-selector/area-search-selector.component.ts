@@ -3,6 +3,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { AreaSearchState } from './area-search-state';
 import { delay, map, tap, timer } from 'rxjs';
 import { PlatformService } from '../platform.service';
+import { LayoutService } from '../layout.service';
 
 @UntilDestroy()
 @Component({
@@ -24,7 +25,7 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
 
   inputPlaceholder = 'חיפוש';
   
-  constructor(private el: ElementRef, private ps: PlatformService) {
+  constructor(private el: ElementRef, private ps: PlatformService, public layout: LayoutService) {
   }
 
   ngOnInit(): void {

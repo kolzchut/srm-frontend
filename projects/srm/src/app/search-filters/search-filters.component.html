@@ -24,6 +24,9 @@
 </div>
 <div class='submit'>
     <div class='inner'>
+        <a class='cancel' (activated)='filtersState.cancel()' *ngIf='filtersState.currentSearchParams?.searchHash !== filtersState.restoreSearchParams?.searchHash' clickOnReturn role='button' tabindex="0" aria-label="סגירת אפשרויות הסינון ללא שמירה">
+            ביטול
+        </a>
         <button class='main' (click)='filtersState.closeWithParams()'>
             <span aria-live='polite'>
                 <strong *ngIf='filtersState.resultCount > 1'>{{filtersState.resultCount.toLocaleString()}} תוצאות</strong>
@@ -36,13 +39,6 @@
                 <span *ngIf='filtersState.resultCountBounded === 1'>(אחת באיזור המפה)</span>
                 <span *ngIf='filtersState.resultCountBounded === 0'>(אין באיזור המפה)</span>
             </span>
-            <div class='count' *ngIf='filtersState.totalFilters'>{{filtersState.totalFilters}}</div>
         </button>
-        <a class='cancel' (activated)='filtersState.clear()' *ngIf='filtersState.totalFilters' clickOnReturn role='button' tabindex="0" aria-label="ניקוי כלל המסננים">
-            ניקוי
-        </a>
-        <a class='cancel' (activated)='filtersState.clear()' *ngIf='!filtersState.totalFilters' clickOnReturn role='button' tabindex="0" aria-label="סגירת אפשרויות הסינון ללא שמירה">
-            ביטול
-        </a>
     </div>  
 </div>
