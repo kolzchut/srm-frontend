@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-area-search',
@@ -10,7 +11,7 @@ export class AreaSearchComponent implements OnInit {
 
   @Input() areaSearchState: AreaSearchState;
 
-  constructor() { }
+  constructor(public layout: LayoutService) { }
 
   ngOnInit(): void {
   }

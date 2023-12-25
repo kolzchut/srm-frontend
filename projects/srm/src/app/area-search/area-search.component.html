@@ -1,4 +1,4 @@
 <div class='selection-widget' appArrowToTab>
     <app-area-search-selector [state]='areaSearchState'></app-area-search-selector>
-    <app-area-search-selector-results [state]='areaSearchState'></app-area-search-selector-results>
+    <app-area-search-selector-results *ngIf='layout.desktop()' [state]='areaSearchState'></app-area-search-selector-results>
 </div>
