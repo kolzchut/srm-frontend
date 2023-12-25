@@ -4,6 +4,7 @@ import 'zone.js/node';
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine } from '@angular/ssr';
 import * as express from 'express';
+import * as cors from 'cors';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { AppServerModule as bootstrap } from './src/main.server';
@@ -21,6 +22,7 @@ export function app(): express.Express {
 
   const commonEngine = new CommonEngine();
 
+  server.use(cors());
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
