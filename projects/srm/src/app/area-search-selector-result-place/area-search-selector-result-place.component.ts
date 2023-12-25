@@ -38,7 +38,7 @@ export class AreaSearchSelectorResultPlaceComponent implements OnInit {
       }
     };
     this.state.bounds.next(vp);
-    this.analytics.interactionEvent('select-place', 'geo-widget', this.place.display, null);
+    this.analytics.interactionEvent('select-place', 'geo-widget', this.place.name, null);
   }
 
 }
