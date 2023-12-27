@@ -11,7 +11,7 @@
             [interactionEvent]='"geo-nation-wide"'
             [interactionEventWhere]='"geo-widget"'
     >בכל הארץ
-        <span class='count' *ngIf='isActive(true)'>{{state.nationWideCount()}}</span>
+        <span class='count'>{{state.nationWideCount()}}</span>
     </button>
     <button class='map-region' clickOnReturn #mapRegion
             [class.with-text]='showButtonText()'
@@ -20,7 +20,7 @@
             [interactionEvent]='"geo-map-area"'
             [interactionEventWhere]='"geo-widget"'
     >באיזור המפה
-        <span class='count' *ngIf='isActive(false)'>{{state.mapCount()}}</span>
+        <span class='count'>{{state.mapCount()}}</span>
     </button>
     @if (state.onlyNational() && isActive(true)) {
         <span class='no-map-results'>(אין תוצאות על המפה)</span>
