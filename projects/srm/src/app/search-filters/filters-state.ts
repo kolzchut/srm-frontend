@@ -5,7 +5,8 @@ import { untilDestroyed } from "@ngneat/until-destroy";
 import { PlatformService } from "../platform.service";
 
 export class FiltersState {
-  constructor(private api: ApiService, private searchParamsQueue: Observable<SearchParams>, private attachedComponent: any, private platform: PlatformService) {
+  constructor(private api: ApiService, private searchParamsQueue: Observable<SearchParams>, 
+      private attachedComponent: any, private platform: PlatformService) {
     forkJoin([this.api.getSituations(), this.api.getResponses()])
     .subscribe(([situationData, responseData]) => {
       this.situationsMap = {};
@@ -28,14 +29,15 @@ export class FiltersState {
       tap((params) => {
         this.params.next(this._copySearchParams(params));
       }),
-      switchMap((params) => forkJoin([
-        this.api.getCounts(params),
-        this.api.getCounts(params, true),
-      ]))
-    ).subscribe(([data, dataBounded]) => {
-      this.resultCount = data.search_counts.cards.total_overall;
-      this.resultCountBounded = dataBounded.search_counts.cards.total_overall;
-``    });
+      // switchMap((params) => forkJoin([
+      //   this.api.getCounts(params),
+      //   this.api.getCounts(params, true),
+      // ]))
+    // ).subscribe(([data, dataBounded]) => {
+    //   this.resultCount = data.search_counts.cards.total_overall;
+    //   this.resultCountBounded = dataBounded.search_counts.cards.total_overall;
+    // });
+    ).subscribe();
     this.incomingSearchParams.pipe(
       untilDestroyed(attachedComponent),
       filter((params) => !!params),
@@ -89,8 +91,8 @@ export class FiltersState {
 
   currentSearchParams: SearchParams;
   restoreSearchParams: SearchParams;
-  resultCount = -1;
-  resultCountBounded = -1;
+  // resultCount = -1;
+  // resultCountBounded = -1;
 
   incomingSearchParams = new Subject<SearchParams>();
   internalSearchParams = new Subject<SearchParams>();

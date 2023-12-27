@@ -27,7 +27,7 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
   
   constructor(private el: ElementRef, private ps: PlatformService, public layout: LayoutService) {
     effect(() => {
-      if (!this.state.onlyNational()) {
+      if (!this.state.searchState.onlyNational()) {
         timer(0).subscribe(() => {
           this.state.areaInputEl = this.areaEl?.nativeElement;
         });

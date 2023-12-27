@@ -11,7 +11,11 @@
             [interactionEvent]='"geo-nation-wide"'
             [interactionEventWhere]='"geo-widget"'
     >בכל הארץ
-        <span class='count'>{{state.nationWideCount()}}</span>
+        @if (state.searchState.nationalLoading()) {
+            <span class='count count-loading' [class.active]='isActive(true)'></span>
+        } @else {
+            <span class='count'>{{state.searchState.nationWideCount()}}</span>
+        }
     </button>
     <button class='map-region' clickOnReturn #mapRegion
             [class.with-text]='showButtonText()'
@@ -20,9 +24,13 @@
             [interactionEvent]='"geo-map-area"'
             [interactionEventWhere]='"geo-widget"'
     >באיזור המפה
-        <span class='count'>{{state.mapCount()}}</span>
+        @if (state.searchState.mapLoading()) {
+            <span class='count count-loading'></span>
+        } @else {
+            <span class='count' [class.active]='isActive(false)'>{{state.searchState.mapCount()}}</span>
+        }
     </button>
-    @if (state.onlyNational() && isActive(true)) {
+    @if (state.searchState.onlyNational() && isActive(true)) {
         <span class='no-map-results'>(אין תוצאות על המפה)</span>
     } @else {
         <input class='area focusable' #area
@@ -35,7 +43,16 @@
             [interactionEvent]='"geo-search"'
             [interactionEventWhere]='"geo-widget"'
         />
-        <span class='count input' *ngIf='!state.searching && !!state.area_'>{{state.mapCount()}}</span>
+        @if (!state.searching && !!state.area_) {
+            @if (state.searchState.mapLoading()) {
+                <span class='count input count-loading'>
+                </span>    
+            } @else {
+                <span class='count input active'>
+                    {{state.searchState.mapCount()}}
+                </span>        
+            }
+        }
         <a class='clear' *ngIf='state.searching' (activated)='selectMapRegion()' clickOnReturn>
         </a>
     }

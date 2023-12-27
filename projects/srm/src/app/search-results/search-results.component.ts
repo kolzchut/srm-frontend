@@ -7,7 +7,7 @@ import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';
 import { PlatformService } from '../platform.service';
 import { AnalyticsService } from '../analytics.service';
-import { AreaSearchState } from '../area-search-selector/area-search-state';
+import { SearchState } from './search-state';
 
 
 export type SearchParamsOffset = {
@@ -34,7 +34,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   @Input() active = false;
   @Input() didYouMean: {display: string, link: string} | null = null;
   @Input() isLandingPage = true;
-  @Input() areaSearchState: AreaSearchState;
+  @Input() searchState: SearchState;
   @Output() zoomout = new EventEmitter<ViewPort>();
   @Output() nationalCount = new EventEmitter<number>();
   @Output() visibleCount = new EventEmitter<number>();
@@ -74,6 +74,9 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
     this.paramsQueue.pipe(
       filter((params) => !!params),
       delay(1),
+      tap((params) => {
+        this.searchState.setLoading(params.searchHash !== this.searchHash);
+      }),
       debounceTime(this.platform.browser() ? 2000 : 0),
       switchMap((params) => {
         if (params.searchHash === this.searchHash && params.geoHash === this.geoHash) {
@@ -92,7 +95,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
               this.totalCount = counts.search_counts?._current?.total_overall || 0;
               this.viewport = counts.viewport;
               this.totalNationalCount = nationalCounts.search_counts?._current?.total_overall || 0;
-              this.areaSearchState.setNationalCounts(this.totalCount, this.totalNationalCount);
+              this.searchState.setNationalCounts(this.totalCount, this.totalNationalCount);
               this.nationalCount.emit(this.totalNationalCount);
               this.searchHash = params.searchHash;
               if (this.active) {
@@ -150,7 +153,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           } else {
             this.totalVisibleCount = 0;
           }
-          this.areaSearchState.setMapCount(this.totalVisibleCount);
+          this.searchState.setMapCount(this.totalVisibleCount);
         }),
       ).subscribe();
       this.fetch();

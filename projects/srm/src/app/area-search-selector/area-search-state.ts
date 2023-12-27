@@ -2,7 +2,8 @@ import { BehaviorSubject, Subject, filter, debounceTime, switchMap, timer, Obser
 import { ApiService } from "../api.service";
 import { LngLatBoundsLike } from "mapbox-gl";
 import { SearchParams, ViewPort } from "../consts";
-import { computed, signal } from "@angular/core";
+import { computed, effect, signal } from "@angular/core";
+import { SearchState } from "../search-results/search-state";
 
 export class AreaSearchState {
 
@@ -30,13 +31,7 @@ export class AreaSearchState {
   areaInputEl: HTMLInputElement;
   mapMoveSubscription: Subscription | null = null;
 
-  // Search counts
-  mapCount = signal<number>(0);
-  nationalCount = signal<number>(0);
-  nationWideCount = signal<number>(0);
-  onlyNational = computed(() => this.nationalCount() === this.nationWideCount() && this.nationalCount() > 0);
-
-  constructor(private api: ApiService, private searchParams: Observable<SearchParams>) {
+  constructor(private api: ApiService, private searchParams: Observable<SearchParams>, public searchState: SearchState) {
     this.queries.pipe(
       filter((value) => !!value && value.length > 1),
       debounceTime(200),
@@ -61,6 +56,13 @@ export class AreaSearchState {
       delay(100),
     ).subscribe((params) => {
       this.refGeoHash = params?.geoHash;
+    });
+    effect(() => {
+      const mapCount = this.searchState.mapCount();
+      if (this.searchState.nationalCount() === this.searchState.nationWideCount()) {
+        this.selectNationWide();
+      }
+      this.selectorVisible_ = this.selectorVisible_;
     });
   }
 
@@ -222,20 +224,6 @@ export class AreaSearchState {
       this.mapMoveSubscription?.unsubscribe();
       this.mapMoveSubscription = null;
     }
-  }
-
-  setMapCount(count: number) {
-    this.mapCount.set(count);
-    this.selectorVisible_ = true;
-  }
-
-  setNationalCounts(nationWideCount: number, nationalCount: number) {
-    this.nationalCount.set(nationalCount);
-    this.nationWideCount.set(nationWideCount);
-    if (nationalCount === nationWideCount) {
-      this.selectNationWide();
-    }
-    this.selectorVisible_ = this.selectorVisible_;
   }
 
 }

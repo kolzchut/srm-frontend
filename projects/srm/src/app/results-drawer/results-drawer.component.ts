@@ -6,6 +6,7 @@ import { DrawerState } from '../consts';
 import { LayoutService } from '../layout.service';
 import { WindowService } from '../window.service';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
+import { SearchState } from '../search-results/search-state';
 
 @UntilDestroy()
 @Component({
@@ -23,6 +24,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
   @Input() scrollAll = false;
   @Input() nationalCount = 0;
   @Input() areaSearchState: AreaSearchState;
+  @Input() searchState: SearchState;
   @Output() handle = new EventEmitter<string>();
   @Output() scrollTop = new EventEmitter<boolean>();
   @Output() size = new EventEmitter<number>();
@@ -74,7 +76,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     } else if (this.state === DrawerState.Half) {
       ret = hostHeight*0.33;
     } else if (this.state === DrawerState.Most) {
-      ret = hostHeight*0.25;
+      ret = 56;
     } else if (this.state === DrawerState.Full) {
       ret = 0;
     }

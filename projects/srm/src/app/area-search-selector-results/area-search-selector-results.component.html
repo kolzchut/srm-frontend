@@ -4,12 +4,16 @@
     <div class='mobile-input' *ngIf='layout.mobile()'>
         <div class='back-button' (activated)='state.stopSearching()' clickOnReturn></div>
         <input [placeholder]='state.inputPlaceholder | async'
+               [class.has-content]='!!state.query_'
                 aria-label='חיפוש איזורים בארץ'
                 (focus)='state.focusInput()'
-                (blur)='state.blurInput()'
+                (blurr)='state.blurInput()'
                 [(ngModel)]='state.query_'
                 #mobileInput
         />
+        @if (!!state.query_) {
+            <div class='clear' (activated)='state.query_ = ""' clickOnReturn></div>
+        }
     </div>
     <div class='results'
        (focus)='state.focusResults()' (blur)='state.blurResults()'

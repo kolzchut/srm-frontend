@@ -20,7 +20,7 @@ import { ResponseComponent } from './response/response.component';
 import { SituationComponent } from './situation/situation.component';
 import { BranchContainerComponent } from './branch-container/branch-container.component';
 import { SearchboxHeaderComponent } from './searchbox-header/searchbox-header.component';
-import { SearchResultsComponent } from './autocomplete-results/search-results.component';
+import { SearchResultsComponent } from './search-results/search-results.component';
 import { ResultStackComponent } from './result-stack/result-stack.component';
 import { ResultCardComponent } from './result-card/result-card.component';
 import { SearchFiltersComponent } from './search-filters/search-filters.component';

@@ -1,5 +1,5 @@
-@if (areaSearchState.nationWide_ === true && !areaSearchState.onlyNational()) {
+@if (areaSearchState.nationWide_ === true && !areaSearchState.searchState.onlyNational() && areaSearchState.searchState.nationalCount() > 0) {
     <div class='national-services'>
-        <span>{{areaSearchState.nationalCount()}} מהשירותים הם כלל ארציים</span>
+        <span>{{areaSearchState.searchState.nationalCount()}} מהשירותים הם כלל ארציים</span>
     </div>
 }

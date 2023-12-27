@@ -3,7 +3,7 @@
     [style.height]='layout.desktop() ? null : calcedHeight + "px"'
     #mapWindow
 >
-    <div class='map-blur' *ngIf='(areaSearchState.showResults | async) || (areaSearchState.onlyNational())'></div>
+    <div class='map-blur' *ngIf='(areaSearchState.showResults | async) || (searchState.onlyNational())'></div>
     <app-area-search [areaSearchState]='areaSearchState' *ngIf='layout.desktop()'></app-area-search>
     <app-area-search-national-services-count [areaSearchState]='areaSearchState'></app-area-search-national-services-count>
     <app-area-search-national-services-notification [areaSearchState]='areaSearchState'></app-area-search-national-services-notification>

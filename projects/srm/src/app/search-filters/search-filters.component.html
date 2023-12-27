@@ -28,17 +28,36 @@
             ביטול
         </a>
         <button class='main' (click)='filtersState.closeWithParams()'>
-            <span aria-live='polite'>
-                <strong *ngIf='filtersState.resultCount > 1'>{{filtersState.resultCount.toLocaleString()}} תוצאות</strong>
-                <strong *ngIf='filtersState.resultCount === 1'>תוצאה אחת</strong>
-                <strong *ngIf='filtersState.resultCount === 0'>אין תוצאות</strong>    
-            </span>
-            <span *ngIf='filtersState.resultCountBounded >= 0 && filtersState.resultCountBounded !== filtersState.resultCount && !areaSearchState.nationWide_' class='bounded'>
-                &nbsp;
-                <span *ngIf='filtersState.resultCountBounded > 1'>({{filtersState.resultCountBounded.toLocaleString()}} באיזור המפה)</span>
-                <span *ngIf='filtersState.resultCountBounded === 1'>(אחת באיזור המפה)</span>
-                <span *ngIf='filtersState.resultCountBounded === 0'>(אין באיזור המפה)</span>
-            </span>
+            @if (searchState.nationalLoading()) {
+                <span class='filters-loading'></span>
+            } @else {
+                <span aria-live='polite'>
+                    @if (searchState.nationWideCount() > 1) {
+                        <strong>{{searchState.nationWideCount().toLocaleString()}} תוצאות</strong>
+                    } @else if (searchState.nationWideCount() === 1) {
+                        <strong>תוצאה אחת</strong>
+                    } @else {
+                        <strong>אין תוצאות</strong>
+                    }
+                </span>
+                @if (searchState.mapLoading()) {
+                    &nbsp;
+                    <span class='filters-loading'></span>
+                } @else {
+                    @if (searchState.mapCount() >= 0 && searchState.mapCount() !== searchState.nationWideCount() && !areaSearchState.nationWide_) {
+                        <span class='bounded'>
+                            &nbsp;
+                            @if (searchState.mapCount() > 1) {
+                                <span>({{searchState.mapCount().toLocaleString()}} באיזור המפה)</span>
+                            } @else if (searchState.mapCount() === 1) {
+                                <span>(אחת באיזור המפה)</span>
+                            } @else {
+                                <span>(אין באיזור המפה)</span>
+                            }
+                        </span>    
+                    }
+                }
+            }
         </button>
     </div>  
 </div>

@@ -17,6 +17,7 @@ import { A11yService } from '../a11y.service';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import { FiltersState } from '../search-filters/filters-state';
 import { WindowService } from '../window.service';
+import { SearchState } from '../search-results/search-state';
 
 class SearchParamCalc {
   acId: string;
@@ -105,6 +106,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   isLandingPage = true;
 
   didYouMean: {display: string, link: string} | null = null;
+  searchState: SearchState;
   areaSearchState: AreaSearchState;
   filtersState: FiltersState;
 
@@ -416,7 +418,8 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.platform.server()) {
       this.showLandingPageOverlay = false;
     }
-    this.areaSearchState = new AreaSearchState(api, this.searchParamsQueue);
+    this.searchState = new SearchState();
+    this.areaSearchState = new AreaSearchState(api, this.searchParamsQueue, this.searchState);
     this.areaSearchState.bounds.pipe(
       untilDestroyed(this),
     ).subscribe((bounds) => {

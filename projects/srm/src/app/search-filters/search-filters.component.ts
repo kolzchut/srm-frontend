@@ -7,6 +7,7 @@ import { PlatformService } from '../platform.service';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import { Location } from '@angular/common';
 import { FiltersState } from './filters-state';
+import { SearchState } from '../search-results/search-state';
 
 @UntilDestroy()
 @Component({
@@ -24,6 +25,7 @@ export class SearchFiltersComponent implements OnChanges {
   @Input() searchParams: SearchParams;
   @Input() areaSearchState: AreaSearchState;
   @Input() filtersState: FiltersState
+  @Input() searchState: SearchState;
   @Output() zoomout = new EventEmitter<ViewPort>();
 
   @ViewChild('moreResponses') moreResponses: SearchFiltersMoreButtonComponent;
