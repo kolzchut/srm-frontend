@@ -1,0 +1,41 @@
+@import '../../common.less';
+
+:host {
+
+    .notification {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: flex-start;
+        border-radius: 20px;
+        border: 1px solid @color-blue-5;
+        background: @color-white;
+        padding-right: 12px;
+        padding-left: 48px;
+        color: @color-blue-2;
+        .font-rag-sans;
+        font-weight: 300;
+        width: fit-content;
+
+        strong {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .background-image;
+        background-image: url(../../assets/img/icon-national-service-indicators.svg);
+        background-size: 32px 16px;
+        background-position: left 8px center;
+
+        .desktop({
+            min-height: 28px;
+            font-size: 16px;
+            line-height: 20px;
+        });
+        .mobile({
+            min-height: 22px;
+            font-size: 13px;
+            line-height: 16px;
+        });
+    }
+}

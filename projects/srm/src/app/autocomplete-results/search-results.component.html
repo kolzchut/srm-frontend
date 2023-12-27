@@ -1,5 +1,5 @@
 <div class='trigger' [class.visible]='triggerVisible'></div>
-<div class='counts' *ngIf='hasCounts && !searchParams?.national'>
+<!-- <div class='counts' *ngIf='hasCounts'>
     <div class='line' *ngIf='totalCount > 0'>
         <span class='strong' aria-live='polite'>{{totalVisibleCount.toLocaleString()}} תוצאות על המפה</span>
         <span *ngIf='totalCount - totalNationalCount - totalVisibleCount > 0'>מתוך {{totalCount.toLocaleString()}} <a (activated)='zoomout.emit(viewport)' clickOnReturn role="button" aria-label="הצגת כלל התוצאות הרלוונטיות לכל הארץ" tabindex="0">בכל הארץ</a></span>
@@ -11,15 +11,7 @@
     <ng-container *ngIf='!searchParams.hasFilters'>
         <span *ngIf='totalVisibleCount === 0 && totalCount === 0'>לא נמצאו תוצאות בכל הארץ, מומלץ <a href="/q">לשנות את החיפוש</a></span>
     </ng-container>
-</div>
-<div class='counts' *ngIf='hasCounts && searchParams.national'>
-    <div class='line' *ngIf='totalNationalCount > 0'>
-        <span class='strong'>{{totalNationalCount.toLocaleString()}} שירותים טלפוניים, אינטרנטיים וכד׳ | </span> 
-        <a class='close' [routerLink]='["."]' [queryParams]="{national: null}" [queryParamsHandling]='"merge"' [preserveFragment]="true" role="button">
-            הצג גם שירותים מקומיים
-        </a>
-    </div>
-</div>
+</div> -->
 
 <div *ngIf='didYouMean' class='did-you-mean'>
     <span>האם התכוונת&nbsp;</span>

@@ -3,6 +3,7 @@
 :host {
     width: 100%;
     display: flex;
+    flex-flow: column;
     .desktop({
         .selection-widget {
             width: 100%;
@@ -23,12 +24,16 @@
             pointer-events: all;    
         }
         padding: 8px;
+        position: relative;
+        z-index: 1;
+        gap: 8px;
     });
     .mobile({
         padding: 8px;
         padding-top: 0;
+        position: relative;
         .selection-widget {
             width: 100%;
         }
-    })
+    });
 }

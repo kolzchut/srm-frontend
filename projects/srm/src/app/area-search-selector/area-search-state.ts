@@ -2,6 +2,7 @@ import { BehaviorSubject, Subject, filter, debounceTime, switchMap, timer, Obser
 import { ApiService } from "../api.service";
 import { LngLatBoundsLike } from "mapbox-gl";
 import { SearchParams, ViewPort } from "../consts";
+import { computed, signal } from "@angular/core";
 
 export class AreaSearchState {
 
@@ -28,6 +29,12 @@ export class AreaSearchState {
 
   areaInputEl: HTMLInputElement;
   mapMoveSubscription: Subscription | null = null;
+
+  // Search counts
+  mapCount = signal<number>(0);
+  nationalCount = signal<number>(0);
+  nationWideCount = signal<number>(0);
+  onlyNational = computed(() => this.nationalCount() === this.nationWideCount() && this.nationalCount() > 0);
 
   constructor(private api: ApiService, private searchParams: Observable<SearchParams>) {
     this.queries.pipe(
@@ -215,6 +222,20 @@ export class AreaSearchState {
       this.mapMoveSubscription?.unsubscribe();
       this.mapMoveSubscription = null;
     }
+  }
+
+  setMapCount(count: number) {
+    this.mapCount.set(count);
+    this.selectorVisible_ = true;
+  }
+
+  setNationalCounts(nationWideCount: number, nationalCount: number) {
+    this.nationalCount.set(nationalCount);
+    this.nationWideCount.set(nationWideCount);
+    if (nationalCount === nationWideCount) {
+      this.selectNationWide();
+    }
+    this.selectorVisible_ = this.selectorVisible_;
   }
 
 }

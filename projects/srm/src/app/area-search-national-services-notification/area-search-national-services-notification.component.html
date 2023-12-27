@@ -1,0 +1,9 @@
+@if (single) {
+    <div class='notification'>
+        <strong>השירות ניתן בכל הארץ</strong>
+    </div>
+} @else if (areaSearchState.onlyNational()) {
+    <div class='notification'>
+        <strong>כל השירותים הם כלל ארציים:&nbsp;</strong>טלפוניים, אינטרנטיים וכדו׳
+    </div>
+}

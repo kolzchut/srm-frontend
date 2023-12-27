@@ -243,12 +243,10 @@ export class ApiService {
       params.extra = extra;
     }
     const filters = [];
-    if (!searchParams.national) {
-      const filter = this._filter(searchParams);
-      if (filter) {
-        filters.push(filter);
-      }  
-    }
+    const filter = this._filter(searchParams);
+    if (filter) {
+      filters.push(filter);
+    }  
     const filter2 = this._filter(searchParams, false);
     if (filter2) {
       filter2.national_service = true;
@@ -381,10 +379,6 @@ export class ApiService {
       this.fullTextParams(params, {no_highlight: true});
     }
     let filter = this._filter(searchParams, withBounds);
-    if (searchParams.national) {
-      filter = filter || {};
-      filter.national_service = true;
-    }
     if (filter) {
       params.filter = JSON.stringify(filter);
     }
@@ -425,7 +419,7 @@ export class ApiService {
       this.fullTextParams(params, {no_highlight: true});
     }
     params.extra = 'distinct-situations|distinct-responses';
-    if (searchParams.response || searchParams.situation || searchParams.org_id || searchParams.national || bound) {
+    if (searchParams.response || searchParams.situation || searchParams.org_id || bound) {
       const filter: any = {};
       if (searchParams.response) {
         filter['response_ids_parents'] = searchParams.response;
@@ -435,9 +429,6 @@ export class ApiService {
       }
       if (searchParams.org_id) {
         filter['organization_id'] = searchParams.org_id;
-      }
-      if (searchParams.national) {
-        filter['national_service'] = true;
       }
       if (bound && searchParams.bounds && searchParams.bounds.length === 2 && bound) {
         filter['branch_geometry__bounded'] = this.boundsFilter(searchParams.bounds);

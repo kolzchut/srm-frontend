@@ -10,24 +10,33 @@
             (activated)='selectNationWide()'
             [interactionEvent]='"geo-nation-wide"'
             [interactionEventWhere]='"geo-widget"'
-    >בכל הארץ</button>
+    >בכל הארץ
+        <span class='count' *ngIf='isActive(true)'>{{state.nationWideCount()}}</span>
+    </button>
     <button class='map-region' clickOnReturn #mapRegion
             [class.with-text]='showButtonText()'
             [class.active]='isActive(false)'
             (activated)='selectMapRegion()'
             [interactionEvent]='"geo-map-area"'
             [interactionEventWhere]='"geo-widget"'
-    >באיזור המפה</button>
-    <input class='area focusable' #area
-           [class.active]='state.searching || !!state.area_'
-           [placeholder]='state.inputPlaceholder | async'
-           aria-label='חיפוש איזורים בארץ'
-           (focus)='state.focusInput()'
-           (blur)='state.blurInput()'
-           [(ngModel)]='state.query_'
-           [interactionEvent]='"geo-search"'
-           [interactionEventWhere]='"geo-widget"'
-    />
-    <a class='clear' *ngIf='state.searching || !!state.area_' (activated)='selectMapRegion()' clickOnReturn>
-    </a>
+    >באיזור המפה
+        <span class='count' *ngIf='isActive(false)'>{{state.mapCount()}}</span>
+    </button>
+    @if (state.onlyNational() && isActive(true)) {
+        <span class='no-map-results'>(אין תוצאות על המפה)</span>
+    } @else {
+        <input class='area focusable' #area
+            [class.active]='state.searching || !!state.area_'
+            [placeholder]='state.inputPlaceholder | async'
+            aria-label='חיפוש איזורים בארץ'
+            (focus)='state.focusInput()'
+            (blur)='state.blurInput()'
+            [(ngModel)]='state.query_'
+            [interactionEvent]='"geo-search"'
+            [interactionEventWhere]='"geo-widget"'
+        />
+        <span class='count input' *ngIf='!state.searching && !!state.area_'>{{state.mapCount()}}</span>
+        <a class='clear' *ngIf='state.searching' (activated)='selectMapRegion()' clickOnReturn>
+        </a>
+    }
 </div>

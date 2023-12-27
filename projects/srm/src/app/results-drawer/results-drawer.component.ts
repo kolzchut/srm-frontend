@@ -72,14 +72,11 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     } else if (this.state === DrawerState.Peek) {
       ret = (hostHeight - 56);
     } else if (this.state === DrawerState.Half) {
-      ret = hostHeight/2;
+      ret = hostHeight*0.33;
     } else if (this.state === DrawerState.Most) {
       ret = hostHeight*0.25;
     } else if (this.state === DrawerState.Full) {
       ret = 0;
-    } else if (this.state === DrawerState.National) {
-      ret = 50;
-      moveDiff = 0;
     }
     ret += moveDiff;
     if (ret > hostHeight) {
@@ -102,7 +99,6 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
         if ('ontouchstart' in doc) {
           fromEvent(el, 'touchstart').pipe(
             untilDestroyed(this),
-            filter(() => this.state !== DrawerState.National),
           ).subscribe((ev) => {
             this.handleGestureStart(ev as TouchEvent);
             fromEvent(window, 'touchend').pipe(first()).subscribe((ev) => {
@@ -112,7 +108,6 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
         } else {
           fromEvent(el, 'mousedown').pipe(
             untilDestroyed(this),
-            filter(() => this.state !== DrawerState.National),
           ).subscribe((ev) => {
             this.handleGestureStart(ev as MouseEvent);
             fromEvent(window, 'mouseup').pipe(first()).subscribe((ev) => {

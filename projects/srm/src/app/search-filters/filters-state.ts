@@ -146,8 +146,6 @@ export class FiltersState {
       filter_responses: sp.filter_responses?.slice() || [],
       filter_response_categories: sp.filter_response_categories?.slice() || [],
 
-      national: !!sp.national,
-
       bounds: sp.bounds,
     });
     return ret;

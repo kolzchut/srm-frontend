@@ -476,8 +476,9 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       'peek:up': DrawerState.Half,
       'peek:click': DrawerState.Half,
     };
-    if (!this.filtersVisible) {
-      this.drawerState = map[this.drawerState + ':' + drawerEvent] || this.drawerState;
+    this.drawerState = map[this.drawerState + ':' + drawerEvent] || this.drawerState;
+    if (this.filtersVisible && this.drawerState === DrawerState.Peek) {
+      this.drawerState = DrawerState.Half;
     }
   }
 
@@ -499,7 +500,6 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         fg: searchParams.filter_gender?.map(x => x.slice('human_situations:gender:'.length)).join('|') || null,
         fr: searchParams.filter_responses?.map(x => x.slice('human_services:'.length)).join('|') || null,
         frc: searchParams.filter_response_categories?.map(x => x.slice('human_services:'.length)).join('|') || null,
-        national: searchParams.national ? 'yes' : null
       },
       replaceUrl: true,
       preserveFragment: true
@@ -641,9 +641,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   setFiltersVisible(visible: boolean) {
     this.filtersVisible = visible;
     if (visible) {
-      if (!this.searchParams?.national) {
-        this.drawerState = DrawerState.Half;
-      }
+      this.drawerState = DrawerState.Half;
     }
     if (visible && this.point && this.platform.browser()) {
       timer(0).pipe(

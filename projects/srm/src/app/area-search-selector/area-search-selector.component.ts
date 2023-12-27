@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild, effect } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { AreaSearchState } from './area-search-state';
 import { delay, map, tap, timer } from 'rxjs';
@@ -17,7 +17,7 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
 
   @ViewChild('mapRegion') mapRegionEl: ElementRef;
   @ViewChild('nationWide') nationWideEl: ElementRef;
-  @ViewChild('area') areaEl: ElementRef;
+  @ViewChild('area', {static: false}) areaEl: ElementRef;
 
 
   selectorWidth = 140;
@@ -26,13 +26,19 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
   inputPlaceholder = 'חיפוש';
   
   constructor(private el: ElementRef, private ps: PlatformService, public layout: LayoutService) {
+    effect(() => {
+      if (!this.state.onlyNational()) {
+        timer(0).subscribe(() => {
+          this.state.areaInputEl = this.areaEl?.nativeElement;
+        });
+      }
+    });
   }
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
-    this.state.areaInputEl = this.areaEl.nativeElement;
     this.state.selectorVisible.pipe(
       untilDestroyed(this),
       map(() => !!this.state.area_ ? this.areaEl :

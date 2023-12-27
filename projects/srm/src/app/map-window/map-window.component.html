@@ -11,5 +11,7 @@
     >
     <div class='message-blur' *ngIf='mode === MapWindowMode.Inaccurate || mode === MapWindowMode.NationalService'>&nbsp;</div>
     <div class='message' *ngIf='mode === MapWindowMode.Inaccurate'>*שימו לב: הכתובת שבידינו אינה מדויקת</div>
-    <div class='message' *ngIf='mode === MapWindowMode.NationalService'>השירות ניתן בכל הארץ</div>
+    @if (mode === MapWindowMode.NationalService) {
+        <app-area-search-national-services-notification [single]='true'></app-area-search-national-services-notification>
+    }
 </a>

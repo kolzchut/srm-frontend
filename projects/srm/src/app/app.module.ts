@@ -73,6 +73,8 @@ import { InteractionEventDirective } from './interaction-event.directive';
 import { TagEndingComponent } from './result-card/tag-ending/tag-ending.component';
 import { AreaSearchComponent } from './area-search/area-search.component';
 import { SearchFiltersBarComponent } from './search-filters-bar/search-filters-bar.component';
+import { AreaSearchNationalServicesCountComponent } from './area-search-national-services-count/area-search-national-services-count.component';
+import { AreaSearchNationalServicesNotificationComponent } from './area-search-national-services-notification/area-search-national-services-notification.component';
 
 @NgModule({
   declarations: [
@@ -140,6 +142,8 @@ import { SearchFiltersBarComponent } from './search-filters-bar/search-filters-b
     TagEndingComponent,
     AreaSearchComponent,
     SearchFiltersBarComponent,
+    AreaSearchNationalServicesCountComponent,
+    AreaSearchNationalServicesNotificationComponent,
   ],
   imports: [
     BrowserModule,

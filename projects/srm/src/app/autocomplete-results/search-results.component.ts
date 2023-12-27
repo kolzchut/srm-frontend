@@ -7,6 +7,7 @@ import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';
 import { PlatformService } from '../platform.service';
 import { AnalyticsService } from '../analytics.service';
+import { AreaSearchState } from '../area-search-selector/area-search-state';
 
 
 export type SearchParamsOffset = {
@@ -33,6 +34,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   @Input() active = false;
   @Input() didYouMean: {display: string, link: string} | null = null;
   @Input() isLandingPage = true;
+  @Input() areaSearchState: AreaSearchState;
   @Output() zoomout = new EventEmitter<ViewPort>();
   @Output() nationalCount = new EventEmitter<number>();
   @Output() visibleCount = new EventEmitter<number>();
@@ -90,6 +92,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
               this.totalCount = counts.search_counts?._current?.total_overall || 0;
               this.viewport = counts.viewport;
               this.totalNationalCount = nationalCounts.search_counts?._current?.total_overall || 0;
+              this.areaSearchState.setNationalCounts(this.totalCount, this.totalNationalCount);
               this.nationalCount.emit(this.totalNationalCount);
               this.searchHash = params.searchHash;
               if (this.active) {
@@ -147,6 +150,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           } else {
             this.totalVisibleCount = 0;
           }
+          this.areaSearchState.setMapCount(this.totalVisibleCount);
         }),
       ).subscribe();
       this.fetch();

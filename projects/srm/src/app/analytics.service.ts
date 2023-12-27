@@ -78,7 +78,6 @@ export class AnalyticsService {
         filter_count: params.allTaxonomyIds.filter(x => !!x).length - responseCount,
         filter_responses_count: responseCount,
         filter_response_categories_count: (params.filter_response_categories || []).length,
-        filter_national: params.national ? 'yes' : 'no',
         landing_page: isLandingPage ? 'yes' : 'no',
         search_structured: !!params.query ? 'no' : 'yes',
         num_results_total: numTotalResults,
