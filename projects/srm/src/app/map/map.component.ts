@@ -366,7 +366,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
                     if (this.layout.mobile()) {
                       if (this.cardId && (!this.pointId || this.pointId === props.point_id)) {
                         route.push('c', this.cardId, 'p', props.point_id);
-                      } else if (this.pointId === props.point_id && this.markerProps.card_id) {
+                      } else if (this.pointId === props.point_id && this.markerProps?.card_id) {
                         route.push('c', this.markerProps.card_id);
                       } else {
                         route.push('p', props.point_id);

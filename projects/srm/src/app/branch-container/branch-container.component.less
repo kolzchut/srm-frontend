@@ -90,7 +90,6 @@
             box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
             border-radius: 24px;
             .button-image(none, none);
-            background-size: 24px;
             display: flex;
             flex-flow: column;
             align-items: center;
@@ -98,11 +97,13 @@
 
             &.search {
                 background-image: url(../../assets/img/icon-search-gray-1.svg);
+                background-size: 24px;
             }
             &.back {
                 transition: transform 0.2s ease-in-out;
                 transform: rotate(-90deg);
                 background-image: url(../../assets/img/icon-arrow-right.svg);
+                background-size: 24px;
             }
             background-color: @color-white;
         }

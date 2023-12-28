@@ -37,7 +37,7 @@ export class AreaSearchSelectorResultMyLocationComponent implements OnInit {
           };
           this.state.area_ = this.NAME;
           this.state.bounds.next(bounds);
-          this.analytics.interactionEvent('geo-my-location', 'geo-widget');
+          this.analytics.interactionEvent('geo_my_location', 'geo-widget');
         }
       }
     );

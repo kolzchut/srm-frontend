@@ -20,6 +20,6 @@ export class AreaSearchSelectorResultNationWideComponent implements OnInit {
 
   select() {
     this.state.selectNationWide();
-    this.analytics.interactionEvent('geo-nation-wide', 'geo-widget');
+    this.analytics.interactionEvent('geo_nation_wide', 'geo-widget');
   }
 }

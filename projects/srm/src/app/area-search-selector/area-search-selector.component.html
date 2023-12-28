@@ -8,7 +8,7 @@
             [class.with-text]='showButtonText()'
             [class.active]='isActive(true)'
             (activated)='selectNationWide()'
-            [interactionEvent]='"geo-nation-wide"'
+            [interactionEvent]='"geo_nation_wide"'
             [interactionEventWhere]='"geo-widget"'
     >בכל הארץ
         @if (state.searchState.nationalLoading()) {
@@ -21,7 +21,7 @@
             [class.with-text]='showButtonText()'
             [class.active]='isActive(false)'
             (activated)='selectMapRegion()'
-            [interactionEvent]='"geo-map-area"'
+            [interactionEvent]='"geo_map_area"'
             [interactionEventWhere]='"geo-widget"'
     >באיזור המפה
         @if (state.searchState.mapLoading()) {
