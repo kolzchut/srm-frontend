@@ -80,6 +80,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       debounceTime(this.platform.browser() ? 2000 : 0),
       switchMap((params) => {
         if (params.searchHash === this.searchHash && params.geoHash === this.geoHash) {
+          this.searchState.disableLoading();
           return from([]);
         } else {
           return from([params]);

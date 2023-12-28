@@ -2,37 +2,37 @@ import { computed, signal } from "@angular/core";
 
 export class SearchState {
 
-    LOADING = -1;
-
     // Search counts
     mapCount = signal<number>(0);
     nationalCount = signal<number>(0);
     nationWideCount = signal<number>(0);
     onlyNational = computed(() => this.nationalCount() === this.nationWideCount() && this.nationalCount() > 0);
 
+    // Loading
+    mapLoading = signal<boolean>(false);
+    nationalLoading = signal<boolean>(false);
+
     setLoading(full: boolean) {
-        this.mapCount.set(this.LOADING);
+        this.mapLoading.set(true);
         if (full) {
-            this.nationalCount.set(this.LOADING);
-            this.nationWideCount.set(this.LOADING);
+            this.nationalLoading.set(true);
         }
+    }
+
+    disableLoading() {
+        this.mapLoading.set(false);
+        this.nationalLoading.set(false);
     }
 
     setMapCount(count: number) {
         this.mapCount.set(count);
+        this.mapLoading.set(false);
     }
     
     setNationalCounts(nationWideCount: number, nationalCount: number) {
         this.nationalCount.set(nationalCount);
         this.nationWideCount.set(nationWideCount);
-    }
-
-    mapLoading() {
-        return this.mapCount() === this.LOADING;
-    }
-
-    nationalLoading() {
-        return this.nationalCount() === this.LOADING || this.nationWideCount() === this.LOADING;
+        this.nationalLoading.set(false);
     }
 
     anyLoading() {
