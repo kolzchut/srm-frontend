@@ -41,8 +41,7 @@
                     }
                 </span>
                 @if (searchState.mapLoading()) {
-                    &nbsp;
-                    <span class='filters-loading'></span>
+                    <span class='bounded'>&nbsp;(</span><span class='filters-loading'></span><span>)</span>
                 } @else {
                     @if (searchState.mapCount() >= 0 && searchState.mapCount() !== searchState.nationWideCount() && (!!areaSearchState.area_ || !areaSearchState.nationWide_)) {
                         <span class='bounded'>
