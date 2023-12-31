@@ -12,7 +12,7 @@
                 #mobileInput
         />
         @if (!!state.query_) {
-            <div class='clear' (activated)='state.query_ = ""' clickOnReturn></div>
+            <div class='clear' (activated)='clear()' clickOnReturn></div>
         }
     </div>
     <div class='results'

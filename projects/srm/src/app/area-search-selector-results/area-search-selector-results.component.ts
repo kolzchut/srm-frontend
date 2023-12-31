@@ -44,4 +44,12 @@ export class AreaSearchSelectorResultsComponent implements OnInit {
       this.mobileInputEl?.nativeElement.focus();
     });
   }
+
+  clear() {
+    timer(0).subscribe(() => {
+      this.state.results.next(null);
+      this.mobileInputEl.nativeElement.value = '';
+      this.mobileInputEl.nativeElement.focus();
+    });
+  }
 }
