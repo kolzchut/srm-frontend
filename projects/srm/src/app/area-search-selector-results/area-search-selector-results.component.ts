@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '
 import { PlaceResult } from '../area-search-selector-result-place/area-search-selector-result-place.component';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { Observable, Subject, delay, map, timer } from 'rxjs';
+import { Observable, Subject, delay, map, tap, timer } from 'rxjs';
 import { LayoutService } from '../layout.service';
 
 
@@ -45,11 +45,20 @@ export class AreaSearchSelectorResultsComponent implements OnInit {
     });
   }
 
-  clear() {
-    timer(0).subscribe(() => {
-      this.state.results.next(null);
-      this.mobileInputEl.nativeElement.value = '';
-      this.mobileInputEl.nativeElement.focus();
-    });
+  clear(event: TouchEvent) {
+    timer(0).pipe(
+      tap(() => {
+        this.state.results.next(null);
+        this.mobileInputEl.nativeElement.value = '';
+        this.mobileInputEl.nativeElement.focus();
+        this.state.focusInput();
+      }),
+      delay(100),
+      tap(() => {
+        this.mobileInputEl.nativeElement.focus();
+      }),
+    ).subscribe();
+    event.stopPropagation();
+    event.preventDefault();
   }
 }
