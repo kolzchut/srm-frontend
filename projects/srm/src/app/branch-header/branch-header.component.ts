@@ -26,7 +26,6 @@ export class BranchHeaderComponent implements OnInit {
     const link = this.layout.mobile() ? this.link : (this.landingPage ? null : ["../.."]);
     const relativeTo = link && link[0][0] === '.' ? this.route : null;
     const params: any = {queryParamsHandling: 'preserve'};
-    console.log('navigate', link, relativeTo);
     if (link) {
       if (relativeTo) {
         params.relativeTo = relativeTo;
