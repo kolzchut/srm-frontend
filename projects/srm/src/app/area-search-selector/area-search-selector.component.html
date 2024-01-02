@@ -1,6 +1,6 @@
 <div class='container' [class.searching]='state.searching'>
     <div class='selector'
-        [class.hide]='!(state.selectorVisible | async)'
+        [class.input]='state.searching_'
         [style.width]='selectorWidth + "px"'
         [style.right]='selectorRight + "px"'
     ></div>
@@ -40,6 +40,7 @@
             [class.active]='state.searching || !!state.area_'
             [placeholder]='state.inputPlaceholder | async'
             aria-label='חיפוש איזורים בארץ'
+            (touchstart)='inputTouched($event)'
             (focus)='state.focusInput()'
             (blur)='state.blurInput()'
             [(ngModel)]='state.query_'

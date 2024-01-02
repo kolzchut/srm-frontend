@@ -46,18 +46,24 @@ export class AreaSearchSelectorResultsComponent implements OnInit {
   }
 
   clear(event: TouchEvent) {
-    timer(0).pipe(
-      tap(() => {
-        this.state.results.next(null);
-        this.mobileInputEl.nativeElement.value = '';
-        this.mobileInputEl.nativeElement.focus();
-        this.state.focusInput();
-      }),
-      delay(100),
-      tap(() => {
-        this.mobileInputEl.nativeElement.focus();
-      }),
-    ).subscribe();
+    if (this.mobileInputEl.nativeElement.value.length > 0) {
+      timer(0).pipe(
+        tap(() => {
+          this.state.results.next(null);
+          this.mobileInputEl.nativeElement.value = '';
+          this.mobileInputEl.nativeElement.focus();
+          this.state.focusInput();
+        }),
+        delay(100),
+        tap(() => {
+          this.mobileInputEl.nativeElement.focus();
+        }),
+      ).subscribe();
+    } else {
+      timer(0).subscribe(() => {
+        this.state.area_ = null;
+      });
+    }
     event.stopPropagation();
     event.preventDefault();
   }

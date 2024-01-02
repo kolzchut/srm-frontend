@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild, effect } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { AreaSearchState } from './area-search-state';
-import { delay, map, tap, timer } from 'rxjs';
+import { animationFrameScheduler, delay, distinct, distinctUntilChanged, filter, interval, map, switchMap, take, tap, timer } from 'rxjs';
 import { PlatformService } from '../platform.service';
 import { LayoutService } from '../layout.service';
 
@@ -32,6 +32,9 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
           this.state.areaInputEl = this.areaEl?.nativeElement;
         });
       }
+      const totalCount = this.state.searchState.mapCount() + this.state.searchState.nationalCount();
+      const loading = this.state.searchState.mapLoading() || this.state.searchState.nationalLoading();
+      this.resizeSelector();
     });
   }
 
@@ -39,19 +42,20 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.state.selectorVisible.pipe(
+    this.state.selectorResize.pipe(
       untilDestroyed(this),
-      map(() => !!this.state.area_ ? this.areaEl :
+      map(() => (!!this.state.area_ || !!this.state.searching_) ? this.areaEl :
         (this.state.nationWide_ ? this.nationWideEl : this.mapRegionEl)),
-      tap((ref) => this.updateSelector(ref)),
-      delay(60),
-      tap((ref) => this.updateSelector(ref)),
-      delay(60),
-      tap((ref) => this.updateSelector(ref)),
-      delay(60),
-      tap((ref) => this.updateSelector(ref)),
-      delay(60),
-      tap((ref) => this.updateSelector(ref)),
+      map((ref) => ref.nativeElement as HTMLDivElement),
+      filter((el) => !!el),
+      switchMap((el) => {
+        return interval(60, animationFrameScheduler).pipe(
+          take(5),
+          map(() => el.getBoundingClientRect()),
+          distinctUntilChanged((a, b) => a.width === b.width && a.right === b.right),
+          tap((rect) => this.updateSelector(rect)),
+        );
+      }),
     ).subscribe();
   }
 
@@ -71,17 +75,25 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
     this.state.selectNationWide();
   }
 
-  updateSelector(ref: ElementRef): void {
-    const el = ref.nativeElement as HTMLDivElement;
-    if (!!el && this.ps.browser()) {
-      const width = el.offsetWidth;
-      const boundingRect = el.getBoundingClientRect();
+  resizeSelector(): void {
+    this.state.selectorResize.next();
+  }
+
+  updateSelector(boundingRect: DOMRect): void {
+    if (!!boundingRect && this.ps.browser()) {
+      const width = boundingRect.width;
       const hostBoundingRect = this.el.nativeElement.getBoundingClientRect();
       timer(0).subscribe(() => {
         this.selectorRight = hostBoundingRect.right - boundingRect.right;
         this.selectorWidth = width;
       });
     }
+  }
+
+  inputTouched(event: TouchEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.state.startSearching();
   }
 
 }

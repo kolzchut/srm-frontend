@@ -2,6 +2,4 @@
     <app-area-search-selector [state]='areaSearchState'></app-area-search-selector>
     <app-area-search-selector-results *ngIf='layout.desktop()' [state]='areaSearchState'></app-area-search-selector-results>
 </div>
-@if (layout.desktop()) {
-    <app-area-search-national-services-count [areaSearchState]='areaSearchState'></app-area-search-national-services-count>
-}
+<app-area-search-national-services-count [areaSearchState]='areaSearchState'></app-area-search-national-services-count>

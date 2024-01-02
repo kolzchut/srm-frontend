@@ -11,7 +11,7 @@ export class AreaSearchState {
   resultsWidth = new BehaviorSubject<number>(200);
   showResults = new BehaviorSubject<boolean>(false);
   inputPlaceholder = new BehaviorSubject<string>('חיפוש');
-  selectorVisible = new BehaviorSubject<boolean>(true);
+  selectorResize = new Subject<void>();
 
   // Results
   results = new BehaviorSubject<any[] | null>(null);
@@ -62,7 +62,7 @@ export class AreaSearchState {
       if (this.searchState.nationalCount() === this.searchState.nationWideCount()) {
         this.selectNationWide();
       }
-      this.selectorVisible_ = this.selectorVisible_;
+      this.selectorResize.next();
     });
   }
 
@@ -73,22 +73,20 @@ export class AreaSearchState {
       } else {
         this.selectMapRegion();
       }  
-    } else {
-      this.selectorVisible_ = true;
     }
   }
 
   selectMapRegion() {
     this.area_ = null;
     this.nationWide_ = false;
-    this.selectorVisible_ = true;
+    this.selectorResize.next();
     this.waitForMapArea(false);
   }
 
   selectNationWide(): void {
     this.area_ = null;
     this.nationWide_ = true;
-    this.selectorVisible_ = true;
+    this.selectorResize.next();
     this.waitForMapArea(true);
   }
 
@@ -114,7 +112,7 @@ export class AreaSearchState {
     this.resultsFocus -= 1;
     timer(10).subscribe(() => {
       if (!this.inputFocus && !this.resultsFocus) {
-        this.stopSearching();
+        // this.stopSearching();
       }
     });
   }
@@ -125,7 +123,7 @@ export class AreaSearchState {
     }
     this.searching_ = true;
     this.inputPlaceholder_ = 'ניתן לחפש ישוב או איזור מוגדר';
-    this.selectorVisible_ = false;
+    this.selectorResize.next();
     timer(500).subscribe(() => {
       this.resultsWidth.next(this.areaInputEl.offsetWidth - 2);
       this.showResults_ = true;
@@ -169,14 +167,6 @@ export class AreaSearchState {
     return this.nationWide.value;
   }
 
-  set selectorVisible_(value: boolean) {
-    this.selectorVisible.next(value);
-  }
-
-  get selectorVisible_(): boolean {
-    return this.selectorVisible.value;
-  }
-
   // set searching_(value: boolean) {
   //   this.searching.next(value);
   // }
@@ -203,7 +193,7 @@ export class AreaSearchState {
   }
 
   get query_(): string {
-    return this.queries.value || this.area.value || '';
+    return this.queries.value === '' ? this.queries.value : (this.queries.value  || this.area.value || '');
   }
 
   waitForMapArea(subscribe: boolean) {
