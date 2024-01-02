@@ -23,7 +23,10 @@
             (activated)='selectMapRegion()'
             [interactionEvent]='"geo_map_area"'
             [interactionEventWhere]='"geo-widget"'
-    >באיזור המפה
+    >
+        <span class='layout-desktop'>באיזור המפה</span>
+        <span class='layout-mobile'>במפה</span>
+
         @if (state.searchState.mapLoading()) {
             <span class='count count-loading'></span>
         } @else {

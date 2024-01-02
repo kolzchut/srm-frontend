@@ -25,7 +25,7 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
 
   inputPlaceholder = 'חיפוש';
   
-  constructor(private el: ElementRef, private ps: PlatformService, public layout: LayoutService) {
+  constructor(private el: ElementRef, private ps: PlatformService) {
     effect(() => {
       if (!this.state.searchState.onlyNational()) {
         timer(0).subscribe(() => {
