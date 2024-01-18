@@ -87,7 +87,6 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   // mapNeedsCentering = false;
   easeToProps: any = {};
   easeToQueue = new Subject<any>();
-  mapMoved = false;
   
   branchSize_ = 0;
   drawerSize_ = 0;
@@ -125,10 +124,14 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       distinctUntilChanged((x, y) => {
         return x.geoHash.localeCompare(y.geoHash) === 0
       }),
-      delay(0),
+      debounceTime(1000),
     ).subscribe((spc) => {
-      console.log('ACTION MAP MOVED', spc.geoValues, spc.ac?.bounds);
-      this.mapMoved = true;
+      const bounds = spc.bounds;
+      if (bounds) {
+        this.areaSearchState.checkNationWide({
+          top_left: {lat: bounds[0][1], lon: bounds[0][0]}, bottom_right: {lat: bounds[1][1], lon: bounds[1][0]}
+        })  
+      }
     });
 
     this.searchParamsCalc.pipe(
@@ -622,7 +625,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   set bounds(bounds: number[][]) {
     if (this.padding !== -1 && this.drawerState !== DrawerState.Full) {
-      this.currentSearchParamCalc.bounds = bounds;
+      this.currentSearchParamCalc.bounds = bounds;      
       this.pushSearchParamsCalc();
     }
   }
