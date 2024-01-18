@@ -43,6 +43,7 @@
             (touchstart)='inputTouched($event)'
             (focus)='state.focusInput()'
             (blur)='state.blurInput()'
+            (keydown)='$event.keyCode === 13 ? state.submitInput() : null'
             [(ngModel)]='state.query_'
             [interactionEvent]='"geo-search"'
             [interactionEventWhere]='"geo-widget"'

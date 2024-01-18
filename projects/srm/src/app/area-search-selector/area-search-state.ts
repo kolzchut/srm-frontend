@@ -109,6 +109,25 @@ export class AreaSearchState {
     });
   }
 
+  submitInput() {
+    const results = this.results.value;
+    if (results && results.length > 0 && results[0].name === this.query_) {
+      const viewPort: ViewPort = {
+        top_left: {
+          lon: results[0].bounds[0],
+          lat: results[0].bounds[3],
+        },
+        bottom_right: {
+          lon: results[0].bounds[2],
+          lat: results[0].bounds[1],
+        }
+      };
+      this.bounds.next(viewPort);
+      this.area_ = results[0].name;
+    }
+    this.areaInputEl.blur();
+  }
+
   blurResults() {
     this.resultsFocus -= 1;
     timer(10).subscribe(() => {
