@@ -1,9 +1,10 @@
 import { BehaviorSubject, Subject, filter, debounceTime, switchMap, timer, Observable, first, distinctUntilChanged, Subscription, delay, tap } from "rxjs";
 import { ApiService } from "../api.service";
 import { LngLatBoundsLike } from "mapbox-gl";
-import { SearchParams, ViewPort } from "../consts";
+import { SearchParams, ViewPort, Place } from "../consts";
 import { computed, effect, signal } from "@angular/core";
 import { SearchState } from "../search-results/search-state";
+import { FocusOnRequest } from "../map/map.component";
 
 export class AreaSearchState {
 
@@ -216,5 +217,36 @@ export class AreaSearchState {
     }
   }
 
+  focusOn(request: FocusOnRequest, results: Place[]) {
+    const lat = request.lat;
+    const lon = request.lon;
+    for (const place of results) {
+      const bounds = place.bounds;
+      // check if the point is in the bounds
+      if (bounds[0] <= lon && bounds[2] >= lon && bounds[1] <= lat && bounds[3] >= lat) {
+        const vp: ViewPort = {
+          top_left: {
+            lat: bounds[3],
+            lon: bounds[0]
+          },
+          bottom_right: {
+            lat: bounds[1],
+            lon: bounds[2]
+          }
+        };
+        this.bounds.next(vp);
+        this.area_ = place.query;
+        return;
+      }
+    }
+    const zoom =  request.symbolrank/3 + 8;
+    const vp: ViewPort = {
+      top_left: {lat, lon},
+      bottom_right: {lat, lon},
+      zoom
+    };
+    this.bounds.next(vp);
+    this.area_ = request.name;
+  }
 }
   

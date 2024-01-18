@@ -144,7 +144,7 @@ export type Place = {
     };
 };
 
-export type ViewPort = { top_left: { lat: number; lon: number; }; bottom_right: { lat: number; lon: number; }; }
+export type ViewPort = { top_left: { lat: number; lon: number; }; bottom_right: { lat: number; lon: number; }; zoom?: number; }
 
 export type SearchResult<T extends any> = {
     search_counts: {

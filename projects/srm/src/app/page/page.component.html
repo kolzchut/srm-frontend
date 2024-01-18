@@ -107,6 +107,7 @@
         [markerProps]='markerProps'
         (map)='map = $event'
         (mapBounds)='bounds = $event'
+        (focusOn)='focusOn.next($event)'
         aria-hidden='true'
         tabindex="-1"
 ></app-map>

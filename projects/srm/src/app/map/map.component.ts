@@ -20,11 +20,19 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 export type CenterZoomType = [number, number, number];
 export type BoundsType = [[number, number], [number, number]];
 export type GeoType = CenterZoomType | BoundsType | null;
+export type FocusOnRequest = {
+  name: string,
+  rank: number,
+  symbolrank: number,
+  lat: number,
+  lon: number,
+};
 
 type MoveQueueItem = {
   action: (map: mapboxgl.Map) => void,
   description: string
 };
+
 
 const LAYER_LABELS_ACTIVE = 'labels-active';
 const LAYER_POINTS_ACTIVE = 'points-active';
@@ -116,6 +124,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
   // @Output('hover') pointsHover = new EventEmitter<string | null>();
   @Output('map') newMap = new EventEmitter<MapComponent | null>();
   @Output('mapBounds') mapBounds = new EventEmitter<number[][]>();
+  @Output('focusOn') focusOn = new EventEmitter<FocusOnRequest>();
   
   @ViewChild('map') mapEl: ElementRef;
   @ViewChild('stablePopup') stablePopupEl: ElementRef;
@@ -561,6 +570,22 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
             this.ngOnChanges(this.savedChanges);
             this.updateBounds();
             this.processAction();
+          });
+
+
+          this.map.on('click', 'settlement-label-hebrew', (e: mapboxgl.MapLayerMouseEvent) => {
+            if (e?.features && e.features[0]?.properties) {
+              const props: any = e.features[0].properties;
+              const geometry = e.features[0].geometry as GeoJSON.Point;
+              const focusOnRequest: FocusOnRequest = {
+                name: props.name_he,
+                rank: props.rank,
+                symbolrank: props.symbolrank,
+                lat: geometry.coordinates[1],
+                lon: geometry.coordinates[0],
+              };
+              this.focusOn.next(focusOnRequest);
+            }
           });
         });
       } catch (e) {

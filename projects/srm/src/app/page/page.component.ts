@@ -7,7 +7,7 @@ import { from, Observable, Subject, timer } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, filter, first, map, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { AutoComplete, Card, DrawerState, prepareQuery, SearchParams, SITUATION_FILTERS, ViewPort } from '../consts';
-import { MapComponent } from '../map/map.component';
+import { FocusOnRequest, MapComponent } from '../map/map.component';
 import { SearchFiltersComponent } from '../search-filters/search-filters.component';
 import { PlatformService } from '../platform.service';
 import { LayoutService } from '../layout.service';
@@ -109,6 +109,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   searchState: SearchState;
   areaSearchState: AreaSearchState;
   filtersState: FiltersState;
+  focusOn = new Subject<FocusOnRequest>();
 
   @ViewChild('survey') survey: ElementRef;
   surveyMutationObserver: MutationObserver;
@@ -282,18 +283,15 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       tap((params: SearchParams) => {
         // console.log('ACTION CHANGED TO', params.original_query, params.ac_bounds);
         if (params.ac_bounds) {
-          const bounds: mapboxgl.LngLatBoundsLike = params.ac_bounds;
-          this.queueMapAction((map) => {
-            map.fitBounds(bounds, {padding: {top: 100, bottom: 100, left: 0, right: 0}, maxZoom: 15, duration: 0});
-          }, 'search-by-location-' + params.city_name);
-          this.queueMapAction((map) => {
-            this.mapMoved = false;
-            this.map?.processAction();  
-          }, 'map-moved-reset');
+          const bounds = params.ac_bounds as [number, number, number, number];
+          const viewPort: ViewPort = {
+            top_left: {lat: bounds[3], lon: bounds[0]}, bottom_right: {lat: bounds[1], lon: bounds[2]}
+          };
+          this.areaSearchState.bounds.next(viewPort);
+          this.areaSearchState.area_ = params.city_name;
         } else if (params.requiredCenter && params.requiredCenter.length === 3) {
           const rc = params.requiredCenter;
           this.easeTo({center: [rc[0], rc[1]], zoom: rc[2], duration: 0});
-          // this.queueMapAction((map) => map.easeTo({center: [rc[0], rc[1]], zoom: rc[2]}), 're-center-' + rc[0] + ',' + rc[1]);
         }      
       }),
     ).subscribe();
@@ -424,6 +422,21 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       untilDestroyed(this),
     ).subscribe((bounds) => {
       this.zoomOutMap(bounds);
+    });
+    this.focusOn.pipe(
+      untilDestroyed(this),
+      debounceTime(100),
+      switchMap((request) => {
+        return  this.api.getPlaces(request.name).pipe(
+          map((results) => {
+            return {
+              results, request
+            };
+          })
+        );
+      }),
+    ).subscribe(({request, results}) => {
+      this.areaSearchState.focusOn(request, results);
     });
     this.filtersState = new FiltersState(this.api, this.searchParamsQueue, this, this.platform);
     this.filtersState.params.pipe(
@@ -682,9 +695,15 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   zoomOutMap(viewport: ViewPort) {
     this.savedState = null;
     if (viewport) {
-      this.queueMapAction((map) => {
-        map.fitBounds([viewport.top_left, viewport.bottom_right], {padding: {top: 70, bottom: 10, left: 10, right: 10}, maxZoom: 15});
-      }, 'zoom-out-map');
+      if (!viewport.zoom) {
+        this.queueMapAction((map) => {
+          map.fitBounds([viewport.top_left, viewport.bottom_right], {padding: {top: 70, bottom: 10, left: 10, right: 10}, maxZoom: 15});
+        }, 'zoom-out-map');
+      } else {
+        this.queueMapAction((map) => {
+          map.flyTo({center: viewport.top_left, zoom: viewport.zoom});
+        }, 'zoom-out-map');
+      }
     }
   }
 
