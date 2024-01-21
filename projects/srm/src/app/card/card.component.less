@@ -22,7 +22,7 @@
 
         display: flex;
         flex-flow: column;
-        gap: 8px;
+        gap: 16px;
 
         color: @color-gray-1;
         .font-rag-sans;
@@ -32,7 +32,7 @@
             margin: 0;
             font-weight: 600;
             font-size: 24px;
-            line-height: 32px;
+            line-height: 28px;
             margin-bottom: -16px;
         }
 
@@ -43,7 +43,7 @@
             line-height: 21px;
             color: @color-gray-2;
             margin: 0;
-            margin-top: 24px;
+            margin-top: 8px;
             margin-bottom: 8px;
         }
 
@@ -116,6 +116,9 @@
         }
 
         .responses, .situations {
+            display: flex;
+            flex-flow: column;
+            gap: 4px;
             .list {
                 display: flex;
                 flex-flow: row wrap;
