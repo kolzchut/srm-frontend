@@ -184,7 +184,7 @@ export class AreaSearchState {
   }
 
   checkNationWide(viewPort: ViewPort) {
-    if (viewPort.top_left.lon < 34.2675 && viewPort.top_left.lat > 29.4967 && viewPort.bottom_right.lon > 35.8961 && viewPort.bottom_right.lat < 33.3328) {
+    if (!this.nationWide_ && viewPort.top_left.lon < 34.2675 && viewPort.top_left.lat > 29.4967 && viewPort.bottom_right.lon > 35.8961 && viewPort.bottom_right.lat < 33.3328) {
       this.selectNationWide();
     }
   }

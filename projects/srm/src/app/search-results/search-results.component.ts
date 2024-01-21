@@ -46,7 +46,6 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   fetchedOffset = -1;
   // fetching = false;
   // done = false;
-  triggerVisible = false;
   searchHash: string | null = null;
   geoHash: string | null = null;
 
@@ -56,8 +55,10 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   paramsQueue = new ReplaySubject<SearchParams>(1);
   resultsParamsQueue = new Subject<{params: SearchParams, totalCount: number, items: Card[], offset: number}>();
   resultsSubscription: Subscription | null = null;
+  _triggerVisible = false;
   
   hasCounts = false;
+  hasMore = false;
   totalVisibleCount = 0;
   totalCount = 0;
   totalNationalCount = 0;
@@ -147,6 +148,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           this.loading = false;
           this.results = this.results.filter(x => !!x).concat(results);
           this.offset = this.results.length;
+          this.hasMore = this.offset > this.fetchedOffset;
           this.hasCounts = true;
           if (this.results.length > 0) {
             this.totalVisibleCount =  ((this.results[0] as any)['__counts']['total_overall'] - this.totalNationalCount) || 0;
@@ -156,7 +158,8 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           }
           this.searchState.setMapCount(this.totalVisibleCount);
         }),
-      ).subscribe();
+      ).subscribe(() => {
+      });
       this.fetch();
     });
     this.resultsParamsQueue.pipe(
@@ -185,7 +188,9 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
     this.platform.browser(() => {
       this.obs = new IntersectionObserver((entries) => {
         if (this.searchParams && entries[0].isIntersecting) {
-          this.fetch();
+          this.triggerVisible = true;
+        } else {
+          this.triggerVisible = false;
         }
       }, {});
       this.obs.observe(this.trigger.nativeElement);
@@ -225,5 +230,16 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
 
   identify(index: number, item: Card | null) {
     return item?.collapse_key || index;
+  }
+
+  set triggerVisible(value: boolean) {
+    if (value && !this._triggerVisible) {
+      this.fetch();
+    }
+    this._triggerVisible = value;
+  }
+
+  get triggerVisible() {
+    return this._triggerVisible;
   }
 }
