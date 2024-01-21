@@ -261,6 +261,7 @@ export class AreaSearchState {
         };
         this.bounds.next(vp);
         this.area_ = place.query;
+        this.selectorResize.next();
         return;
       }
     }
@@ -272,6 +273,7 @@ export class AreaSearchState {
     };
     this.bounds.next(vp);
     this.area_ = request.name;
+    this.selectorResize.next();
   }
 }
   

@@ -292,6 +292,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
           };
           this.areaSearchState.bounds.next(viewPort);
           this.areaSearchState.area_ = params.city_name;
+          this.areaSearchState.selectorResize.next();
         } else if (params.requiredCenter && params.requiredCenter.length === 3) {
           const rc = params.requiredCenter;
           this.easeTo({center: [rc[0], rc[1]], zoom: rc[2], duration: 0});

@@ -84,6 +84,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           this.searchState.disableLoading();
           return from([]);
         } else {
+          this.loading = true;
           return from([params]);
         }
       }),
