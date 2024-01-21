@@ -697,7 +697,10 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   zoomOutMap(viewport: ViewPort) {
     this.savedState = null;
-    if (viewport) {
+    console.log('ZOOM OUT MAP', viewport.top_left.lat, viewport.top_left.lon, viewport.bottom_right.lat, viewport.bottom_right.lon)
+    if (viewport && viewport.top_left && viewport.bottom_right && 
+        !Number.isNaN(viewport.top_left.lat) && !Number.isNaN(viewport.top_left.lon) &&
+        !Number.isNaN(viewport.bottom_right.lat) && !Number.isNaN(viewport.bottom_right.lon)) {
       if (!viewport.zoom) {
         this.queueMapAction((map) => {
           map.fitBounds([viewport.top_left, viewport.bottom_right], {padding: {top: 70, bottom: 10, left: 10, right: 10}, maxZoom: 15});
