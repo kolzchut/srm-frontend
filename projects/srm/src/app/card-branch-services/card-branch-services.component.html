@@ -1,4 +1,6 @@
 <div class='title'>שירותים נוספים בסניף:</div>
-<a [routerLink]='["../..", "c", card.card_id]' [queryParamsHandling]='"merge"' *ngFor='let card of cards' [attr.aria-label]='"פתיחת עמוד השירות של " + card.service_name'>
-    <app-result-card [card]='card' [padded]='true'></app-result-card>
-</a>
+@for (card of cards; track card.card_id) {
+    <a [attr.aria-label]='"פתיחת עמוד השירות של " + card.service_name' (activated)='navigateToCard(card)' clickOnReturn>
+        <app-result-card [card]='card' [padded]='true'></app-result-card>
+    </a>
+}

@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
 import { getPointCards } from '../branch-container/branch-card-utils';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Card } from '../consts';
 
 @Component({
   selector: 'app-card-branch-services',
@@ -12,11 +14,11 @@ import { getPointCards } from '../branch-container/branch-card-utils';
 })
 export class CardBranchServicesComponent implements OnInit {
 
-  @Input() card: any;
+  @Input() card: Card;
 
-  cards: any[] = [];
+  cards: Card[] = [];
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     getPointCards(this.api, this.card.point_id, this.card.card_id, null).subscribe(({branches, selectedCard, cardBranch}) => {
@@ -24,4 +26,7 @@ export class CardBranchServicesComponent implements OnInit {
     });
   }
 
+  navigateToCard(card: Card) {
+    this.router.navigate(['../..', 'c', card.card_id], {relativeTo: this.route, queryParamsHandling: 'merge'});
+  }
 }

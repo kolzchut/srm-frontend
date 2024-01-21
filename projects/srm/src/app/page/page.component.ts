@@ -127,7 +127,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       debounceTime(1000),
     ).subscribe((spc) => {
       const bounds = spc.bounds;
-      if (bounds) {
+      if (bounds && bounds.length === 2) {
         this.areaSearchState.checkNationWide({
           top_left: {lat: bounds[0][1], lon: bounds[0][0]}, bottom_right: {lat: bounds[1][1], lon: bounds[1][0]}
         })  
