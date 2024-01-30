@@ -3,9 +3,12 @@
         <app-branch-details [card]='cards[0]'></app-branch-details>
     </div>
     <div class='scrollable'>
-        <a [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"' *ngFor='let card of cards'>
-            <app-result-card [card]='card' [stacked]='true' [smaller]='true' [bold]='true'></app-result-card>
-        </a>
+        @for (card of cards; track card.card_id) {
+            <a [interactionEvent]='"popup-card-click"' [interactionEventWhere]='"map-popup-stable"'
+               [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"'>
+                <app-result-card [card]='card' [stacked]='true' [smaller]='true' [bold]='true'></app-result-card>
+            </a>
+        }
         <div class='footer' *ngIf='cards.length < props.service_count'>
             +{{props.service_count - cards.length}} שירותים נוספים
         </div>
@@ -20,9 +23,13 @@
             <div class='mini header'>
                 <app-branch-details-org [card]='branch.cards[0]'></app-branch-details-org>
             </div>
-            <a [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"' *ngFor='let card of branch.cards'>
-                <app-result-card [card]='card' [stacked]='true' [smaller]='true' [bold]='true'></app-result-card>
-            </a>
+            @for (card of branch.cards; track card.card_id) {
+                <a [interactionEvent]='"popup-card-click"' [interactionEventWhere]='"map-popup-stable"'
+                   [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"'
+                >
+                    <app-result-card [card]='card' [stacked]='true' [smaller]='true' [bold]='true'></app-result-card>
+                </a> 
+            }
             <div class='footer' *ngIf='branch.hidden.length'>
                 +{{branch.hidden.length}} שירותים נוספים
             </div>                

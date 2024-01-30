@@ -65,7 +65,6 @@ export class ApiService {
 
   fullTextParams(params: any, options?: any) {
     options = options || {};
-    params.match_type = 'cross_fields';
     params.match_operator = 'and';
     if (!options.no_highlight) {
       params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
@@ -227,6 +226,7 @@ export class ApiService {
     const params: any = {
       size: 10,
       offset: offset,
+      match_type: 'cross_fields'
       // order: '-_score'
     };
     if (searchParams.query) {

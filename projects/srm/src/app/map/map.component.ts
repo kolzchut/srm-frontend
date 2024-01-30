@@ -15,6 +15,7 @@ import { ApiService } from '../api.service';
 import { Router } from '@angular/router';
 import { getPointCards, PointCards } from '../branch-container/branch-card-utils';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { AnalyticsService } from '../analytics.service';
 // declare var mapboxgl: any;
 
 export type CenterZoomType = [number, number, number];
@@ -162,7 +163,8 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
               private platform: PlatformService,
               private layout: LayoutService,
               private router: Router,
-              private sanitizer: DomSanitizer
+              private sanitizer: DomSanitizer,
+              private analytics: AnalyticsService
   ) {
       
   }
@@ -356,6 +358,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
               if (e.features && e.features.length > 0) {
                 const props: any = e.features[0].properties;
                 props.branch_geometry = (e.features[0].geometry as any || {})['coordinates'];
+                this.analytics.interactionEvent('point-click', 'map', layerName);
                 getPointCards(this.api, props.point_id, '', this.searchParams).pipe(
                   map((pc: PointCards) => {
                     if (pc.branches?.length === 1 && pc.branches[0].cards?.length === 1) {
@@ -584,6 +587,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
                 lat: geometry.coordinates[1],
                 lon: geometry.coordinates[0],
               };
+              this.analytics.interactionEvent('place-name-click', 'map', focusOnRequest.name);
               this.focusOn.next(focusOnRequest);
             }
           });

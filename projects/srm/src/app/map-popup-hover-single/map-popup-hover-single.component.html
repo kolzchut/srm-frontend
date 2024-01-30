@@ -2,7 +2,9 @@
     <div class='header'>
         <app-branch-details [card]='card'></app-branch-details>
     </div>
-    <a [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"'>
+    <a [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"'
+        [interactionEvent]='"popup-card-click"' [interactionEventWhere]='"map-popup-hover"'
+    >
         <app-result-card [card]='card' [compact]='true' [bold]='true'></app-result-card>
     </a>
 </ng-container>
