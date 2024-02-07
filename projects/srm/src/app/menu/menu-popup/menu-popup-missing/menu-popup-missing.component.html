@@ -1,25 +1,52 @@
-<app-menu-popup title='בתקופת החירום, אילו שירותים חסרים לנו באתר?' subtitle='הזינו פרטים בסיסיים על השירות וההצעה תועבר לעורכי התוכן'>
+<app-menu-popup title='חסרים לנו שירותים באתר?' subtitle='סייעו לנו להוסיף אותם'>
     <ng-container class='content'>
-        <p>
-            בתקופת המלחמה מתגייסת החברה האזרחית בישראל, כמו גם רשויות מקומיות, עמותות וחברות לתמיכה וסולידריות עם נפגעי המלחמה, החיילים, המילואימניקים ומשפחותיהם ואוכלוסיות בסיכון.
-        </p>
-        <h3>אילו שירותים מוצגים באתר?</h3>
-        <p>
-            בשגרה אתר כל שירות מציג שירותים ומענים חברתיים שהמדינה, ארגונים וגופים שונים מעמידים לרשותנו, התושבים. במצב החירום המלחמתי הדגש הוא על שירותים מותאמים למצב זה, המוצעים ללא תשלום ובאופן אמין ועדכני.
-            כבר אספנו <a [routerLink]='["/s", "שירותים_למצב_החירום"]'>די הרבה שירותים כאלה</a>, אולי גם שלך ביניהם.
-        </p>
-        <h3>איך לוודא שהתוכן אמין ועדכני?</h3>
-        <p>
-            כל שירות שנכנס לאתר חייב לכלול כותרת, תיאור ממצה, קטגוריה (המתאימה ביותר למצב החירום) ופרטי התקשרות ודאיים (בדקתם בעצמכם) של ספק השירות.
-        </p>
-        <h3>איך לעדכן שירותים של עמותות?</h3>
-        <p>
-            הדרך המומלצת לעדכן שירותים של עמותות היא דרך הממשק של <a href='https://www.guidestar.org.il/' target='_blank'>אתר העמותות גיידסטאר</a> שממנו אנחנו שואבים מידע בכל יום. יצרנו סרטון הדרכה קצר שמסביר בדיוק <a href='https://youtu.be/JExX4gR8NBs' target='_blank'>איך לעשות את זה</a>. אפשר לנסות לפנות אל העמותה גם אם אין לך קשר ישיר אליה או בכל זאת למלא את המידע בטופס שלנו.
-        </p>
+        <div class='wrapper'>
+            <app-menu-popup-accordion title='שירותים המופעלים על ידי עמותה' [open]='section === "ngo"' (selected)='section = "ngo"'>
+                <h3>האם שירותי העמותה שלכם מופיעים ב"כל שירות"?</h3>
+                <p>אם עדיין לא – זה הזמן לדאוג שיופיעו כך שכל הזקוקים להם ידעו על קיומם ויוכלו ליהנות מהם.</p>
+                <p>עליכם להזין את המידע על כל שירותי העמותה באתר "גיידסטאר" והמידע יישאב אוטומטית לאתר "כל שירות".</p>
+
+                <p>לעזרה בתהליך הזנת המידע ראו:</p>
+
+                <p>
+                    <a href='https://drive.google.com/file/d/1UJlrXyyPBFBGPerqQKkBpj2UsUNtFA18/view?usp=sharing' target="_blank">המדריך של "כל שירות" להזנת מידע</a><br/>
+                    <a href='https://drive.google.com/file/d/1SeW2Jeb6yGYA-87kIxO4iEAwTSUPqpQB/view?usp=sharing' target="_blank">סרטון הסבר על הזנת מידע בגיידסטאר</a><br/>
+                    <a href='https://www.youtube.com/watch?v=nvEqq2dxb9Q' target="_blank">סרטון הסבר של גיידסטאר למה כדאי להזין מידע</a>
+                </p>
+
+                <p>שאלות? אנא כתבו אלינו לכתובת <a href='mailto:info@kolsherut.org.il'>info&commat;kolsherut.org.il</a></p>
+            </app-menu-popup-accordion>
+            <app-menu-popup-accordion title='שירותים אחרים' [open]='section === "others"' (selected)='section = "others"'>
+                <h3>אילו שירותים מוצגים באתר?</h3>
+                <p>
+                    אתר כל שירות מציג שירותים ומענים חברתיים שהמדינה, ארגונים וגופים שונים מעמידים לרשותנו, התושבים.
+                </p>
+                <h3>מה צריך לעשות על מנת שהשירותים שלכם יופיע באתר?</h3>
+                <p>
+                    כתבו אלינו לכתובת <a href='mailto:info@kolsherut.org.il'>info&commat;kolsherut.org.il</a>
+                </p>
+                <p>
+                    אנא ציינו את שמכם, שם הארגון ואילו שירותים חברתיים אתם מספקים.
+                    וכמובן, פרטי ההתקשרות שלכם.
+                </p>
+                <p>
+                    תודה, צוות כל שירות.
+                </p>
+            </app-menu-popup-accordion>
+        </div>
     </ng-container>
-    <div class='bottom'>
-        <a class='button' href='https://docs.google.com/forms/d/e/1FAIpQLScI6Nr1M5KeWCBDb0hwX5YIIh1ByNzE7EzEY9yi3iP846bphA/viewform' clickOnReturn target="_blank">
-            <span>למילוי הטופס</span>
-        </a>
-    </div>
+    @if (section === 'ngo' || section === 'others') {
+        <div class='bottom'>
+            @if (section === 'ngo') {
+                <a class='button' href='https://www.guidestar.org.il/' clickOnReturn target="_blank">
+                    <span>לאתר גיידסטאר</span>
+                </a>
+            }
+            @if (section === 'others') {
+                <a class='button' href='mailto:info@kolsherut.org.il' clickOnReturn target="_blank">
+                    <span>כתבו אלינו</span>
+                </a>    
+            }
+        </div>
+    }
 </app-menu-popup>

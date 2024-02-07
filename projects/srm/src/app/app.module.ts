@@ -75,6 +75,7 @@ import { AreaSearchComponent } from './area-search/area-search.component';
 import { SearchFiltersBarComponent } from './search-filters-bar/search-filters-bar.component';
 import { AreaSearchNationalServicesCountComponent } from './area-search-national-services-count/area-search-national-services-count.component';
 import { AreaSearchNationalServicesNotificationComponent } from './area-search-national-services-notification/area-search-national-services-notification.component';
+import { MenuPopupAccordionComponent } from './menu/menu-popup/menu-popup-accordion/menu-popup-accordion.component';
 
 @NgModule({
   declarations: [
@@ -144,6 +145,7 @@ import { AreaSearchNationalServicesNotificationComponent } from './area-search-n
     SearchFiltersBarComponent,
     AreaSearchNationalServicesCountComponent,
     AreaSearchNationalServicesNotificationComponent,
+    MenuPopupAccordionComponent,
   ],
   imports: [
     BrowserModule,

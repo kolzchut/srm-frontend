@@ -10,6 +10,8 @@ import { A11yService } from '../../../a11y.service';
 })
 export class MenuPopupMissingComponent implements OnInit {
 
+  section = 'none';
+
   constructor(private seo: SeoSocialShareService, private a11y: A11yService,
     @Inject(DOCUMENT) private document: any) { }
 
