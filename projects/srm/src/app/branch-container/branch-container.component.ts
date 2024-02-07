@@ -74,7 +74,6 @@ export class BranchContainerComponent implements OnInit, OnChanges {
       }),
       distinctUntilChanged((a, b) => a.hash === b.hash),
       switchMap((p) => {
-        // console.log('GET POINT', ret.p.searchParams);
         return getPointCards(this.api, p.pointId, p.cardId, p.searchParams).pipe(
           map(({branches, selectedCard, cardBranch}) => {
             return {p, branches, selectedCard, cardBranch};
@@ -91,7 +90,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
           this.seo.setDescription(this.card.service_description);
         }
       }
-      this.seo.setUrl(this.document.location.href);
+      this.seo.setUrl(`${this.document.location.origin}/p/${p.pointId}`);
     });
   }
 
@@ -119,7 +118,6 @@ export class BranchContainerComponent implements OnInit, OnChanges {
       untilDestroyed(this),
       swipe(this.backToSearch.nativeElement)
     ).subscribe((diff) => {
-      console.log('back to search swipe', diff);
       if (diff < -50) {
         this.goUp();
       }

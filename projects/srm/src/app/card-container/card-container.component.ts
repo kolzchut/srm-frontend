@@ -127,8 +127,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
           }
         }
         const loc = this.document.location;
-        this.seo.setUrl(loc.href);
-        this.seo.setCanonicalUrl(`https://${loc.host}/c/${this.cardId}`);
+        this.seo.setUrl(`${loc.origin}/c/${this.cardId}`);
         this.calculateExitLink();
         this.platform.browser(() => {
           (this.scrolled?.nativeElement as HTMLElement)?.scrollTo(0, 0);
@@ -159,7 +158,11 @@ export class CardContainerComponent implements OnInit, OnChanges {
     this.branchLink = null;
     if (this.hasPoint()) {
       const pid = this.card?.point_id as string;
-      this.branchLink = ['p', pid];
+      if (this.searchParams?.ac_query) {
+        this.branchLink = ['s', this.searchParams.ac_query, 'p', pid];
+      } else {
+        this.branchLink = ['p', pid];
+      }
     }
   }
 

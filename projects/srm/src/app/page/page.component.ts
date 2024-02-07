@@ -150,7 +150,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
       filter((spc) => {
-        return this.stage === 'search-results';
+        return this.stage === 'search-results' || this.stage === 'point';
       }),
       debounceTime(platform.browser() ? 100 : 0),
       delay(1),
@@ -171,7 +171,11 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log('SEARCH PARAMS CALC', spc);
         if (this.stage === 'search-results') {
           this.seo.setTitle(`חיפוש ${spc.resolvedQuery} | כל שירות`);
-          this.seo.setUrl(this.window.D.location.href);
+          if (spc.acId) {
+            this.seo.setUrl(`${this.window.D.location.origin}/s/${spc.acId}`);
+          } else if (spc.ftQuery) {
+            this.seo.setUrl(`${this.window.D.location.origin}/s/_?q=${spc.ftQuery}`);
+          }
           this.a11y.setTitle(`תוצאות חיפוש עבור ${spc.resolvedQuery} | כל שירות`);
         }
 
