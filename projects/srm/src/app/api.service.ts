@@ -35,8 +35,6 @@ export class ApiService {
     const cached = memoryCache.get(key);
       // console.log('GOT MEM CACHED', !!cached, stateKey);
     if (cached) {
-      if (this.platform.server()) {
-      }
       return from([cached]);
     }
     if (this.waiting[key]) {
@@ -220,9 +218,9 @@ export class ApiService {
   }
 
   getCards(searchParams: SearchParams, offset=0, zoomedIn=true): Observable<Card[]> {
-    if (this.platform.server()) {
-      return from([]);
-    }
+    // if (this.platform.server()) {
+    //   return from([]);
+    // }
     const params: any = {
       size: 10,
       offset: offset,
