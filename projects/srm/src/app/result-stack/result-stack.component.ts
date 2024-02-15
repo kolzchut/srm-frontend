@@ -28,7 +28,7 @@ export class ResultStackComponent implements OnInit {
       const cityNames: any = {};
       // const orgName = this.orgName(this.result);
       // this.showOrgs = this.result.collapse_hits.some((h) => this.orgName(h) !== orgName);
-      this.result.collapse_hits = this.result.collapse_hits.filter((h) => h.card_id !== this.result.card_id);
+      // this.result.collapse_hits = this.result.collapse_hits.filter((h) => h.card_id !== this.result.card_id);
       this.result.collapse_hits.forEach((h) => {
         const cityName = this.cityName(h);
         if (cityName) {

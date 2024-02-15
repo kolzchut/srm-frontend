@@ -25,6 +25,7 @@
         </ng-container>
     </ng-container>
 </div>
+<div class='snippet' [innerHtml]='snippet' *ngIf='showSnippet' [class.larger]='larger'></div>
 <ng-container *ngIf='!compact && !stacked'>
     <div class='title'>
         <ng-container *ngFor='let r of selectedResponses; let idx=index'>
@@ -51,4 +52,3 @@
         </ng-container>
     </div>
 </ng-container>
-<div class='snippet' [innerHtml]='snippet' *ngIf='showSnippet'></div>

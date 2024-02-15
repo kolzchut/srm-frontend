@@ -10,12 +10,16 @@
         cursor: pointer;
     }
 
-    .branch {
+    .card {
         display: flex;
         flex-flow: column;
-        padding: 2px;
+        border: 1px solid @color-gray-5;
         background: @color-gray-7;
-        border-radius: 6px;
+        box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
+        
+        background: @color-white;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
         z-index: 1;
 
         .branch-headers {
@@ -48,15 +52,8 @@
                 color: @color-blue-1;
             }
         }
-        .cards {
-            display: flex;
-            flex-flow: row;
-            align-items: flex-start;
+        app-result-card {
             width: 100%;
-    
-            app-result-card {
-                width: 100%;
-            }
         }
 
         &.collapsible {
@@ -68,8 +65,8 @@
     .bookends {
         display: flex;
         flex-flow: column;
-        border-bottom-right-radius: 6px;
-        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
         overflow: hidden;
         padding-top: 10px;
         padding-bottom: 2px;
@@ -96,7 +93,8 @@
             display: flex;
             flex-flow: row wrap;
             align-items: center;
-
+            box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
+            
             .font-rag-sans;
             font-weight: 300;
             .mobile({
@@ -161,12 +159,12 @@
         cursor: pointer;
     }
 
-    .branch:hover {
+    .card:hover {
         box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.16), 0px 4px 24px rgba(0, 0, 0, 0.08);
         transform: translateY(-1px);
     }
 
-    .branch:hover, .bookends > .bookend:hover {
+    .card:hover, .bookends > .bookend:hover {
         box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.16), 0px 4px 24px rgba(0, 0, 0, 0.08);
         transform: translateY(1px);
     }
