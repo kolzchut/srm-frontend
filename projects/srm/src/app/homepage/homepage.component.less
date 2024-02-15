@@ -12,10 +12,9 @@
     .no-scrollbars;
 
     .main {
-        flex: 0 0 100%;
         display: flex;
         flex-flow: column;
-        align-items: stretch;
+        flex: 0 0 100%;
         padding: 8px 0;
         background-image: url(../../assets/img/hp-bg.jpg);
         background-size: cover;
@@ -28,9 +27,11 @@
             background-position: center right;
             padding-bottom: 48px;
             justify-content: space-between;
+            align-items: stretch;
         });
         .mobile({
             justify-content: flex-start;
+            flex: 1 0 100%;
         });
 
         .header {
@@ -117,6 +118,7 @@
 
             .mobile({
                 flex: 0 1 100%;
+                padding-bottom: 16px;
             });
 
             p {
@@ -146,6 +148,7 @@
                     flex-flow: column;
                     justify-content: flex-end;
                     gap: 0;
+                    padding-top: 16px;
                 });
                 font-weight: 300;
                 strong {
