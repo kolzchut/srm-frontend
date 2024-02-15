@@ -16,5 +16,11 @@
             <span class='city' [class.national]='extra.national_service'>{{cityName(extra)}}</span>
         </a>
     </ng-container>
-    <a class='bookend more' *ngIf='moreAvailable > 0' (activated)='more()' role='button' aria-label='הצגת עוד 10 תוצאות דומות' clickOnReturn tabindex="0">+ {{moreAvailable}} שירותים דומים</a>
+    @if (!!moreAvailable) {
+        <a class='bookend more' (activated)='more()' role='button' aria-label='הצגת עוד 10 תוצאות דומות' clickOnReturn tabindex="0">
+            <span class='bookend dummy no1'></span>
+            <span class='bookend dummy no2'></span>
+            <span class='more-count'>+{{moreAvailable}} מיקומים נוספים</span>
+        </a>
+    }
 </div>
