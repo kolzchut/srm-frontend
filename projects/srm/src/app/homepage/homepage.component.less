@@ -37,21 +37,27 @@
             display: flex;
             flex-flow: row;
             justify-content: flex-start;
-            gap: 0px;
             position: relative;
             z-index: 1;
             .mobile({
                 padding: 0 8px;
                 align-items: flex-start;
-                flex: 0 1 100%;
+                flex: 0 0 auto;
+                gap: 4px;
             });
             .desktop({
                 padding: 20px 24px;
                 align-items: center;
+                gap: 0px;
             });
             
             .menu-button {
-                width: 32px;
+                .mobile({
+                    width: 42px;
+                });
+                .desktop({
+                    width: 32px;
+                });
                 height: 32px;
                 display: flex;
                 flex-flow: column;
@@ -63,9 +69,9 @@
                 flex-flow: row;
                 align-items: flex-start;    
                 .mobile({
-                    flex-flow: column;
+                    flex-flow: row;
                     align-items: flex-start;
-                    gap: 2px;    
+                    gap: 4px;
                 });
                 .desktop({
                     flex-flow: row;
@@ -110,9 +116,8 @@
             gap: 8px;
 
             .mobile({
-                flex: 0 0 auto;
+                flex: 0 1 100%;
             });
-
 
             p {
                 .font-rag-sans;
@@ -128,11 +133,26 @@
             }
 
             .intro {
-                font-size: 20px;
+                .desktop({
+                    font-size: 20px;
+                    line-height: 20px;
+                });
+                .mobile({
+                    font-size: 16px;
+                    line-height: 20px;
+                    flex: 0 0 auto;
+                    height: calc(50% ~'-' 100px);
+                    display: flex;
+                    flex-flow: column;
+                    justify-content: flex-end;
+                    gap: 0;
+                });
                 font-weight: 300;
-                line-height: 20px;
                 strong {
                     font-weight: 600;
+                }
+                span {
+                    white-space: pre-wrap;
                 }
             }
             .searchbox-container {
@@ -304,7 +324,7 @@
             flex-flow: row;
             .mobile({
                 width: 100%;
-                flex: 0 1 100%;
+                flex: 0 0 auto;
                 padding: 0 16px;
             });
             .desktop({
