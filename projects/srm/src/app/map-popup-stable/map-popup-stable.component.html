@@ -1,7 +1,4 @@
 <ng-container *ngIf='cards && cards.length'>
-    <div class='header'>
-        <app-branch-details [card]='cards[0]'></app-branch-details>
-    </div>
     <div class='scrollable'>
         @for (card of cards; track card.card_id) {
             <a [interactionEvent]='"popup-card-click"' [interactionEventWhere]='"map-popup-stable"'
@@ -13,12 +10,12 @@
             +{{props.service_count - cards.length}} שירותים נוספים
         </div>
     </div>
+    <div class='header'>
+        <app-branch-details [card]='cards[0]'></app-branch-details>
+    </div>
 </ng-container>
 <ng-container *ngIf='branches && branches.length'>
     <div class='scrollable'>
-        <div class='inverse header'>
-            <app-branch-details-address [card]='branches[0].cards[0]'></app-branch-details-address>
-        </div>
         <ng-container *ngFor='let branch of branches'>
             <div class='mini header'>
                 <app-branch-details-org [card]='branch.cards[0]'></app-branch-details-org>
@@ -34,6 +31,9 @@
                 +{{branch.hidden.length}} שירותים נוספים
             </div>                
         </ng-container>
+        <div class='inverse header'>
+            <app-branch-details-address [card]='branches[0].cards[0]'></app-branch-details-address>
+        </div>
     </div>
 </ng-container>
 <ng-container *ngIf='!(cards?.length) && !(branches?.length)'>

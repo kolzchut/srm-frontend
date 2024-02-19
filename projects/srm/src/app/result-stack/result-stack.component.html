@@ -10,10 +10,12 @@
         <a (mouseover)='hover.next(extra)' 
            [attr.aria-label]='ariaLabel(extra)'
            (activated)='selectedItem(result, extra)'
+           [class.national]='extra.national_service'
            class='bookend' [style.zIndex]='1000 - i' clickOnReturn>
             <span class='org' [innerHTML]='orgName(extra)'></span>
             <span class='separator'>&nbsp;/&nbsp;</span>
-            <span class='city' [class.national]='extra.national_service'>{{cityName(extra)}}</span>
+            <img src='../../assets/img/icon-headset.svg'>
+            <span class='city'>{{cityName(extra)}}</span>
         </a>
     </ng-container>
     @if (!!moreAvailable) {

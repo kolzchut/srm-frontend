@@ -85,11 +85,15 @@
             padding-top: 4px;
             padding-right: 8px;
             flex: 0 0 auto;
-            margin-top: -4px;
+            margin-top: -6px;
+            &:first-child {
+                padding-top: -4px;
+            }
             background: @color-gray-7;
             border-bottom-right-radius: 8px;
             border-bottom-left-radius: 8px;
             border: 1px solid @color-gray-5;
+            border-top: none;
             display: flex;
             flex-flow: row wrap;
             align-items: center;
@@ -108,12 +112,9 @@
                 line-height: 20px;
             });
 
-            .org, .city, .sep {
+            .org, .city, .separator {
                 color: @color-gray-3;
                 white-space: nowrap;
-                &.national {
-                    color: @color-blue-2;
-                }
             }
 
             .org {
@@ -166,6 +167,20 @@
                             top: -10px;
                         }
                     });
+                }
+            }
+
+            img {
+                display: none;;
+                margin-left: 3px;
+            }
+
+            &.national {
+                img {
+                    display: inline-block;
+                }
+                .city, .separator {
+                    color: @color-blue-2;
                 }
             }
         }
