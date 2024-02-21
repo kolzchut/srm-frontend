@@ -13,13 +13,12 @@
     .card {
         display: flex;
         flex-flow: column;
-        border: 1px solid @color-gray-5;
         background: @color-gray-7;
         box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
         
         background: @color-white;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
+        border-radius: 8px;
+        overflow: hidden;
         z-index: 1;
 
         .branch-headers {
@@ -59,7 +58,10 @@
         &.collapsible {
             cursor: pointer;
         }
-        border: 1px solid #e0e0e0;
+
+        app-result-card {
+            border: 1px solid @color-gray-5;
+        }
     }
 
     .bookends {
@@ -68,120 +70,124 @@
         border-bottom-right-radius: 8px;
         border-bottom-left-radius: 8px;
         overflow: hidden;
-        padding-top: 10px;
-        padding-bottom: 2px;
-        margin-top: -8px;
+        padding-top: 6px;
+        margin-top: -6px;
         position: relative;
         z-index: 0;
-    
+    }
+
+    .bookends {
         .bookend {
-            width: 100%;
-            .mobile({
-                min-height: 24px;
-            });
-            .desktop({
-                min-height: 28px;
-            });
-            padding-top: 4px;
-            padding-right: 8px;
-            flex: 0 0 auto;
             margin-top: -6px;
-            &:first-child {
-                padding-top: -4px;
-            }
-            background: @color-gray-7;
-            border-bottom-right-radius: 8px;
-            border-bottom-left-radius: 8px;
-            border: 1px solid @color-gray-5;
-            border-top: none;
-            display: flex;
-            flex-flow: row wrap;
-            align-items: center;
-            box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
-            position: relative;
-            overflow: hidden;
-            
-            .font-rag-sans;
-            font-weight: 300;
+        }
+    }
+    .bookend {
+        width: 100%;
+        .mobile({
+            min-height: 24px;
+        });
+        .desktop({
+            min-height: 28px;
+        });
+        padding-top: 4px;
+        padding-right: 8px;
+        flex: 0 0 auto;
+        background: @color-gray-7;
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
+        border: 1px solid @color-gray-5;
+        border-top: none;
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
+        position: relative;
+        overflow: hidden;
+        
+        .font-rag-sans;
+        font-weight: 300;
+        .mobile({
+            font-size: 13px;
+            line-height: 16px;    
+        });
+        .desktop({
+            font-size: 16px;
+            line-height: 20px;
+        });
+
+        .org, .city, .separator {
+            color: @color-gray-3;
+            white-space: nowrap;
+        }
+
+        .org {
+            color: @color-gray-1;
             .mobile({
-                font-size: 13px;
-                line-height: 16px;    
+                max-width: 50%;
+                .ellipsis;
             });
             .desktop({
-                font-size: 16px;
-                line-height: 20px;
+                max-width: 33%;
+                .ellipsis;
             });
+        }
 
-            .org, .city, .separator {
-                color: @color-gray-3;
-                white-space: nowrap;
+        .city {
+            .ellipsis;
+        }
+
+        &.more {
+            color: @color-blue-2;
+            justify-content: center;
+            cursor: pointer;
+            &:hover, &:focus {
+                text-decoration: underline;
             }
+            .more-count {
+                z-index: 1;
+                .background-image;
+                background-image: url('../../assets/img/icon-chevron-down-blue-700.svg');
+                background-size: 16px;
+                background-position: left center;
+                padding-left: 20px;
+            }
+            .dummy {
+                position: absolute;
+                width: calc(100% ~'+' 2px);
+                right: 0;
+                z-index: 0;
+                margin: 0 -1px;
 
-            .org {
-                color: @color-gray-1;
-                .mobile({
-                    max-width: 50%;
-                    .ellipsis;
-                });
                 .desktop({
-                    max-width: 33%;
-                    .ellipsis;
+                    &.no1 {
+                        top: -6px;
+                    }
+                    &.no2 {
+                        top: -12px;
+                    }
+                });
+                .mobile({
+                    &.no1 {
+                        top: -5px;
+                    }
+                    &.no2 {
+                        top: -10px;
+                    }
                 });
             }
+        }
 
-            &.more {
-                color: @color-blue-0;
-                justify-content: center;
-                cursor: pointer;
-                &:hover, &:focus {
-                    text-decoration: underline;
-                }
-                .more-count {
-                    z-index: 1;
-                    .background-image;
-                    background-image: url('../../assets/img/icon-chevron-down-blue-700.svg');
-                    background-size: 16px;
-                    background-position: left center;
-                    padding-left: 20px;
-                }
-                .dummy {
-                    position: absolute;
-                    width: calc(100% ~'+' 2px);
-                    right: 0;
-                    z-index: 0;
-                    margin: 0 -1px;
+        img {
+            display: none;;
+            margin-left: 3px;
+        }
 
-                    .desktop({
-                        &.no1 {
-                            top: -6px;
-                        }
-                        &.no2 {
-                            top: -12px;
-                        }
-                    });
-                    .mobile({
-                        &.no1 {
-                            top: -5px;
-                        }
-                        &.no2 {
-                            top: -10px;
-                        }
-                    });
-                }
-            }
-
+        &.national {
             img {
-                display: none;;
-                margin-left: 3px;
+                display: inline-block;
             }
-
-            &.national {
-                img {
-                    display: inline-block;
-                }
-                .city, .separator {
-                    color: @color-blue-2;
-                }
+            .city, .separator {
+                color: @color-blue-2;
             }
         }
     }
@@ -206,11 +212,6 @@
         font-size: 13px;
         color: @color-gray-3;
         cursor: pointer;
-    }
-
-    .card:hover {
-        box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.16), 0px 4px 24px rgba(0, 0, 0, 0.08);
-        transform: translateY(-1px);
     }
 
     .card:hover, .bookends > .bookend:hover {
