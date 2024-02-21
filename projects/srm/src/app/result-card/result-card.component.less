@@ -6,6 +6,8 @@
     align-items: flex-start;
     background: @color-white;
     box-shadow: inset 0px 0px 8px 8px @color-white;
+    min-height: 24px;
+    padding: 8px 8px;
     &:not(.stacked) {
         // border: 1px solid @color-gray-5;
         border-top-left-radius: 8px;
@@ -13,9 +15,10 @@
     }
     &.stacked {
         border-top: 1px solid @color-gray-5;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        padding-bottom: 16px;
     }
-    min-height: 24px;
-    padding: 8px 8px;
     .desktop({
         &.padded {
             padding: 16px 12px;

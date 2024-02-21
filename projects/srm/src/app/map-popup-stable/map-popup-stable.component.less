@@ -22,15 +22,26 @@
         .font-rag-sans;
         padding: 2px 8px;
         background-color: @color-gray-7;
-        border-top: 1px solid @color-gray-5;
 
         &.mini {
-            border-top: 1px solid @color-gray-4;
+            padding-bottom: 8px;
+            &:not(:first-child) {
+                border-top: 1px solid @color-gray-5;
+                padding-top: 8px;
+                margin-top: -8px;
+                position: relative;
+                z-index: 101;
+            }
         }
 
-        position: sticky;
-        bottom: 0;
-        z-index: 101;
+        &.maxi {
+            border-top: 1px solid @color-gray-4;
+            position: sticky;
+            bottom: 0;
+            z-index: 110;
+            margin-top: -8px;
+            box-shadow: 0px -2px 8px 0px rgba(0, 0, 0, 0.10);
+        }
     }    
     .scrollable {
         width: 100%;
@@ -42,10 +53,16 @@
         > a {
             flex: 0 0 auto;
             cursor: pointer;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            margin-top: -8px;
+            display: flex;
+            position: relative;
+            z-index: 101;
         }
     }
     .footer {
-        height: 24px;
+        height: 28px;
         width: 100%;
         flex: 0 0 auto;
         display: flex;
@@ -56,8 +73,14 @@
         font-size: 13px;
         color: @color-gray-3;
         font-weight: 400;
-        background-color: @color-gray-7;
-        border-bottom: 1px solid @color-gray-4;
+        background-color: @color-white;
+        // border-bottom: 1px solid @color-gray-4;
         border-top: 1px solid @color-gray-5;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        position: relative;
+        margin-top: -8px;
+        z-index: 101;
+        padding-bottom: 8px;
     }
 }
