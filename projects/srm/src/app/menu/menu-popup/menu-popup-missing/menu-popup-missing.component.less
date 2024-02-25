@@ -6,7 +6,12 @@
     width: 100%;
 
     .wrapper {
-        min-height: 360px;
+        .desktop({
+            min-height: 360px;
+        });
+        .mobile({
+            padding-bottom: 24px;
+        });
         width: 100%;
         display: flex;
         flex-flow: column;
