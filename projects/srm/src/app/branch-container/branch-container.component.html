@@ -8,8 +8,8 @@
 >
     <ng-container *ngFor='let branch of branches'>
         <div class='branch'>
-            <app-branch-header *ngIf='branch.cards.length > 0' [card]='branch.cards[0]' [link]='headerLink' [cardId]='cardId' [pointId]='pointId'></app-branch-header>
             <app-point-result-stack [cards]='branch.cards' [hiddenCards]='branch.hidden' [searchParams]='searchParams'></app-point-result-stack>    
+            <app-branch-header *ngIf='branch.cards.length > 0' [card]='branch.cards[0]' [link]='headerLink' [cardId]='cardId' [pointId]='pointId'></app-branch-header>
         </div>
     </ng-container>
 </div>

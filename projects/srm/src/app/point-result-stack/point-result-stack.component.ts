@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
-import { timer } from 'rxjs';
+import { delay, tap, timer } from 'rxjs';
 import { ApiService } from '../api.service';
 import { Card, SearchParams } from '../consts';
 
@@ -16,6 +16,7 @@ export class PointResultStackComponent implements OnChanges {
   @Input() searchParams: SearchParams;
   @Input() cards: Card[] = [];
   @Input() hiddenCards: Card[] = [];
+  triggerClicked_ = false;
   hidden_ = false;
 
   branches: Card[][] = [];
@@ -35,8 +36,11 @@ export class PointResultStackComponent implements OnChanges {
   }
 
   triggerClicked() {
-    this.hidden_ = false;
-    timer(500).subscribe(() => {
+    this.triggerClicked_ = true;
+    timer(1).pipe(
+      tap(() => this.hidden_ = false),
+      delay(500),
+    ).subscribe(() => {
       const el = this.el.nativeElement as HTMLDivElement;
       el.querySelectorAll('.card')[this.cards.length]?.scrollIntoView({behavior: 'smooth'});
     });
