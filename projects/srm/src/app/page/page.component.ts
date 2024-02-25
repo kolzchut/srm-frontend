@@ -429,6 +429,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.areaSearchState.bounds.pipe(
       untilDestroyed(this),
     ).subscribe((bounds) => {
+      this.bounds = [[bounds.top_left.lon, bounds.top_left.lat], [bounds.bottom_right.lon, bounds.bottom_right.lat]];
       this.zoomOutMap(bounds);
     });
     this.focusOn.pipe(

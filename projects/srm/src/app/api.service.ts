@@ -64,6 +64,7 @@ export class ApiService {
   fullTextParams(params: any, options?: any) {
     options = options || {};
     params.match_operator = 'and';
+    params.match_type = 'cross_fields';
     if (!options.no_highlight) {
       params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');

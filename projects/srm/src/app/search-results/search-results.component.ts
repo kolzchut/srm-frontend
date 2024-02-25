@@ -76,19 +76,21 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
     this.paramsQueue.pipe(
       filter((params) => !!params),
       delay(1),
-      tap((params) => {
-        this.searchState.setLoading(params.searchHash !== this.searchHash);
-      }),
-      debounceTime(this.platform.browser() ? 2000 : 0),
       switchMap((params) => {
-        if (params.searchHash === this.searchHash && params.geoHash === this.geoHash) {
+        console.log('SEARCH RESULTS', params);
+        this.searchState.setLoading(params.searchHash !== this.searchHash);
+        if (params.searchHash !== this.searchHash || params.geoHash !== this.geoHash) {
+          this.loading = true;
+          this.results = [null, null, null];
+          this.resultsSubscription?.unsubscribe();
+          this.resultsSubscription = null;
+          return from([params]);
+        } else {
           this.searchState.disableLoading();
           return from([]);
-        } else {
-          this.loading = true;
-          return from([params]);
         }
       }),
+      debounceTime(this.platform.browser() ? 2000 : 0),
       switchMap((params) => {
         this.geoHash = params.geoHash;
         if (params.searchHash === this.searchHash) {

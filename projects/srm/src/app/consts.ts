@@ -224,7 +224,12 @@ export class SearchParams {
     }
 
     get geoHash(): string {
-        return this.bounds?.map((x) => x.map((xx) => xx.toFixed(4)).join(',')).join('|') || '';
+        if (this.bounds?.length === 2) {
+            if (this.bounds[0]?.length === 2 && this.bounds[1]?.length === 2) {
+                return (this.bounds[0][0] + this.bounds[1][0]).toFixed(2) + '|' + (this.bounds[0][1] + this.bounds[1][1]).toFixed(2);
+            }
+        }
+        return '';
     }
 
     get hasFilters(): boolean {

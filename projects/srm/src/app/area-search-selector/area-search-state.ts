@@ -84,11 +84,15 @@ export class AreaSearchState {
     this.waitForMapArea(false);
   }
 
-  selectNationWide(): void {
+  selectNationWide(skip=false): void {
     this.area_ = null;
-    this.nationWide_ = true;
+    if (!skip) {
+      this.nationWide_ = true;
+      this.waitForMapArea(true);
+    } else {
+      this.nationWide.next(true);
+    }
     this.selectorResize.next();
-    this.waitForMapArea(true);
   }
 
   focusInput() {
@@ -185,7 +189,7 @@ export class AreaSearchState {
 
   checkNationWide(viewPort: ViewPort) {
     if (!this.nationWide_ && viewPort.top_left.lon < 34.2675 && viewPort.top_left.lat > 29.4967 && viewPort.bottom_right.lon > 35.8961 && viewPort.bottom_right.lat < 33.3328) {
-      this.selectNationWide();
+      this.selectNationWide(true);
     }
   }
 
