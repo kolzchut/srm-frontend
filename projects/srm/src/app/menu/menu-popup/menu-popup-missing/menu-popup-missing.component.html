@@ -1,7 +1,7 @@
 <app-menu-popup title='חסרים לנו שירותים באתר?' subtitle='סייעו לנו להוסיף אותם'>
     <ng-container class='content'>
         <div class='wrapper'>
-            <app-menu-popup-accordion title='שירותים המופעלים על ידי עמותה' [open]='section === "ngo"' (selected)='section = "ngo"'>
+            <app-menu-popup-accordion title='שירותים המופעלים על ידי עמותה' [open]='section === "ngo"' (selected)='selected("ngo")'>
                 <h3>האם שירותי העמותה שלכם מופיעים ב"כל שירות"?</h3>
                 <p>אם עדיין לא – זה הזמן לדאוג שיופיעו כך שכל הזקוקים להם ידעו על קיומם ויוכלו ליהנות מהם.</p>
                 <p>עליכם להזין את המידע על כל שירותי העמותה באתר "גיידסטאר" והמידע יישאב אוטומטית לאתר "כל שירות".</p>
@@ -16,7 +16,7 @@
 
                 <p>שאלות? אנא כתבו אלינו לכתובת <a href='mailto:info@kolsherut.org.il' target="_blank">info&commat;kolsherut.org.il</a></p>
             </app-menu-popup-accordion>
-            <app-menu-popup-accordion title='שירותים אחרים' [open]='section === "others"' (selected)='section = "others"'>
+            <app-menu-popup-accordion title='שירותים אחרים' [open]='section === "others"' (selected)='selected("others")'>
                 <h3>אילו שירותים מוצגים באתר?</h3>
                 <p>
                     אתר כל שירות מציג שירותים ומענים חברתיים שהמדינה, ארגונים וגופים שונים מעמידים לרשותנו, התושבים.

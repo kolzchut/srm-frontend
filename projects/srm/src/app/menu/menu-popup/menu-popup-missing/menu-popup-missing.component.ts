@@ -22,4 +22,12 @@ export class MenuPopupMissingComponent implements OnInit {
       this.a11y.setSeoTitle('הוסיפו שירות חסר | כל שירות');
       this.seo.setUrl(this.document.location.href);
   }
+
+  selected(value: string) {
+    if (this.section === value) {
+      this.section = 'none';
+    } else {
+      this.section = value;
+    }
+  }
 }
