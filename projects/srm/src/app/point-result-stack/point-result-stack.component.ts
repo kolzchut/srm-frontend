@@ -9,6 +9,7 @@ import { Card, SearchParams } from '../consts';
   styleUrls: ['./point-result-stack.component.less'],
   host: {
     '[class.multiple]': '(cards?.length || 0) + (hiddenCards?.length || 0)>1',
+    '[class.ohsnap]': 'snapping',
   }
 })
 export class PointResultStackComponent implements OnChanges {
@@ -18,13 +19,14 @@ export class PointResultStackComponent implements OnChanges {
   @Input() hiddenCards: Card[] = [];
   triggerClicked_ = false;
   hidden_ = false;
+  snapping = true;
 
   branches: Card[][] = [];
 
   constructor(private api: ApiService, private el: ElementRef) { }
 
   ngOnChanges(): void {
-    this.hidden_ = this.hiddenCards.length > 0;;      
+    this.hidden_ = !this.triggerClicked_ && this.hiddenCards.length > 0;;      
   }
 
   routerLink(card: Card): string[] {
@@ -37,10 +39,12 @@ export class PointResultStackComponent implements OnChanges {
 
   triggerClicked() {
     this.triggerClicked_ = true;
+    this.snapping = false;
     timer(1).pipe(
       tap(() => this.hidden_ = false),
       delay(500),
     ).subscribe(() => {
+      this.snapping = true;
       const el = this.el.nativeElement as HTMLDivElement;
       el.querySelectorAll('.card')[this.cards.length]?.scrollIntoView({behavior: 'smooth'});
     });

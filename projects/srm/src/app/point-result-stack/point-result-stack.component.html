@@ -1,5 +1,7 @@
 @for (card of cards; track card.card_id; let i = $index) {
-    <a class='card' [routerLink]='routerLink(card)' queryParamsHandling='preserve'
+    <a class='card' 
+        [class.last-non-hidden]='i === cards.length - 1 && hidden_'
+        [routerLink]='routerLink(card)' queryParamsHandling='preserve'
         [attr.data-card]='card | json' [style.zIndex]='200 - i'
 >
     <app-result-card [card]='card' [compact]='true'></app-result-card>

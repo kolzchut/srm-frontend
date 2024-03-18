@@ -14,6 +14,8 @@ export const CATEGORY_COLORS = [
     {category: 'internal_emergency_services', color: '#9B0000'},
     {category: 'culture_and_sports', color: '#a98d6f'},
     {category: 'food', color: '#a98d6f'},
+
+    {category: 'place', color: '#469EB1'},
 ];
 
 export const MULTIPLE_CATEGORY_COLOR = [
