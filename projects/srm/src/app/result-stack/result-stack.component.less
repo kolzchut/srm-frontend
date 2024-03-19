@@ -82,7 +82,7 @@
         .desktop({
             min-height: 28px;
         });
-        padding-right: 8px;
+        padding: 0 8px;
         flex: 0 0 auto;
         background: @color-gray-7;
         border-bottom-right-radius: 8px;
@@ -90,7 +90,7 @@
         border: 1px solid @color-gray-5;
         border-top: none;
         display: flex;
-        flex-flow: row wrap;
+        flex-flow: row;
         align-items: center;
         position: relative;
         overflow: hidden;
@@ -113,19 +113,25 @@
 
         .org {
             color: @color-gray-1;
-            .mobile({
-                max-width: 50%;
-                .ellipsis;
-            });
-            .desktop({
-                max-width: 33%;
-                .ellipsis;
-            });
+            .ellipsis;
         }
 
         .city {
             .ellipsis;
+            max-width: 30%;
         }
+
+        .separator {
+            flex: 0 0 auto;
+        }
+        .org {
+            max-width: none;
+            flex: 0 40 auto;
+        }
+        .city {
+            flex: 1 0 auto;
+        }
+
 
         &.more {
             color: @color-blue-2;
@@ -190,7 +196,6 @@
         .bookend {
             box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
             padding-left: 8px;
-            flex-flow: row;
             .mobile({
                 margin-top: -8px;
                 padding-top: 8px;
@@ -201,16 +206,6 @@
                 padding-top: 8px;
                 height: 32px;
             });
-            .separator {
-                flex: 0 0 auto;
-            }
-            .org {
-                max-width: none;
-                flex: 0 20 auto;
-            }
-            .city {
-                flex: 1 1 auto;
-            }
         }
     }
 
