@@ -34,7 +34,6 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   @Input() searchParams: SearchParams;
   @Input() active = false;
   @Input() didYouMean: {display: string, link: string} | null = null;
-  @Input() isLandingPage = true;
   @Input() searchState: SearchState;
   @Output() zoomout = new EventEmitter<ViewPort>();
   @Output() nationalCount = new EventEmitter<number>();
@@ -172,7 +171,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         return a.params.original_query === b.params.original_query && a.params.ac_query === b.params.ac_query && a.offset === b.offset;
       }),  
       tap((item) => {
-        this.analytics.searchEvent(item.params, this.isLandingPage, item.totalCount, item.items, item.offset);  
+        this.analytics.searchEvent(item.params, item.totalCount, item.items, item.offset);  
       })
     ).subscribe();
   }

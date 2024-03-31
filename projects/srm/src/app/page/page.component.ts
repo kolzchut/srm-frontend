@@ -102,7 +102,6 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   visibleCount = 0;
 
   showLandingPageOverlay = false;
-  isLandingPage = true;
 
   didYouMean: {display: string, link: string} | null = null;
   searchState: SearchState;
@@ -364,9 +363,6 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       timer(100).subscribe(() => {
         this.setPadding();
       });
-      if (prevStage !== '') {
-        this.isLandingPage = false;
-      }
       this.map?.setPopup(false, null);
     });
     route.queryParams.pipe(

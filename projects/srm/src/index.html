@@ -10,8 +10,6 @@
   <link rel="icon" type="image/x-icon" href="favicon.svg">
   <script>
       function gtag(i){console.log('GTAG-DBG', i)};
-      var pushState = history.pushState; history.pushState = function(state) { console.log('PSTATE', state); return pushState.apply(history, arguments);};
-      var replState = history.replaceState; history.replaceState = function(state) { console.log('RSTATE', state); return replState.apply(history, arguments);};
   </script>
 </head>
 <body>

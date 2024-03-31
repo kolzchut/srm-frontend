@@ -5,6 +5,7 @@ import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs';
 import { environment } from '../environments/environment';
 import { PlatformService } from './platform.service';
 import { marked } from 'marked';
+import { AnalyticsService } from './analytics.service';
 
 declare const window: any;
 
@@ -19,9 +20,10 @@ export class AppComponent {
       // private analytics: AnalyticsService, 
       private router: Router,
       private platform: PlatformService, 
-      private seo: SeoSocialShareService) {
+      private seo: SeoSocialShareService,
+      private analytics: AnalyticsService,
+    ) {
     platform.browser(() => {
-      let initial = true;
       if (environment.gaTag) {
         this.router.events.pipe(
           filter((event) => event instanceof NavigationEnd),
@@ -30,15 +32,8 @@ export class AppComponent {
           distinctUntilChanged()
         ).subscribe((urlAfterRedirects) => {
           platform.browser(() => {
-            if (initial && window.gtag) {
-              window.gtag(['config', 'G-SSW46Z8STP', {'send_page_view': false}]);
-              initial = false;
-            }
             console.log('PAGE_VIEW', urlAfterRedirects);
-            window.gtag && window.gtag({
-              event: 'srm:page_view',
-              page_path: urlAfterRedirects
-            });
+            analytics.pageView(urlAfterRedirects);
           })
         });
       }

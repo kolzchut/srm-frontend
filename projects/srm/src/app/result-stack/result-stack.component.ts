@@ -100,7 +100,7 @@ export class ResultStackComponent implements OnInit {
     if (extra) {
       card_ = Object.assign({}, card, extra);
     }
-    this.analytics.cardEvent(card_, this.searchParams, false, this.index, true);
+    this.analytics.cardEvent(card_, this.searchParams, this.index, true);
     this.router.navigate(['c', card_.card_id], { relativeTo: this.route, queryParams: {li: this.index}, queryParamsHandling: 'merge', preserveFragment: true });
     return false;
   }

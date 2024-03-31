@@ -11,8 +11,24 @@ declare const window: {
   providedIn: 'root'
 })
 export class AnalyticsService {
+  landingPage = true;
+  referrer: string | null = '';
 
-  constructor(private platform: PlatformService) { }
+  constructor(private platform: PlatformService) {
+    window.gtag(['config', 'G-SSW46Z8STP', {'send_page_view': false}]);
+    this.referrer = document.referrer;
+  }
+
+  pageView(url: string) {
+    window.gtag({
+      event: 'srm:page_view',
+      page_path: url,
+      landing_page: this.landingPage ? 'yes' : 'no',
+      doc_referrer: this.referrer,
+    });
+    this.landingPage = false;
+    this.referrer = null;
+  }
 
   cardToItem(card: Card, idx: number, item_list_name?: string | null): any {
     const address = card.address_parts ? 
@@ -68,9 +84,9 @@ export class AnalyticsService {
   }
 
 
-  searchEvent(params: SearchParams, isLandingPage: boolean, numTotalResults: number, items: Card[], offset=0) {
+  searchEvent(params: SearchParams, numTotalResults: number, items: Card[], offset=0) {
     const title = params.original_query;
-    console.log('EVENT search', title, isLandingPage, numTotalResults);
+    console.log('EVENT search', title, numTotalResults);
     if (title && this.platform.browser() && window.gtag) {
       const responseCount = (params.filter_responses || []).length;
       const eventParams = {
@@ -78,7 +94,6 @@ export class AnalyticsService {
         filter_count: params.allTaxonomyIds.filter(x => !!x).length - responseCount,
         filter_responses_count: responseCount,
         filter_response_categories_count: (params.filter_response_categories || []).length,
-        landing_page: isLandingPage ? 'yes' : 'no',
         search_structured: !!params.query ? 'no' : 'yes',
         num_results_total: numTotalResults,
       };
@@ -101,7 +116,7 @@ export class AnalyticsService {
     }
   }
 
-  cardEvent(card: Card, params: SearchParams | null, isLandingPage: boolean, index: number, select=false) {
+  cardEvent(card: Card, params: SearchParams | null, index: number, select=false) {
     console.log('EVENT card', card);
     if (this.platform.browser() && window.gtag) {
       if (select) {
@@ -117,7 +132,6 @@ export class AnalyticsService {
           card_id: card.card_id,
           card_name: card.service_name,
           card_org: card.organization_id,
-          landing_page: isLandingPage ? 'yes' : 'no',
           search_term: params?.original_query,
           search_structured: !!params?.query ? 'no' : 'yes',
         };

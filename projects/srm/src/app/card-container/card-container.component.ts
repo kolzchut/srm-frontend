@@ -73,7 +73,6 @@ export class CardContainerComponent implements OnInit, OnChanges {
 
   @Input() cardId = '';
   @Input() searchParams: SearchParams;
-  @Input() isLandingPage: boolean;
   @Output() center = new EventEmitter<LngLatLike>();
   @Output() size = new EventEmitter<number>();
   @Output() zoomout = new EventEmitter<ViewPort>();
@@ -144,7 +143,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
             index = parseInt(li, 10);
             this.router.navigate([], {relativeTo: this.route, queryParams: {li: null}, queryParamsHandling: 'merge', replaceUrl: true, preserveFragment: true});
           }
-          this.analytics.cardEvent(card, this.searchParams, this.isLandingPage, index);
+          this.analytics.cardEvent(card, this.searchParams, index);
         });
       })
     ).subscribe();
