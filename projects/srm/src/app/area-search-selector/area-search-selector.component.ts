@@ -42,21 +42,23 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.state.selectorResize.pipe(
-      untilDestroyed(this),
-      map(() => (!!this.state.area_ || !!this.state.searching_) ? this.areaEl :
-        (this.state.nationWide_ ? this.nationWideEl : this.mapRegionEl)),
-      map((ref) => ref.nativeElement as HTMLDivElement),
-      filter((el) => !!el),
-      switchMap((el) => {
-        return interval(60, animationFrameScheduler).pipe(
-          take(5),
-          map(() => el.getBoundingClientRect()),
-          distinctUntilChanged((a, b) => a.width === b.width && a.right === b.right),
-          tap((rect) => this.updateSelector(rect)),
-        );
-      }),
-    ).subscribe();
+    this.ps.browser(() => {
+      this.state.selectorResize.pipe(
+        untilDestroyed(this),
+        map(() => (!!this.state.area_ || !!this.state.searching_) ? this.areaEl :
+          (this.state.nationWide_ ? this.nationWideEl : this.mapRegionEl)),
+        map((ref) => ref.nativeElement as HTMLDivElement),
+        filter((el) => !!el),
+        switchMap((el) => {
+          return interval(60, animationFrameScheduler).pipe(
+            take(5),
+            map(() => el.getBoundingClientRect()),
+            distinctUntilChanged((a, b) => a.width === b.width && a.right === b.right),
+            tap((rect) => this.updateSelector(rect)),
+          );
+        }),
+      ).subscribe();
+    });
   }
 
   showButtonText(): boolean {

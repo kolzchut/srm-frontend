@@ -9,7 +9,7 @@ import { PlatformService } from './platform.service';
 export class LayoutService {
 
   mobile = signal(false);
-  desktop = signal(false);
+  desktop = signal(true);
 
   constructor(private window: WindowService, private ps: PlatformService) {
     this.ps.browser(() => {
