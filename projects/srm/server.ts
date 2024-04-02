@@ -40,6 +40,14 @@ export function app(): express.Express {
       )
     )
   });
+  server.get('/sitemap1.xml', (req, res) => {
+    fetch(environment.sitemapUrl1)
+      .then(sm => sm.body?.pipe(
+        res.contentType('application/xml')
+      )
+    )
+  });
+
   // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;

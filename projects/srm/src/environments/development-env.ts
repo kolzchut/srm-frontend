@@ -26,6 +26,7 @@ export const devEnv: any = {
   // gaTag: 'G-0FXK63SSNX',
   // gaTag: 'G-7ZHM371DDF',
   sitemapUrl: 'https://srm-staging.datacity.org.il/dataset/572c3ee3-8d50-4da8-99ea-88db35f1bdd4/resource/6b0a249e-3dd1-4051-a2af-eae27dd4e219/download/sitemap.xml',
+  sitemapUrl1: 'https://srm.datacity.org.il/dataset/6fbf9571-b66e-4264-a4e6-605539517b22/resource/2fdf48e0-310a-4aa9-8278-7a76bcc8c6c0/download/sitemap_1.xml',
 };
 Object.assign(devEnv, {
   clusterDataSourceURL: devEnv.clusterDataURL,
