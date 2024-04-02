@@ -3,6 +3,7 @@ import { Card, SearchParams, _h } from '../consts';
 import { LayoutService } from '../layout.service';
 import { AnalyticsService } from '../analytics.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PlatformService } from '../platform.service';
 
 @Component({
   selector: 'app-result-stack',
@@ -21,7 +22,7 @@ export class ResultStackComponent implements OnInit {
   showCount = -1;
   // showOrgs = true;
 
-  constructor(public layout: LayoutService, private analytics: AnalyticsService, private router: Router, private route: ActivatedRoute) { }
+  constructor(public layout: LayoutService, private analytics: AnalyticsService, private router: Router, private route: ActivatedRoute, public platform: PlatformService) { }
 
   ngOnInit(): void {
     if (this.result?.collapse_hits) {
@@ -95,7 +96,8 @@ export class ResultStackComponent implements OnInit {
     return ret;
   }
 
-  selectedItem(card: Card, extra?: any) {
+  selectedItem(event: Event, card: Card, extra?: any) {
+    event.preventDefault();
     let card_ = card;
     if (extra) {
       card_ = Object.assign({}, card, extra);

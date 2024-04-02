@@ -8,6 +8,7 @@ import { replaceUrlsWithLinks } from './text-utils';
 import { Subscription, timer } from 'rxjs';
 import { MarkdownService } from '../markdown.service';
 import { SafeHtml } from '@angular/platform-browser';
+import { PlatformService } from '../platform.service';
 
 @Component({
   selector: 'app-card',
@@ -28,12 +29,15 @@ export class CardComponent implements OnInit, OnChanges, AfterViewInit {
   nonOfficial = false;
   dataSources: SafeHtml[] = [];
 
-  constructor(private api: ApiService, private router: Router, private el: ElementRef, @Inject(DOCUMENT) private document: Document, public md: MarkdownService) {}
+  constructor(private api: ApiService, private router: Router, private el: ElementRef, @Inject(DOCUMENT) private document: Document, 
+    public md: MarkdownService, private platform: PlatformService) {}
 
   ngOnInit(): void {
-    this.obs = new IntersectionObserver((entries) => {
-      this.quickActionsVisible = !(entries && entries.length && entries[0].isIntersecting);
-    }, { threshold: [0] });
+    this.platform.browser(() => {
+      this.obs = new IntersectionObserver((entries) => {
+        this.quickActionsVisible = !(entries && entries.length && entries[0].isIntersecting);
+      }, { threshold: [0] });
+    });
   }
 
   ngOnChanges(): void {
@@ -42,11 +46,13 @@ export class CardComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const first = this.el.nativeElement.querySelector('.visible app-card-action a') as HTMLElement;
-    if (first) {
-      first.classList.add('primary');
-      this.obs.observe(first);
-    }
+    this.platform.browser(() => {
+      const first = this.el.nativeElement.querySelector('.visible app-card-action a') as HTMLElement;
+      if (first) {
+        first.classList.add('primary');
+        this.obs.observe(first);
+      }
+    });
   }
 
   get suggestChangesForm() {

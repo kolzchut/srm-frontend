@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewCh
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LngLatLike } from 'mapbox-gl';
-import { SeoSocialShareService } from 'ngx-seo';
+import { NgxSeoMetaTagAttr, SeoSocialShareService } from 'ngx-seo';
 import { from, Observable, Subject, timer } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, filter, first, map, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { ApiService } from '../api.service';
@@ -18,6 +18,7 @@ import { AreaSearchState } from '../area-search-selector/area-search-state';
 import { FiltersState } from '../search-filters/filters-state';
 import { WindowService } from '../window.service';
 import { SearchState } from '../search-results/search-state';
+import { environment } from '../../environments/environment';
 
 class SearchParamCalc {
   acId: string;
@@ -364,6 +365,11 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         this.setPadding();
       });
       this.map?.setPopup(false, null);
+      if (environment.production && this.stage !== 'search') {
+        this.seo.setMetaTag({attr: NgxSeoMetaTagAttr.name, attrValue:'robots', value: 'all'});
+      } else {
+        this.seo.setMetaTag({attr: NgxSeoMetaTagAttr.name, attrValue:'robots', value: 'noindex'});
+      }
     });
     route.queryParams.pipe(
       untilDestroyed(this),
