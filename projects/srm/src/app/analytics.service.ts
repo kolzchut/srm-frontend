@@ -12,11 +12,11 @@ declare const window: {
 })
 export class AnalyticsService {
   landingPage = true;
-  referrer: string | null = '';
+  previous_url: string | null = '';
 
   constructor(private platform: PlatformService) {
     window.gtag(['config', 'G-SSW46Z8STP', {'send_page_view': false}]);
-    this.referrer = document.referrer;
+    this.previous_url = document.referrer;
   }
 
   pageView(url: string) {
@@ -24,10 +24,10 @@ export class AnalyticsService {
       event: 'srm:page_view',
       page_path: url,
       landing_page: this.landingPage ? 'yes' : 'no',
-      doc_referrer: this.referrer,
+      previous_url: this.previous_url,
     });
     this.landingPage = false;
-    this.referrer = null;
+    this.previous_url = url;
   }
 
   cardToItem(card: Card, idx: number, item_list_name?: string | null): any {
