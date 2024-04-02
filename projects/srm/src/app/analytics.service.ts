@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Card, SearchParams } from './consts';
 import { PlatformService } from './platform.service';
+import { WindowService } from './window.service';
 
 declare const window: {
   gtag: any
@@ -14,13 +15,21 @@ export class AnalyticsService {
   landingPage = true;
   previous_url: string | null = '';
 
-  constructor(private platform: PlatformService) {
-    window.gtag(['config', 'G-SSW46Z8STP', {'send_page_view': false}]);
-    this.previous_url = document.referrer;
+  constructor(private platform: PlatformService, private _: WindowService) {
+    this.gtag(['config', 'G-SSW46Z8STP', {'send_page_view': false}]);
+    this.platform.browser(() => {
+      this.previous_url = this._.D.referrer || '';
+    });
+  }
+
+  gtag(...args: any[]) {
+    if (this.platform.browser() && window?.gtag) {
+      window.gtag(...args);
+    }
   }
 
   pageView(url: string) {
-    window.gtag({
+    this.gtag({
       event: 'srm:page_view',
       page_path: url,
       landing_page: this.landingPage ? 'yes' : 'no',
@@ -87,7 +96,7 @@ export class AnalyticsService {
   searchEvent(params: SearchParams, numTotalResults: number, items: Card[], offset=0) {
     const title = params.original_query;
     console.log('EVENT search', title, numTotalResults);
-    if (title && this.platform.browser() && window.gtag) {
+    if (title) {
       const responseCount = (params.filter_responses || []).length;
       const eventParams = {
         search_term: title,
@@ -99,13 +108,13 @@ export class AnalyticsService {
       };
 
       if (offset === 0) {
-        window.gtag({
+        this.gtag({
           event: 'srm:search',
           ...eventParams
         });
       }
 
-      window.gtag({
+      this.gtag({
         event: 'view_item_list',
         ecommerce: {
           item_list_name: title,
@@ -118,80 +127,74 @@ export class AnalyticsService {
 
   cardEvent(card: Card, params: SearchParams | null, index: number, select=false) {
     console.log('EVENT card', card);
-    if (this.platform.browser() && window.gtag) {
-      if (select) {
-        window.gtag({
-          event: 'select_item',
-          ecommerce: {
-            item_list_name: params?.original_query,
-            items: [this.cardToItem(card, index)]
-          }
-        });  
-      } else {
-        const eventParams = {
-          card_id: card.card_id,
-          card_name: card.service_name,
-          card_org: card.organization_id,
-          search_term: params?.original_query,
-          search_structured: !!params?.query ? 'no' : 'yes',
-        };
-        window.gtag({
-          event: 'srm:card',
-          ...eventParams
-        });
-  
-        window.gtag({
-          event: 'view_item',
-          ecommerce: {
-            items: [this.cardToItem(card, index, params?.original_query)]
-          },
-          ...eventParams
-        });  
-      }
+    if (select) {
+      this.gtag({
+        event: 'select_item',
+        ecommerce: {
+          item_list_name: params?.original_query,
+          items: [this.cardToItem(card, index)]
+        }
+      });  
+    } else {
+      const eventParams = {
+        card_id: card.card_id,
+        card_name: card.service_name,
+        card_org: card.organization_id,
+        search_term: params?.original_query,
+        search_structured: !!params?.query ? 'no' : 'yes',
+      };
+      this.gtag({
+        event: 'srm:card',
+        ...eventParams
+      });
+
+      this.gtag({
+        event: 'view_item',
+        ecommerce: {
+          items: [this.cardToItem(card, index, params?.original_query)]
+        },
+        ...eventParams
+      });  
     }
   }
 
   cardActionEvent(card: Card, action: string, action_url: string) {
     console.log('EVENT card action', action, action_url, card);
-    if (window.gtag && this.platform.browser()) {
-      const eventParams = {
-        card_id: card.card_id,
-        card_name: card.service_name,
-        card_org: card.organization_id,
-        action_type: action,
-        action_url: action_url
-      };
+    const eventParams = {
+      card_id: card.card_id,
+      card_name: card.service_name,
+      card_org: card.organization_id,
+      action_type: action,
+      action_url: action_url
+    };
 
-      window.gtag({
-        event: 'srm:card_action',
-        ...eventParams
-      });
+    this.gtag({
+      event: 'srm:card_action',
+      ...eventParams
+    });
 
-      window.gtag({
-        event: 'add_to_cart',
-        cta_action: action,
-        ecommerce: {
-          items: [this.cardToItem(card, 0)]
-        },
-        ...eventParams
-      });
-    } 
+    this.gtag({
+      event: 'add_to_cart',
+      cta_action: action,
+      ecommerce: {
+        items: [this.cardToItem(card, 0)]
+      },
+      ...eventParams
+    });
   }
 
   interactionEvent(what: string, where: string, content?: string, params?: SearchParams | null) {
     console.log('EVENT interaction', where, what);
-    if (window.gtag && this.platform.browser()) {
-      const event: any = {
-        event: 'srm:interaction',
-        interaction_where: where,
-        interaction_what: what,
-        interaction_content: content || null,
-      };
-      if (params) {
-        event['search_term'] = params.original_query;
-        event['search_structured'] = !!params.query ? 'no' : 'yes';
-      }
-      window.gtag(event);
+    const event: any = {
+      event: 'srm:interaction',
+      interaction_where: where,
+      interaction_what: what,
+      interaction_content: content || null,
+    };
+    if (params) {
+      event['search_term'] = params.original_query;
+      event['search_structured'] = !!params.query ? 'no' : 'yes';
     }
+    this.gtag(event);
   }
 }
