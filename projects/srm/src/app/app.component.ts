@@ -55,6 +55,7 @@ export class AppComponent {
       parsed.searchParams.delete('q');
     }
     parsed.searchParams.delete('li');
+    parsed.searchParams.delete('gtm_debug');
     parsed.hash = '';
     const ret = parsed.toString().slice(window.location.origin.length);
     return ret;
