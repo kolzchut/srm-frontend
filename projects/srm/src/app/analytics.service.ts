@@ -13,6 +13,7 @@ declare const window: {
 })
 export class AnalyticsService {
   landingPage = true;
+  currentPageLanding = true;
   previous_url: string | null = '';
 
   constructor(private platform: PlatformService, private _: WindowService) {
@@ -35,6 +36,7 @@ export class AnalyticsService {
       landing_page: this.landingPage ? 'yes' : 'no',
       previous_url: this.previous_url,
     });
+    this.currentPageLanding = this.landingPage;
     this.landingPage = false;
     this.previous_url = url;
   }

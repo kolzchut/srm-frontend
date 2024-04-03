@@ -47,13 +47,13 @@ export class LandingPageOverlayComponent implements OnChanges {
         }),
         take(2),
       ).subscribe((token) => {
-        // console.log('ACTION LANDING PAGE COUNT', token, this.opened);
+        //console.log('ACTION LANDING PAGE COUNT', token, this.opened);
         if (!this.checkNeeded()) {
-          // console.log('ACTION LANDING PAGE NOT NEEDED');
+          //console.log('ACTION LANDING PAGE NOT NEEDED');
           this.open.emit(false);
           this.opened = 2;
         } else {
-          // console.log('ACTION LANDING PAGE NEEDED');
+          //console.log('ACTION LANDING PAGE NEEDED');
           this.opened += 1;
           this.open.emit(this.opened === 1);  
         }    
@@ -68,7 +68,7 @@ export class LandingPageOverlayComponent implements OnChanges {
   }
 
   checkNeeded(): boolean {
-    // console.log('ACTION LANDING PAGE CHECK NEEDED', this.landingPage, this.needed);
+    //console.log('ACTION LANDING PAGE CHECK NEEDED', this.landingPage, this.needed);
     if (this.needed !== null) {
       return this.needed;
     }
@@ -82,7 +82,7 @@ export class LandingPageOverlayComponent implements OnChanges {
           }
         } catch {}
         const now = new Date().getTime();
-        // console.log('ACTION LANDING PAGE CHECK NEEDED', lastOpened, now, now - lastOpened);
+        //console.log('ACTION LANDING PAGE CHECK NEEDED', lastOpened, now, now - lastOpened);
         window.localStorage.setItem('srm_landing_page', '' + now);
         if (now - lastOpened > 1000 * 60 * 60 * 24 * 90) {
           this.needed = true;
@@ -94,7 +94,7 @@ export class LandingPageOverlayComponent implements OnChanges {
   }
 
   close(): void {
-    // console.log('ACTION LANDING PAGE CLOSING');
+    //console.log('ACTION LANDING PAGE CLOSING');
     this.needed = false;
     this.open.emit(false);
   }

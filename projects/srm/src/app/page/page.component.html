@@ -82,7 +82,7 @@
         <app-area-search-selector-results [state]='areaSearchState' *ngIf='layout.mobile()'></app-area-search-selector-results>
         <app-landing-page-overlay *ngIf='(stage === "search-results" || stage === "card")'
             [style.display]='showLandingPageOverlay ? "flex" : "none"'
-            [landingPage]='analytics.landingPage'
+            [landingPage]='analytics.currentPageLanding'
             [searchParams]='searchParams' 
             [cardId]='card'
             [visibleCount]='visibleCount'
