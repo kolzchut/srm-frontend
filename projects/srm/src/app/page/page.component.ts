@@ -115,7 +115,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   surveyVisible = false;
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
-              private platform: PlatformService, public layout: LayoutService, private analytics: AnalyticsService,
+              private platform: PlatformService, public layout: LayoutService, public analytics: AnalyticsService,
               public a11y: A11yService, private window: WindowService) {
 
     this.searchParamsCalc.pipe(
