@@ -5,6 +5,7 @@ import { WindowService } from './window.service';
 
 declare const window: {
   gtag: any
+  location: Location;
 };
 
 
@@ -38,7 +39,7 @@ export class AnalyticsService {
     });
     this.currentPageLanding = this.landingPage;
     this.landingPage = false;
-    this.previous_url = url;
+    this.previous_url = window.location.origin + url;
   }
 
   cardToItem(card: Card, idx: number, item_list_name?: string | null): any {
