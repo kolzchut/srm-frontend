@@ -7,6 +7,7 @@ import { LayoutService } from '../layout.service';
 import { WindowService } from '../window.service';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import { SearchState } from '../search-results/search-state';
+import { PlatformService } from '../platform.service';
 
 @UntilDestroy()
 @Component({
@@ -45,7 +46,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
 
   DrawerState = DrawerState;
 
-  constructor(public layout: LayoutService, private window: WindowService, private host: ElementRef) { }
+  constructor(public layout: LayoutService, private window: WindowService, private host: ElementRef, private platform: PlatformService) { }
 
   ngOnInit(): void {
   }
@@ -152,9 +153,11 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
           this.scrollTop.emit(top);
         });
       }
-      timer(100).subscribe(() => {
-        this.currentHeight = this.calcHeight();
-        this.size.emit(this.hostHeight - this.currentHeight);
+      this.platform.browser(() => {
+        timer(100).subscribe(() => {
+          this.currentHeight = this.calcHeight();
+          this.size.emit(this.hostHeight - this.currentHeight);
+        });
       });
     }
   }

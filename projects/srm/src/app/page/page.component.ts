@@ -124,7 +124,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       distinctUntilChanged((x, y) => {
         return x.geoHash.localeCompare(y.geoHash) === 0
       }),
-      debounceTime(1000),
+      debounceTime(this.platform.browser() ? 1000 : 0),
     ).subscribe((spc) => {
       const bounds = spc.bounds;
       if (bounds && bounds.length === 2) {
@@ -134,18 +134,18 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    this.searchParamsCalc.pipe(
-      untilDestroyed(this),
-      // throttleTime(1000, undefined, {leading: false, trailing: true}),
-      distinctUntilChanged((x, y) => {
-        return x.national === y.national
-      }),
-    ).subscribe((spc) => {
-      console.log('NATIONAL CHANGED', spc.national);
-      if (this.filtersState) {
-        this.filtersState.active = false;
-      }
-    });
+    // this.searchParamsCalc.pipe(
+    //   untilDestroyed(this),
+    //   // throttleTime(1000, undefined, {leading: false, trailing: true}),
+    //   distinctUntilChanged((x, y) => {
+    //     return x.national === y.national
+    //   }),
+    // ).subscribe((spc) => {
+    //   console.log('NATIONAL CHANGED', spc.national);
+    //   if (this.filtersState) {
+    //     this.filtersState.active = false;
+    //   }
+    // });
 
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
@@ -361,8 +361,10 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.filtersState) {
         this.filtersState.active = false;
       }
-      timer(100).subscribe(() => {
-        this.setPadding();
+      this.platform.browser(() => {
+        timer(100).subscribe(() => {
+          this.setPadding();
+        });  
       });
       this.map?.setPopup(false, null);
       if (environment.production && this.stage !== 'search') {
@@ -427,7 +429,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showLandingPageOverlay = false;
     }
     this.searchState = new SearchState();
-    this.areaSearchState = new AreaSearchState(api, this.searchParamsQueue, this.searchState);
+    this.areaSearchState = new AreaSearchState(api, this.searchParamsQueue, this.searchState, this.platform);
     this.areaSearchState.bounds.pipe(
       untilDestroyed(this),
     ).subscribe((bounds) => {
@@ -436,7 +438,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     this.focusOn.pipe(
       untilDestroyed(this),
-      debounceTime(100),
+      debounceTime(this.platform.browser() ? 100 : 0),
       switchMap((request) => {
         return  this.api.getPlaces(request.name).pipe(
           map((results) => {

@@ -5,6 +5,7 @@ import { SearchParams, ViewPort, Place } from "../consts";
 import { computed, effect, signal } from "@angular/core";
 import { SearchState } from "../search-results/search-state";
 import { FocusOnRequest } from "../map/map.component";
+import { PlatformService } from "../platform.service";
 
 export class AreaSearchState {
 
@@ -32,10 +33,10 @@ export class AreaSearchState {
   areaInputEl: HTMLInputElement;
   mapMoveSubscription: Subscription | null = null;
 
-  constructor(private api: ApiService, private searchParams: Observable<SearchParams>, public searchState: SearchState) {
+  constructor(private api: ApiService, private searchParams: Observable<SearchParams>, public searchState: SearchState, private platform: PlatformService) {
     this.queries.pipe(
       filter((value) => !!value && value.length > 1),
-      debounceTime(200),
+      debounceTime(this.platform.browser() ? 200 : 0),
       switchMap((value) => this.api.getPlaces(value || ''))
     ).subscribe((results) => {
       const places = results.map((result) => {
@@ -231,7 +232,7 @@ export class AreaSearchState {
       if (this.mapMoveSubscription) {
         this.mapMoveSubscription.unsubscribe();
       }
-      this.mapMoveSubscription = timer(5000).pipe(
+      this.mapMoveSubscription = timer(this.platform.browser() ? 5000 : 0).pipe(
         switchMap(() => this.searchParams),
         filter((params) => params.geoHash !== this.refGeoHash),
         first(),

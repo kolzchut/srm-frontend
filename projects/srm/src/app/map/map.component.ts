@@ -264,9 +264,11 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.platform.browser(() => {
       this.mapboxService.init.subscribe(() => {
         this.initialize();
       });
+    });
   }
 
   ngOnDestroy(): void {

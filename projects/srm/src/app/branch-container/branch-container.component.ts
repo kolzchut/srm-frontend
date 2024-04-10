@@ -96,15 +96,17 @@ export class BranchContainerComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     this.parametersQueue.next({searchParams: this.searchParams, pointId: this.pointId, cardId: this.cardId, hash: ''});
-    timer(0).subscribe(() => {    
-      const el = this.content?.nativeElement as HTMLElement;
-      if (el && this.platform.browser()) {
-        const size = window.innerHeight - el.getBoundingClientRect().top;
-        this.size.emit(size);
-      }
-    });
-    timer(100).subscribe(() => {
-      this.setupObserver();
+    this.platform.browser(() => {
+      timer(0).subscribe(() => {    
+        const el = this.content?.nativeElement as HTMLElement;
+        if (el && this.platform.browser()) {
+          const size = window.innerHeight - el.getBoundingClientRect().top;
+          this.size.emit(size);
+        }
+      });
+      timer(100).subscribe(() => {
+        this.setupObserver();
+      });
     });
     this.barePoint = !this.searchParams?.ac_query && !this.cardId;
   }
