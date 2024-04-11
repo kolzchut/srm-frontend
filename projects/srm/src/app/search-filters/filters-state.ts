@@ -1,4 +1,4 @@
-import { Subject, ReplaySubject, forkJoin, debounceTime, distinctUntilChanged, filter, switchMap, tap, merge, fromEvent, first, Observable } from "rxjs";
+import { Subject, ReplaySubject, forkJoin, debounceTime, distinctUntilChanged, filter, switchMap, tap, merge, fromEvent, first, Observable, timer } from "rxjs";
 import { DistinctItem, TaxonomyItem, SearchParams, QueryCardResult, SITUATION_FILTERS } from "../consts";
 import { ApiService } from "../api.service";
 import { untilDestroyed } from "@ngneat/until-destroy";
@@ -379,7 +379,8 @@ export class FiltersState {
         this.showDiscovery = true;
         merge(
           fromEvent(window, 'mousedown'),
-          fromEvent(window, 'touchstart')
+          fromEvent(window, 'touchstart'),
+          timer(this.platform.browser() ? 10000 : 0)
         ).pipe(first()).subscribe(() => {
           this.showDiscovery = false;
         });
