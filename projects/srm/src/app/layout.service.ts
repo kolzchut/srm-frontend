@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { WindowService } from './window.service';
-import { fromEvent } from 'rxjs';
+import { fromEvent, timer } from 'rxjs';
 import { PlatformService } from './platform.service';
 
 @Injectable({
@@ -19,6 +19,9 @@ export class LayoutService {
         });
       }
       this._check();
+      timer(100).subscribe(() => {
+        this._check();
+      });
     });
   }
 
