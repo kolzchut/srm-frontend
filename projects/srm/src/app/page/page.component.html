@@ -29,7 +29,7 @@
                     [class.visible]='stage === "search-results" || (stage === "point" && !card)'
                     [class.filters]='filtersVisible'
                 >
-                    <app-search-filters-bar class='layout-desktop' filtersState]='filtersState' *ngIf='layout.desktop()'></app-search-filters-bar>
+                    <app-search-filters-bar class='layout-desktop' [filtersState]='filtersState' *ngIf='layout.desktop()'></app-search-filters-bar>
                     <app-search-filters 
                         *ngIf='filtersVisible'
                         [searchParams]='searchParams'
