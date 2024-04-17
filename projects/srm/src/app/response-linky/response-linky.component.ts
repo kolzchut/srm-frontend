@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { TaxonomyItem, prepareQuery } from '../consts';
 import { ResponseBase } from '../response/response-base';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-response-linky',
@@ -17,7 +18,7 @@ export class ResponseLinkyComponent extends ResponseBase implements OnChanges {
 
   responseQuery = '';
 
-  constructor() {
+  constructor(private router: Router) {
     super();
   }
 
@@ -25,5 +26,17 @@ export class ResponseLinkyComponent extends ResponseBase implements OnChanges {
     this.initColors(this.response);
     this.recalcColors();
     this.responseQuery = prepareQuery(this.response.name || '');
+  }
+
+  doSearch(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.router.navigate(
+      this.search ? ['/q'] : ['/s', this.responseQuery], 
+      {
+        queryParams: this.search ? {q: this.response.name} : {},
+        queryParamsHandling: 'merge'
+      }
+    );
   }
 }

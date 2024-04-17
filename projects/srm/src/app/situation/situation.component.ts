@@ -1,13 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { TaxonomyItem } from '../consts';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { TaxonomyItem, prepareQuery } from '../consts';
 import { LayoutService } from '../layout.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-situation',
   templateUrl: './situation.component.html',
   styleUrls: ['./situation.component.less']
 })
-export class SituationComponent implements OnInit {
+export class SituationComponent implements OnChanges {
 
   @Input() situation: TaxonomyItem = {};
   @Input() small = false;
@@ -17,10 +18,12 @@ export class SituationComponent implements OnInit {
   @Output() clicked = new EventEmitter<void>();
 
   hover = false;
+  querySituation = '';
 
-  constructor(private layout: LayoutService) { }
+  constructor(private layout: LayoutService, private router: Router) { }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
+    this.querySituation = prepareQuery(this.situation.name || '');
   }
 
   get smaller() {
@@ -29,5 +32,13 @@ export class SituationComponent implements OnInit {
 
   onClick() {
     this.clicked.emit();
+  }
+
+  doSearch(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    // [routerLink]='["/q"]'
+    // [queryParams]='{q: situation.name}'
+    this.router.navigate(['/q'], { queryParams: { q: this.situation.name } });
   }
 }

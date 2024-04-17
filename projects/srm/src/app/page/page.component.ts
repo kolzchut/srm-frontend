@@ -24,6 +24,7 @@ class SearchParamCalc {
   acId: string;
   ftQuery: string;
   resolvedQuery: string;
+  orgName?: string;
   fs?: string;
   fr?: string;
   frc?: string;
@@ -170,7 +171,11 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       map((spc) => {
         console.log('SEARCH PARAMS CALC', spc);
         if (this.stage === 'search-results') {
-          this.seo.setTitle(`חיפוש ${spc.resolvedQuery} | כל שירות`);
+          if (spc.orgName) {
+            this.seo.setTitle(`חיפוש שירותים של ${spc.orgName} | כל שירות`);
+          } else {
+            this.seo.setTitle(`חיפוש ${spc.orgName || spc.resolvedQuery} | כל שירות`);
+          }
           if (spc.acId) {
             this.seo.setUrl(`${this.window.D.location.origin}/s/${spc.acId}`);
           } else if (spc.ftQuery) {
@@ -367,7 +372,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         });  
       });
       this.map?.setPopup(false, null);
-      if (environment.production && this.stage !== 'search') {
+      if (environment.production && this.stage !== 'search' && this.stage !== 'point') {
         this.seo.setMetaTag({attr: NgxSeoMetaTagAttr.name, attrValue:'robots', value: 'all'});
       } else {
         this.seo.setMetaTag({attr: NgxSeoMetaTagAttr.name, attrValue:'robots', value: 'noindex'});
@@ -656,6 +661,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         tap((ac) => {
           if (ac) {
             spc.acId = ac.id;
+            spc.orgName = ac.org_name || undefined;
           }
           spc.ac = ac;
           this.ac_query = spc.acId;
@@ -705,16 +711,24 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  zoomOutMap(viewport: ViewPort) {
+  zoomOutMap(viewport: ViewPort, delay=0) {
     this.savedState = null;
-    console.log('ZOOM OUT MAP', viewport.top_left.lat, viewport.top_left.lon, viewport.bottom_right.lat, viewport.bottom_right.lon)
+    console.log('ZOOM OUT MAP', viewport.zoom, viewport.top_left.lat, viewport.top_left.lon, viewport.bottom_right.lat, viewport.bottom_right.lon)
     if (viewport && viewport.top_left && viewport.bottom_right && 
         !Number.isNaN(viewport.top_left.lat) && !Number.isNaN(viewport.top_left.lon) &&
         !Number.isNaN(viewport.bottom_right.lat) && !Number.isNaN(viewport.bottom_right.lon)) {
       if (!viewport.zoom) {
-        this.queueMapAction((map) => {
-          map.fitBounds([viewport.top_left, viewport.bottom_right], {padding: {top: 70, bottom: 10, left: 10, right: 10}, maxZoom: 15});
-        }, 'zoom-out-map');
+        const bounds: mapboxgl.LngLatBoundsLike = [[viewport.top_left.lon, viewport.top_left.lat], [viewport.bottom_right.lon, viewport.bottom_right.lat]];;
+        timer(delay).subscribe(() => {
+          this.queueMapAction((map) => {
+            try {
+              map.fitBounds(bounds, {padding: {top: 70, bottom: 10, left: 10, right: 10}, maxZoom: 15});
+            } catch (e) {
+              console.error('COULDNT ZOOM OUT MAP', e);
+              map.fitBounds(bounds, {padding: {top: 0, bottom: 0, left: 0, right: 0},});
+            }
+          }, 'zoom-out-map');
+        });
       } else {
         this.queueMapAction((map) => {
           map.flyTo({center: viewport.top_left, zoom: viewport.zoom});

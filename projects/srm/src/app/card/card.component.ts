@@ -69,12 +69,23 @@ export class CardComponent implements OnInit, OnChanges, AfterViewInit {
     return `https://next.obudget.org/i/activities/gov_social_service/${serviceId}?theme=soproc`;
   }
 
-  showAllBranches() {
+  showAllBranches(event: Event) {
+    event.preventDefault();
     const params = new SearchParams();
     params.org_id = this.card.organization_id;
     this.api.getCounts(params, false).subscribe((counts) => {
       console.log('ACTION ZOOMOUT', counts);
-      this.zoomout.emit(counts.viewport);
+      const bounds = counts.viewport;
+      if (bounds) {
+        if (bounds.bottom_right.lon < bounds.top_left.lon + 0.001) {
+          bounds.bottom_right.lon = bounds.top_left.lon + 0.001;
+        }
+        if (bounds.bottom_right.lat > bounds.top_left.lat - 0.001) {
+          bounds.bottom_right.lat = bounds.top_left.lat - 0.001;
+        }
+  
+      }
+      this.zoomout.emit(bounds);
       this.router.navigate(['/s', this.card.organization_id]);
     });
   }

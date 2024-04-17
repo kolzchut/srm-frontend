@@ -1,15 +1,19 @@
-<div class='situation' [class.small]='small' *ngIf='!selected'
-    [routerLink]='link ? ["/q"] : null'
-    [queryParams]='link ? {q: situation.name} : null'
+<div class='situation' [class.small]='small' *ngIf='!selected && !link'
     [class.small]='smaller'
-    [class.linkable]='link'
-    [attr.aria-label]='situation.name + " - לחצו לחיפוש באתר"'
 >
     <span class='text' [innerHTML]='situation.name'
     ></span>
-    <span class='link' *ngIf='link'
-    ><span>←</span></span>
 </div>
+<a class='situation linkable' [class.small]='small' *ngIf='!selected && link'
+    (activated)='doSearch($event)'
+    [href]='"/s/" + querySituation'
+    [class.small]='smaller'
+    [attr.aria-label]='situation.name + " - לחצו לחיפוש באתר"'
+    clickOnReturn
+>
+    <span class='text' [innerHTML]='situation.name'></span>
+    <span class='link'><span>←</span></span>
+</a>
 <div class='situation' *ngIf='selected'
     [class.selected]='true'
     [attr.aria-label]='situation.name + " - לחצו להסרת הסינון"'

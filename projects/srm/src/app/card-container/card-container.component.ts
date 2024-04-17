@@ -127,8 +127,8 @@ export class CardContainerComponent implements OnInit, OnChanges {
         }
         const loc = this.document.location;
         this.seo.setUrl(`${loc.origin}/c/${this.cardId}`);
-        this.calculateExitLink();
         this.platform.browser(() => {
+          this.calculateExitLink();
           (this.scrolled?.nativeElement as HTMLElement)?.scrollTo(0, 0);
         });
         return card;

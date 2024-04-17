@@ -15,12 +15,13 @@
 
 <!-- <pre>{{collapsible}} {{showCount}} {{result.collapse_hits?.slice(0, showCount)?.length}}</pre> -->
 <div class='bookends' *ngIf='collapsible'>
-    @for (extra of result.collapse_hits?.slice(1, showCount) || []; track extra.card_id; let i = $index) {
+    @for (extra of result.collapse_hits || []; track extra.card_id; let i = $index) {
         <a (mouseover)='hover.next(extra)'
             [attr.aria-label]='ariaLabel(extra)'
             (activated)='selectedItem($event, result, extra)'
             [href]='"/c/" + extra.card_id'
             [class.national]='extra.national_service'
+            [style.display]='i + 1 < showCount ? "block" : "none"'
             class='bookend' [style.zIndex]='1000 - i' clickOnReturn>
             <span class='org' [innerHTML]='orgName(extra)'></span>
             <span class='separator'>&nbsp;/&nbsp;</span>

@@ -223,7 +223,7 @@ export class ApiService {
     //   return from([]);
     // }
     const params: any = {
-      size: 10,
+      size: offset == 0 ? 30 : 10,
       offset: offset,
       match_type: 'cross_fields'
       // order: '-_score'

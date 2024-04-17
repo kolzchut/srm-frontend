@@ -1,6 +1,6 @@
 <div class='title'>שירותים נוספים בסניף:</div>
 @for (card of cards; track card.card_id) {
-    <a [attr.aria-label]='"פתיחת עמוד השירות של " + card.service_name' (activated)='navigateToCard(card)' clickOnReturn>
+    <a [attr.aria-label]='"פתיחת עמוד השירות של " + card.service_name' [href]='"/c/" + card.card_id' (activated)='navigateToCard($event, card)' clickOnReturn>
         <app-result-card [card]='card' [padded]='true'></app-result-card>
     </a>
 }

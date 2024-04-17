@@ -12,7 +12,7 @@
                     [query]='query'
                     [searchParams]='searchParams'
             >
-                <app-search-filters-bar [filtersState]='filtersState' *ngIf='layout.mobile()'></app-search-filters-bar>
+                <app-search-filters-bar [filtersState]='filtersState'></app-search-filters-bar>
             </app-searchbox-header>
             <app-results-drawer
                 [state]='stage === "point" ? DrawerState.Hidden : (searchState.onlyNational() ? DrawerState.Most : drawerState)'
@@ -29,7 +29,7 @@
                     [class.visible]='stage === "search-results" || (stage === "point" && !card)'
                     [class.filters]='filtersVisible'
                 >
-                    <app-search-filters-bar [filtersState]='filtersState' *ngIf='layout.desktop()'></app-search-filters-bar>
+                    <app-search-filters-bar class='layout-desktop' filtersState]='filtersState' *ngIf='layout.desktop()'></app-search-filters-bar>
                     <app-search-filters 
                         *ngIf='filtersVisible'
                         [searchParams]='searchParams'
@@ -76,7 +76,7 @@
             [searchParams]='searchParams'
             (center)='centerMap($event)'
             (size)='branchSize = $event'
-            (zoomout)='zoomOutMap($event)'
+            (zoomout)='zoomOutMap($event, 3000)'
         >
         </app-card-container>
         <app-area-search-selector-results [state]='areaSearchState' *ngIf='layout.mobile()' class='layout-mobile'></app-area-search-selector-results>

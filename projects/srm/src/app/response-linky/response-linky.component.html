@@ -1,12 +1,12 @@
 <a class='response'
     [style.background-color]='bgColor'
     [style.border-color]='borderColor'
-    [routerLink]='search ? ["/q"] : ["/s", responseQuery]'
-    [queryParams]='search ? {q: response.name} : {}'
-    [queryParamsHandling]='"merge"'
+    (activated)='doSearch($event)'
+    [href]='"/s/" + responseQuery'
     [class.small]='small'
     [attr.aria-label]='response.name + " - לחצו לחיפוש באתר"'
     (mouseover)='hover = true' (mouseleave)='hover = false'
+    clickOnReturn
 >
     <span class='point'>
         <span
