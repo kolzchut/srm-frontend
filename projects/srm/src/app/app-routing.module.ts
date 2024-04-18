@@ -17,6 +17,9 @@ const routes: Routes = [
     path: 'about/missing', component: PageComponent, data: {group: 'flow', stage: 'about:missing'},
   },
   {
+    path: 'about/index', component: PageComponent, data: {group: 'flow', stage: 'about:index'},
+  },
+  {
     path: 'q', component: PageComponent, data: {group: 'flow', stage: 'search'},
   },
   {

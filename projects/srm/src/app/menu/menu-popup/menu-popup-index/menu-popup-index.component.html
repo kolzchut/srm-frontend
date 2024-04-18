@@ -1,0 +1,12 @@
+<app-menu-popup title='מפת אתר כל שירות' subtitle='קטלוג מענים ומצבים'>
+    <ng-container class='content'>
+        <h2>מענים</h2>
+        @for (response of responses; track response.id) {
+            <a [href]='"/s/" + response.id'>{{response.response_name}}</a>
+        }
+        <h2>מצבים</h2>
+        @for (situation of situations; track situation.id) {
+            <a [href]='"/s/" + situation.id'>{{situation.situation_name}}</a>
+        }
+    </ng-container>
+</app-menu-popup>

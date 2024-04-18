@@ -95,6 +95,7 @@
     <app-menu-popup-partners *ngIf='stage === "about:partners"'></app-menu-popup-partners>
     <app-menu-popup-about *ngIf='stage === "about:about"'></app-menu-popup-about>
     <app-menu-popup-missing *ngIf='stage === "about:missing"'></app-menu-popup-missing>
+    <app-menu-popup-index *ngIf='stage === "about:index"'></app-menu-popup-index>
 </div>
 <app-map *ngIf='stage !== "homepage"' 
         [searchParams]='searchParams' 

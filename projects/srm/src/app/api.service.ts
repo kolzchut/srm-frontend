@@ -621,6 +621,40 @@ export class ApiService {
     );
   }
 
+  getIndexResponses(): Observable<AutoComplete[]> {
+    const filter = [{"situation__empty":true, "response__exists": true, "org_id__empty":true, "city_name__empty":true}];
+    const params: any = {
+      size: 1000,
+      filter: JSON.stringify(filter),
+    };
+    return this.innerCache(
+      'index-responses',
+      this.http.get(environment.autocompleteURL, {params}).pipe(
+        map((res: any) => {
+          const qcr = res as QueryAutoCompleteResult;
+          return qcr.search_results.map((r: any) => r.source);
+        })
+      ), true
+    );
+  }
+
+  getIndexSituations(): Observable<AutoComplete[]> {
+    const filter = [{"situation__exists": true, "response__empty": true, "org_id__empty":true, "city_name__empty":true}];
+    const params: any = {
+      size: 1000,
+      filter: JSON.stringify(filter),
+    };
+    return this.innerCache(
+      'index-situations',
+      this.http.get(environment.autocompleteURL, {params}).pipe(
+        map((res: any) => {
+          const qcr = res as QueryAutoCompleteResult;
+          return qcr.search_results.map((r: any) => r.source);
+        })
+      ), true
+    );
+  }
+
   getTotalServices(): Observable<number> {
     const params: any = {
       size: 1,

@@ -35,6 +35,7 @@ import { MenuComponent } from './menu/menu.component';
 import { MenuPopupContactComponent } from './menu/menu-popup/menu-popup-contact/menu-popup-contact.component';
 import { MenuPopupPartnersComponent } from './menu/menu-popup/menu-popup-partners/menu-popup-partners.component';
 import { MenuPopupAboutComponent } from './menu/menu-popup/menu-popup-about/menu-popup-about.component';
+import { MenuPopupIndexComponent } from './menu/menu-popup/menu-popup-index/menu-popup-index.component';
 import { MenuPopupComponent } from './menu/menu-popup/menu-popup.component';
 import { BranchHeaderComponent } from './branch-header/branch-header.component';
 import { MapWindowComponent } from './map-window/map-window.component';
@@ -107,6 +108,7 @@ import { MenuPopupAccordionComponent } from './menu/menu-popup/menu-popup-accord
     MenuPopupContactComponent,
     MenuPopupPartnersComponent,
     MenuPopupAboutComponent,
+    MenuPopupIndexComponent,
     BranchHeaderComponent,
     MapWindowComponent,
     CardContainerComponent,

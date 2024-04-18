@@ -1,0 +1,58 @@
+@import '../../../../common.less';
+
+:host {
+    .font-rag-sans;
+    height: 100%;
+    width: 100%;
+
+    .top {
+        background: @color-white;
+
+        strong {
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0;
+            margin-bottom: 10px;
+        }
+
+        .link {
+            min-height: 24px;
+        }
+        .link + p {
+            margin-top: 10px;
+        }
+
+        .style-kz {
+            background: rgba(184, 202, 63, 0.15);
+            background-image: url(../../../../assets/img/icon-kz.svg);
+        }
+
+        .style-il {
+            background: rgba(57, 138, 193, 0.1);
+            background-image: url(../../../../assets/img/icon-state-of-israel.svg);
+        }
+
+        .style-il, .style-kz {
+            &, &:hover, &:visited {
+                text-decoration: none;
+                color: inherit;    
+            }
+            border-radius: 4px;
+            padding: 4px;
+            padding-right: 24px;
+            margin-right: 6px;
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+            background-size: 16px 16px;
+        }
+
+        a {
+            text-decoration: underline;
+        }
+
+        
+    }
+
+}
