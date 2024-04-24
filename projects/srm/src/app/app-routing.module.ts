@@ -20,9 +20,6 @@ const routes: Routes = [
     path: 'about/index', component: PageComponent, data: {group: 'flow', stage: 'about:index'},
   },
   {
-    path: 'q', component: PageComponent, data: {group: 'flow', stage: 'search'},
-  },
-  {
     path: 's/:query/c/:card/p/:point', component: PageComponent, data: {group: 'flow', stage: 'point'},
   },
   {

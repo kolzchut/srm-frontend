@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { SearchConfig } from '../search-config';
+import { ResultType, SearchConfig } from '../search-config';
+import { Router } from '@angular/router';
+import { SearchService } from '../../search.service';
 
 @Component({
   selector: 'app-autocomplete-results',
@@ -13,9 +15,16 @@ export class AutocompleteResultsComponent implements OnInit {
 
   @Input() config: SearchConfig;
 
-  constructor() { }
+  constructor(private router: Router, private searchSvc: SearchService) { }
 
   ngOnInit(): void {
   }
 
+  navigateResult(result: ResultType, event: Event) {
+    event.preventDefault();
+    if (result.link) {
+      this.searchSvc.search(null);
+      this.router.navigate(result.link, {queryParams: result.linkParams});
+    }
+  }
 }

@@ -1,12 +1,12 @@
-<div class='container' appArrowToTab role='dialog' aria-modal='true' (keydown)='keydown($event)' aria-label="תיבת החיפוש באתר">
+<div class='container' appArrowToTab role='dialog' aria-modal='true' aria-label="תיבת החיפוש באתר" #container>
     <div class='search-bar'>
         <a class='logo layout-desktop' [routerLink]='["/"]' aria-label='חזרה לעמוד הבית'></a>
-        <button class='back-button layout-mobile' (activated)='location.back()' clickOnReturn aria-label="סגירת תיבת החיפוש וחזרה לעמוד הקודם"></button>
+        <button class='back-button layout-mobile' (activated)='closeSearch()' clickOnReturn aria-label="סגירת תיבת החיפוש וחזרה לעמוד הקודם"></button>
         <app-search-bar [config]='searchConfig'></app-search-bar>
         <app-desktop-menu-links></app-desktop-menu-links>
     </div>
-    <div class='overlay layout-desktop' (click)='location.back()' tabindex="-1" role="presentation">
-        <div class='closer-text' role='button' aria-label='סגירת תיבת החיפוש וחזרה לעמוד הקודם' clickOnReturn tabindex="0" (activated)='location.back()'><img src='../../assets/img/icon-close-black.svg'></div>
+    <div class='overlay layout-desktop' (click)='closeSearch()' tabindex="-1" role="presentation">
+        <div class='closer-text' role='button' aria-label='סגירת תיבת החיפוש וחזרה לעמוד הקודם' clickOnReturn tabindex="0" (activated)='closeSearch()'><img src='../../assets/img/icon-close-black.svg'></div>
     </div>
     <app-autocomplete-results [config]='searchConfig'></app-autocomplete-results>
 </div>

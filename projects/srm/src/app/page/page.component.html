@@ -1,6 +1,6 @@
 <div class='page-container' [class]='"stage-" + stage'>
     <app-homepage *ngIf='stage === "homepage"'></app-homepage>
-    <app-search *ngIf='stage === "search"'></app-search>
+    <app-search [query]='searchSvc.searchQ | async' *ngIf='stage === "search"'></app-search>
     <app-searchbox-header *ngIf='layout.desktop() && (stage === "search-results" || stage === "card" || stage.indexOf("about:") === 0)'
         class='layout-desktop'
         [query]='query'

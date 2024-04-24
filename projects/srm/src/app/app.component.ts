@@ -51,9 +51,6 @@ export class AppComponent {
 
   cleanUrl(url: string) {
     const parsed = new URL(url, window.location.href);
-    if (parsed.pathname === '/q') {
-      parsed.searchParams.delete('q');
-    }
     parsed.searchParams.delete('li');
     parsed.searchParams.delete('gtm_debug');
     parsed.hash = '';

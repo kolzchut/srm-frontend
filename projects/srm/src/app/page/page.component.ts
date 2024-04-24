@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LngLatLike } from 'mapbox-gl';
 import { NgxSeoMetaTagAttr, SeoSocialShareService } from 'ngx-seo';
-import { from, Observable, Subject, timer } from 'rxjs';
+import { from, merge, Observable, Subject, timer } from 'rxjs';
 import { debounceTime, delay, distinctUntilChanged, filter, first, map, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { AutoComplete, Card, DrawerState, prepareQuery, SearchParams, SITUATION_FILTERS, ViewPort } from '../consts';
@@ -19,6 +19,7 @@ import { FiltersState } from '../search-filters/filters-state';
 import { WindowService } from '../window.service';
 import { SearchState } from '../search-results/search-state';
 import { environment } from '../../environments/environment';
+import { SearchService } from '../search.service';
 
 class SearchParamCalc {
   acId: string;
@@ -69,7 +70,7 @@ class SearchParamCalc {
 })
 export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  stage = '';
+  stage_ = '';
   card = '';
   point = '';
   query = '';
@@ -117,7 +118,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private route: ActivatedRoute, private api: ApiService, private router: Router, private seo: SeoSocialShareService,
               private platform: PlatformService, public layout: LayoutService, public analytics: AnalyticsService,
-              public a11y: A11yService, private window: WindowService) {
+              public a11y: A11yService, private window: WindowService, public searchSvc: SearchService) {
 
     this.searchParamsCalc.pipe(
       untilDestroyed(this),
@@ -349,14 +350,17 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
     });
-    route.data.pipe(
+    merge(
+      route.data,
+      this.searchSvc.searchQ.pipe(filter((x) => x === null),map(() => ({stage: this.stage_})))
+    ).pipe(
       untilDestroyed(this),
     ).subscribe((data: any) => {
-      const prevStage = this.stage;
-      this.stage = data.stage;
+      this.stage_ = data.stage;
+      this.searchSvc.search(null);
       this.drawerState = DrawerState.Half;
       this.pushSearchParamsCalc();
-      if (['about', 'search', 'homepage'].indexOf(this.stage) >= 0) {
+      if (['about', 'homepage'].indexOf(this.stage) >= 0) {
         this.a11y.setSeoTitle(`כל שירות | במתכונת חירום | כל השירותים החברתיים, לכל מצב, בכל מקום`);
         this.seo.setUrl(this.window.D.location.href);
         this.api.getTotalServices().subscribe((totalServices: number) => {
@@ -372,7 +376,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         });  
       });
       this.map?.setPopup(false, null);
-      if (environment.production && this.stage !== 'search' && this.stage !== 'point') {
+      if (environment.production && this.stage !== 'point') {
         this.seo.setMetaTag({attr: NgxSeoMetaTagAttr.name, attrValue:'robots', value: 'all'});
       } else {
         this.seo.setMetaTag({attr: NgxSeoMetaTagAttr.name, attrValue:'robots', value: 'noindex'});
@@ -491,6 +495,13 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.platform.browser(() => {
       this.surveyMutationObserver?.disconnect();
     });
+  }
+
+  get stage() {
+    if (this.searchSvc.searching) {
+      return 'search';
+    }
+    return this.stage_;
   }
 
   needsDidYouMean(searchParams: SearchParams) {

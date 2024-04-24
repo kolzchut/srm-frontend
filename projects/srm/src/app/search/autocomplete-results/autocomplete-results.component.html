@@ -1,14 +1,14 @@
 <!-- <div class='results' role='list'> -->
     <div class='result' *ngFor='let result of (config.query ? config.results : config.presets)' role='listitem'>
-        <a class='result-title focusable' [routerLink]='result.link' [queryParams]='result.linkParams' tabindex="0">
+        <a class='result-title focusable' (click)='navigateResult(result, $event)' tabindex="0" href='#'>
             <span class='result-icon'>
             </span>
             <span class='text'><span [innerHtml]='result.display'></span></span>
         </a>
         <a class='result-arrow direct'
            *ngIf='result.direct'
-           [routerLink]='result.link'
-           [queryParams]='result.linkParams'
+           href='#'
+           (click)='navigateResult(result, $event)'
            role='link'
            [attr.aria-label]='"הצגה בתוצאות החיפוש של " + result.display'
            tabindex="0"

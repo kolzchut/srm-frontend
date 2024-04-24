@@ -16,6 +16,7 @@ import { DOCUMENT } from '@angular/common';
 import { LayoutService } from '../layout.service';
 import { BranchCards, getPointCards } from './branch-card-utils';
 import { A11yService } from '../a11y.service';
+import { SearchService } from '../search.service';
 
 
 type AuxParams = {
@@ -63,7 +64,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
 
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
               private el: ElementRef, private seo: SeoSocialShareService, private platform: PlatformService, private layout: LayoutService,
-              private a11y: A11yService,
+              private a11y: A11yService, public searchSvc: SearchService,
               @Inject(DOCUMENT) private document: any) { }
 
   ngOnInit(): void {

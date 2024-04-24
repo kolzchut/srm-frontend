@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angu
 import { TaxonomyItem, prepareQuery } from '../consts';
 import { ResponseBase } from '../response/response-base';
 import { Router } from '@angular/router';
+import { SearchService } from '../search.service';
 
 @Component({
   selector: 'app-response-linky',
@@ -18,7 +19,7 @@ export class ResponseLinkyComponent extends ResponseBase implements OnChanges {
 
   responseQuery = '';
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private searchSvc: SearchService) {
     super();
   }
 
@@ -31,12 +32,12 @@ export class ResponseLinkyComponent extends ResponseBase implements OnChanges {
   doSearch(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    this.router.navigate(
-      this.search ? ['/q'] : ['/s', this.responseQuery], 
-      {
-        queryParams: this.search ? {q: this.response.name} : {},
-        queryParamsHandling: 'merge'
+    if (this.search) {
+      if (this.response.name) {
+        this.searchSvc.search(this.response.name);
       }
-    );
+    } else {
+      this.router.navigate(['/s', this.responseQuery], { queryParamsHandling: 'merge' });
+    }
   }
 }

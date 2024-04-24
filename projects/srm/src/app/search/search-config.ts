@@ -7,7 +7,7 @@ import { PlatformService } from "../platform.service";
 import { Component } from "@angular/core";
 
 export type ResultType = {
-  link: string[] | string | null,
+  link: string[] | null,
   linkParams?: Params,
   display: string,
   query: string | null,

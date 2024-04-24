@@ -2,9 +2,10 @@
     <a class='logo layout-desktop' [routerLink]='["/"]' aria-label='חזרה לעמוד הבית'></a>
     <div class='searchbox'>
         <app-menu-icon *ngIf='layout.mobile()'></app-menu-icon>
-        <h1 class='clickable' [routerLink]='["/q"]' [queryParams]='searchParams ? {q: searchParams.original_query} : {}' [title]='searchParams ? searchParams.original_query : ""'
+        <h1 class='clickable' (activated)='search(searchParams.original_query || "")' [title]='searchParams ? searchParams.original_query : ""'
            aria-label='ביצוע חיפוש חדש באתר כל שירות'
            interactionEvent='regular-searchbar' [interactionEventWhere]='location.path(false)' [searchParams]='searchParams'
+           clickOnReturn
             >
             <div class='search-params' *ngIf='placeholder'>
                 <span class='placeholder'>{{placeholder}}</span>

@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { timer } from 'rxjs';
 import { LayoutService } from '../layout.service';
+import { SearchService } from '../search.service';
 
 @UntilDestroy()
 @Component({
@@ -24,7 +25,7 @@ export class HomepageComponent {
   examples: Preset[];
   emergencies: Preset[];
 
-  constructor(private api: ApiService, private platform: PlatformService, private router: Router, private layout: LayoutService) {
+  constructor(private api: ApiService, private platform: PlatformService, private router: Router, private layout: LayoutService, private searchSvc: SearchService) {
     this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform);
     this.searchConfig.autoFocus = false;
     this.api.getExamples().subscribe((examples) => {
@@ -57,7 +58,7 @@ export class HomepageComponent {
         this.searchConfig.queries.next(query);
         this.searchConfig.focus();  
       } else {
-        this.router.navigate(['/q'], {queryParams: {q: query}});
+        this.searchSvc.search(query);
       }  
     }
   }

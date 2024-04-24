@@ -39,9 +39,6 @@ export class AnalyticsService {
     });
     this.currentPageLanding = this.landingPage;
     this.landingPage = false;
-    if (url !== '/q') {
-      this.previous_url = window.location.origin + url;
-    }
   }
 
   cardToItem(card: Card, idx: number, item_list_name?: string | null): any {

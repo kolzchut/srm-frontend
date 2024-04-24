@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angu
 import { TaxonomyItem, prepareQuery } from '../consts';
 import { LayoutService } from '../layout.service';
 import { Router } from '@angular/router';
+import { SearchService } from '../search.service';
 
 @Component({
   selector: 'app-situation',
@@ -20,7 +21,7 @@ export class SituationComponent implements OnChanges {
   hover = false;
   querySituation = '';
 
-  constructor(private layout: LayoutService, private router: Router) { }
+  constructor(private layout: LayoutService, private searchSvc: SearchService) { }
 
   ngOnChanges(): void {
     this.querySituation = prepareQuery(this.situation.name || '');
@@ -37,8 +38,8 @@ export class SituationComponent implements OnChanges {
   doSearch(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    // [routerLink]='["/q"]'
-    // [queryParams]='{q: situation.name}'
-    this.router.navigate(['/q'], { queryParams: { q: this.situation.name } });
+    if (this.situation.name) {
+      this.searchSvc.search(this.situation.name);
+    }
   }
 }

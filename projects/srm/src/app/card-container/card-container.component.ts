@@ -16,6 +16,7 @@ import { swipe } from '../swipe';
 import { DOCUMENT } from '@angular/common';
 import { AnalyticsService } from '../analytics.service';
 import { A11yService } from '../a11y.service';
+import { SearchService } from '../search.service';
 
 
 type BranchCards = {cards: Card[], hidden: Card[]};
@@ -92,7 +93,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
 
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
               private el: ElementRef, private seo: SeoSocialShareService, public platform: PlatformService,
-              private analytics: AnalyticsService, private a11y: A11yService,
+              private analytics: AnalyticsService, private a11y: A11yService, public searchSvc: SearchService,
               @Inject(DOCUMENT) private document: Document) {
     if (platform.safari) {
       this.showQuickActions = true;

@@ -16,7 +16,9 @@
 <div class='controls'>
     <a class='back' (activated)='goUp()' *ngIf='!landingPage' role='button' aria-label="חזרה לעמוד הקודם" clickOnReturn></a>
     <div class='menu-icon' *ngIf='landingPage'><app-menu-icon [dark]='true'></app-menu-icon></div>
-    <a class='search' [routerLink]='["/q"]' [queryParams]="searchParams && searchParams.original_query ? {q: searchParams.original_query} : {}" role="button" aria-label="ביצוע חיפוש במערכת"></a>
+    <a class='search' (activated)='searchSvc.search((searchParams && searchParams.original_query) || "")' aria-label="ביצוע חיפוש במערכת" 
+        interactionEvent='mobile-search-button' [interactionEventWhere]='location.path(false)' [searchParams]='searchParams' clickOnReturn
+    ></a>
 </div>
 <div class='quick-actions' [style.bottom]='"0px"' *ngIf='actionsCard'>
     <app-quick-actions [card]='actionsCard'></app-quick-actions>
