@@ -35,16 +35,28 @@
     <div class='org'>
         <h2>השירות ניתן ע״י:</h2>
         <div class='org-container' [class.open]='orgOpen' aria-label='הרחבת פרטי הארגון' clickOnReturn (activated)='orgOpen = !orgOpen && hasOrgActions()'>
-            <div class='org-name' *ngIf='card.organization_name_parts'>
-                <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href' target='_blank'>{{card.organization_name_parts.primary}}</a>
-                <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name_parts.primary}}</span>
-                <span *ngIf='card.organization_name_parts.secondary'> - {{card.organization_name_parts.secondary}}</span>
-            </div>
+            @if (card.organization_name_parts) {
+                <div class='org-name'>                   
+                    @if (card.organization_urls?.[0]?.href) {
+                        <a [href]='card.organization_urls[0].href' target='_blank'>{{card.organization_name_parts.primary}}</a>
+                    } @else {
+                        <span>{{card.organization_name_parts.primary}}</span>
+                    }
+                    @if (card.organization_name_parts.secondary) {
+                        <span> - {{card.organization_name_parts.secondary}}</span>
+                    }
+                </div>    
+            }
             <span class='opener' [class.open]='orgOpen' *ngIf='hasOrgActions()'></span>
-            <div class='org-name' *ngIf='!card.organization_name_parts'>
-                <a [href]='card.organization_urls[0].href' *ngIf='card?.organization_urls?.[0]?.href'>{{card.organization_name}}</a>
-                <span *ngIf='!(card?.organization_urls?.[0]?.href)'>{{card.organization_name}}</span>
-            </div>
+            @if (!card.organization_name_parts) {
+                <div class='org-name'>
+                    @if (card.organization_urls?.[0]?.href) {
+                        <a [href]='card.organization_urls[0].href' target='_blank'>{{card.organization_name}}</a>
+                    } @else {
+                        <span>{{card.organization_name}}</span>
+                    }
+                </div>    
+            }
             <div class='actions' *ngIf='orgOpen'>
                 <app-card-action-phone [card]='card' [org]='true' [compact]='true'></app-card-action-phone>
                 <app-card-action-email [card]='card' [org]='true' [compact]='true'></app-card-action-email>

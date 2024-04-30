@@ -1,10 +1,14 @@
 <h2 class='branch-name' [class.compact]='compact'>
-    <ng-container *ngIf='!card.organization_name_parts'>
-        <span class='primary' *ngIf='!card.organization_short_name'>{{card.organization_name}}</span>
-        <span class='primary' *ngIf='card.organization_short_name'>{{card.organization_short_name}}</span>
-    </ng-container>
-    <ng-container *ngIf='card.organization_name_parts'>
+    @if (card.organization_name_parts) {
         <span class='primary'>{{card.organization_name_parts.primary}}</span>
-        <span class='secondary' *ngIf='card.organization_name_parts.secondary'> - {{card.organization_name_parts.secondary}}</span>
-    </ng-container>
+        @if (card.organization_name_parts.secondary) {
+            <span class='secondary'> - {{card.organization_name_parts.secondary}}</span>
+        }
+    } @else {
+        @if (card.organization_short_name) {
+            <span class='primary'>{{card.organization_short_name}}</span>
+        } @else {
+            <span class='primary'>{{card.organization_name}}</span>
+        }
+    }
 </h2>
