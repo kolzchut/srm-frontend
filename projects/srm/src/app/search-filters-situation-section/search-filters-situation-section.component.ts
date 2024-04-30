@@ -19,9 +19,26 @@ export class SearchFiltersSituationSectionComponent implements OnInit {
 
   @ViewChild('moreSituations') moreSituations: SearchFiltersMoreButtonComponent;
 
+  _situations: TaxonomyItem[] = [];
+  num_situations = this.NUM_SITUATIONS;
+
   constructor() { }
 
   ngOnInit(): void {
+    this._situations = [];
+    this.num_situations = this.NUM_SITUATIONS;
+    const current = this.searchParams[this.field] || [];
+    for (let situation of this.situations || []) {
+      if (situation.id && current.indexOf(situation.id) >= 0) {
+        this._situations.push(situation);
+        this.num_situations++;
+      }
+    }
+    for (let situation of this.situations || []) {
+      if (situation.id && current.indexOf(situation.id) < 0) {
+        this._situations.push(situation);
+      }
+    }
   }
 
   changed() {

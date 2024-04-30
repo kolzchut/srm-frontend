@@ -1,4 +1,4 @@
-<div class='section' *ngIf='situations && situations.length'>
+<div class='section' *ngIf='_situations && _situations.length'>
     <div class='section-header'>
         <div class='title'>{{title}}:</div>
         <!-- <div class='title' *ngIf='!searchParams.situation'>קהלי יעד:</div>
@@ -6,16 +6,16 @@
         <a class='clear' (activated)='searchParams[field] = []; changed()' clickOnReturn role='button' tabindex="0" [attr.aria-label]='"ניקוי כלל המסננים תחת " + title'>ניקוי</a>
     </div>
     <div class='tags'>
-        <div *ngFor='let situation of situations.slice(0, NUM_SITUATIONS)'>
+        <div *ngFor='let situation of _situations.slice(0, num_situations)'>
             <app-search-filter-checkbox
                 [item]='situation'
                 [current]='searchParams[field] || []'
                 (changed)='toggled($event, situation)'
             ></app-search-filter-checkbox>
         </div>
-        <app-search-filters-more-button *ngIf='situations.length > NUM_SITUATIONS' [count]='situations.length - NUM_SITUATIONS' [style]='"situation"' #moreSituations></app-search-filters-more-button>
+        <app-search-filters-more-button *ngIf='_situations.length > num_situations' [count]='_situations.length - num_situations' [style]='"situation"' #moreSituations></app-search-filters-more-button>
         <ng-container *ngIf='!!(moreSituations?.expanded)'>
-            <div *ngFor='let situation of situations.slice(NUM_SITUATIONS)'>
+            <div *ngFor='let situation of _situations.slice(num_situations)'>
                 <app-search-filter-checkbox
                     [item]='situation'
                     [current]='searchParams[field] || []'
