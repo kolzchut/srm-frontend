@@ -482,6 +482,10 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
             }
             e.preventDefault();
             this.setPopup(true, null);
+            this.analytics.interactionEvent('map-click', 'map', 'zoom:' + Math.floor(this.map.getZoom()));
+          });
+          this.map.on('dragend', (e: mapboxgl.MapLayerMouseEvent) => {
+            this.analytics.interactionEvent('map-drag', 'map', 'zoom:' + Math.floor(this.map.getZoom()));
           });
           this.pointsHover.pipe(
             untilDestroyed(this),
