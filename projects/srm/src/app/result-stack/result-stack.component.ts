@@ -98,14 +98,14 @@ export class ResultStackComponent implements OnInit {
     return ret;
   }
 
-  selectedItem(event: Event, card: Card, extra?: any) {
+  selectedItem(event: Event, card: Card, from: string, extra?: any) {
     event.preventDefault();
     let card_ = card;
     if (extra) {
       card_ = Object.assign({}, card, extra);
     }
     this.analytics.cardEvent(card_, this.searchParams, this.index, true);
-    this.router.navigate(['c', card_.card_id], { relativeTo: this.route, queryParams: {li: this.index}, queryParamsHandling: 'merge', preserveFragment: true });
+    this.router.navigate(['c', card_.card_id], { relativeTo: this.route, queryParams: {li: this.index, from}, queryParamsHandling: 'merge', preserveFragment: true });
     return false;
   }
 }

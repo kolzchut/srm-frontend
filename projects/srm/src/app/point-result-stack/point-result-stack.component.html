@@ -1,7 +1,8 @@
 @for (card of cards; track card.card_id; let i = $index) {
     <a class='card' 
         [class.last-non-hidden]='i === cards.length - 1 && hidden_'
-        [routerLink]='routerLink(card)' queryParamsHandling='preserve'
+        [routerLink]='routerLink(card)' queryParamsHandling='merge'
+        [queryParams]='{from: "point-view"}'
         [attr.data-card]='card | json' [style.zIndex]='200 - i'
 >
     <app-result-card [card]='card' [compact]='true'></app-result-card>
@@ -19,7 +20,10 @@
 }
 @if (triggerClicked_) {
     @for (card of hiddenCards; track card.card_id; let i = $index) {
-        <a class='card' [routerLink]='routerLink(card)' [class.hidden]='hidden_'  queryParamsHandling='preserve'
+        <a class='card'
+            [routerLink]='routerLink(card)'
+            [queryParams]='{from: "point-view"}'
+            [class.hidden]='hidden_'  queryParamsHandling='merge'
             [attr.data-card]='card | json' [style.zIndex]='100 - i'
     >
         <app-result-card [card]='card' [compact]='true'></app-result-card>

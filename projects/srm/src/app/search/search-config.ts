@@ -82,6 +82,7 @@ export class SearchConfig {
           display,
           query: null,
           direct: true,
+          linkParams: {from: 'search-autocomplete-direct'},
         };
       });
       this.results_ = null;

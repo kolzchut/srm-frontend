@@ -1,6 +1,6 @@
 <a (mouseover)='hover.next(result)'
    [attr.aria-label]='ariaLabel(result)'
-   (activated)='selectedItem($event, result)'
+   (activated)='selectedItem($event, result, "search-result-main")'
    class='card' [class.collapsible]='collapsible' clickOnReturn
    [href]='"/c/" + result.card_id'
    >
@@ -18,7 +18,7 @@
     @for (extra of result.collapse_hits || []; track extra.card_id; let i = $index) {
         <a (mouseover)='hover.next(extra)'
             [attr.aria-label]='ariaLabel(extra)'
-            (activated)='selectedItem($event, result, extra)'
+            (activated)='selectedItem($event, result, "search-result-extras", extra)'
             [href]='"/c/" + extra.card_id'
             [class.national]='extra.national_service'
             [style.display]='i + 1 < showCount ? "block" : "none"'

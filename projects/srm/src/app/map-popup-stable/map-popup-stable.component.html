@@ -2,7 +2,7 @@
     <div class='scrollable'>
         @for (card of cards; track card.card_id) {
             <a [interactionEvent]='"popup-card-click"' [interactionEventWhere]='"map-popup-stable"'
-               [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"'>
+               [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"' [queryParams]='{from: "map-popup-single-branch"}'>
                 <app-result-card [card]='card' [stacked]='true' [smaller]='true' [bold]='true'></app-result-card>
             </a>
         }
@@ -22,7 +22,7 @@
             </div>
             @for (card of branch.cards; track card.card_id) {
                 <a [interactionEvent]='"popup-card-click"' [interactionEventWhere]='"map-popup-stable"'
-                   [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"'
+                   [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"' [queryParams]='{from: "map-popup-multi-branch"}'
                 >
                     <app-result-card [card]='card' [stacked]='true' [smaller]='true' [bold]='true'></app-result-card>
                 </a> 

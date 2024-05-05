@@ -370,18 +370,21 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
                   })
                 ).subscribe((newCardId: string | null) => {
                   const route = [];
+                  const queryParams: any = {};
                   let dontRoute = false;
                   if (this.searchParams?.ac_query) {
                     route.push('s', this.searchParams?.ac_query);
                   }
                   if (newCardId && this.layout.desktop()) {
                     route.push('c', newCardId);
+                    queryParams.from = 'map-click';
                   } else {
                     if (this.layout.mobile()) {
                       if (this.cardId && (!this.pointId || this.pointId === props.point_id)) {
                         route.push('c', this.cardId, 'p', props.point_id);
                       } else if (this.pointId === props.point_id && this.markerProps?.card_id) {
                         route.push('c', this.markerProps.card_id);
+                        queryParams.from = 'map-click';
                       } else {
                         route.push('p', props.point_id);
                       }
@@ -393,7 +396,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
                   }
                   if (!dontRoute) {
                     route[0] = '/' + route[0];
-                    this.router.navigate(route, {queryParamsHandling: 'preserve'});  
+                    this.router.navigate(route, {queryParamsHandling: 'merge', queryParams});  
                   }
                 });
                   // this.points.next(props as SRMPoint);

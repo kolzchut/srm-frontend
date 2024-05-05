@@ -127,7 +127,7 @@ export class AnalyticsService {
     }
   }
 
-  cardEvent(card: Card, params: SearchParams | null, index: number, select=false) {
+  cardEvent(card: Card, params: SearchParams | null, index: number, select: boolean, from: string|null=null) {
     console.log('EVENT card', card);
     if (select) {
       this.gtag({
@@ -157,6 +157,8 @@ export class AnalyticsService {
         },
         ...eventParams
       });  
+
+      this.interactionEvent('card', from || 'unknown', undefined, params);
     }
   }
 

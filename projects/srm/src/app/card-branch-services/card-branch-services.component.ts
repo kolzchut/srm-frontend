@@ -28,6 +28,6 @@ export class CardBranchServicesComponent implements OnInit {
 
   navigateToCard(event: Event, card: Card) {
     event.preventDefault();
-    this.router.navigate(['../..', 'c', card.card_id], {relativeTo: this.route, queryParamsHandling: 'merge'});
+    this.router.navigate(['../..', 'c', card.card_id], {relativeTo: this.route, queryParamsHandling: 'merge', queryParams: {from: 'branch-services'}});
   }
 }

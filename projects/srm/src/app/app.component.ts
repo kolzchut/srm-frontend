@@ -52,6 +52,7 @@ export class AppComponent {
   cleanUrl(url: string) {
     const parsed = new URL(url, window.location.href);
     parsed.searchParams.delete('li');
+    parsed.searchParams.delete('from');
     parsed.searchParams.delete('gtm_debug');
     parsed.hash = '';
     const ret = parsed.toString().slice(window.location.origin.length);

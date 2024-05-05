@@ -142,9 +142,12 @@ export class CardContainerComponent implements OnInit, OnChanges {
           let index = 0;
           if (li) {
             index = parseInt(li, 10);
-            this.router.navigate([], {relativeTo: this.route, queryParams: {li: null}, queryParamsHandling: 'merge', replaceUrl: true, preserveFragment: true});
           }
-          this.analytics.cardEvent(card, this.searchParams, index);
+          const from = this.route.snapshot.queryParams['from'];
+          if (from || li) {
+            this.router.navigate([], {relativeTo: this.route, queryParams: {from: null}, queryParamsHandling: 'merge', replaceUrl: true, preserveFragment: true});
+          }
+          this.analytics.cardEvent(card, this.searchParams, index, false, from);
         });
       })
     ).subscribe();
