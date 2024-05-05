@@ -1,5 +1,6 @@
 <ng-container *ngIf='card'>
     <a [routerLink]='cardRouter.route(card)' [queryParamsHandling]='"merge"'
+        [queryParams]='{from: "map-popup-hover"}' 
         [interactionEvent]='"popup-card-click"' [interactionEventWhere]='"map-popup-hover"'
     >
         <app-result-card [card]='card' [compact]='true'></app-result-card>
