@@ -40,6 +40,7 @@ export class ResultStackComponent implements OnInit {
       });
       // Sort collapse_hits by __city_count ascending
       this.result.collapse_hits.sort((a, b) => (a as any)['__city_count'] - (b as any)['__city_count']);
+      this.result.collapse_hits = this.result.collapse_hits.filter((h) => h.card_id !== this.result.card_id);
     }
     if (this.showCount === -1 && this.collapsibleCount > 0) {
       this.showCount = this.collapsibleCount > 4 ? 4 : this.collapsibleCount;
