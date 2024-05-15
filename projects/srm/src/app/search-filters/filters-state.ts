@@ -119,9 +119,9 @@ export class FiltersState {
   }
 
   fixSearchParams(sp: SearchParams) {
-    if (sp.filter_age_groups?.length === this.age_groups.length) {
-      sp.filter_age_groups = [];
-    }
+    // if (sp.filter_age_groups?.length === this.age_groups.length) {
+    //   sp.filter_age_groups = [];
+    // }
   }
 
   _copySearchParams(sp: SearchParams): SearchParams {
