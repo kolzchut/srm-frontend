@@ -5,6 +5,7 @@ import { _h, prepareQuery } from "../consts";
 import { untilDestroyed } from "@ngneat/until-destroy";
 import { PlatformService } from "../platform.service";
 import { Component } from "@angular/core";
+import { SearchService } from "../search.service";
 
 export type ResultType = {
   link: string[] | null,
@@ -30,7 +31,7 @@ export class SearchConfig {
 
   autoFocus = true;
 
-  constructor(private container: any, private router: Router, private api: ApiService, private platform: PlatformService) {
+  constructor(private container: any, private router: Router, private api: ApiService, private platform: PlatformService, private searchSvc: SearchService) {
     api.getPresets().subscribe(presets => {
       console.table(presets);
       this.presets = [{
@@ -125,12 +126,14 @@ export class SearchConfig {
       let found = false;
       for (const result of this.autoCompleteResults) {
         if (result.query === this.query.trim()) {
+          this.closeSearch();
           this.router.navigate(result.link as string[], {queryParams: result.linkParams});
           found = true;
           break;
         }
       }
       if (!found) {
+        this.closeSearch();
         this.router.navigate(['/s', '_'], {queryParams: {q: prepareQuery(this.query)}});
       }
     }
@@ -163,5 +166,9 @@ export class SearchConfig {
       }
     }
     return this.results_;
+  }
+
+  closeSearch() {
+    this.searchSvc.search(null);
   }
 }

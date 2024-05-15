@@ -26,7 +26,7 @@ export class HomepageComponent {
   emergencies: Preset[];
 
   constructor(private api: ApiService, private platform: PlatformService, private router: Router, private layout: LayoutService, private searchSvc: SearchService) {
-    this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform);
+    this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform, this.searchSvc);
     this.searchConfig.autoFocus = false;
     this.api.getExamples().subscribe((examples) => {
       this.examples = examples;
