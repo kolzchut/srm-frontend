@@ -67,7 +67,8 @@
         }
     
         .controls {
-            position: absolute;
+            position: fixed;
+            z-index: 10;
             top: 0;
             width: 100%;
             padding: 8px;
@@ -83,8 +84,7 @@
             a, .menu-icon {
                 width: 48px;
                 height: 48px;
-                border: 1px solid @color-gray-5;
-                box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+                box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
                 border-radius: 24px;
                 .button-image(none, none);
                 background-size: 24px;
@@ -92,6 +92,7 @@
                 flex-flow: column;
                 align-items: center;
                 justify-content: center;
+                border: 1px solid @color-gray-5;
     
                 &.search {
                     background-image: url(../../assets/img/icon-search-gray-1.svg);

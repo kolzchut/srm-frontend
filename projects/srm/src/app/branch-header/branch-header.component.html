@@ -7,7 +7,7 @@
     clickOnReturn
 >
     <button class='back-icon layout-desktop' [class.card]='!!cardId' [class.point]='!!pointId' *ngIf='!landingPage' aria-label="סגירת עמוד השירות וחזרה לעמוד הקודם"></button>
-    <div class='spacer layout-desktop' *ngIf='landingPage'></div>
+    <div class='spacer layout-desktop'></div>
     <app-branch-details [card]='card' [compact]='compact'></app-branch-details>
     @if (!card.national_service) {
         <button class='control-icon layout-mobile' [class.card]='!!cardId' [class.point]='!!pointId' role="presentation" aria-hidden="true" tabindex="-1"></button>
