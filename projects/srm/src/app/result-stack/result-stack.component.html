@@ -1,7 +1,7 @@
 <a (mouseover)='hover.next(result)'
    [attr.aria-label]='ariaLabel(result)'
    (activated)='selectedItem($event, result, "search-result-main")'
-   class='card' [class.collapsible]='collapsible' clickOnReturn
+   class='card' clickOnReturn
    [href]='"/c/" + result.card_id'
    >
     <app-result-card [card]='result' [searchParams]='searchParams' [larger]='true'></app-result-card>
@@ -14,14 +14,14 @@
 </a>
 
 <!-- <pre>{{collapsible}} {{showCount}} {{result.collapse_hits?.slice(0, showCount)?.length}}</pre> -->
-<div class='bookends' *ngIf='collapsible'>
+<div class='bookends' *ngIf='(result.collapse_hits || []).length > 0'>
     @for (extra of result.collapse_hits || []; track extra.card_id; let i = $index) {
         <a (mouseover)='hover.next(extra)'
             [attr.aria-label]='ariaLabel(extra)'
             (activated)='selectedItem($event, result, "search-result-extras", extra)'
             [href]='"/c/" + extra.card_id'
             [class.national]='extra.national_service'
-            [style.display]='i + 1 < showCount ? "block" : "none"'
+            [style.display]='i < showCount ? "block" : "none"'
             class='bookend' [style.zIndex]='1000 - i' clickOnReturn>
             <span class='org' [innerHTML]='orgName(extra)'></span>
             <span class='separator'>&nbsp;/&nbsp;</span>

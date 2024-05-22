@@ -61,10 +61,6 @@ export class ResultStackComponent implements OnInit {
     return this.collapsibleCount - this.showCount;
   }
 
-  get collapsible() {
-    return this.result.collapsed;
-  }
-
   get collapsibleCount() {
     const c = this.result.collapsed_count;
     return c;
