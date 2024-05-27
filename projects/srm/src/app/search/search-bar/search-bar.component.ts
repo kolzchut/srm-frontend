@@ -35,4 +35,10 @@ export class SearchBarComponent implements OnInit, AfterViewInit {
     });
   }
 
+  get placeholder() {
+    return this.homepage ?
+          'כל שירות, כל קהל וכל מיקום...' :
+          'ניתן לחפש לפי שם, סוג מענה, מיקום...';
+  }
+
 }
