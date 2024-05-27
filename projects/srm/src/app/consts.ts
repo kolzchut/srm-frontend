@@ -121,6 +121,14 @@ export type Preset = {
     alternative_text: string,
 };
 
+export type HomepageEntry = {
+    group: string,
+    title: string,
+    situation_id: string,
+    response_id: string,
+    query: string,
+};
+
 export type AutoComplete = {
     id: string,
     query: string,
@@ -174,6 +182,7 @@ export function prepareQuery(query: string) {
     return query.trim().split(' ').join('_');
 }
 
+export type QueryHomepageResult = SearchResult<HomepageEntry>;
 export type QueryPresetResult = SearchResult<Preset>;
 export type QueryAutoCompleteResult = SearchResult<AutoComplete>;
 export type QueryCardResult = SearchResult<Card>;

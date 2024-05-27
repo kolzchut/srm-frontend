@@ -15,6 +15,7 @@ export const environment = {
   // orgsURL: 'https://api.kolsherut.org.il/api/idx/search/orgs',
   autocompleteURL: 'https://api.kolsherut.org.il/api/idx/search/autocomplete',
   presetsURL: 'https://api.kolsherut.org.il/api/idx/search/presets',
+  homepageURL: 'https://api.kolsherut.org.il/api/idx/search/homepage',
   itemURL: 'https://api.kolsherut.org.il/api/idx/get/',
   // taxonomySituationsSourceURL: 'https://srm.datacity.org.il/dataset/6f1a45c6-c855-43c8-8a3f-acaad318581c/resource/ddafbcee-e35f-4db3-b07d-2acc4e9b65aa/download/situations_actual.json',
   // taxonomySituationsURL: '/situations.json',

@@ -4,7 +4,7 @@ import { catchError, delay, finalize, map, switchMap, tap } from 'rxjs/operators
 
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult, CARD_SNIPPET_FIELDS, TaxonomyItem, SearchParams, DistinctItem, QueryTaxonomyItemResult, SITUATION_FILTERS, Place, QueryPlaceResult } from './consts';
+import { Card, QueryPresetResult, Preset, AutoComplete, QueryAutoCompleteResult, QueryCardResult, CARD_SNIPPET_FIELDS, TaxonomyItem, SearchParams, DistinctItem, QueryTaxonomyItemResult, SITUATION_FILTERS, Place, QueryPlaceResult, QueryHomepageResult, HomepageEntry } from './consts';
 import { PlatformService } from './platform.service';
 import * as memoryCache from 'memory-cache';
 import { REQUEST } from '../express.tokens';
@@ -123,6 +123,19 @@ export class ApiService {
       ), true
     ).pipe(
       map((presets) => presets.filter((r: Preset) => r.preset))
+    );
+  }
+
+  getHomepage(): Observable<HomepageEntry[]> {
+    const params = {size: 200, order: 'score'};
+    return this.innerCache(
+      'hompage',
+      this.http.get(environment.homepageURL, {params}).pipe(
+        map((res) => {
+          const results = res as QueryHomepageResult;
+          return results.search_results.map((r: any) => r.source)
+        })
+      ), true
     );
   }
 

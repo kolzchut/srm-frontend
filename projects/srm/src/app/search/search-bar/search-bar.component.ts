@@ -7,12 +7,16 @@ import { timer } from 'rxjs';
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
-  styleUrls: ['./search-bar.component.less']
+  styleUrls: ['./search-bar.component.less'],
+  host: {
+    '[class.desktop-style]': 'desktopStyle',
+  }
 })
 export class SearchBarComponent implements OnInit, AfterViewInit {
 
   @Input() config: SearchConfig;
   @Input() homepage = false;
+  @Input() desktopStyle = true;
 
   @Output() focus = new EventEmitter<boolean>();
 
