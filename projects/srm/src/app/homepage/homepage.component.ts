@@ -71,6 +71,7 @@ export class HomepageComponent implements AfterViewInit{
 
   updateFocus(focus: boolean) {
     if (focus) {
+      this.search.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
       this.searching = true;
     } else {
       timer(100).subscribe(() => {
@@ -86,7 +87,7 @@ export class HomepageComponent implements AfterViewInit{
       this.searching = true;
       this.searchConfig.query_ = query;
       this.searchConfig.queries.next(query);
-      this.searchConfig.focus();  
+      this.searchConfig.focus();
     } else {
       this.searchSvc.search(query);
     }  
