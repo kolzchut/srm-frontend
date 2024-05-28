@@ -121,7 +121,13 @@ export class CardContainerComponent implements OnInit, OnChanges {
           this.center.emit(geom);
         }
         if (this.card) {
-          this.a11y.setSeoTitle(`${this.card.service_name} / ${this.card.organization_short_name || this.card.organization_name} | כל שירות`);
+          let title = `${this.card.service_name} / ${this.card.organization_short_name || this.card.organization_name}`;
+          const city = this.card.national_service ? 'שירות ארצי' : this.card.branch_city;
+          if (city) {
+            title += ` / ${city}`;
+          }
+          title += ' | כל שירות';
+          this.a11y.setSeoTitle(title);
           if (this.card.service_description) {
             this.seo.setDescription(this.card.service_description);
           }

@@ -484,7 +484,7 @@ export class ApiService {
     const params = {
       size: 3,
       q: query.replace(/ עבור /g, ' ').replace(/ של /g, ' ').replace(/ באיזור /g, ' '),
-      highlight: 'branch_name,branch_name.hebrew,service_name,service_name.hebrew',
+      highlight: 'branch_city,branch_city.hebrew,service_name,service_name.hebrew',
       match_operator: 'or',
       match_type: 'cross_fields'
     };

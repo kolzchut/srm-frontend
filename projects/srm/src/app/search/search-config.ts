@@ -75,8 +75,8 @@ export class SearchConfig {
     ).subscribe(results => {
       this.topCards = results.map((result) => {
         let display = _h(result, 'service_name');
-        if (result.branch_name) {
-          display += ` (${_h(result, 'branch_name')})`;
+        if (result.branch_city) {
+          display += ` (${_h(result, 'branch_city')})`;
         }
         return {
           link: ['/c', result.card_id],
