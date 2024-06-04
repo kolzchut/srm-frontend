@@ -49,6 +49,7 @@ export class Card {
     branch_id: string;
     // branch_name: string;
     // branch_short_name: string;
+    branch_operating_unit: string;
     branch_description: string;
     branch_urls: {href: string, title: string}[];
     branch_phone_numbers: string[];

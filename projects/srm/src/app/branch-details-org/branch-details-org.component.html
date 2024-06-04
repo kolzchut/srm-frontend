@@ -1,5 +1,7 @@
 <h2 class='branch-name' [class.compact]='compact'>
-    @if (card.organization_name_parts) {
+    @if (card.branch_operating_unit) {
+        <span class='primary'>{{card.branch_operating_unit}}</span>
+    } @else if (card.organization_name_parts) {
         <span class='primary'>{{card.organization_name_parts.primary}}</span>
         @if (card.organization_name_parts.secondary) {
             <span class='secondary'> - {{card.organization_name_parts.secondary}}</span>
