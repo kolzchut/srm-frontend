@@ -66,7 +66,7 @@ export class ApiService {
     params.match_operator = 'and';
     params.match_type = 'cross_fields';
     if (!options.no_highlight) {
-      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,situations.name.hebrew,responses.name.hebrew';
+      params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,branch_operating_unit,situations.name.hebrew,responses.name.hebrew';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
     }  
     if (!options.no_minscore) {

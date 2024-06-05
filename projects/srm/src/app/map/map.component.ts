@@ -173,7 +173,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
     if (!card.branch_location_accurate && branch_count > 1) {
       return 'במיקום לא מדויק';
     } else {
-      let title = (card.organization_short_name || card.organization_name);
+      let title = (card.branch_operating_unit || card.organization_short_name || card.organization_name);
       const max_len = 40;
       if (title && title.length > max_len) {
         title = title.slice(0, max_len) + '…';

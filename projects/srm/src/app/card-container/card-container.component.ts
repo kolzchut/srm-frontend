@@ -121,7 +121,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
           this.center.emit(geom);
         }
         if (this.card) {
-          let title = `${this.card.service_name} / ${this.card.organization_short_name || this.card.organization_name}`;
+          let title = `${this.card.service_name} / ${this.card.branch_operating_unit || this.card.organization_short_name || this.card.organization_name}`;
           const city = this.card.national_service ? 'שירות ארצי' : this.card.branch_city;
           if (city) {
             title += ` / ${city}`;

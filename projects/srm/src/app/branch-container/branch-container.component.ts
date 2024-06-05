@@ -86,7 +86,7 @@ export class BranchContainerComponent implements OnInit, OnChanges {
       this.cardBranch = cardBranch;
       this.card = selectedCard;
       if (p.cardId && this.card) {
-        this.a11y.setSeoTitle(`${this.card.service_name} / ${this.card.organization_short_name || this.card.organization_name} | כל שירות`);
+        this.a11y.setSeoTitle(`${this.card.service_name} / ${this.card.branch_operating_unit || this.card.organization_short_name || this.card.organization_name} | כל שירות`);
         if (this.card.service_description) {
           this.seo.setDescription(this.card.service_description);
         }
