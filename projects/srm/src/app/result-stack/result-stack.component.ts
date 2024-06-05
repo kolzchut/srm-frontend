@@ -75,7 +75,7 @@ export class ResultStackComponent implements OnInit {
   }
 
   orgName(card: Card) {
-    return _h(card.organization_name_parts, 'primary') || _h(card, 'organization_short_name') || _h(card, 'organization_name');
+    return _h(card, 'branch_operating_unit') || _h(card.organization_name_parts, 'primary') || _h(card, 'organization_short_name') || _h(card, 'organization_name');
   }
 
   ariaLabel(card: Card) {
@@ -86,7 +86,9 @@ export class ResultStackComponent implements OnInit {
       ret += card.branch_city + ' ';
     }
     ret += card.service_name;
-    if (card.organization_name_parts?.primary) {
+    if (card.branch_operating_unit) {
+      ret += ' של ' + card.branch_operating_unit;
+    } else if (card.organization_name_parts?.primary) {
       ret += ' של ' + card.organization_name_parts.primary;
     } else if (card.organization_short_name) {
       ret += ' של ' + card.organization_short_name;
