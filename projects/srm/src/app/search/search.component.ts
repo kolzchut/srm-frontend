@@ -31,7 +31,7 @@ export class SearchComponent implements OnChanges {
   constructor(private api: ApiService, public location: Location, private route: ActivatedRoute, private router: Router,
       private platform: PlatformService, public layout: LayoutService, private seo: SeoSocialShareService, private a11y: A11yService,
       private searchSvc: SearchService) {
-    this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform, this.searchSvc);
+    this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform, () => this.searchSvc.search(null));
   }
 
   ngOnChanges(): void {

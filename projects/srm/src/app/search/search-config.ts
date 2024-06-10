@@ -1,6 +1,6 @@
 import { Params, Router } from "@angular/router";
 import { ApiService } from "../api.service";
-import { Subject, debounceTime, switchMap, timer } from "rxjs";
+import { Subject, debounceTime, from, fromEvent, switchMap, timer } from "rxjs";
 import { _h, prepareQuery } from "../consts";
 import { untilDestroyed } from "@ngneat/until-destroy";
 import { PlatformService } from "../platform.service";
@@ -30,8 +30,9 @@ export class SearchConfig {
   typedQueries = new Subject<string>();
 
   autoFocus = true;
+  searching = false;
 
-  constructor(private container: any, private router: Router, private api: ApiService, private platform: PlatformService, private searchSvc: SearchService) {
+  constructor(private container: any, private router: Router, private api: ApiService, private platform: PlatformService, public closeSearch_: () => void) {
     api.getPresets().subscribe(presets => {
       console.table(presets);
       this.presets = [{
@@ -110,6 +111,11 @@ export class SearchConfig {
     if (this.autoFocus) {
       el.focus();
     }
+    fromEvent(el, 'focus').pipe(
+      untilDestroyed(this.container),
+    ).subscribe(() => {
+      this.searching = true;
+    });
     this.inputEl = el;
   }
 
@@ -169,6 +175,7 @@ export class SearchConfig {
   }
 
   closeSearch() {
-    this.searchSvc.search(null);
+    this.searching = false;
+    this.closeSearch_();
   }
 }

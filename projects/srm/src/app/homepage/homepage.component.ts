@@ -21,7 +21,6 @@ import { SearchService } from '../search.service';
 export class HomepageComponent implements AfterViewInit{
 
   public searchConfig: SearchConfig;
-  searching = false;
   groups: {
     title: string,
     query: string,
@@ -34,7 +33,7 @@ export class HomepageComponent implements AfterViewInit{
   searchVisible = true;
   
   constructor(private api: ApiService, private platform: PlatformService, private router: Router, private layout: LayoutService, private searchSvc: SearchService) {
-    this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform, this.searchSvc);
+    this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform, () => {});
     this.searchConfig.autoFocus = false;
     api.getHomepage().subscribe((homepage) => {
       const groups: any = [];
@@ -72,11 +71,9 @@ export class HomepageComponent implements AfterViewInit{
   updateFocus(focus: boolean) {
     if (focus) {
       this.search.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      this.searching = true;
     } else {
       timer(100).subscribe(() => {
         this.searchConfig.query_ = '';
-        this.searching = false;
         this.searchConfig.blur();
       });
     }
@@ -84,7 +81,6 @@ export class HomepageComponent implements AfterViewInit{
 
   startSearch(query: string, forceSvc=false) {
     if (this.layout.desktop() && !forceSvc) {
-      this.searching = true;
       this.searchConfig.query_ = query;
       this.searchConfig.queries.next(query);
       this.searchConfig.focus();

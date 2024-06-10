@@ -8,7 +8,7 @@ import { MenuService } from '../menu/menu.component';
 })
 export class MenuIconComponent implements OnInit {
 
-  @Input() dark = false;
+  @Input() colorScheme = 'default';
 
   constructor(public menu: MenuService) { }
 

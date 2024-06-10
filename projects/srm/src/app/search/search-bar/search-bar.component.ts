@@ -10,6 +10,7 @@ import { timer } from 'rxjs';
   styleUrls: ['./search-bar.component.less'],
   host: {
     '[class.desktop-style]': 'desktopStyle',
+    '[class.homepage]': 'homepage',
   }
 })
 export class SearchBarComponent implements OnInit, AfterViewInit {
@@ -41,4 +42,11 @@ export class SearchBarComponent implements OnInit, AfterViewInit {
           'ניתן לחפש לפי שם, סוג מענה, מיקום...';
   }
 
+  clear() {
+    if (this.config.query) {
+      this.config.query = '';
+    } else {
+      this.config.closeSearch();
+    }
+  }
 }

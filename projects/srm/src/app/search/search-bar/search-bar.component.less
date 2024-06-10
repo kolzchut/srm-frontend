@@ -12,9 +12,6 @@
         background-image: url(../../../assets/img/icon-close.svg);
         position: absolute;
         left: 8px;
-        &:hover {
-            background-image: url(../../../assets/img/icon-close.svg);
-        }
     }
 
     input {
@@ -58,8 +55,10 @@
                 font-size: 20px;
             }
         }
+    }
 
-        &.homepage {
+    &.homepage {
+        input {
             background-image: url(../../../assets/img/icon-search-blue-3.svg);
             &::placeholder {
                 color: @color-blue-1;
@@ -67,6 +66,16 @@
             border-color: @color-gray-5;
             background-color: @color-gray-7;
             outline: none;
+            &:focus {
+                background-image: url(../../../assets/img/icon-search-blue-2.svg);
+            }
         }
+        .clear-button {
+            appearance: none;
+            .search-icon;
+            background-image: url(../../../assets/img/icon-close-blue-2.svg);
+            position: absolute;
+            left: 16px;
+        }    
     }
 }

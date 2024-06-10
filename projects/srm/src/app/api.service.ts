@@ -106,7 +106,9 @@ export class ApiService {
       if (searchParams.org_id) {
         filter['organization_id'] = searchParams.org_id;
       }
-
+      if (searchParams.org_name) {
+        filter['organization_resolved_name'] = searchParams.org_name;
+      }
     }
     return filter;
   }
@@ -441,6 +443,9 @@ export class ApiService {
       }
       if (searchParams.org_id) {
         filter['organization_id'] = searchParams.org_id;
+      }
+      if (searchParams.org_name) {
+        filter['organization_resolved_name'] = searchParams.org_name;
       }
       if (bound && searchParams.bounds && searchParams.bounds.length === 2 && bound) {
         filter['branch_geometry__bounded'] = this.boundsFilter(searchParams.bounds);

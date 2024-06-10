@@ -15,7 +15,7 @@
     </div>
     <div class='controls layout-mobile'>
         <a class='back' (activated)='navigateBack()' clickOnReturn *ngIf='!landingPage' aria-label="חזרה לעמוד הקודם"></a>
-        <div class='menu-icon' *ngIf='landingPage'><app-menu-icon [dark]='true'></app-menu-icon></div>
+        <div class='menu-icon' *ngIf='landingPage'><app-menu-icon colorScheme='dark'></app-menu-icon></div>
         <a class='search' (activated)='searchSvc.search(searchParams && searchParams.original_query || "")' aria-label="ביצוע חיפוש חדש"
             interactionEvent='mobile-search-button' [interactionEventWhere]='location.path(false)' [searchParams]='searchParams' clickOnReturn
         ></a>
