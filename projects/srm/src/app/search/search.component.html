@@ -2,7 +2,7 @@
     <div class='search-bar'>
         <a class='logo layout-desktop' [routerLink]='["/"]' aria-label='חזרה לעמוד הבית'></a>
         <button class='back-button layout-mobile' (activated)='closeSearch()' clickOnReturn aria-label="סגירת תיבת החיפוש וחזרה לעמוד הקודם"></button>
-        <app-search-bar [config]='searchConfig'></app-search-bar>
+        <app-search-bar [config]='searchConfig' [desktopStyle]='layout.desktop()'></app-search-bar>
         <app-desktop-menu-links></app-desktop-menu-links>
     </div>
     <div class='overlay layout-desktop' (click)='closeSearch()' tabindex="-1" role="presentation">

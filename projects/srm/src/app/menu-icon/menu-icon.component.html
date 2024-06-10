@@ -1,3 +1,3 @@
-<button class='menu-icon' [class.dark]='dark' (click)='menu.active = true'
+<button class='menu-icon' [class.dark]='colorScheme === "dark"' [class.light]='colorScheme === "light"' (click)='menu.active = true'
         role='button' aria-label='הצגת התפריט הראשי' [attr.aria-expanded]='menu.active ? "true" : null'
 ></button>

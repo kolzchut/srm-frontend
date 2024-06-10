@@ -12,32 +12,29 @@
         background-image: url(../../../assets/img/icon-close.svg);
         position: absolute;
         left: 8px;
-        &:hover {
-            background-image: url(../../../assets/img/icon-close.svg);
-        }
     }
 
     input {
         width: 100%;
-        .mobile({
+        &.mobileStyle {
             height: 40px;
-        });
-        .desktop({
+        }
+        &.desktopStyle {
             height: 64px;
-        });
+        }
         background-color: @color-gray-7;
         border: 2px solid @color-gray-4;
         border-radius: 8px;
         .font-rag-sans;
         font-style: normal;
         font-weight: 300;
-        .mobile({
+        &.mobileStyle {
             font-size: 20px;
             padding-right: 8px;
             padding-left: 40px;
             border-width: 1px;
-        });
-        .desktop({
+        }
+        &.desktopStyle {
             font-size: 24px;
             .background-image;
             background-image: url(../../../assets/img/icon-search-gray-3.svg);
@@ -45,22 +42,40 @@
             background-position: center right 12px;
             padding-right: 48px;
             padding-left: 12px;
-        });
+        }
         color: @color-gray-1;
                     
         &:placeholder-shown {
             font-weight: 300;
             color: @color-gray-3;
-            .mobile({
+            &.mobileStyle {
                 font-size: 16px;
-            });
-            .desktop({
+            }
+            &.desktopStyle {
                 font-size: 20px;
-            });
+            }
         }
-        &.homepage:focus {
+    }
+
+    &.homepage {
+        input {
+            background-image: url(../../../assets/img/icon-search-blue-3.svg);
+            &::placeholder {
+                color: @color-blue-1;
+            }
+            border-color: @color-gray-5;
+            background-color: @color-gray-7;
             outline: none;
-            border-color: @color-gray-7;
+            &:focus {
+                background-image: url(../../../assets/img/icon-search-blue-2.svg);
+            }
         }
+        .clear-button {
+            appearance: none;
+            .search-icon;
+            background-image: url(../../../assets/img/icon-close-blue-2.svg);
+            position: absolute;
+            left: 16px;
+        }    
     }
 }

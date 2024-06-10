@@ -14,6 +14,7 @@ export const devEnv: any = {
   // orgsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/orgs',
   autocompleteURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/autocomplete',
   presetsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/presets',
+  homepageURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/homepage',
   itemURL: 'https://srm-staging-api.whiletrue.industries/api/idx/get/',
   // taxonomySituationsURL: 'https://srm-staging.datacity.org.il/dataset/657a1b09-2474-4309-aac8-381d41e115d8/resource/7503fb96-380c-4e5c-a428-53c6105b083e/download/situations_actual.json',
   // taxonomyResponsesURL: 'https://srm-staging.datacity.org.il/dataset/71a7e998-4984-472a-9e96-66890bbef5f5/resource/7a8d9349-c8af-485e-981a-be9411fe8ba5/download/responses.json',
