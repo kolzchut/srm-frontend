@@ -108,14 +108,14 @@ export class SearchConfig {
     if (this.query_) {
       el.setSelectionRange(0, this.query_.length);
     }
-    if (this.autoFocus) {
-      el.focus();
-    }
     fromEvent(el, 'focus').pipe(
       untilDestroyed(this.container),
     ).subscribe(() => {
       this.searching = true;
     });
+    if (this.autoFocus) {
+      el.focus();
+    }
     this.inputEl = el;
   }
 
