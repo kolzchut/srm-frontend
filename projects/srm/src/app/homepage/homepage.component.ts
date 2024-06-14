@@ -61,7 +61,6 @@ export class HomepageComponent implements AfterViewInit{
       this.searchVisibleObserver = new IntersectionObserver((entries) => {
         if (entries.length === 1) {
           this.searchVisible = entries[0].intersectionRatio > 0.1;
-          console.log('SV', this.searchVisible);
         }
       }, options);
       this.searchVisibleObserver.observe(this.search.nativeElement);
