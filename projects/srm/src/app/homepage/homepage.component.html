@@ -46,7 +46,7 @@
                     <app-desktop-menu-links [homepage]='true'></app-desktop-menu-links>
                 </div>
             
-                <div class='homepage-groups'>
+                <div class='homepage-groups' #homepageGroups>
                     @for (group of groups; track group.title) {
                         <div class='homepage-group' [class.hovered]='hovered === group.title'
                             (mouseover)='hovered = group.title' (mouseleave)='hovered = null'
@@ -76,6 +76,15 @@
                                         clickOnReturn>{{item.title}}</a>
                                 }
                             </div>
+                            @if (!!group.query && !!group.group_link) {
+                                <a [routerLink]='["/s", group.query]' 
+                                    class='homepage-group-more'
+                                    interactionEvent='homepage-link-group' interactionEventWhere='homepage' [interactionEventContent]='group.title'
+                                    clickOnReturn>
+                                    <span class='after'></span>
+                                    <span>{{group.group_link}}</span>
+                                </a>
+                            }
                         </div>
                     }
                 </div>

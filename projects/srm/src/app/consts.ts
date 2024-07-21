@@ -124,6 +124,7 @@ export type Preset = {
 export type HomepageEntry = {
     group: string,
     title: string,
+    group_link: string,
     situation_id: string,
     response_id: string,
     query: string,
