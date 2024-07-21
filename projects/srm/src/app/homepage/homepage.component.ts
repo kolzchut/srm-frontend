@@ -8,6 +8,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { fromEvent, timer } from 'rxjs';
 import { LayoutService } from '../layout.service';
 import { SearchService } from '../search.service';
+import { AnalyticsService } from '../analytics.service';
 
 @UntilDestroy()
 @Component({
@@ -34,7 +35,7 @@ export class HomepageComponent implements AfterViewInit{
   searchVisibleObserver: IntersectionObserver;
   searchVisible = true;
   
-  constructor(private api: ApiService, private platform: PlatformService, private router: Router, private layout: LayoutService, private searchSvc: SearchService) {
+  constructor(private api: ApiService, private platform: PlatformService, private router: Router, private layout: LayoutService, private searchSvc: SearchService, private analytics: AnalyticsService) {
     this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform, () => {});
     this.searchConfig.autoFocus = false;
     api.getHomepage().subscribe((homepage) => {
@@ -107,7 +108,8 @@ export class HomepageComponent implements AfterViewInit{
       this.searchConfig.queries.next(query);
       this.searchConfig.focus();
     } else {
-      this.searchSvc.search(query);
+      this.analytics.interactionEvent('homepage-searchbar', 'homepage');
+        this.searchSvc.search(query);
     }  
   }
 

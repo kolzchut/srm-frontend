@@ -29,7 +29,6 @@
                     </div>
                     <div class='searchbox-container layout-mobile'>
                         <app-search-bar [config]='searchConfig' (focus)='startSearch("", false)' [homepage]='true'
-                                        interactionEvent='homepage-searchbar' interactionEventWhere='homepage'        
                         ></app-search-bar>
                     </div>
                 </div>
@@ -53,15 +52,12 @@
                             (touchstart)='hovered = group.title' (touchend)='hovered = null'
                         >
                             @if (!!group.query) {
-                                <a [routerLink]='["/s", group.query]' 
-                                    class='homepage-group-title'
-                                    interactionEvent='homepage-link-group' interactionEventWhere='homepage' [interactionEventContent]='group.title'
-                                    clickOnReturn>
+                                <div class='homepage-group-title'>
                                     <h3>
                                         <span>{{group.title}}</span>
                                         <span class='arrow-left'></span>
                                     </h3>
-                                </a>
+                                </div>
                             } @else {
                                 <div class='homepage-group-title'>
                                     <h3>
