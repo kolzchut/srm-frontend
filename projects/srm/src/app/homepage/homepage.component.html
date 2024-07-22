@@ -47,7 +47,7 @@
             
                 <div class='homepage-groups' #homepageGroups>
                     @for (group of groups; track group.title) {
-                        <div class='homepage-group'>
+                        <div class='homepage-group' [style.gridRowEnd]='"span 15"'>
                             @if (!!group.query) {
                                 <div class='homepage-group-title'>
                                     <h3>
