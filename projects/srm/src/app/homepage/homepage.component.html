@@ -47,10 +47,7 @@
             
                 <div class='homepage-groups' #homepageGroups>
                     @for (group of groups; track group.title) {
-                        <div class='homepage-group' [class.hovered]='hovered === group.title'
-                            (mouseover)='hovered = group.title' (mouseleave)='hovered = null'
-                            (touchstart)='hovered = group.title' (touchend)='hovered = null'
-                        >
+                        <div class='homepage-group'>
                             @if (!!group.query) {
                                 <div class='homepage-group-title'>
                                     <h3>

@@ -28,7 +28,6 @@ export class HomepageComponent implements AfterViewInit{
     group_link: string,
     items: HomepageEntry[]
   }[] = [];
-  hovered: string | null = null;
 
   @ViewChild('search') search: ElementRef;
   @ViewChild('homepageGroups') homepageGroups: ElementRef;
