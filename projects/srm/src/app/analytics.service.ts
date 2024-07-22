@@ -116,14 +116,18 @@ export class AnalyticsService {
         });
       }
 
-      this.gtag({
-        event: 'view_item_list',
-        ecommerce: {
-          item_list_name: title,
-          items: items.map((item, idx) => this.cardToItem(item, idx + 1 + offset))
-        },
-        ...eventParams
-      });
+      while (items.length > 0) {
+        const itemsBatch = items.splice(0, 10);
+        this.gtag({
+          event: 'view_item_list',
+          ecommerce: {
+            item_list_name: title,
+            items: itemsBatch.map((item, idx) => this.cardToItem(item, idx + 1 + offset))
+          },
+          ...eventParams
+        });
+        offset += itemsBatch.length;
+      }
     }
   }
 
