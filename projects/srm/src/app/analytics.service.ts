@@ -116,8 +116,9 @@ export class AnalyticsService {
         });
       }
 
-      while (items.length > 0) {
-        const itemsBatch = items.splice(0, 10);
+      const itemBatches = items.slice();
+      while (itemBatches.length > 0) {
+        const itemsBatch = itemBatches.splice(0, 10);
         this.gtag({
           event: 'view_item_list',
           ecommerce: {
