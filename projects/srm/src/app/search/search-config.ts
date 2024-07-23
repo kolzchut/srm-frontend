@@ -37,12 +37,14 @@ export class SearchConfig {
       console.table(presets);
       this.presets = [{
         link: ['/s', 'שירותים_למצב_החירום'],
+        linkParams: {q: prepareQuery(this.query), from: 'search-presets'},
         display: '<span class="emergency">שירותים למצב החירום המלחמתי</span>',
         query: 'שירותים למצב החירום',
         direct: false,
       }, ...presets.map((preset) => {
         return {
           link: ['/s', prepareQuery(preset.title)],
+          linkParams: {q: prepareQuery(this.query), from: 'search-presets'},
           display: `<em>${preset.title}</em>`,
           query: preset.title,
           direct: false,
@@ -62,6 +64,7 @@ export class SearchConfig {
       this.autoCompleteResults = results.map((result) => {
         return {
           link: ['/s', result.id],
+          linkParams: {q: prepareQuery(this.query), from: 'search-autocomplete-result'},
           display: _h(result, 'query'),
           query: result.query,
           direct: false,
@@ -140,7 +143,7 @@ export class SearchConfig {
       }
       if (!found) {
         this.closeSearch();
-        this.router.navigate(['/s', '_'], {queryParams: {q: prepareQuery(this.query)}});
+        this.router.navigate(['/s', '_'], {queryParams: {q: prepareQuery(this.query), from: 'search-autocomplete-fulltext'}});
       }
     }
   }
@@ -164,7 +167,7 @@ export class SearchConfig {
       if (this.noResults && this.query?.length > 0) {
         this.results_.push({
           link: ['/s', '_'],
-          linkParams: {q: prepareQuery(this.query)},
+          linkParams: {q: prepareQuery(this.query), from: 'search-autocomplete-fulltext'},
           display: `<em>${this.query}</em>`,
           query: null,
           direct: true,

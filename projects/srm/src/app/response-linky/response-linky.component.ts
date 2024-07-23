@@ -37,7 +37,7 @@ export class ResponseLinkyComponent extends ResponseBase implements OnChanges {
         this.searchSvc.search(this.response.name);
       }
     } else {
-      this.router.navigate(['/s', this.responseQuery], { queryParamsHandling: 'merge' });
+      this.router.navigate(['/s', this.responseQuery], { queryParamsHandling: 'merge', queryParams: { from: 'tag-response' } });
     }
   }
 }

@@ -143,7 +143,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
       distinctUntilChanged((a, b) => a.card_id === b.card_id),
       debounceTime(this.platform.browser() ? 3000 : 0),
       tap((card) => {
-      this.platform.browser(() => {
+        this.platform.browser(() => {
           const li = this.route.snapshot.queryParams['li'];
           let index = 0;
           if (li) {
@@ -151,7 +151,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
           }
           const from = this.route.snapshot.queryParams['from'];
           if (from || li) {
-            this.router.navigate([], {relativeTo: this.route, queryParams: {from: null}, queryParamsHandling: 'merge', replaceUrl: true, preserveFragment: true});
+            this.router.navigate([], {relativeTo: this.route, queryParams: {from: null, li: null}, queryParamsHandling: 'merge', replaceUrl: true, preserveFragment: true});
           }
           this.analytics.cardEvent(card, this.searchParams, index, false, from);
         });

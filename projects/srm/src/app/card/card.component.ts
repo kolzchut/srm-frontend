@@ -86,7 +86,7 @@ export class CardComponent implements OnInit, OnChanges, AfterViewInit {
   
       }
       this.zoomout.emit(bounds);
-      this.router.navigate(['/s', this.card.organization_id]);
+      this.router.navigate(['/s', this.card.organization_id], { queryParams: { from: 'card-all-branches' } });
     });
   }
 

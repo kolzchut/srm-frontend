@@ -108,7 +108,7 @@ export class HomepageComponent implements AfterViewInit{
       this.searchConfig.focus();
     } else {
       this.analytics.interactionEvent('homepage-searchbar', 'homepage');
-        this.searchSvc.search(query);
+      this.searchSvc.search(query);
     }  
   }
 

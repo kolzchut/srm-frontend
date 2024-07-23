@@ -546,6 +546,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         fr: searchParams.filter_responses?.map(x => x.slice('human_services:'.length)).join('|') || null,
         frc: searchParams.filter_response_categories?.map(x => x.slice('human_services:'.length)).join('|') || null,
       },
+      queryParamsHandling: 'merge',
       replaceUrl: true,
       preserveFragment: true
     });
@@ -692,7 +693,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     if (visible && this.point && this.platform.browser()) {
       timer(0).pipe(
         switchMap(() => 
-          from(this.router.navigate(['/s', this.searchParams.ac_query], {queryParamsHandling: 'preserve'}))),
+          from(this.router.navigate(['/s', this.searchParams.ac_query], {queryParamsHandling: 'preserve', queryParams: {from: 'point-open-filters'}}))),
         filter((x) => !!x),
         delay(100),
       ).subscribe(() => {

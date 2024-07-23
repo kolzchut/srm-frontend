@@ -6,7 +6,7 @@
 </div>
 <a class='situation linkable' [class.small]='small' *ngIf='!selected && link'
     (activated)='doSearch($event)'
-    [href]='"/s/" + querySituation'
+    [href]='"/s/" + querySituation + "?from=tag-situation"'
     [class.small]='smaller'
     [attr.aria-label]='situation.name + " - לחצו לחיפוש באתר"'
     clickOnReturn

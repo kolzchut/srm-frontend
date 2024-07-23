@@ -62,7 +62,7 @@
                 <app-card-action-email [card]='card' [org]='true' [compact]='true'></app-card-action-email>
             </div>
             <div class='org-branches' *ngIf='card.organization_branch_count > 1'>
-                <a (activated)='showAllBranches($event)' [href]='"/s/" + card.organization_id' clickOnReturn aria-label="הצגת כל סניפי הארגון">{{card.organization_branch_count}} סניפים בארץ ←</a>
+                <a (activated)='showAllBranches($event)' [href]='"/s/" + card.organization_id + "?from=card-show-branches"' clickOnReturn aria-label="הצגת כל סניפי הארגון">{{card.organization_branch_count}} סניפים בארץ ←</a>
             </div>
         </div>
     </div>

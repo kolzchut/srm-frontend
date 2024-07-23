@@ -65,12 +65,14 @@
                             <div class='homepage-group-items'>
                                 @for (item of group.items; track item.query) {
                                     <a class='homepage-group-item' [routerLink]='["/s", item.query]' 
+                                        [queryParams]="{from: 'homepage-group-item'}"
                                         interactionEvent='homepage-link' interactionEventWhere='homepage' [interactionEventContent]='item.title'
                                         clickOnReturn>{{item.title}}</a>
                                 }
                             </div>
                             @if (!!group.query && !!group.group_link) {
                                 <a [routerLink]='["/s", group.query]' 
+                                    [queryParams]="{from: 'homepage-group-more'}"
                                     class='homepage-group-more'
                                     interactionEvent='homepage-link-group' interactionEventWhere='homepage' [interactionEventContent]='group.title'
                                     clickOnReturn>

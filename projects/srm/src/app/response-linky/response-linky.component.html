@@ -2,7 +2,7 @@
     [style.background-color]='bgColor'
     [style.border-color]='borderColor'
     (activated)='doSearch($event)'
-    [href]='"/s/" + responseQuery'
+    [href]='"/s/" + responseQuery + "?from=tag-response"'
     [class.small]='small'
     [attr.aria-label]='response.name + " - לחצו לחיפוש באתר"'
     (mouseover)='hover = true' (mouseleave)='hover = false'

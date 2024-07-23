@@ -8,6 +8,7 @@ import { Card, SearchParams, ViewPort } from '../consts';
 import { PlatformService } from '../platform.service';
 import { AnalyticsService } from '../analytics.service';
 import { SearchState } from './search-state';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 export type SearchParamsOffset = {
@@ -64,9 +65,11 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   totalNationalCount = 0;
   loading: boolean = true;
   viewport: ViewPort;
+  source = 'external';
 
   constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService,
-      private seo: SeoSocialShareService, private analytics: AnalyticsService) {
+      private seo: SeoSocialShareService, private analytics: AnalyticsService, 
+      private route: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -165,15 +168,24 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       });
       this.fetch();
     });
-    this.resultsParamsQueue.pipe(
-      untilDestroyed(this),
-      distinctUntilChanged((a, b) => {
-        return a.params.original_query === b.params.original_query && a.params.ac_query === b.params.ac_query && a.offset === b.offset;
-      }),  
-      tap((item) => {
-        this.analytics.searchEvent(item.params, item.totalCount, item.items, item.offset);  
-      })
-    ).subscribe();
+    this.platform.browser(() => {
+      this.resultsParamsQueue.pipe(
+        untilDestroyed(this),
+        distinctUntilChanged((a, b) => {
+          return a.params.original_query === b.params.original_query && a.params.ac_query === b.params.ac_query && a.offset === b.offset;
+        }),  
+        tap((item) => {
+          const from = this.route.snapshot.queryParams['from'] || this.source;
+          this.source = 'internal';
+          console.log('GTAG-DBG FROM', from);
+          this.analytics.interactionEvent('search', from);
+          if (from) {
+            this.router.navigate([], {relativeTo: this.route, queryParams: {from: null}, queryParamsHandling: 'merge', replaceUrl: true, preserveFragment: true});
+          }
+          this.analytics.searchEvent(item.params, item.totalCount, item.items, item.offset);  
+        })
+      ).subscribe();
+    });
   }
 
   ngOnChanges(): void {
