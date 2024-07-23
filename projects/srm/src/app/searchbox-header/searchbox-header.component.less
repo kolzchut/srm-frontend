@@ -60,9 +60,9 @@
         display: flex;
         flex-flow: row;
         align-items: center;
+        cursor: pointer;
 
         .clickable {
-            cursor: pointer;
             flex: 1 1 auto;
             display: flex;
             flex-flow: row;
@@ -163,6 +163,13 @@
             background-image: url(../../assets/img/icon-search-gray-3.svg);
         }
 
+        &:hover {
+            border-color: @color-blue-4;
+            background-color: @color-blue-8;
+            .search-icon {
+                background-image: url(../../assets/img/icon-search-blue-2.svg);
+            }
+        }
     }
 
     &.homepage {
