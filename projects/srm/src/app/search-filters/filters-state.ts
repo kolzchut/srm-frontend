@@ -5,7 +5,7 @@ import { untilDestroyed } from "@ngneat/until-destroy";
 import { PlatformService } from "../platform.service";
 
 export class FiltersState {
-  constructor(private api: ApiService, private searchParamsQueue: Observable<SearchParams>, 
+    constructor(private api: ApiService, private searchParamsQueue: Observable<SearchParams>, 
       private attachedComponent: any, private platform: PlatformService) {
     forkJoin([this.api.getSituations(), this.api.getResponses()])
     .subscribe(([situationData, responseData]) => {
@@ -62,10 +62,23 @@ export class FiltersState {
     ).subscribe((result) => {
       this.checkDiscoveryNeeded(result);
     });
+    this.incomingSearchParams.pipe(
+      untilDestroyed(attachedComponent),
+      filter((params) => !!params),
+      distinctUntilChanged((a, b) => a.simpleHash.localeCompare(b.simpleHash) === 0),
+      switchMap((params) => this.api.getDistinct(params, false, 'response-leafs')),
+    ).subscribe((result) => {
+      this.updateStaticFilters(result);
+    });
     this.searchParamsQueue.pipe(
         untilDestroyed(attachedComponent),
     ).subscribe((params) => {
         this.updateParams(params);
+    });
+    this.params.pipe(
+      untilDestroyed(attachedComponent),
+    ).subscribe((params) => {
+      this.updateStaticFilterCounts(params);
     });
   }
 
@@ -102,6 +115,9 @@ export class FiltersState {
   showDiscovery: boolean | null = null;
   situationsOrder: {[key: string]: number} = {};
 
+  staticFilters: DistinctItem[] = [];
+  staticFiltersIds: string[] = [];
+
   updateParams(params: SearchParams) {
     this.searchParams = params;
     this.incomingSearchParams.next(params);
@@ -132,11 +148,11 @@ export class FiltersState {
       situation: sp.situation,
       org_id: sp.org_id,
       org_name: sp.org_name,
-      filter_situations: sp.filter_situations?.slice() || [],
+      filter_audiences: sp.filter_audiences?.slice() || [],
       filter_age_groups: sp.filter_age_groups?.slice() || [],
       filter_languages: sp.filter_languages?.slice() || [],
 
-      filter_health: sp.filter_health?.slice() || [],
+      filter_health: sp.filter_health_issues?.slice() || [],
       filter_benefit_holders: sp.filter_benefit_holders?.slice() || [],
       filter_employment: sp.filter_employment?.slice() || [],
       filter_life_events: sp.filter_life_events?.slice() || [],
@@ -153,6 +169,53 @@ export class FiltersState {
     return ret;
   }
 
+  getKeyForSituation(key: string): string | null {
+    if (
+      key.indexOf('human_situations:armed_forces') === 0 ||
+      key.indexOf('human_situations:citizenship') === 0 ||
+      key.indexOf('human_situations:criminal_history') === 0 ||
+      key.indexOf('human_situations:deprivation') === 0 ||
+      key.indexOf('human_situations:education') === 0 ||
+      key.indexOf('human_situations:household') === 0 ||
+      key.indexOf('human_situations:housing') === 0 ||
+      key.indexOf('human_situations:income') === 0 ||
+      key.indexOf('human_situations:sectors') === 0 ||
+      key.indexOf('human_situations:sexuality') === 0 ||
+      key.indexOf('human_situations:survivors') === 0 ||
+      false
+    ) {
+      return 'audiences';
+    }
+    if (
+      key.indexOf('human_situations:mental_health') === 0 ||
+      key.indexOf('human_situations:substance_dependency') === 0 ||
+      key.indexOf('human_situations:disability') === 0 ||
+      key.indexOf('human_situations:health') === 0 ||
+      false
+    ) {
+      return 'health_issues';
+    }
+    if (
+      key.indexOf('human_situations:age_group') === 0 ||
+      false
+    ) {
+      return 'age_groups';
+    }
+    if (
+      key.indexOf('human_situations:language') === 0 ||
+      false
+    ) {
+      return 'languages';
+    }
+    for (const hsroot of ['employment', 'benefit_holders', 'life_events', 'urgency', 'gender', 'community', 'role']) {
+      if (key.indexOf('human_situations:' + hsroot) === 0) {
+        return `others.${hsroot}`;
+      }
+    }
+    
+    return null;
+  }
+
   processSearchParams(params: SearchParams): void {
     if (params) {
       this.ready.pipe(
@@ -161,38 +224,29 @@ export class FiltersState {
           if (this.active_) {
             this.situations = data.situations;
             this.responses = this.sortResponses(data.responses, data.categories);
-            this.audiences = this.situations
+
+            this.others = {};
+            this.situations
               .filter(x => !!x && !!x.key)
-              .filter(x => 
-                x.key?.indexOf('human_situations:armed_forces') === 0 ||
-                x.key?.indexOf('human_situations:citizenship') === 0 ||
-                x.key?.indexOf('human_situations:criminal_history') === 0 ||
-                x.key?.indexOf('human_situations:deprivation') === 0 ||
-                x.key?.indexOf('human_situations:education') === 0 ||
-                x.key?.indexOf('human_situations:household') === 0 ||
-                x.key?.indexOf('human_situations:housing') === 0 ||
-                x.key?.indexOf('human_situations:income') === 0 ||
-                x.key?.indexOf('human_situations:sectors') === 0 ||
-                x.key?.indexOf('human_situations:sexuality') === 0 ||
-                x.key?.indexOf('human_situations:survivors') === 0 ||
-                false
-              )
               .filter(x => x.key !== params.situation)
-              .map(x => this.situationsMap[x.key || ''])
-              .filter(x => !!x);
-            this.health_issues = this.situations
-              .filter(x => !!x && !!x.key)
-              .filter(x => 
-                x.key?.indexOf('human_situations:mental_health') === 0 ||
-                x.key?.indexOf('human_situations:substance_dependency') === 0 ||
-                x.key?.indexOf('human_situations:disability') === 0 ||
-                x.key?.indexOf('human_situations:health') === 0 ||
-                false
-              )
-              .filter(x => x.key !== params.situation)
-              .map(x => this.situationsMap[x.key || ''])
-              .filter(x => !!x);
-            
+              .forEach(x => {
+                const key = x.key as string;
+                let situationKey = this.getKeyForSituation(key);
+                const situation = this.situationsMap[key];
+                if (situationKey && situation) {
+                  let obj = this as any;
+                  const parts = situationKey.split('.');
+                  if (parts.length > 1) {
+                    situationKey = parts[0];
+                    obj[parts[0]] = obj[parts[0]] || {};
+                    obj = obj[parts[0]];
+                    situationKey = parts[1];
+                  }
+                  obj[situationKey] = obj[situationKey] || [];
+                  obj[situationKey].push(situation);
+                }
+              });
+                
             this.age_groups = ['infants', 'children', 'teens', 'young_adults', 'adults', 'seniors']
                 .map(x => 'human_situations:age_group:' + x)
                 .filter(x => this.situations.map(y => y.key).indexOf(x) >= 0)
@@ -210,16 +264,6 @@ export class FiltersState {
               .filter(x => x.key !== params.situation)
               .map(x => this.situationsMap[x.key || ''])
               .filter(x => !!x);
-
-            this.others = {};
-            for (const hsroot of ['employment', 'benefit_holders', 'life_events', 'urgency', 'gender', 'community', 'role']) {
-              this.others[hsroot] = this.situations
-                .filter(x => !!x && !!x.key)
-                .filter(x => x.key?.indexOf('human_situations:' + hsroot) === 0)
-                .filter(x => x.key !== params.situation)
-                .map(x => this.situationsMap[x.key || ''])
-                .filter(x => !!x);
-            }
 
             this.responseItems = this.responses
               .filter(x => x.key !== params.response)
@@ -271,6 +315,10 @@ export class FiltersState {
     const sp = this.currentSearchParams || this.searchParams;
     return (sp?.filter_responses?.length || 0) + 
             SITUATION_FILTERS.reduce((partialSum, f) => partialSum + ((sp as any || {})['filter_' + f]?.length || 0), 0);
+  }
+
+  get filtersBarOccupied(): boolean {
+    return this.staticFilters.length > 0 || this.totalFilters > 0;
   }
 
   isResponseSelected(response: TaxonomyItem) {
@@ -331,6 +379,34 @@ export class FiltersState {
     this.params.next(sp);
   }
 
+  toggleSituation(item: TaxonomyItem) {
+    console.log('TTT', item);
+    if (!item.id) {
+      return;
+    }
+    const sp = this.currentSearchParams as any;
+    const field_parts = this.getKeyForSituation(item.id)?.split('.') || [];
+    let field = '';
+    if (field_parts.length === 1) {
+      field = field_parts[0];
+    } else if (field_parts.length === 2) {
+      field = field_parts[1];
+    } else {
+      return
+    }
+    field = `filter_${field}`;
+    console.log('TTT2', field);
+    let sits: string[] = sp[field] || [];
+    if (sits.indexOf(item.id) === -1) {
+      sits.push(item.id);
+    } else {
+      sits = sits.filter(x => x !== item.id);
+    }
+    sp[field] = sits;
+    this.touchSituation(item.id);
+    this.pushSearchParams();
+  }
+
   clearOne(item: TaxonomyItem) {
     SITUATION_FILTERS.forEach(f => {
       (this.currentSearchParams as any)['filter_' + f] = (this.currentSearchParams as any)['filter_' + f].filter((x: string) => x !== item.id);
@@ -386,5 +462,36 @@ export class FiltersState {
         });
       }
     }
+  }
+
+  updateStaticFilters(result: QueryCardResult): void {
+    this.staticFilters = [...(result.situations || []), ...(result.responses || [])]
+        .sort((a, b) => (b.doc_count || 0) - (a.doc_count || 0))
+        .filter(x => x.key !== this.currentSearchParams.situation)
+        .filter(x => x.key !== this.currentSearchParams.response)
+        .slice(0, 5)
+        .map(x => {
+          return {
+            key: x.key,
+            doc_count: x.doc_count,
+          }
+        });
+    this.staticFiltersIds = this.staticFilters
+        .map(x => x.key || '')
+        .filter(x => x.length);
+  }
+
+  updateStaticFilterCounts(params: SearchParams): void {
+    this.api.getDistinct(params, false, 'apply-filters').subscribe((result) => {
+      this.staticFilters.forEach((item) => {
+        item.doc_count = 0;
+      });
+      [...(result.situations || []), ...(result.responses || [])].forEach((item) => {
+        const existing = this.staticFilters.find(x => x.key === item.key);
+        if (existing) {
+          existing.doc_count = item.doc_count;
+        }
+      });
+    });
   }
 }

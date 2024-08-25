@@ -1,4 +1,4 @@
-<button *ngIf='filtersState.active && !filtersState.totalFilters && layout.desktop()' class='back' (activated)='filtersState.toggle()' aria-label='סגירת הסינון וחזרה לרשימת התוצאות' clickOnReturn></button>
+<button *ngIf='filtersState.active && !filtersState.filtersBarOccupied && layout.desktop()' class='back' (activated)='filtersState.toggle()' aria-label='סגירת הסינון וחזרה לרשימת התוצאות' clickOnReturn></button>
 <app-search-filters-button
     [filtersState]='filtersState'
     (activate)='filtersState.toggle()'
@@ -6,25 +6,50 @@
     [interactionEventWhere]='location.path(false)' 
     [searchParams]='filtersState.searchParams'
 ></app-search-filters-button>
-<ng-container *ngIf='filtersState.totalFilters > 0'>
+<ng-container *ngIf='filtersState.filtersBarOccupied'>
     <div class='selected' #scrolledList>
+        @for (item of filtersState.staticFilters; track item.key) {
+            @if (item.key?.indexOf('human_situation') === 0 && item.key && filtersState.situationsMap[item.key]) {
+                <app-situation
+                    [situation]='filtersState.situationsMap[item.key]'
+                    [selected]='(allFilteredSituations || []).indexOf(item.key) > -1'
+                    [selectable]='true'
+                    [count]='item.doc_count || 0'
+                    (clicked)='filtersState.toggleSituation(filtersState.situationsMap[item.key])'
+                ></app-situation>
+            } @else if (item.key?.indexOf('human_service') === 0 && item.key && filtersState.responsesMap[item.key]) {
+                <app-response
+                    [response]='filtersState.responsesMap[item.key]'
+                    [selected]='(filtersState.currentSearchParams.filter_responses || []).indexOf(item.key) > -1'
+                    [dynamic]='true'
+                    [active]='true'
+                    [count]='item.doc_count || 0'
+                    (clicked)='filtersState.toggleResponse(filtersState.responsesMap[item.key])'
+                ></app-response>
+
+            }
+        }
         @for (response of filtersState.currentSearchParams.filter_responses; track response) {
-            <app-response
-                *ngIf='filtersState.responsesMap[response]'
-                [response]='filtersState.responsesMap[response]'
-                [selected]='true'
-                [dynamic]='true'
-                [active]='true'
-                (clicked)='filtersState.toggleResponse(filtersState.responsesMap[response])'
-            ></app-response>
+            @if (filtersState.staticFiltersIds.indexOf(response) === -1) {
+                <app-response
+                    *ngIf='filtersState.responsesMap[response]'
+                    [response]='filtersState.responsesMap[response]'
+                    [selected]='true'
+                    [dynamic]='true'
+                    [active]='true'
+                    (clicked)='filtersState.toggleResponse(filtersState.responsesMap[response])'
+                ></app-response>
+            }
         }
         @for (situation of allFilteredSituations; track situation) {
-            <app-situation
-                *ngIf='filtersState.situationsMap[situation]'
-                [situation]='filtersState.situationsMap[situation]'
-                [selected]='true'
-                (clicked)='filtersState.clearOne(filtersState.situationsMap[situation])'
-            ></app-situation>
+            @if (filtersState.staticFiltersIds.indexOf(situation) === -1) {
+                <app-situation
+                    *ngIf='filtersState.situationsMap[situation]'
+                    [situation]='filtersState.situationsMap[situation]'
+                    [selected]='true'
+                    (clicked)='filtersState.clearOne(filtersState.situationsMap[situation])'
+                ></app-situation>
+            }
         }
     </div>
     <!-- <div class='controls' [style.width]='scrolledList.clientWidth + "px"' *ngIf='layout.desktop()'>

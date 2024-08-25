@@ -207,10 +207,10 @@ export class SearchParams {
     org_id: string | null;
     org_name: string | null;
     city_name: string | null;
-    filter_situations?: string[];
+    filter_audiences?: string[];
     filter_age_groups?: string[];
     filter_languages?: string[];
-    filter_health?: string[];
+    filter_health_issues?: string[];
     filter_benefit_holders?: string[];
     filter_employment?: string[];
     filter_life_events?: string[];
@@ -227,6 +227,10 @@ export class SearchParams {
 
     selectedTaxonomyIds: string[] | null = null;
     filteredSituationIds: string[] | null = null;
+
+    get simpleHash(): string {
+        return [this.query, this.response, this.situation, this.org_id].map(x => x || '').join('|');
+    }
 
     get searchHash(): string {
       return [this.query, this.response, this.situation, this.org_id,
@@ -257,11 +261,11 @@ export class SearchParams {
                 ...(this.filter_community || []),
                 ...(this.filter_employment || []),
                 ...(this.filter_gender || []),
-                ...(this.filter_health || []),
+                ...(this.filter_health_issues || []),
                 ...(this.filter_languages || []),
                 ...(this.filter_life_events || []),
                 ...(this.filter_role || []),
-                ...(this.filter_situations || []),
+                ...(this.filter_audiences || []),
                 ...(this.filter_urgency || [])
             ];
         }

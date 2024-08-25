@@ -423,7 +423,7 @@ export class ApiService {
     ));
   }
 
-  getDistinct(searchParams: SearchParams, bound=false): Observable<QueryCardResult> {
+  getDistinct(searchParams: SearchParams, bound=false, policy: 'response-parents'|'response-leafs'|'apply-filters'='response-parents'): Observable<QueryCardResult> {
     const params: any = {
       size: 1,
       offset: 0,
@@ -432,8 +432,17 @@ export class ApiService {
       params.q = searchParams.query;
       this.fullTextParams(params, {no_highlight: true});
     }
-    params.extra = 'distinct-situations|distinct-responses';
-    if (searchParams.response || searchParams.situation || searchParams.org_id || bound) {
+    if (policy === 'response-parents') {
+      params.extra = 'distinct-situations|distinct-responses';
+    } else {
+      params.extra = 'distinct-situations|distinct-responses-only';
+    }
+    if (policy === 'apply-filters') {
+      let filter = this._filter(searchParams, bound);
+      if (filter) {
+        params.filter = JSON.stringify(filter);
+      }
+    } else if (searchParams.response || searchParams.situation || searchParams.org_id || bound) {
       const filter: any = {};
       if (searchParams.response) {
         filter['response_ids_parents'] = searchParams.response;
@@ -452,7 +461,7 @@ export class ApiService {
       }
       params.filter = JSON.stringify([filter]);
     }
-    return this.innerCache(`distinct-${params.filter}-${params.q}`, this.http.get(environment.cardsURL, {params}).pipe(
+    return this.innerCache(`distinct-${params.filter}-${params.q}-${policy}`, this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         return res as QueryCardResult;
       })

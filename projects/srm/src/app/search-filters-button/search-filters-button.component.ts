@@ -17,25 +17,25 @@ export class SearchFiltersButtonComponent {
 
   get message(): string {
     if (this.filtersState.active) {
-      if (!this.filtersState.totalFilters) {
+      if (!this.filtersState.filtersBarOccupied) {
         return 'ללא סינון';
       } 
     }
-    if (this.filtersState.totalFilters) {
+    if (this.filtersState.filtersBarOccupied) {
       if (this.layout.mobile()) {
         return `${this.filtersState.totalFilters}`;
       }
       if (this.filtersState.totalFilters > 1) {
         return `${this.filtersState.totalFilters} מסננים:`;
-      } else {
+      } else if (this.filtersState.totalFilters === 1) {
         return `מסנן אחד:`;
-      }
+      } 
     }
-    return `סינון`;
+    return ``;
   }
 
   get state() {
-    if (!!this.filtersState.totalFilters) {
+    if (!!this.filtersState.filtersBarOccupied) {
       return 'active';
     } else {
       if (!this.filtersState.active) {

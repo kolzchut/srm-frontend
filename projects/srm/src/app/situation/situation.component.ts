@@ -15,6 +15,8 @@ export class SituationComponent implements OnChanges {
   @Input() small = false;
   @Input() link = false;
   @Input() selected = false;
+  @Input() selectable = false;
+  @Input() count: number | null = null;
 
   @Output() clicked = new EventEmitter<void>();
 

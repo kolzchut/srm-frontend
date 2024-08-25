@@ -1,8 +1,13 @@
 <div class='situation' [class.small]='small' *ngIf='!selected && !link'
     [class.small]='smaller'
+    [class.selectable]='selectable'
+    (click)='selectable ? onClick() : null'
 >
     <span class='text' [innerHTML]='situation.name'
     ></span>
+    @if (count !== null) {
+        <span class='count'>({{count.toLocaleString()}})</span>
+    }
 </div>
 <a class='situation linkable' [class.small]='small' *ngIf='!selected && link'
     (activated)='doSearch($event)'
@@ -23,5 +28,8 @@
 >
     <span class='text' [innerHTML]='situation.name'
     ></span>
+    @if (count !== null) {
+        <span class='count'>({{count.toLocaleString()}})</span>
+    }
     <span class='icon close'></span>
 </div>

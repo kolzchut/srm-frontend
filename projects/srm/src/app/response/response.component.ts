@@ -16,6 +16,7 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
   @Input() response: TaxonomyItem = {};
 
   @Input() selected = false;
+  @Input() count: number | null = null;
   @Input() active = false;
   @Input() semiactive = false;
   @Input() disabled = false;

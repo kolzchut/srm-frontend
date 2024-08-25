@@ -23,7 +23,7 @@
     overflow: hidden;
 
 
-    span.text {
+    span.text, span.count {
         line-height: 16px;
         ::ng-deep {
             em {
@@ -77,15 +77,17 @@
         }
     }
 
-    &.selected {
+    &.selected, &.selectable {
         height: 28px;
-        border-color: @color-blue-3;
         cursor: pointer;
-        color: @color-black;
-        font-weight: 600;
         background-image: url(../../assets/img/icon-person-blue-4.svg);
         background-position: center right 2px;
         padding-right: 22px;
+    }
+    &.selected {
+        border-color: @color-blue-3;
+        color: @color-black;
+        font-weight: 600;
 
         .icon {
             flex: 0 0 auto;
