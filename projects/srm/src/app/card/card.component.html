@@ -27,10 +27,11 @@
             <app-card-action-nav [card]='card' [fullwidth]='true' (copied)='snack($event)'></app-card-action-nav>
         </div>
     </div>
-    <div class='terms' *ngIf='card.service_details || card.service_payment_details'>
+    <div class='terms' *ngIf='card.service_details || card.service_payment_details || card.branch_description'>
         <h2>תנאים לקבלת השירות:</h2>
         <div [innerHTML]='format(card.service_details)' *ngIf='card.service_details'></div>
         <div [innerHTML]='format(card.service_payment_details)' *ngIf='card.service_payment_details'></div>
+        <div [innerHTML]='format(card.branch_description)' *ngIf='card.branch_description'></div>
     </div>
     <div class='org'>
         <h2>השירות ניתן ע״י:</h2>
