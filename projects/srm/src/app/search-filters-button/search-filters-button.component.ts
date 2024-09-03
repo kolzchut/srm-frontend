@@ -10,6 +10,7 @@ import { LayoutService } from '../layout.service';
 export class SearchFiltersButtonComponent {
 
   @Input() filtersState: FiltersState;
+  @Input() count: number;
   
   @Output() activate = new EventEmitter<void>();
 
@@ -21,15 +22,14 @@ export class SearchFiltersButtonComponent {
         return 'ללא סינון';
       } 
     }
-    if (this.filtersState.filtersBarOccupied) {
+    if (this.count > 0) {
       if (this.layout.mobile()) {
-        return `${this.filtersState.totalFilters}`;
-      }
-      if (this.filtersState.totalFilters > 1) {
-        return `${this.filtersState.totalFilters} מסננים:`;
-      } else if (this.filtersState.totalFilters === 1) {
+        return `${this.count}`;
+      } else if (this.count === 1) {
         return `מסנן אחד:`;
-      } 
+      } else {
+        return `${this.count} מסננים:`;
+      }
     }
     return ``;
   }

@@ -152,7 +152,7 @@ export class FiltersState {
       filter_age_groups: sp.filter_age_groups?.slice() || [],
       filter_languages: sp.filter_languages?.slice() || [],
 
-      filter_health: sp.filter_health_issues?.slice() || [],
+      filter_health_issues: sp.filter_health_issues?.slice() || [],
       filter_benefit_holders: sp.filter_benefit_holders?.slice() || [],
       filter_employment: sp.filter_employment?.slice() || [],
       filter_life_events: sp.filter_life_events?.slice() || [],

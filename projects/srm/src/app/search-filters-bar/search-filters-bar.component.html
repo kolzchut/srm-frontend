@@ -2,6 +2,7 @@
 <app-search-filters-button
     [filtersState]='filtersState'
     (activate)='filtersState.toggle()'
+    [count]='(allFilteredSituations?.length || 0) + (filtersState.currentSearchParams.filter_responses?.length || 0)'
     interactionEvent='open-filters' 
     [interactionEventWhere]='location.path(false)' 
     [searchParams]='filtersState.searchParams'
@@ -52,12 +53,12 @@
             }
         }
     </div>
-    <!-- <div class='controls' [style.width]='scrolledList.clientWidth + "px"' *ngIf='layout.desktop()'>
+    <div class='controls' [style.width]='scrolledList.clientWidth + "px"' *ngIf='layout.desktop()'>
         <div class='shader right' (click)='scrolledList.scrollBy({behavior: "smooth", left: 100})'
              *ngIf='scrolledList.scrollWidth > scrolledList.clientWidth && scrolledList.scrollLeft < 0'></div>
         <div class='shader left' (click)='scrolledList.scrollBy({behavior: "smooth", left: -100})'
              *ngIf='scrolledList.scrollWidth > scrolledList.clientWidth && scrolledList.scrollLeft > scrolledList.clientWidth - scrolledList.scrollWidth'></div>
-    </div> -->
+    </div>
     <div class='controls' [style.width]='scrolledList.clientWidth + "px"' *ngIf='layout.mobile()'>
         <div class='shader right' *ngIf='scrolledList.scrollWidth > scrolledList.clientWidth && scrolledList.scrollLeft < 0'></div>
         <div class='shader left' *ngIf='scrolledList.scrollWidth > scrolledList.clientWidth && scrolledList.scrollLeft > scrolledList.clientWidth - scrolledList.scrollWidth'></div>

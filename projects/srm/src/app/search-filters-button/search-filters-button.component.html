@@ -1,6 +1,6 @@
 <button class='open-modal' [class]='"state-" + state' (click)='activate.next()' aria-label='פתיחת אפשרויות הסינון'>
     <div class='img' *ngIf='state !== "inactive"'></div>
-    <span>{{message}}</span>
+    <span *ngIf='message'>{{message}}</span>
     <!-- <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div> -->
 </button>
 <div class='discovery' *ngIf='filtersState.showDiscovery && !filtersState.active' (click)='activate.next()' (mousedown)='$event.stopPropagation()' (touchstart)='$event.stopPropagation()'>
