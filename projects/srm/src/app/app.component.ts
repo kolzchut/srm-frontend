@@ -29,12 +29,11 @@ export class AppComponent {
           filter((event) => event instanceof NavigationEnd),
           map((event) => (event as NavigationEnd).urlAfterRedirects),
           map((urlAfterRedirects) => this.cleanUrl(urlAfterRedirects)),
-          distinctUntilChanged()
+          distinctUntilChanged(),
+          debounceTime(100)
         ).subscribe((urlAfterRedirects) => {
-          platform.browser(() => {
-            console.log('PAGE_VIEW', urlAfterRedirects);
-            analytics.pageView(urlAfterRedirects);
-          })
+          console.log('PAGE_VIEW', urlAfterRedirects);
+          analytics.pageView(urlAfterRedirects);
         });
       }
     });
