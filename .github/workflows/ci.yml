@@ -32,7 +32,7 @@ jobs:
         fi
         env > saved_env &&\
         docker build -t api $BUILD_ARGS --build-arg ENV_NAME=$ENV_NAME $SENTRY_ARG . &&\
-        echo "${GITHUB_TOKEN}" | docker login https://ghcr.io -u whiletrue-industries --password-stdin &&\
+        echo "${GITHUB_TOKEN}" | docker login https://ghcr.io -u kolzchut --password-stdin &&\
         if [ "${GITHUB_REF}" == "refs/heads/main" ] || [ "${TAG_NAME}" != "" ]; then
           echo "${SRM_DEVOPS_DEPLOY_KEY}" > srm_devops_deploy_key &&\
           chmod 400 srm_devops_deploy_key &&\
