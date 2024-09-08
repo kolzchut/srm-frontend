@@ -25,5 +25,6 @@ RUN npm install -g npm@7
 RUN npm install
 
 COPY  --from=build /app/dist dist
+COPY  --from=build /app/saved_env saved_env
 
 ENTRYPOINT [ "node", "/app/dist/srm/server/main.js" ]
