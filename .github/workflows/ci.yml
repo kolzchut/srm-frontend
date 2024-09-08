@@ -30,6 +30,7 @@ jobs:
         if docker pull "ghcr.io/whiletrue-industries/${IMAGE_NAME}:latest"; then
           BUILD_ARGS="--cache-from ghcr.io/whiletrue-industries/${IMAGE_NAME}:latest"
         fi
+        env > saved_env &&\
         docker build -t api $BUILD_ARGS --build-arg ENV_NAME=$ENV_NAME $SENTRY_ARG . &&\
         echo "${GITHUB_TOKEN}" | docker login https://ghcr.io -u whiletrue-industries --password-stdin &&\
         if [ "${GITHUB_REF}" == "refs/heads/main" ] || [ "${TAG_NAME}" != "" ]; then
