@@ -321,9 +321,10 @@ export class FiltersState {
     return this.staticFilters.length > 0 || this.totalFilters > 0;
   }
 
-  isResponseSelected(response: TaxonomyItem) {
-    if (response.id && this.currentSearchParams?.filter_responses) {
-      return this.currentSearchParams.filter_responses.indexOf(response.id) !== -1;
+  isResponseSelected(response: TaxonomyItem, params: SearchParams | null = null) {
+    const sp = params || this.currentSearchParams;
+    if (response.id && sp?.filter_responses) {
+      return sp.filter_responses.indexOf(response.id) !== -1;
     } else {
       return false;
     }
@@ -356,16 +357,19 @@ export class FiltersState {
     this.situationsOrder[id || ''] = new Date().getTime();
   }
 
-  toggleResponse(item: TaxonomyItem) {
-    const checked = !this.isResponseSelected(item);
-    this.currentSearchParams.filter_responses = this.currentSearchParams.filter_responses || [];
-    this.currentSearchParams.filter_responses = this.currentSearchParams.filter_responses.filter(x => x !== item.id);
+  toggleResponse(item: TaxonomyItem, params: SearchParams | null = null) {
+    const checked = !this.isResponseSelected(item, params);
+    const sp = (params || this.currentSearchParams) as any;
+    sp.filter_responses = sp.filter_responses || [];
+    sp.filter_responses = sp.filter_responses.filter(x => x !== item.id);
     if (checked && item.id) {
-      this.currentSearchParams.filter_responses = this.currentSearchParams.filter_responses.filter(x => item.id?.indexOf(x) !== 0);
-      this.currentSearchParams.filter_responses = this.currentSearchParams.filter_responses.filter(x => x.indexOf(item.id || 'xxx') !== 0);
-      this.currentSearchParams.filter_responses.push(item.id);
+      sp.filter_responses = sp.filter_responses.filter(x => item.id?.indexOf(x) !== 0);
+      sp.filter_responses = sp.filter_responses.filter(x => x.indexOf(item.id || 'xxx') !== 0);
+      sp.filter_responses.push(item.id);
     }
-    this.pushSearchParams();
+    if (!params) {
+      this.pushSearchParams();
+    }
   }
 
   toggleResponseCategory(item: TaxonomyItem) {
@@ -379,12 +383,11 @@ export class FiltersState {
     this.params.next(sp);
   }
 
-  toggleSituation(item: TaxonomyItem) {
-    console.log('TTT', item);
+  toggleSituation(item: TaxonomyItem, params: SearchParams | null = null) {
     if (!item.id) {
       return;
     }
-    const sp = this.currentSearchParams as any;
+    const sp = (params || this.currentSearchParams) as any;
     const field_parts = this.getKeyForSituation(item.id)?.split('.') || [];
     let field = '';
     if (field_parts.length === 1) {
@@ -403,8 +406,20 @@ export class FiltersState {
       sits = sits.filter(x => x !== item.id);
     }
     sp[field] = sits;
-    this.touchSituation(item.id);
-    this.pushSearchParams();
+    if (!params) {
+      this.touchSituation(item.id);
+      this.pushSearchParams();
+    }
+  }
+
+  toggleId(item: TaxonomyItem, params: SearchParams | null = null) {
+    const sp = (params || this.currentSearchParams) as any;
+    if (item.id?.indexOf('human_situations:') === 0) {
+      this.toggleSituation(item, sp);
+    }
+    if (item.id?.indexOf('human_services:') === 0) {
+      this.toggleResponse(item, sp);
+    }
   }
 
   clearOne(item: TaxonomyItem) {
