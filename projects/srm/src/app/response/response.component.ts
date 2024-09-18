@@ -17,6 +17,7 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
 
   @Input() selected = false;
   @Input() count: number | null = null;
+  @Input() plus: boolean = false;
   @Input() active = false;
   @Input() semiactive = false;
   @Input() disabled = false;

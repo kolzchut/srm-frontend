@@ -1,11 +1,11 @@
-import { Subject, ReplaySubject, forkJoin, debounceTime, distinctUntilChanged, filter, switchMap, tap, merge, fromEvent, first, Observable, timer } from "rxjs";
+import { Subject, ReplaySubject, forkJoin, debounceTime, distinctUntilChanged, filter, switchMap, tap, merge, fromEvent, first, Observable, timer, from, map } from "rxjs";
 import { DistinctItem, TaxonomyItem, SearchParams, QueryCardResult, SITUATION_FILTERS } from "../consts";
 import { ApiService } from "../api.service";
 import { untilDestroyed } from "@ngneat/until-destroy";
 import { PlatformService } from "../platform.service";
 
 export class FiltersState {
-    constructor(private api: ApiService, private searchParamsQueue: Observable<SearchParams>, 
+  constructor(private api: ApiService, private searchParamsQueue: Observable<SearchParams>, 
       private attachedComponent: any, private platform: PlatformService) {
     forkJoin([this.api.getSituations(), this.api.getResponses()])
     .subscribe(([situationData, responseData]) => {
@@ -66,7 +66,7 @@ export class FiltersState {
       untilDestroyed(attachedComponent),
       filter((params) => !!params),
       distinctUntilChanged((a, b) => a.simpleHash.localeCompare(b.simpleHash) === 0),
-      switchMap((params) => this.api.getDistinct(params, false, 'response-leafs')),
+      switchMap((params) => this.api.getDistinct(params, false, 'static-filters')),
     ).subscribe((result) => {
       this.updateStaticFilters(result);
     });
@@ -117,6 +117,8 @@ export class FiltersState {
 
   staticFilters: DistinctItem[] = [];
   staticFiltersIds: string[] = [];
+  allFilteredSituations: string[] = [];
+  allFilteredResponses: string[] = [];
 
   updateParams(params: SearchParams) {
     this.searchParams = params;
@@ -127,6 +129,8 @@ export class FiltersState {
     const sp = this.currentSearchParams;
     this.currentSearchParams = this._copySearchParams(sp);
     this.fixSearchParams(sp);
+    this.allFilteredSituations = sp.allFilteredSituations.sort((a: string, b: string) => (this.situationsOrder[a] || 0) - (this.situationsOrder[b] || 0));
+    this.allFilteredResponses = this.currentSearchParams.filter_responses || [];
     if (this.active_) {
       this.internalSearchParams.next(sp);
     } else {
@@ -222,7 +226,7 @@ export class FiltersState {
         switchMap(() => this.api.getDistinct(params)),
         tap((data) => {
           if (this.active_) {
-            this.situations = data.situations;
+            this.situations = data.situations_exact;
             this.responses = this.sortResponses(data.responses, data.categories);
 
             this.others = {};
@@ -321,13 +325,27 @@ export class FiltersState {
     return this.staticFilters.length > 0 || this.totalFilters > 0;
   }
 
-  isResponseSelected(response: TaxonomyItem, params: SearchParams | null = null) {
+  isSituationIdSelected(situationId: string, params: SearchParams | null = null) {
     const sp = params || this.currentSearchParams;
-    if (response.id && sp?.filter_responses) {
-      return sp.filter_responses.indexOf(response.id) !== -1;
-    } else {
-      return false;
-    }
+    return sp.allFilteredSituations.indexOf(situationId) !== -1;
+  }
+
+  isIdSelected(id: string) {
+    return this.isSituationIdSelected(id) || this.isResponseIdSelected(id);
+  }
+
+  isSituationSelected(situation: TaxonomyItem, params: SearchParams | null = null) {
+    return this.isSituationIdSelected(situation.id || '', params);
+  }
+
+  isResponseIdSelected(responseId: string, params: SearchParams | null = null) {
+    const sp = params || this.currentSearchParams;
+    const allFilteredResponses = sp.filter_responses || [];
+    return allFilteredResponses.indexOf(responseId) !== -1;
+  }
+
+  isResponseSelected(response: TaxonomyItem, params: SearchParams | null = null) {
+    return this.isResponseIdSelected(response.id || '', params);
   }
 
   isResponseCategorySelected(response: TaxonomyItem) {
@@ -359,7 +377,7 @@ export class FiltersState {
 
   toggleResponse(item: TaxonomyItem, params: SearchParams | null = null) {
     const checked = !this.isResponseSelected(item, params);
-    const sp = (params || this.currentSearchParams) as any;
+    const sp = (params || this.currentSearchParams);
     sp.filter_responses = sp.filter_responses || [];
     sp.filter_responses = sp.filter_responses.filter(x => x !== item.id);
     if (checked && item.id) {
@@ -367,6 +385,7 @@ export class FiltersState {
       sp.filter_responses = sp.filter_responses.filter(x => x.indexOf(item.id || 'xxx') !== 0);
       sp.filter_responses.push(item.id);
     }
+    sp.resetCachedProps();
     if (!params) {
       this.pushSearchParams();
     }
@@ -398,7 +417,6 @@ export class FiltersState {
       return
     }
     field = `filter_${field}`;
-    console.log('TTT2', field);
     let sits: string[] = sp[field] || [];
     if (sits.indexOf(item.id) === -1) {
       sits.push(item.id);
@@ -406,6 +424,7 @@ export class FiltersState {
       sits = sits.filter(x => x !== item.id);
     }
     sp[field] = sits;
+    sp.resetCachedProps();
     if (!params) {
       this.touchSituation(item.id);
       this.pushSearchParams();
@@ -462,7 +481,7 @@ export class FiltersState {
       return;
     }
     if (result.search_counts._current.total_overall > THRESHOLD) {
-      const possibleFilters = [...(result.situations || []), ...(result.responses || [])].filter(x => (x.doc_count || 0) < THRESHOLD);
+      const possibleFilters = [...(result.situations_exact || []), ...(result.responses || [])].filter(x => (x.doc_count || 0) < THRESHOLD);
       if (possibleFilters.length < 3) {
         return;
       }
@@ -480,7 +499,7 @@ export class FiltersState {
   }
 
   updateStaticFilters(result: QueryCardResult): void {
-    this.staticFilters = [...(result.situations || []), ...(result.responses || [])]
+    this.staticFilters = [...(result.situations_exact || []), ...(result.responses_exact || [])]
         .sort((a, b) => (b.doc_count || 0) - (a.doc_count || 0))
         .filter(x => x.key !== this.currentSearchParams.situation)
         .filter(x => x.key !== this.currentSearchParams.response)
@@ -488,24 +507,39 @@ export class FiltersState {
         .map(x => {
           return {
             key: x.key,
-            doc_count: x.doc_count,
           }
         });
     this.staticFiltersIds = this.staticFilters
         .map(x => x.key || '')
         .filter(x => x.length);
+    this.updateStaticFilterCounts(this.currentSearchParams, result);
   }
-
-  updateStaticFilterCounts(params: SearchParams): void {
-    this.api.getDistinct(params, false, 'apply-filters').subscribe((result) => {
+  
+  updateStaticFilterCounts(params: SearchParams, result: QueryCardResult | null = null): void {
+    (result ? from([result]) : this.api.getCounts(params)).pipe(
+      map((result) => {
+        const count = result.search_counts._current.total_overall;
+        return count;
+      })
+    ).subscribe((count) => {
       this.staticFilters.forEach((item) => {
-        item.doc_count = 0;
-      });
-      [...(result.situations || []), ...(result.responses || [])].forEach((item) => {
-        const existing = this.staticFilters.find(x => x.key === item.key);
-        if (existing) {
-          existing.doc_count = item.doc_count;
+        item.doc_count = undefined;
+        if (this.isIdSelected(item.key || '')) {
+          // No need to update count for selected items
+          return;
         }
+        const paramsCopy = this._copySearchParams(params);
+        this.toggleId({id: item.key}, paramsCopy);
+        this.api.getCounts(paramsCopy).subscribe((result) => {
+          const new_doc_count = result.search_counts._current.total_overall;
+          if (new_doc_count >= count) {
+              item.doc_count = new_doc_count - count;
+              item.plus = true;
+          } else {
+              item.doc_count = new_doc_count;
+              item.plus = false;
+          }
+        });
       });
     });
   }

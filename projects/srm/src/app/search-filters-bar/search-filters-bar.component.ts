@@ -19,13 +19,6 @@ export class SearchFiltersBarComponent implements OnInit {
 
   constructor(public location: Location, public layout: LayoutService) { }
 
-  allFilteredSituations: string[] = [];
-
   ngOnInit(): void {
-    this.filtersState.params.pipe(
-      untilDestroyed(this),
-    ).subscribe((params) => {
-      this.allFilteredSituations = params.allFilteredSituations.sort((a: string, b: string) => (this.filtersState.situationsOrder[a] || 0) - (this.filtersState.situationsOrder[b] || 0));
-    });
   }
 }

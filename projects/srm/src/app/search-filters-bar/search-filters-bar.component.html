@@ -2,7 +2,7 @@
 <app-search-filters-button
     [filtersState]='filtersState'
     (activate)='filtersState.toggle()'
-    [count]='(allFilteredSituations?.length || 0) + (filtersState.currentSearchParams.filter_responses?.length || 0)'
+    [count]='(filtersState.allFilteredSituations?.length || 0) + (filtersState.currentSearchParams?.filter_responses?.length || 0)'
     interactionEvent='open-filters' 
     [interactionEventWhere]='location.path(false)' 
     [searchParams]='filtersState.searchParams'
@@ -13,9 +13,10 @@
             @if (item.key?.indexOf('human_situation') === 0 && item.key && filtersState.situationsMap[item.key]) {
                 <app-situation
                     [situation]='filtersState.situationsMap[item.key]'
-                    [selected]='(allFilteredSituations || []).indexOf(item.key) > -1'
+                    [selected]='(filtersState.allFilteredSituations || []).indexOf(item.key) > -1'
                     [selectable]='true'
-                    [count]='item.doc_count || 0'
+                    [count]='(filtersState.allFilteredSituations || []).indexOf(item.key) > -1 ? null : item.doc_count || 0'
+                    [plus]='(filtersState.allFilteredSituations || []).indexOf(item.key) > -1 ? false : item.plus || false'
                     (clicked)='filtersState.toggleSituation(filtersState.situationsMap[item.key])'
                 ></app-situation>
             } @else if (item.key?.indexOf('human_service') === 0 && item.key && filtersState.responsesMap[item.key]) {
@@ -24,7 +25,8 @@
                     [selected]='(filtersState.currentSearchParams.filter_responses || []).indexOf(item.key) > -1'
                     [dynamic]='true'
                     [active]='true'
-                    [count]='item.doc_count || 0'
+                    [count]='(filtersState.currentSearchParams.filter_responses || []).indexOf(item.key) > -1 ? null : item.doc_count || 0'
+                    [plus]='(filtersState.currentSearchParams.filter_responses || []).indexOf(item.key) > -1 ? false : item.plus || false'
                     (clicked)='filtersState.toggleResponse(filtersState.responsesMap[item.key])'
                 ></app-response>
 
@@ -42,7 +44,7 @@
                 ></app-response>
             }
         }
-        @for (situation of allFilteredSituations; track situation) {
+        @for (situation of filtersState.allFilteredSituations; track situation) {
             @if (filtersState.staticFiltersIds.indexOf(situation) === -1) {
                 <app-situation
                     *ngIf='filtersState.situationsMap[situation]'

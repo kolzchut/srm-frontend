@@ -423,7 +423,7 @@ export class ApiService {
     ));
   }
 
-  getDistinct(searchParams: SearchParams, bound=false, policy: 'response-parents'|'response-leafs'|'apply-filters'='response-parents'): Observable<QueryCardResult> {
+  getDistinct(searchParams: SearchParams, bound=false, policy: 'regular'|'static-filters'|'static-filters-update'='regular'): Observable<QueryCardResult> {
     const params: any = {
       size: 1,
       offset: 0,
@@ -432,12 +432,12 @@ export class ApiService {
       params.q = searchParams.query;
       this.fullTextParams(params, {no_highlight: true});
     }
-    if (policy === 'response-parents') {
-      params.extra = 'distinct-situations|distinct-responses';
+    if (policy === 'regular') {
+      params.extra = 'distinct-situations-exact|distinct-responses';
     } else {
-      params.extra = 'distinct-situations|distinct-responses-only';
+      params.extra = 'distinct-situations|distinct-situations-exact|distinct-responses|distinct-responses-exact';
     }
-    if (policy === 'apply-filters') {
+    if (policy === 'static-filters-update') {
       let filter = this._filter(searchParams, bound);
       if (filter) {
         params.filter = JSON.stringify(filter);

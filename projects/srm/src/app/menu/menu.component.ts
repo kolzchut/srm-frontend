@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Injectable, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Injectable, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ReplaySubject, timer } from 'rxjs';
@@ -40,7 +40,7 @@ export class MenuService {
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.less'],
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements AfterViewInit {
 
   @ViewChild('menu') menuEl: ElementRef;
 
@@ -54,6 +54,9 @@ export class MenuComponent implements OnInit {
   ];
 
   constructor(private menu: MenuService) {
+  }
+
+  ngAfterViewInit() {
     this.menu.activated.pipe(
       untilDestroyed(this),
       tap((value) => {

@@ -31,7 +31,13 @@
         [style.font-weight]='fontWeight'
     >{{response.name + (expanded ? ':': '')}}</span>
     @if (count !== null) {
-        <span class='count'>({{count.toLocaleString()}})</span>
+        <span class='count'>
+            @if (plus) {
+                (+{{count.toLocaleString()}})
+            } @else {
+                ({{count.toLocaleString()}})
+            }
+        </span>
     }
     <span class='icon close' *ngIf='selected'></span>
     <svg class='icon' width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"  *ngIf='expandable && !selected'>

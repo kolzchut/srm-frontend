@@ -6,7 +6,13 @@
     <span class='text' [innerHTML]='situation.name'
     ></span>
     @if (count !== null) {
-        <span class='count'>({{count.toLocaleString()}})</span>
+        <span class='count'>
+            @if (plus) {
+                (+{{count.toLocaleString()}})
+            } @else {
+                ({{count.toLocaleString()}})
+            }
+        </span>
     }
 </div>
 <a class='situation linkable' [class.small]='small' *ngIf='!selected && link'

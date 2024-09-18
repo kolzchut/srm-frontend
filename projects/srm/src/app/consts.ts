@@ -20,6 +20,7 @@ export class DistinctItem {
     key?: string;
     doc_count?: number;
     max_score?: { value: number };
+    plus? = false;
 };
 
 
@@ -168,6 +169,8 @@ export type SearchResult<T extends any> = {
     }[],
     situations: DistinctItem[],
     responses: DistinctItem[],
+    situations_exact: DistinctItem[],
+    responses_exact: DistinctItem[],
     categories: DistinctItem[],
     point_id: DistinctItem[],
     collapse_key: DistinctItem[],
@@ -191,7 +194,7 @@ export type QueryTaxonomyItemResult = SearchResult<TaxonomyItem>;
 export type QueryPlaceResult = SearchResult<Place>;
 
 export const SITUATION_FILTERS = [
-    'audiences', 'age_groups', 'languages', 'health', 'benefit_holders',
+    'audiences', 'age_groups', 'languages', 'health_issues', 'benefit_holders',
     'employment', 'life_events', 'urgency', 'community', 'role', 'gender'
 ];
 
@@ -283,5 +286,10 @@ export class SearchParams {
             ];
         }
         return this.selectedTaxonomyIds;
+    }
+
+    resetCachedProps() {
+        this.selectedTaxonomyIds = null;
+        this.filteredSituationIds = null;
     }
 };
