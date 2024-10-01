@@ -289,8 +289,8 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
           attributionControl: false,
           // bounds: [[34.578046, 32.162327], [35.356111, 31.690073]],
           maxBounds: [[28, 25], [42, 38]],
-          center: this.layout.mobile() ? [34.9670785, 31.9262] : [34.99466, 31.51109],
-          zoom: this.layout.mobile() ? 8.99 : 6.92,
+          center: [34.99466, 31.51109],
+          zoom: 6.92,
           preserveDrawingBuffer: true,
         };
         this.map = new mapboxgl.Map(mapParams);
