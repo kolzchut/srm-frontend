@@ -11,7 +11,8 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "less",
-          "skipTests": true
+          "skipTests": true,
+          "standalone": false
         },
         "@schematics/angular:service": {
           "skipTests": true

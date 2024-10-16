@@ -77,6 +77,9 @@ import { SearchFiltersBarComponent } from './search-filters-bar/search-filters-b
 import { AreaSearchNationalServicesCountComponent } from './area-search-national-services-count/area-search-national-services-count.component';
 import { AreaSearchNationalServicesNotificationComponent } from './area-search-national-services-notification/area-search-national-services-notification.component';
 import { MenuPopupAccordionComponent } from './menu/menu-popup/menu-popup-accordion/menu-popup-accordion.component';
+import { SearchResultsPageComponent } from './search-results-page/search-results-page.component';
+import { SrpStaticFiltersComponent } from './search-results-page/srp-static-filters/srp-static-filters.component';
+import { SrpMapToggleComponent } from './search-results-page/srp-map-toggle/srp-map-toggle.component';
 
 @NgModule({
   declarations: [
@@ -148,6 +151,9 @@ import { MenuPopupAccordionComponent } from './menu/menu-popup/menu-popup-accord
     AreaSearchNationalServicesCountComponent,
     AreaSearchNationalServicesNotificationComponent,
     MenuPopupAccordionComponent,
+    SearchResultsPageComponent,
+    SrpStaticFiltersComponent,
+    SrpMapToggleComponent
   ],
   imports: [
     BrowserModule,

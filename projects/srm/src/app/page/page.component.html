@@ -6,7 +6,21 @@
         [query]='query'
         [searchParams]='searchParams'
     ></app-searchbox-header>
-    <div class='main-content' *ngIf='stage === "search-results" || stage === "card" || stage === "point"'>
+    <div class='main-content' *ngIf='layout.desktop() && stage === "search-results"'>
+        <!-- TODO: Incorporate in the other 'main-content' element -->
+         <app-search-results-page
+            [searchParams]='searchParams'
+            [serachResultsActive]="stage === 'search-results'"
+            [didYouMean]='didYouMean'
+            [searchState]='searchState'
+            [filtersState]='filtersState'
+            (zoomout)='zoomOutMap($event)'
+            (visibleCount)='visibleCount = $event'
+            (nationalCount)='nationalCount = $event'
+            (hoverCard)='hoverCard($event)'
+         ></app-search-results-page>
+    </div>
+    <div class='main-content' *ngIf='(stage === "search-results" && layout.mobile()) || stage === "card" || stage === "point"'>
         <div class='search-results'>
             <app-searchbox-header *ngIf='layout.mobile() &&  stage === "search-results"' class='layout-mobile'
                     [query]='query'

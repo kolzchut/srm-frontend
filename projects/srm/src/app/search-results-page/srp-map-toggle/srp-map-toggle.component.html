@@ -1,0 +1,13 @@
+<div class='widget' [class.results]='state.resultsVisible' [class.map]='!state.resultsVisible' (click)='state.resultsVisible = !state.resultsVisible'>
+    <div class='img'></div>
+    <div class='msg'>
+        <div class='icon'></div>
+        <div class='text'>
+            @if (state.resultsVisible) {
+                תצוגת מפה
+            } @else {
+                הסתר מפה
+            }
+        </div>    
+    </div>
+</div>

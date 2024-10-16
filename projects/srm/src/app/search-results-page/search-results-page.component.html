@@ -1,0 +1,35 @@
+<div class='content'
+    [class.results]='state.resultsVisible'
+    [class.map]='!state.resultsVisible'
+>
+    <div class='sidebar'>
+        <app-srp-map-toggle
+            [state]='state'
+        ></app-srp-map-toggle>
+        <app-srp-static-filters
+            [filtersState]='filtersState'>
+        </app-srp-static-filters>
+    </div>
+    <div class='search-results'>
+        <app-search-results
+            class='full'
+            [searchParams]='searchParams'
+            [active]="serachResultsActive" 
+            [didYouMean]='didYouMean'
+            [searchState]='searchState'
+            (zoomout)='zoomout.emit($event)'
+            (visibleCount)='visibleCount.emit($event)'
+            (nationalCount)='nationalCount.emit($event)'
+            (hoverCard)='hoverCard.emit($event)'
+        ></app-search-results>
+    </div>
+    <div class='extra'>
+
+    </div>
+    @if (state.filtersVisible) {
+        <div class='overlay'></div>
+        <div class='filters'>
+
+        </div>
+    }
+</div>

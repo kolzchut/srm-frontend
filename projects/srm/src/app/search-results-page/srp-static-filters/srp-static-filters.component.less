@@ -1,0 +1,101 @@
+@import '../../../common.less';
+
+:host {
+    padding: 4px 0px;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 4px;
+    align-self: stretch;
+
+    h3 {
+        padding: 0 4px 4px 4px;
+        color: @color-gray-1;
+        .font-rag-sans;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 16px;
+    }
+
+    .items {
+        display: flex;
+        flex-flow: column;
+        justify-content: flex-start;
+        align-items: stretch;
+
+        .item {
+            padding: 4px;
+            display: flex;
+            flex-flow: row;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+
+            .checkbox {
+                width: 8px;
+                height: 8px;
+                border-radius: 2px;
+                border: 1px solid @color-blue-4;
+
+            }
+
+            .name {
+                color: @color-blue-1;
+                .font-rag-sans;
+                font-size: 13px;
+                font-weight: 400;
+                line-height: 16px;
+            }
+
+            .count {
+                margin-right: auto;
+                padding: 2px 6px;
+                color: @color-blue-1;
+                .font-rag-sans;
+                font-size: 13px;
+                font-weight: 300;
+                line-height: 16px;
+                border-radius: 12px;
+                background: @color-blue-7;
+            }
+
+            &.checked {
+                .checkbox {
+                    border: 2px solid @color-blue-3;
+                    background: @color-blue-0;    
+                }
+
+                .name {
+                    color: @color-blue-0;
+                    font-weight: 600;   
+                }
+
+                .count {
+                    display: none;
+                }
+            }
+
+            &:hover {
+                .checkbox {
+                    border: 1px solid @color-blue-3;
+                }
+
+                .count {
+                    background: @color-blue-6;
+                }
+
+                &.checked {
+                    .checkbox {
+                        border: 2px solid @color-blue-3;
+                        background: @color-blue-0;
+                    }
+                }
+
+                background: @color-blue-7;
+            }
+        }
+    }
+}

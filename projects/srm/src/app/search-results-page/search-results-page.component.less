@@ -1,0 +1,64 @@
+@import '../../common.less';
+
+:host {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;    
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: flex-start;
+    pointer-events: none;
+
+    .content {
+        padding: 16px;
+        display: flex;
+        flex-flow: row;
+        justify-content: flex-start;
+        align-items: stretch;
+        height: 100%;
+        gap: 24px;
+        background-color: @color-blue-8;
+        pointer-events: all;
+
+        &.results {
+            width: 100%;
+        }
+
+        &.map {
+            width: fit-content;
+        }
+
+        .sidebar {
+            flex: 0 0 auto;
+            width: 186px;
+            display: flex;
+            flex-flow: column;
+            justify-content: flex-start;
+            align-items: stretch;        
+        }
+
+        .search-results {
+            flex: 1 1 100%;
+            overflow: scroll;
+            .no-scrollbars;
+        }
+
+        .extra {
+            flex: 0 0 auto;
+            width: 364px;
+            @media only screen and (max-width: (1199px)) {
+                display: none;
+            }        
+        }
+
+        &.map {
+            .search-results, .extra {
+                display: none;
+            }
+        }
+    }
+}
+
