@@ -19,8 +19,7 @@
         flex-flow: column;
         align-items: center;
         .desktop({
-            padding: 16px 56px;
-            padding-bottom: 48px;
+            padding: 16px;
         });
         .mobile({
             padding: 16px 16px;
@@ -62,15 +61,17 @@
     }
 
     .submit {
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        z-index: 100;
         .mobile({
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            z-index: 100;
             width: 100%;
         });
         .desktop({
-            width: @desktop-right-side-width;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
         });
         height: 48px;
 
@@ -79,7 +80,7 @@
         align-items: center;
         justify-content: center;
         .desktop({
-            padding: 0 56px;
+            padding: 16px;
         });
         .mobile({
             padding: 0 16px;

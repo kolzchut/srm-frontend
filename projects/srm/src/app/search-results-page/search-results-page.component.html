@@ -26,10 +26,18 @@
     <div class='extra'>
 
     </div>
-    @if (state.filtersVisible) {
-        <div class='overlay'></div>
-        <div class='filters'>
-
+    @if (filtersState.active || state.areaSearchVisible) {
+        <div class='overlay'>
+            @if (filtersState.active) {
+                <div class='modal'>
+                    <app-search-filters 
+                        [searchParams]='searchParams'
+                        [areaSearchState]='areaSearchState'
+                        [filtersState]='filtersState'
+                        [searchState]='searchState'
+                    ></app-search-filters>
+                </div>
+            }
         </div>
     }
 </div>

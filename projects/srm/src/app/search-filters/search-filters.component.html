@@ -4,12 +4,12 @@
             <div class='section-header'>
                 <!-- <div class='title' *ngIf='!searchParams.response'>סוגי שירות:</div>
                 <div class='title' *ngIf='!!searchParams.response'>סוגי שירות נוספים:</div> -->
-                <div class='title'>סוגי שירות:</div>
+                <div class='title'>סינון סוגי שירותים:</div>
                 <a class='clear' (activated)='filtersState.currentSearchParams.filter_responses = []; filtersState.pushSearchParams()' clickOnReturn role='button' tabindex="0" aria-label="ניקוי המסננים לסוגי השירותים">ניקוי</a>
             </div>
             <app-response-selection-widget [responses]='filtersState.responseItems' [selectedResponses]='(this.filtersState.currentSearchParams && this.filtersState.currentSearchParams.filter_responses) || []' (toggle)='filtersState.toggleResponse($event)'></app-response-selection-widget>
         </div>
-        <app-search-filters-situation-section title='קהלי יעד' [situations]='filtersState.audiences' [filtersState]='filtersState' [field]='"filter_audiences"'></app-search-filters-situation-section>
+        <app-search-filters-situation-section title='סינון קהלי יעד' [situations]='filtersState.audiences' [filtersState]='filtersState' [field]='"filter_audiences"'></app-search-filters-situation-section>
         <app-search-filters-situation-section title='מצבים רפואיים ומוגבלויות' [situations]='filtersState.health_issues' [filtersState]='filtersState' [field]='"filter_health_issues"'></app-search-filters-situation-section>
         <app-search-filters-situation-section title='מוכרות ממשלתית' [situations]='filtersState.others.benefit_holders' [filtersState]='filtersState' [field]='"filter_benefit_holders"'></app-search-filters-situation-section>
         <app-search-filters-situation-section title='מצב תעסוקתי' [situations]='filtersState.others.employment' [filtersState]='filtersState' [field]='"filter_employment"'></app-search-filters-situation-section>
