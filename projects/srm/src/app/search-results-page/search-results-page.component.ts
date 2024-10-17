@@ -4,6 +4,7 @@ import { Card, SearchParams, ViewPort } from '../consts';
 import { SearchState } from '../search-results/search-state';
 import { FiltersState } from '../search-filters/filters-state';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
+import { filter, take, timer } from 'rxjs';
 
 @Component({
   selector: 'app-search-results-page',

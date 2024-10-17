@@ -1,4 +1,4 @@
-<div class='container' [style.width]='width | async' *ngIf='state.showResults | async'
+<div class='container' *ngIf='state.showResults | async'
     [attr.aria-role]='layout.mobile() ? "modal" : null'
 >
     <div class='mobile-input' *ngIf='layout.mobile()'>

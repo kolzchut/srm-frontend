@@ -27,16 +27,17 @@ export class AreaSearchSelectorResultsComponent implements OnInit {
     {name: 'איזור באר-שבע', display: 'איזור באר-שבע', bounds: [34.5, 30.8, 35.5, 31.5]},
   ];
 
-  width: Observable<string>;
+  // width: Observable<string>;
 
   constructor(public layout: LayoutService) {
   }
 
   ngOnInit(): void {
-    this.width = this.state.resultsWidth.pipe(
-      untilDestroyed(this),
-      map((w) => this.layout.mobile() ? '100%' : `${w}px`)
-    );
+    // this.width = '100%';
+    //  this.state.resultsWidth.pipe(
+    //   untilDestroyed(this),
+    //   map((w) => this.layout.mobile() ? '100%' : `${w}px`)
+    // );
     this.state.showResults.pipe(
       untilDestroyed(this),
       delay(0),

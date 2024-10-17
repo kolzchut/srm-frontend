@@ -11,7 +11,7 @@ export class AreaSearchState {
 
   // Layout and UI
   resultsWidth = new BehaviorSubject<number>(200);
-  showResults = new BehaviorSubject<boolean>(false);
+  showResults = new BehaviorSubject<boolean>(true);
   inputPlaceholder = new BehaviorSubject<string>('חיפוש');
   selectorResize = new Subject<void>();
 
@@ -96,6 +96,10 @@ export class AreaSearchState {
     this.selectorResize.next();
   }
 
+  forceFocusInput() {
+    this.areaInputEl?.focus();
+  }
+
   focusInput() {
     this.inputFocus = true;
     this.startSearching();
@@ -143,25 +147,27 @@ export class AreaSearchState {
   }
 
   startSearching(): void {
+    console.log('startSearching', this.searching_);
     if (this.searching_) {
       return;
     }
     this.searching_ = true;
     this.inputPlaceholder_ = 'ניתן לחפש ישוב או איזור מוגדר';
     this.selectorResize.next();
-    timer(500).subscribe(() => {
-      this.resultsWidth.next(this.areaInputEl.offsetWidth - 2);
-      this.showResults_ = true;
-    });
+    // timer(500).subscribe(() => {
+    //   this.resultsWidth.next(this.areaInputEl.offsetWidth - 2);
+    //   this.showResults_ = true;
+    // });
   }
 
   stopSearching(): void {
+    console.log('stopSearching', this.searching_);
     if (!this.searching_) {
       return;
     }
     this.searching_ = false;
     this.inputPlaceholder_ = 'חיפוש';
-    this.showResults_ = false;
+    // this.showResults_ = false;
     this.resultsFocus = 0;
     this.query_ = null;
     timer(500).subscribe(() => {    

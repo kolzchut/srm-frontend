@@ -1,0 +1,36 @@
+<div class='status button'>
+    @if (areaSearchState.nationWide_ === false || areaSearchState.area_) {
+        <span class='icon map-region'></span>
+        <span class='text'>{{areaSearchState.area_ || 'באיזור המפה'}}</span>
+        @if (searchState.mapLoading()) {
+            <span class='count count-loading'></span>
+        } @else {
+            <span class='count'>{{searchState.mapCount()}}</span>
+        }
+    }
+    @else {
+        <span class='icon nation-wide'></span>
+        <span class='text'>בכל הארץ</span>
+        @if (searchState.nationalLoading()) {
+            <span class='count count-loading'></span>
+        } @else {
+            <span class='count'>{{searchState.nationWideCount()}}</span>
+        }
+    }
+        
+</div>
+<div class='toggle button' (click)='areaSearch()'>
+    @if (areaSearchState.area_) {
+        <span class='icon nation-wide'></span>
+        <span class='text'>בכל הארץ</span>
+        @if (searchState.nationalLoading()) {
+            <span class='count count-loading'></span>
+        } @else {
+            <span class='count'>{{searchState.nationWideCount()}}</span>
+        }
+    }
+    @else {
+        <span class='icon search'></span>
+        <span class='text'>חיפוש ישוב</span>
+    }
+</div>

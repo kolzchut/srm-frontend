@@ -80,6 +80,7 @@ import { MenuPopupAccordionComponent } from './menu/menu-popup/menu-popup-accord
 import { SearchResultsPageComponent } from './search-results-page/search-results-page.component';
 import { SrpStaticFiltersComponent } from './search-results-page/srp-static-filters/srp-static-filters.component';
 import { SrpMapToggleComponent } from './search-results-page/srp-map-toggle/srp-map-toggle.component';
+import { SrpAreaSearchButtonsComponent } from './search-results-page/srp-area-search-buttons/srp-area-search-buttons.component';
 
 @NgModule({
   declarations: [
@@ -153,7 +154,8 @@ import { SrpMapToggleComponent } from './search-results-page/srp-map-toggle/srp-
     MenuPopupAccordionComponent,
     SearchResultsPageComponent,
     SrpStaticFiltersComponent,
-    SrpMapToggleComponent
+    SrpMapToggleComponent,
+    SrpAreaSearchButtonsComponent
   ],
   imports: [
     BrowserModule,

@@ -3,6 +3,10 @@
     [class.map]='!state.resultsVisible'
 >
     <div class='sidebar'>
+        <app-srp-area-search-buttons
+            [areaSearchState]='areaSearchState'
+            [searchState]='searchState'
+        ></app-srp-area-search-buttons>
         <app-srp-map-toggle
             [state]='state'
         ></app-srp-map-toggle>
@@ -24,9 +28,8 @@
         ></app-search-results>
     </div>
     <div class='extra'>
-
     </div>
-    @if (filtersState.active || state.areaSearchVisible) {
+    @if (filtersState.active || areaSearchState.searching_) {
         <div class='overlay'>
             @if (filtersState.active) {
                 <div class='modal'>
@@ -36,6 +39,14 @@
                         [filtersState]='filtersState'
                         [searchState]='searchState'
                     ></app-search-filters>
+                </div>
+            }
+            @if (areaSearchState.searching_) {
+                <div class='modal' appArrowToTab>
+                    <div class='selection-widget' appArrowToTab>
+                        <app-area-search-selector [state]='areaSearchState'></app-area-search-selector>
+                        <app-area-search-selector-results [state]='areaSearchState'></app-area-search-selector-results>
+                    </div>
                 </div>
             }
         </div>

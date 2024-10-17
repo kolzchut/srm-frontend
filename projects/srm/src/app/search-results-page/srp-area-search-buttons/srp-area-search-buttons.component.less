@@ -1,0 +1,103 @@
+@import '../../../common.less';
+
+:host {
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    gap: 8px;
+
+    .button {
+        display: flex;
+        height: 36px;
+        padding: 0 2px 0 4px;
+        justify-content: flex-start;
+        align-items: center;
+        border-radius: 32px;
+
+        .icon {
+            width: 32px;
+            height: 32px;
+            .background-image;
+        }
+
+        .text {
+            .font-rag-sans;
+            font-size: 16px;
+            line-height: 20px;
+        }
+
+        .count {
+            margin-right: auto;
+            width: fit-content;
+            border-radius: 12px;
+            background: @color-blue-6;
+            min-width: 24px;
+            padding: 0 6px;
+            height: 24px;
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            justify-content: center;
+            color: @color-blue-0;
+            .font-rag-sans;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 20px;
+
+            &.count-loading {
+                .background-image;
+                background-image: url(../../../assets/img/icon-count-loading.svg);
+                background-size: 7px;
+            }
+        }
+
+        &.status {
+            background: @color-white;
+            box-shadow: 0px 0px 5px 0px rgba(31, 55, 246, 0.20);    
+
+            .icon {
+                &.nation-wide {
+                    background-image: url(../../../assets/img/icon-nation-wide-blue-0.svg);
+                    background-size: 32px;
+                }
+                &.map-region {
+                    background-image: url(../../../assets/img/icon-map-region-blue-0.svg);
+                    background-size: 32px;
+                }
+            }
+
+            .text {
+                color: @color-blue-0;
+                font-weight: 600;
+            }
+        }
+
+        &.toggle {
+            border: 1px solid @color-blue-5;
+            background: @color-blue-8;
+            box-shadow: 0px 4px 4px 0px rgba(31, 55, 246, 0.10) inset;
+            cursor: pointer;
+
+            .icon {
+                &.nation-wide {
+                    background-image: url(../../../assets/img/icon-nation-wide-blue-3.svg);
+                    background-size: 32px;
+                }
+                &.search {
+                    background-image: url(../../../assets/img/icon-search-blue-3.svg);
+                    background-size: 24px;
+                }
+            }
+
+            .text {
+                color: @color-blue-1;
+                font-weight: 300;
+            }
+
+            &:hover {
+                border: 1px solid @color-blue-3;
+                background: @color-white;
+            }    
+        }
+    }
+}
