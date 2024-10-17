@@ -6,103 +6,114 @@
         [query]='query'
         [searchParams]='searchParams'
     ></app-searchbox-header>
-    <div class='main-content' *ngIf='layout.desktop() && stage === "search-results"'>
-        <!-- TODO: Incorporate in the other 'main-content' element -->
-         <app-search-results-page
-            [searchParams]='searchParams'
-            [serachResultsActive]="stage === 'search-results'"
-            [didYouMean]='didYouMean'
-            [searchState]='searchState'
-            [filtersState]='filtersState'
-            [areaSearchState]='areaSearchState'
-            (zoomout)='zoomOutMap($event)'
-            (visibleCount)='visibleCount = $event'
-            (nationalCount)='nationalCount = $event'
-            (hoverCard)='hoverCard($event)'
-         ></app-search-results-page>
-    </div>
-    <div class='main-content' *ngIf='(stage === "search-results" && layout.mobile()) || stage === "card" || stage === "point"'>
-        <div class='search-results'>
-            <app-searchbox-header *ngIf='layout.mobile() &&  stage === "search-results"' class='layout-mobile'
+    <div class='main-content' *ngIf='stage === "search-results" || stage === "card" || stage === "point"'>
+        @if (layout.mobile() &&  stage === "search-results") {
+            <app-searchbox-header class='layout-mobile'
                     [query]='query'
                     [searchParams]='searchParams'
             >
                 <app-search-filters-bar [filtersState]='filtersState'></app-search-filters-bar>
             </app-searchbox-header>
-            <app-results-drawer
-                [state]='stage === "point" ? DrawerState.Hidden : (searchState.onlyNational() ? DrawerState.Most : drawerState)'
-                [nationalCount]='nationalCount'
-                [searchState]='searchState'
-                [areaSearchState]='areaSearchState'
-                *ngIf='searchParams'
-                [class.visible]='stage === "point" || stage === "search-results"'
-                [scrollAll]='false'
-                (handle)='handleDrawer($event)'
-                (size)='drawerSize = $event'
-            >
-                <div class='content search-filters' ngProjectAs='content-header' 
-                    [class.visible]='stage === "search-results" || (stage === "point" && !card)'
-                    [class.filters]='filtersVisible'
-                >
-                    <app-search-filters-bar class='layout-desktop' [filtersState]='filtersState' *ngIf='layout.desktop()'></app-search-filters-bar>
-                    <app-search-filters 
-                        *ngIf='filtersVisible'
-                        [searchParams]='searchParams'
-                        [areaSearchState]='areaSearchState'
-                        [filtersState]='filtersState'
+        }
+        <div class='search-results'>
+            @if (searchParams) {
+                @if (layout.mobile()) {
+                    <app-results-drawer
+                        [state]='stage === "point" ? DrawerState.Hidden : (searchState.onlyNational() ? DrawerState.Most : drawerState)'
+                        [nationalCount]='nationalCount'
                         [searchState]='searchState'
-                        #searchFilters
-                    ></app-search-filters>
-                </div>
-                <div class='content main' ngProjectAs='content' 
-                    [class.visible]='stage === "search-results" && !filtersVisible'
-                    [class.filters]='filtersVisible'
-                >
-                    <app-search-results
-                        [class.hidden]='filtersVisible === true' 
-                        [class.shown]='filtersVisible === false' 
+                        [areaSearchState]='areaSearchState'
+                        [class.visible]='stage === "point" || stage === "search-results"'
+                        [scrollAll]='false'
+                        (handle)='handleDrawer($event)'
+                        (size)='drawerSize = $event'
+                    >
+                        <div class='content search-filters' ngProjectAs='content-header' 
+                            [class.visible]='stage === "search-results" || (stage === "point" && !card)'
+                            [class.filters]='filtersVisible'
+                        >
+                            <app-search-filters-bar class='layout-desktop' [filtersState]='filtersState' *ngIf='layout.desktop()'></app-search-filters-bar>
+                            <app-search-filters 
+                                *ngIf='filtersVisible'
+                                [searchParams]='searchParams'
+                                [areaSearchState]='areaSearchState'
+                                [filtersState]='filtersState'
+                                [searchState]='searchState'
+                                #searchFilters
+                            ></app-search-filters>
+                        </div>
+                        <div class='content main' ngProjectAs='content' 
+                            [class.visible]='stage === "search-results" && !filtersVisible'
+                            [class.filters]='filtersVisible'
+                        >
+                            <app-search-results
+                                [class.hidden]='filtersVisible === true' 
+                                [class.shown]='filtersVisible === false' 
+                                [searchParams]='searchParams'
+                                [active]="stage === 'search-results'"
+                                [didYouMean]='didYouMean'
+                                [searchState]='searchState'
+                                (zoomout)='zoomOutMap($event)'
+                                (visibleCount)='visibleCount = $event'
+                                (nationalCount)='nationalCount = $event'
+                                (hoverCard)='hoverCard($event)'
+                            ></app-search-results>
+                            <app-disclaimer-footer [homepage]='true'></app-disclaimer-footer>
+                        </div>
+                <!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
+                                    [class.away]='disclaimerVisible || infoPage'> -->
+                    </app-results-drawer>
+                }
+                @if (layout.desktop()) {
+                    <app-search-results-page
+                        [class.visible]='stage === "search-results"'
                         [searchParams]='searchParams'
-                        [active]="stage === 'search-results'"
+                        [serachResultsActive]="stage === 'search-results'"
                         [didYouMean]='didYouMean'
                         [searchState]='searchState'
+                        [filtersState]='filtersState'
+                        [areaSearchState]='areaSearchState'
                         (zoomout)='zoomOutMap($event)'
                         (visibleCount)='visibleCount = $event'
                         (nationalCount)='nationalCount = $event'
                         (hoverCard)='hoverCard($event)'
-                    ></app-search-results>
-                    <app-disclaimer-footer [homepage]='true'></app-disclaimer-footer>
-                </div>
-        <!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
-                            [class.away]='disclaimerVisible || infoPage'> -->
-            </app-results-drawer>
+                    ></app-search-results-page>
+                }
+            }
         </div>
-        <app-branch-container
-            *ngIf='stage === "point"' 
-            [cardId]='card' 
-            [pointId]='point' 
-            [searchParams]='searchParams'
-            (size)='branchSize = $event'
-            (markerProps)='markerProps = $event'
-        >
-        </app-branch-container>
-        <app-card-container
-            *ngIf='stage === "card"' 
-            [cardId]='card' 
-            [searchParams]='searchParams'
-            (center)='centerMap($event)'
-            (size)='branchSize = $event'
-            (zoomout)='zoomOutMap($event, 3000)'
-        >
-        </app-card-container>
-        <app-area-search-selector-results [state]='areaSearchState' *ngIf='layout.mobile()' class='layout-mobile'></app-area-search-selector-results>
-        <app-landing-page-overlay *ngIf='(stage === "search-results" || stage === "card")'
-            [style.display]='showLandingPageOverlay ? "flex" : "none"'
-            [landingPage]='analytics.currentPageLanding'
-            [searchParams]='searchParams' 
-            [cardId]='card'
-            [visibleCount]='visibleCount'
-            (open)='showLandingPageOverlay = $event'
-        ></app-landing-page-overlay>
+        @if (stage === 'point') {
+            <app-branch-container
+                [cardId]='card' 
+                [pointId]='point' 
+                [searchParams]='searchParams'
+                (size)='branchSize = $event'
+                (markerProps)='markerProps = $event'
+            >
+            </app-branch-container>            
+        }
+        @if (stage === 'card') {
+            <app-card-container
+                [cardId]='card' 
+                [searchParams]='searchParams'
+                (center)='centerMap($event)'
+                (size)='branchSize = $event'
+                (zoomout)='zoomOutMap($event, 3000)'
+            >
+            </app-card-container>
+        }
+        @if (layout.mobile()) {
+            <app-area-search-selector-results [state]='areaSearchState' class='layout-mobile'></app-area-search-selector-results>
+        }
+        @if (stage === "search-results" || stage === "card") {
+            <app-landing-page-overlay
+                [style.display]='showLandingPageOverlay ? "flex" : "none"'
+                [landingPage]='analytics.currentPageLanding'
+                [searchParams]='searchParams' 
+                [cardId]='card'
+                [visibleCount]='visibleCount'
+                (open)='showLandingPageOverlay = $event'
+            ></app-landing-page-overlay>
+        }
     </div>
     <app-menu></app-menu>
     

@@ -12,6 +12,10 @@
     align-items: flex-start;
     pointer-events: none;
 
+    &:not(.visible) {
+        display: none;
+    }
+
     .content {
         padding: 16px;
         display: flex;
