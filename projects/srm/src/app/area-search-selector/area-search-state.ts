@@ -6,6 +6,7 @@ import { computed, effect, signal } from "@angular/core";
 import { SearchState } from "../search-results/search-state";
 import { FocusOnRequest } from "../map/map.component";
 import { PlatformService } from "../platform.service";
+import { LayoutService } from "../layout.service";
 
 export class AreaSearchState {
 
@@ -33,7 +34,10 @@ export class AreaSearchState {
   areaInputEl: HTMLInputElement;
   mapMoveSubscription: Subscription | null = null;
 
-  constructor(private api: ApiService, private searchParams: Observable<SearchParams>, public searchState: SearchState, private platform: PlatformService) {
+  constructor(private api: ApiService, private searchParams: Observable<SearchParams>, public searchState: SearchState, private platform: PlatformService, private layout: LayoutService) {
+    effect(() => {
+      this.showResults.next(this.layout.desktop());
+    });
     this.queries.pipe(
       filter((value) => !!value && value.length > 1),
       debounceTime(this.platform.browser() ? 200 : 0),

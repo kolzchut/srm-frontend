@@ -438,7 +438,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.showLandingPageOverlay = false;
     }
     this.searchState = new SearchState();
-    this.areaSearchState = new AreaSearchState(api, this.searchParamsQueue, this.searchState, this.platform);
+    this.areaSearchState = new AreaSearchState(api, this.searchParamsQueue, this.searchState, this.platform, this.layout);
     this.areaSearchState.bounds.pipe(
       untilDestroyed(this),
     ).subscribe((bounds) => {
