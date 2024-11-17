@@ -530,7 +530,7 @@ export class FiltersState {
         }
         const paramsCopy = this._copySearchParams(params);
         this.toggleId({id: item.key}, paramsCopy);
-        this.api.getCounts(paramsCopy).subscribe((result) => {
+        this.api.getCounts(paramsCopy, true).subscribe((result) => {
           const new_doc_count = result.search_counts._current.total_overall;
           if (new_doc_count >= count) {
               item.doc_count = new_doc_count - count;
