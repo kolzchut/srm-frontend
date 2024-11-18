@@ -78,14 +78,16 @@ export class HomepageComponent implements AfterViewInit{
   }
 
   resizeGroupItems() {
-    timer(0).subscribe(() => {
-      const el = this.homepageGroups.nativeElement as HTMLElement;
-      const items = el.querySelectorAll('.homepage-group') as NodeListOf<HTMLElement>;
-      items.forEach((item: HTMLElement) => {
-        const rowHeight = parseInt(getComputedStyle(el).getPropertyValue('grid-auto-rows'));
-        const rowGap = parseInt(getComputedStyle(el).getPropertyValue('grid-row-gap'));
-        const rowSpan = Math.ceil((item.getBoundingClientRect().height + rowGap)/(rowHeight + rowGap));
-        item.style.gridRowEnd = 'span ' + rowSpan;
+    this.platform.browser(() => {
+      timer(0).subscribe(() => {
+        const el = this.homepageGroups.nativeElement as HTMLElement;
+        const items = el.querySelectorAll('.homepage-group') as NodeListOf<HTMLElement>;
+        items.forEach((item: HTMLElement) => {
+          const rowHeight = parseInt(getComputedStyle(el).getPropertyValue('grid-auto-rows'));
+          const rowGap = parseInt(getComputedStyle(el).getPropertyValue('grid-row-gap'));
+          const rowSpan = Math.ceil((item.getBoundingClientRect().height + rowGap)/(rowHeight + rowGap));
+          item.style.gridRowEnd = 'span ' + rowSpan;
+        });
       });
     });
   }
