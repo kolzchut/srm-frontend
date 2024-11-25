@@ -454,6 +454,7 @@ export class FiltersState {
     this.closeWithParams();
   }
 
+
   closeWithParams() {
     this.active = false;
     this.pushSearchParams();
@@ -465,6 +466,11 @@ export class FiltersState {
     }
     this.currentSearchParams = this.restoreSearchParams;
     this.pushSearchParams();
+  }
+
+  cancelAndClose() {
+    this.cancel();
+    this.active = false;
   }
 
   toggle() {
