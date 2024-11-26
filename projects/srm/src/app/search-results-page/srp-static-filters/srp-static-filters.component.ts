@@ -29,4 +29,8 @@ export class SrpStaticFiltersComponent implements OnChanges {
   checkedResponse(item: DistinctItem) {
     return (this.filtersState.currentSearchParams?.filter_responses || []).indexOf(item.key || '') > -1
   }
+
+  getCount(item: any): number {
+    return parseInt(this.count((this.filtersState.currentSearchParams?.filter_responses || []).indexOf(item.key) > -1 ? null : item));
+}
 }

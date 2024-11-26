@@ -116,6 +116,7 @@ export class FiltersState {
   situationsOrder: {[key: string]: number} = {};
 
   staticFilters: DistinctItem[] = [];
+  maxStaticFilters = 7;
   staticFiltersIds: string[] = [];
   allFilteredSituations: string[] = [];
   allFilteredResponses: string[] = [];
@@ -509,7 +510,7 @@ export class FiltersState {
         .sort((a, b) => (b.doc_count || 0) - (a.doc_count || 0))
         .filter(x => x.key !== this.currentSearchParams.situation)
         .filter(x => x.key !== this.currentSearchParams.response)
-        .slice(0, 5)
+        .slice(0, this.maxStaticFilters)
         .map(x => {
           return {
             key: x.key,
