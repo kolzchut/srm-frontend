@@ -158,10 +158,10 @@ export class AreaSearchState {
     this.searching_ = true;
     this.inputPlaceholder_ = 'ניתן לחפש ישוב או איזור מוגדר';
     this.selectorResize.next();
-    // timer(500).subscribe(() => {
-    //   this.resultsWidth.next(this.areaInputEl.offsetWidth - 2);
-    //   this.showResults_ = true;
-    // });
+    timer(500).subscribe(() => {
+      this.resultsWidth.next(this.areaInputEl.offsetWidth - 2);
+      this.showResults_ = true;
+    });
   }
 
   stopSearching(): void {
@@ -171,7 +171,7 @@ export class AreaSearchState {
     }
     this.searching_ = false;
     this.inputPlaceholder_ = 'חיפוש';
-    // this.showResults_ = false;
+    this.showResults_ = false;
     this.resultsFocus = 0;
     this.query_ = null;
     timer(500).subscribe(() => {    
