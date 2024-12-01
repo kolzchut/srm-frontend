@@ -79,8 +79,9 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   map_: MapComponent | null = null;
 
   DrawerState = DrawerState;
-  drawerState = DrawerState.Half;
-  
+  drawerState = DrawerState.Full;
+  isHideMapIcon = false;
+
   @ViewChild('searchFilters') searchFilters: SearchFiltersComponent;
   filtersVisible: boolean | null = null;
   markerProps: any;
@@ -358,7 +359,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     ).subscribe((data: any) => {
       this.stage_ = data.stage;
       this.searchSvc.search(null);
-      this.drawerState = DrawerState.Half;
+      this.drawerState = DrawerState.Full;
       this.pushSearchParamsCalc();
       if (['about', 'homepage'].indexOf(this.stage) >= 0) {
         this.a11y.setSeoTitle(`כל שירות | במתכונת חירום | כל השירותים החברתיים, לכל מצב, בכל מקום`);
@@ -525,6 +526,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.filtersVisible && this.drawerState === DrawerState.Peek) {
       this.drawerState = DrawerState.Half;
     }
+    this.isHideMapIcon = this.drawerState !== DrawerState.Full;
   }
 
   setSearchParams(searchParams: SearchParams) {
@@ -687,9 +689,6 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   setFiltersVisible(visible: boolean) {
     this.filtersVisible = visible;
-    if (visible) {
-      this.drawerState = DrawerState.Half;
-    }
     if (visible && this.point && this.platform.browser()) {
       timer(0).pipe(
         switchMap(() => 
@@ -760,6 +759,18 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.map?.pointsHover.next({
         point_id: card.point_id,      
       });
+    }
+  }
+
+  toggleShowMap():void {
+    this.drawerState = this.drawerState === DrawerState.Full ? DrawerState.Half : DrawerState.Full;
+    this.isHideMapIcon = this.drawerState !== DrawerState.Full;
+  }
+
+  openHalfDrawer(): void {
+    if (this.drawerState !== DrawerState.Half) {
+      this.drawerState = DrawerState.Half;
+      this.isHideMapIcon = true;
     }
   }
 }

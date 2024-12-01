@@ -4,6 +4,7 @@ import { AreaSearchState } from './area-search-state';
 import { animationFrameScheduler, delay, distinct, distinctUntilChanged, filter, interval, map, switchMap, take, tap, timer } from 'rxjs';
 import { PlatformService } from '../platform.service';
 import { LayoutService } from '../layout.service';
+import { PageComponent } from '../page/page.component';
 
 @UntilDestroy()
 @Component({
@@ -18,14 +19,15 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
   @ViewChild('mapRegion') mapRegionEl: ElementRef;
   @ViewChild('nationWide') nationWideEl: ElementRef;
   @ViewChild('area', {static: false}) areaEl: ElementRef;
+  @Input() isHideMapIcon = false;
 
 
   selectorWidth = 140;
   selectorRight = 0;
 
   inputPlaceholder = 'חיפוש';
-  
-  constructor(private el: ElementRef, private ps: PlatformService) {
+
+  constructor(private el: ElementRef, private ps: PlatformService, private page: PageComponent) {
     effect(() => {
       if (!this.state.searchState.onlyNational()) {
         timer(0).subscribe(() => {
@@ -95,7 +97,21 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
   inputTouched(event: TouchEvent) {
     event.preventDefault();
     event.stopPropagation();
+    this.page.openHalfDrawer();
     this.state.startSearching();
+  }
+
+  toggleDrawer(): void {
+    this.page.toggleShowMap();
+  }
+
+  openHalfDrawer(): void {
+    this.page.openHalfDrawer();
+  }
+
+  isHideIcon(): boolean {
+    if (this.isHideMapIcon) return true;
+    return this.state.nationWide_ === false && !this.state.searching_;
   }
 
 }

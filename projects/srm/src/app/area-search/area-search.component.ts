@@ -10,6 +10,7 @@ import { LayoutService } from '../layout.service';
 export class AreaSearchComponent implements OnInit {
 
   @Input() areaSearchState: AreaSearchState;
+  @Input() isHideMapIcon = false;
 
   constructor(public layout: LayoutService) { }
 

@@ -17,12 +17,21 @@
             <span class='count'>{{state.searchState.nationWideCount()}}</span>
         }
     </button>
+    <button class='map-region'
+        [class.with-text]='true'
+        [class.active]='true'
+        [class.hidden]='isHideIcon()'
+        (click)='toggleDrawer()'
+    >
+        <span class='layout-mobile'>מפה</span>
+    </button>
     <button class='map-region' clickOnReturn #mapRegion
             [class.with-text]='showButtonText()'
             [class.active]='isActive(false)'
             (activated)='selectMapRegion()'
             [interactionEvent]='"geo_map_area"'
             [interactionEventWhere]='"geo-widget"'
+            (click)="openHalfDrawer()"
     >
         <span class='layout-desktop'>באיזור המפה</span>
         <span class='layout-mobile'>במפה</span>

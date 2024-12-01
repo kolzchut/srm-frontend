@@ -1,4 +1,5 @@
 <div class='situations-container'>
+    <div class='closer' (click)='filtersState.cancelAndClose()' role="button" aria-label="סגירת תיבת הטקסט וחזרה לעמוד הקודם"></div>
     <div class='situations'>
         <div class='section' *ngIf='filtersState.responseItems && filtersState.responseItems.length'>
             <div class='section-header'>

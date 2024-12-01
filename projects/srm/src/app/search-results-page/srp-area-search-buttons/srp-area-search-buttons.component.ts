@@ -23,4 +23,12 @@ export class SrpAreaSearchButtonsComponent {
       });  
     }
   }
+  
+  reSearch() {
+    if (!this.areaSearchState.area_) return
+    this.areaSearchState.startSearching();
+    timer(100).subscribe(() => {
+      this.areaSearchState.forceFocusInput();
+    });  
+  }
 }
