@@ -21,11 +21,12 @@ import { PlatformService } from '../platform.service';
 })
 export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit {
 
-  @Input() state: DrawerState = DrawerState.Half;
+  @Input() state: DrawerState = DrawerState.Full;
   @Input() scrollAll = false;
   @Input() nationalCount = 0;
   @Input() areaSearchState: AreaSearchState;
   @Input() searchState: SearchState;
+  @Input() isHideMapIcon = false;
   @Output() handle = new EventEmitter<string>();
   @Output() scrollTop = new EventEmitter<boolean>();
   @Output() size = new EventEmitter<number>();
@@ -65,28 +66,21 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   calcHeight(): number {
-    const hostHeight = this.hostHeight;
-    let ret = hostHeight / 2;
-    let moveDiff = this.moveDiff;
-    if (this.layout.desktop()) {
-      ret = hostHeight;
-    } else if (this.state === DrawerState.Hidden) {
-      ret = hostHeight;
-    } else if (this.state === DrawerState.Peek) {
-      ret = (hostHeight - 56);
-    } else if (this.state === DrawerState.Half) {
-      ret = hostHeight*0.33;
-    } else if (this.state === DrawerState.Most) {
-      ret = 56;
-    } else if (this.state === DrawerState.Full) {
-      ret = 0;
+    if (this.layout.desktop()) return this.hostHeight;
+    const mobileDrawerHeightMap = {
+      [DrawerState.Hidden]: this.hostHeight,
+      [DrawerState.Peek]: this.hostHeight - 56,
+      [DrawerState.Half]: this.hostHeight * 0.33,
+      [DrawerState.Most]: 56,
+      [DrawerState.Full]: 0,
+      [DrawerState.Minimal]: this.hostHeight / 2,
+    };
+    let drawerHeight = mobileDrawerHeightMap[this.state] + this.moveDiff;
+    if (drawerHeight > this.hostHeight) {
+      drawerHeight = this.hostHeight;
     }
-    ret += moveDiff;
-    if (ret > hostHeight) {
-      ret = hostHeight;
-    }
-    this.calcedHeight = ret;
-    return ret
+    this.calcedHeight = drawerHeight;
+    return this.calcedHeight;
   }
 
   // calcTop(): number {

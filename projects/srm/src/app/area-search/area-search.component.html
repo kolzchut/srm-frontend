@@ -1,5 +1,5 @@
 <div class='selection-widget' appArrowToTab>
-    <app-area-search-selector [state]='areaSearchState'></app-area-search-selector>
+    <app-area-search-selector [state]='areaSearchState' [isHideMapIcon]='isHideMapIcon'></app-area-search-selector>
     <app-area-search-selector-results *ngIf='layout.desktop()' [state]='areaSearchState'></app-area-search-selector-results>
 </div>
 <app-area-search-national-services-count [areaSearchState]='areaSearchState'></app-area-search-national-services-count>

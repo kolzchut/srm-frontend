@@ -13,7 +13,8 @@
         <div class='handle layout-mobile' (click)='$event.stopPropagation()' role='presentation'>
             <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
         </div>
-        <app-area-search [areaSearchState]='areaSearchState' *ngIf='layout.mobile()' class='layout-mobile'></app-area-search>
+        <app-area-search [areaSearchState]='areaSearchState' *ngIf='layout.mobile()' class='layout-mobile' [isHideMapIcon]='isHideMapIcon'
+        ></app-area-search>
         <ng-content select='content-header'></ng-content>
     </div>
     <div class='scrollable' #scrollable>
