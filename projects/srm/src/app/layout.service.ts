@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, signal } from '@angular/core';
+import { effect, Injectable, OnDestroy, signal } from '@angular/core';
 import { WindowService } from './window.service';
 import { fromEvent, Subject, takeUntil, throttleTime } from 'rxjs';
 import { PlatformService } from './platform.service';
@@ -22,6 +22,11 @@ export class LayoutService implements OnDestroy {
           .subscribe(() => this._check());
       }
       this._check();
+    });
+
+    effect(() => {
+      console.log(`window: `, this.window);
+      console.log(`Mobile: ${this.mobile()}, Desktop: ${this.desktop()}`);
     });
   }
 
