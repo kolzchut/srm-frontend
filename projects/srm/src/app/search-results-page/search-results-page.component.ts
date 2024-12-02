@@ -5,6 +5,7 @@ import { SearchState } from '../search-results/search-state';
 import { FiltersState } from '../search-filters/filters-state';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import { filter, take, timer } from 'rxjs';
+import { LayoutService } from '../layout.service';
 
 @Component({
   selector: 'app-search-results-page',
@@ -26,6 +27,6 @@ export class SearchResultsPageComponent {
 
   state = new SearchResultsPageState();
 
-  constructor() { }
+  constructor(public layout: LayoutService) { }
 
 }

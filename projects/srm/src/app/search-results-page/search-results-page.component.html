@@ -1,4 +1,4 @@
-<div class='content'
+<div *ngIf='layout.desktop()' class='content'
     [class.results]='state.resultsVisible'
     [class.map]='!state.resultsVisible'
 >
