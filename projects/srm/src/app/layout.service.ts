@@ -23,11 +23,6 @@ export class LayoutService implements OnDestroy {
       }
       this._check();
     });
-
-    effect(() => {
-      console.log(`window: `, this.window);
-      console.log(`Mobile: ${this.mobile()}, Desktop: ${this.desktop()}`);
-    });
   }
 
   private _check() {

@@ -475,6 +475,10 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log("in page layout", this.layout);
+    console.log("isMobile in page", this.layout.mobile());
+    console.log("isDesktop in page", this.layout.desktop());
+
   }
 
   ngAfterViewInit(): void {
