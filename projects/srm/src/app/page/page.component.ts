@@ -475,10 +475,6 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log("in page layout", this.layout);
-    console.log("isMobile in page", this.layout.mobile());
-    console.log("isDesktop in page", this.layout.desktop());
-
   }
 
   ngAfterViewInit(): void {
@@ -531,6 +527,9 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.drawerState = DrawerState.Half;
     }
     this.isHideMapIcon = this.drawerState !== DrawerState.Full;
+    console.log("in page layout", this.layout);
+    console.log("isMobile in page", this.layout.mobile());
+    console.log("isDesktop in page", this.layout.desktop());
   }
 
   setSearchParams(searchParams: SearchParams) {

@@ -3,10 +3,3 @@
     <span *ngIf='message'>{{message}}</span>
     <!-- <div class='count' *ngIf='totalFilters'>{{totalFilters}}</div> -->
 </button>
-<div class='discovery' *ngIf='filtersState.showDiscovery && !filtersState.active' (click)='activate.next()' (mousedown)='$event.stopPropagation()' (touchstart)='$event.stopPropagation()'>
-    <span class='text'>
-        וואו, המון תוצאות… שווה אולי למקד את המפה או <strong>להפעיל סינון</strong>
-    </span>
-    <div class='arrow'></div>
-    <div class='close' (click)='filtersState.showDiscovery = false; $event.stopPropagation()'></div>
-</div>
