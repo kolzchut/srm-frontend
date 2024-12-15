@@ -26,7 +26,6 @@
                     [scrollAll]='false'
                     (handle)='handleDrawer($event)'
                     (size)='drawerSize = $event'
-                    [isHideMapIcon]='isHideMapIcon'
                 >
                     <div class='content search-filters' ngProjectAs='content-header' 
                         [class.visible]='stage === "search-results" || (stage === "point" && !card)'
