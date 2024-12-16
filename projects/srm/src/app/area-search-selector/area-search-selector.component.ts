@@ -99,6 +99,7 @@ export class AreaSearchSelectorComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     this.page.openHalfDrawer();
     this.state.startSearching();
+    this.page.openHalfDrawer();
   }
 
   toggleDrawer(): void {

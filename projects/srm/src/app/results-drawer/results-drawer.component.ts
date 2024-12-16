@@ -50,6 +50,9 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
   constructor(public layout: LayoutService, private window: WindowService, private host: ElementRef, private platform: PlatformService) { }
 
   ngOnInit(): void {
+    if (this.layout.mobile()){
+      this.state = DrawerState.Full;
+    }
   }
 
   ngOnChanges(): void {

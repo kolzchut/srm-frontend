@@ -79,7 +79,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   map_: MapComponent | null = null;
 
   DrawerState = DrawerState;
-  drawerState = DrawerState.Full;
+  drawerState = DrawerState.Half;
   isHideMapIcon = false;
 
   @ViewChild('searchFilters') searchFilters: SearchFiltersComponent;
@@ -359,7 +359,9 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     ).subscribe((data: any) => {
       this.stage_ = data.stage;
       this.searchSvc.search(null);
-      this.drawerState = DrawerState.Full;
+      if (this.layout.mobile()){
+        this.drawerState = DrawerState.Full;
+      }
       this.pushSearchParamsCalc();
       if (['about', 'homepage'].indexOf(this.stage) >= 0) {
         this.a11y.setSeoTitle(`כל שירות | במתכונת חירום | כל השירותים החברתיים, לכל מצב, בכל מקום`);
@@ -475,6 +477,9 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.layout.mobile()){
+      this.drawerState = DrawerState.Full;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -527,9 +532,6 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.drawerState = DrawerState.Half;
     }
     this.isHideMapIcon = this.drawerState !== DrawerState.Full;
-    console.log("in page layout", this.layout);
-    console.log("isMobile in page", this.layout.mobile());
-    console.log("isDesktop in page", this.layout.desktop());
   }
 
   setSearchParams(searchParams: SearchParams) {
