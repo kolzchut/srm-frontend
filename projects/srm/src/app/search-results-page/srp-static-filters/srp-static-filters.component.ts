@@ -30,7 +30,9 @@ export class SrpStaticFiltersComponent implements OnChanges {
     return (this.filtersState.currentSearchParams?.filter_responses || []).indexOf(item.key || '') > -1
   }
 
-  getCount(item: any): number {
-    return parseInt(this.count((this.filtersState.currentSearchParams?.filter_responses || []).indexOf(item.key) > -1 ? null : item));
+  getIsShowOption(item: any): boolean {
+    if (this.checkedSituation(item) || this.checkedResponse(item)) return true;
+    const count = parseInt(this.count((this.filtersState.currentSearchParams?.filter_responses || []).indexOf(item.key) > -1 ? null : item));
+    return count > 5 
 }
 }
