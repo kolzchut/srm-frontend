@@ -1,0 +1,35 @@
+<div class='homepage-groups' #homepageGroups>
+    @for (group of groups; track group.title) {
+        <div class='homepage-group' [style.gridRowEnd]='"span 15"'>
+            <div class='homepage-group-title'>
+                <h3>
+                    <img src='../../assets/img/filter-category-icon-title.svg'>
+                    <span>{{group.title}}</span>
+                    <span *ngIf='(!!group.query)' class='arrow-left'></span>
+                </h3>
+            </div>
+            <div class='homepage-group-items'>
+                @for (item of group.items; track item.query) {
+                    <a class='homepage-group-item' [routerLink]='["/s", item.query]' 
+                        [queryParams]="{from: 'homepage-group-item'}"
+                        interactionEvent='homepage-link' interactionEventWhere='homepage' [interactionEventContent]='item.title'
+                        clickOnReturn>
+                        <img src='../../assets/img/filter-category-icon.svg'>
+                        <span>
+                            {{item.title}}
+                        </span>
+                    </a>
+                }
+            </div>
+            <a *ngIf='(!!group.query && !!group.group_link)'
+                class='homepage-group-more'
+                [routerLink]='["/s", group.query]' 
+                [queryParams]="{from: 'homepage-group-more'}"
+                interactionEvent='homepage-link-group' interactionEventWhere='homepage' [interactionEventContent]='group.title'
+                clickOnReturn>
+                <span class='after'></span>
+                <span>{{group.group_link}}</span>
+            </a>
+        </div>
+    }
+</div>

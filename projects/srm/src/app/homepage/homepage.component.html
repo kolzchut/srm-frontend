@@ -4,7 +4,7 @@
             <div class='part1'>
                 <div class='part1-bg'></div>
                 <div class='header'>
-                    <div class='menu-button layout-mobile'>
+                    <div *ngIf='layout.desktop()' class='menu-button'>
                         <app-menu-icon colorScheme='light'></app-menu-icon>
                     </div>
                     <div class='logo-tagline'>
@@ -16,18 +16,18 @@
                     </div>
                 </div>
 
-                <div class='intro' [class.searching]='searchConfig.searching' >
+                <div *ngIf='layout.desktop()' class='intro' [class.searching]='searchConfig.searching' >
                     לחפש ולמצוא <strong>כל שירות</strong> חברתי<br/>
-                    מכל רשות, עמותה או ארגון<br class='layout-mobile'/>&nbsp;בהתאמה אישית לצרכיך&nbsp;
+                    מכל רשות, עמותה או ארגון&nbsp;בהתאמה אישית לצרכיך&nbsp;
                 </div>
                 <div class='search' role="main" #search [class.searching]='searchConfig.searching' >
-                    <div class='searchbox-container layout-desktop' appArrowToTab (keydown)='keydown($event)'>
+                    <div *ngIf='layout.desktop()' class='searchbox-container' appArrowToTab (keydown)='keydown($event)'>
                         <app-search-bar [config]='searchConfig' (focus)='$event ? updateFocus($event) : null' [homepage]='true'
                                         interactionEvent='homepage-searchbar' interactionEventWhere='homepage'        
                         ></app-search-bar>
                         <app-autocomplete-results [config]='searchConfig'></app-autocomplete-results>
                     </div>
-                    <div class='searchbox-container layout-mobile'>
+                    <div *ngIf='layout.mobile()' class='searchbox-container'>
                         <app-search-bar [config]='searchConfig' (focus)='startSearch("", false)' [homepage]='true'
                         ></app-search-bar>
                     </div>
@@ -41,57 +41,12 @@
                 </div>
             </div>
             <div class='part2'>
-                <div class='header layout-desktop'>
+                <div *ngIf='layout.desktop()' class='header'>
                     <app-desktop-menu-links [homepage]='true'></app-desktop-menu-links>
                 </div>
-            
-                <div class='homepage-groups' #homepageGroups>
-                    @for (group of groups; track group.title) {
-                        <div class='homepage-group' [style.gridRowEnd]='"span 15"'>
-                            @if (!!group.query) {
-                                <div class='homepage-group-title'>
-                                    <h3>
-                                        <span>{{group.title}}</span>
-                                        <span class='arrow-left'></span>
-                                    </h3>
-                                </div>
-                            } @else {
-                                <div class='homepage-group-title'>
-                                    <h3>
-                                        <span>{{group.title}}</span>
-                                    </h3>
-                                </div>
-                            }
-                            <div class='homepage-group-items'>
-                                @for (item of group.items; track item.query) {
-                                    <a class='homepage-group-item' [routerLink]='["/s", item.query]' 
-                                        [queryParams]="{from: 'homepage-group-item'}"
-                                        interactionEvent='homepage-link' interactionEventWhere='homepage' [interactionEventContent]='item.title'
-                                        clickOnReturn>{{item.title}}</a>
-                                }
-                            </div>
-                            @if (!!group.query && !!group.group_link) {
-                                <a [routerLink]='["/s", group.query]' 
-                                    [queryParams]="{from: 'homepage-group-more'}"
-                                    class='homepage-group-more'
-                                    interactionEvent='homepage-link-group' interactionEventWhere='homepage' [interactionEventContent]='group.title'
-                                    clickOnReturn>
-                                    <span class='after'></span>
-                                    <span>{{group.group_link}}</span>
-                                </a>
-                            }
-                        </div>
-                    }
-                </div>
+                <app-quickLinks></app-quickLinks>
                 <app-disclaimer-footer></app-disclaimer-footer>
             </div>
         </div>
-        <!-- <div class='backdrop layout-desktop' (focus)='updateFocus(false)' (click)='updateFocus(false)' tabindex="0">
-            <div class='top'></div>
-            <div class='bottom'>
-                <div class='close'></div>
-            </div>
-        </div>     -->
     </div>
-    <div class='alternate-search layout-mobile' [class.visible]='!searchVisible' (activated)='startSearch("", false)' clickOnReturn aria-label='ביצוע חיפוש באתר'></div>
 </div>
