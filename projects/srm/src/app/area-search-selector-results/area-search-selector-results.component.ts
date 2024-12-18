@@ -68,4 +68,13 @@ export class AreaSearchSelectorResultsComponent implements OnInit {
     event.stopPropagation();
     event.preventDefault();
   }
+
+  ngOnDestroy() {
+    if(this.mobileInputEl){
+      console.log("should clear")
+      timer(0).subscribe(() => {
+        this.state.area_ = null;
+      });
+    }
+  }
 }
