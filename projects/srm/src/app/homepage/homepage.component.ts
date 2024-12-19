@@ -21,15 +21,17 @@ import { AnalyticsService } from '../analytics.service';
 export class HomepageComponent implements AfterViewInit{
 
   public searchConfig: SearchConfig;
-
+  public layout: LayoutService;
+  
   @ViewChild('search') search: ElementRef;
   @ViewChild('homepageGroups') homepageGroups: ElementRef;
   searchVisibleObserver: IntersectionObserver;
   searchVisible = true;
   
-  constructor(private api: ApiService, private platform: PlatformService, private router: Router, public layout: LayoutService, private searchSvc: SearchService, private analytics: AnalyticsService) {
+  constructor(private api: ApiService, private platform: PlatformService, private router: Router, public layoutService: LayoutService, private searchSvc: SearchService, private analytics: AnalyticsService) {
     this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform, () => {});
     this.searchConfig.autoFocus = false;
+    this.layout = layoutService;
   }
 
   ngAfterViewInit(): void {
