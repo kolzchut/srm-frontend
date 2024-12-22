@@ -3,12 +3,11 @@ import { HomepageEntry } from '../consts';
 import { ApiService } from '../api.service';
 
 @Component({
-  selector: 'app-quickLinks',
-  templateUrl: './quickLinks.component.html',
-  styleUrls: ['./quickLinks.component.less'],
+  selector: 'app-home-links',
+  templateUrl: './home-links.component.html',
+  styleUrl: './home-links.component.less'
 })
-export class QuickLinksComponent {
-
+export class HomeLinksComponent {
   groups: {
     title: string,
     query: string,
