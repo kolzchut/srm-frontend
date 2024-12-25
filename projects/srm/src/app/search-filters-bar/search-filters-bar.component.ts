@@ -21,4 +21,11 @@ export class SearchFiltersBarComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  isShowFilter(item: any): boolean {
+    if (!item) return false;
+    const isSituationSelected = this.filtersState.allFilteredSituations.includes(item.key);
+    const isResponseSelected = this.filtersState.allFilteredResponses.includes(item.key);
+    return isSituationSelected || isResponseSelected || item.doc_count > 0;
+  }
 }
