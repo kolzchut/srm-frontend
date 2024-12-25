@@ -114,7 +114,7 @@
             ></app-landing-page-overlay>
         }
     </div>
-    <app-menu></app-menu>
+    <app-menu [filtersState]='filtersState'></app-menu>
     
     <app-menu-popup-contact *ngIf='stage === "about:contact"'></app-menu-popup-contact>
     <app-menu-popup-partners *ngIf='stage === "about:partners"'></app-menu-popup-partners>

@@ -550,4 +550,9 @@ export class FiltersState {
       });
     });
   }
+
+  clearFilters() {
+    this.allFilteredResponses = [];
+    this.allFilteredSituations = [];
+  }
 }
