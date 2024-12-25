@@ -28,6 +28,7 @@
                     [count]='(filtersState.currentSearchParams.filter_responses || []).indexOf(item.key) > -1 ? null : item.doc_count || 0'
                     [plus]='(filtersState.currentSearchParams.filter_responses || []).indexOf(item.key) > -1 ? false : item.plus || false'
                     (clicked)='filtersState.toggleResponse(filtersState.responsesMap[item.key])'
+                    [defaultColors]='true'
                 ></app-response>
 
             }
