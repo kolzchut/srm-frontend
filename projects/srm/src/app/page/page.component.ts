@@ -129,11 +129,8 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
       debounceTime(this.platform.browser() ? 1000 : 0),
     ).subscribe((spc) => {
-      const bounds = spc.bounds;
-      if (bounds && bounds.length === 2) {
-        this.areaSearchState.checkNationWide({
-          top_left: {lat: bounds[0][1], lon: bounds[0][0]}, bottom_right: {lat: bounds[1][1], lon: bounds[1][0]}
-        })  
+      if (spc.bounds?.length === 2) {
+        this.areaSearchState.checkNationWideByBounds(spc.bounds)  
       }
     });
 
@@ -270,7 +267,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
       switchMap((searchParams: SearchParams) => {
         const ret = this.needsDidYouMean(searchParams);
-        console.log('DID YOU MEAN', ret, searchParams);
+        // console.log('DID YOU MEAN', ret, searchParams);
         if (!ret) {
           this.didYouMean = null;
           return from([searchParams]);

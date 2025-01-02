@@ -9,7 +9,11 @@ import { PlatformService } from "../platform.service";
 import { LayoutService } from "../layout.service";
 
 export class AreaSearchState {
-
+  NATIONAL_BOUNDS = {
+    top_left: { lon: 34.2675, lat: 33.3328 },
+    bottom_right: { lon: 35.8961, lat: 29.4967 },
+  };
+  
   // Layout and UI
   resultsWidth = new BehaviorSubject<number>(200);
   showResults = new BehaviorSubject<boolean>(true);
@@ -194,16 +198,35 @@ export class AreaSearchState {
   set nationWide_(value: boolean) {
     this.nationWide.next(value);
     if (value) {
-      this.bounds.next({top_left: {lon: 34.2675, lat: 33.3328}, bottom_right: {lon: 35.8961, lat: 29.4967}});
+      this.bounds.next(this.NATIONAL_BOUNDS);
     }
   }
 
+  checkNationWideByBounds(bounds: number[][]) {
+    if (!bounds || bounds.length !== 2) this.nationWide.next(false);
+    this.nationWide.next(
+      this.getIsNationWide({
+        top_left: { lat: bounds[0][1], lon: bounds[0][0] },
+        bottom_right: { lat: bounds[1][1], lon: bounds[1][0] },
+      })
+    );
+  }
+  
+  getIsNationWide(viewPort: ViewPort): boolean {
+    return (
+      viewPort.top_left.lon <= this.NATIONAL_BOUNDS.top_left.lon &&
+      viewPort.top_left.lat >= this.NATIONAL_BOUNDS.top_left.lat &&
+      viewPort.bottom_right.lon >= this.NATIONAL_BOUNDS.bottom_right.lon &&
+      viewPort.bottom_right.lat <= this.NATIONAL_BOUNDS.bottom_right.lat
+    );
+  }
+  
   checkNationWide(viewPort: ViewPort) {
-    if (!this.nationWide_ && viewPort.top_left.lon < 34.2675 && viewPort.top_left.lat > 29.4967 && viewPort.bottom_right.lon > 35.8961 && viewPort.bottom_right.lat < 33.3328) {
+    if (!this.nationWide_ && this.getIsNationWide(viewPort)) {
       this.selectNationWide(true);
     }
   }
-
+  
   get nationWide_(): boolean {
     return this.nationWide.value;
   }

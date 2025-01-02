@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FiltersState } from '../../search-filters/filters-state';
 import { DistinctItem } from '../../consts';
+import { AreaSearchState } from '../../area-search-selector/area-search-state';
 
 @Component({
   selector: 'app-srp-static-filters',
@@ -10,6 +11,7 @@ import { DistinctItem } from '../../consts';
 export class SrpStaticFiltersComponent implements OnChanges {
 
   @Input() filtersState: FiltersState;
+  @Input() areaSearchState: AreaSearchState;
 
   count(di: DistinctItem | null): string {
     if (di?.plus) {
@@ -19,7 +21,7 @@ export class SrpStaticFiltersComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-      console.log('XXXXX', this.filtersState);
+      // console.log('XXXXX', this.filtersState);
   }
 
   checkedSituation(item: DistinctItem) {
@@ -31,8 +33,9 @@ export class SrpStaticFiltersComponent implements OnChanges {
   }
 
   getIsShowOption(item: any): boolean {
+    if (!this.areaSearchState.nationWide_) return true;
     if (this.checkedSituation(item) || this.checkedResponse(item)) return true;
     const count = parseInt(this.count((this.filtersState.currentSearchParams?.filter_responses || []).indexOf(item.key) > -1 ? null : item));
     return count > 5 
-}
+  }
 }
