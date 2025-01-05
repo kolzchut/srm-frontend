@@ -15,7 +15,7 @@
         </span>
     }
 </div>
-<a class='situation linkable' [class.small]='small' *ngIf='!selected && link'
+<a class='situation linkable' [class.small]='small' *ngIf='!selected && link && situation.name'
     (activated)='doSearch($event)'
     [href]='"/s/" + querySituation + "?from=tag-situation"'
     [class.small]='smaller'
