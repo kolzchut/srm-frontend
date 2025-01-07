@@ -460,7 +460,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     ).subscribe(({request, results}) => {
       this.areaSearchState.focusOn(request, results);
     });
-    this.filtersState = new FiltersState(this.api, this.searchParamsQueue, this, this.platform);
+    this.filtersState = new FiltersState(this.api, this.searchParamsQueue, this, this.platform, this.areaSearchState);
     this.filtersState.params.pipe(
       untilDestroyed(this),
     ).subscribe((params) => {

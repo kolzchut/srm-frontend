@@ -23,7 +23,7 @@ export class MapPopupHoverContainerComponent implements OnInit {
   constructor(private api: ApiService) { }
 
   ngOnInit(): void {
-    console.log('HOVER CONTAINER', this.props);
+    // console.log('HOVER CONTAINER', this.props);
     if (this.props?.card_id) {
       this.api.getCard(this.props.card_id).subscribe(card => {
         this.card = card;
