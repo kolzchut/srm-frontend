@@ -13,6 +13,7 @@ import { LayoutService } from '../layout.service';
 })
 export class ResponseComponent extends ResponseBase implements OnChanges {
 
+  @Input() defaultColors = false;
   @Input() response: TaxonomyItem = {};
 
   @Input() selected = false;
@@ -78,6 +79,15 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
     } else {
       super.recalcColors();
       this.textColor = '#555452';
+    }
+    if (this.defaultColors && !this.disabled) {
+      this.color = "#FFFDF5";
+      this.expandColor = this.color;
+      this.bgColor = this.color;
+      this.pointBgColor = '#BBCDFE';
+      this.textColor = '#767573';
+      this.borderColor = '#b9b7b4';
+      this.linkColor = this.textColor;
     }
   }
 

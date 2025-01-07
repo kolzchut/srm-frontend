@@ -9,8 +9,8 @@
     [attr.aria-modal]='active ? "true" : "false"'
 >
     <div class='container'>
-        <a class='logo' [routerLink]='["/"]' #menu aria-label="מעבר לדף הבית"></a>
-        <a class='menu-item' [routerLink]='["/"]'>דף הבית</a>
+        <a class='logo' (click)='clearFilters()' [routerLink]='["/"]' #menu aria-label="מעבר לדף הבית"></a>
+        <a class='menu-item' (click)='clearFilters()' [routerLink]='["/"]'>דף הבית</a>
         <a class='menu-item' [routerLink]='["/about", "kolsherut"]'>אודות</a>
         <a class='menu-item' [routerLink]='["/about", "missing"]'>הוסיפו שירות חסר</a>
         <a class='menu-item' [routerLink]='["/about", "partners"]'>שותפים</a>
