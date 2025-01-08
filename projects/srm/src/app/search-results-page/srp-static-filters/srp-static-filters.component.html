@@ -3,7 +3,7 @@
     @for (item of filtersState.staticFilters; track item.key) {
         @if (item.key?.indexOf('human_situation') === 0 && item.key && filtersState.situationsMap[item.key]) {
             <div *ngIf='getIsShowOption(item)' class='item' [class.checked]='checkedSituation(item)'
-                (click)='filtersState.toggleSituation(filtersState.situationsMap[item.key])'
+                (click)='toggleSituation(filtersState.situationsMap[item.key], !checkedSituation(item))'
             >
                 <div class='checkbox'></div>
                 <span class='name'>{{filtersState.situationsMap[item.key].name}}</span>
@@ -11,7 +11,7 @@
             </div>
         } @else if (item.key?.indexOf('human_service') === 0 && item.key && filtersState.responsesMap[item.key]) {
             <div *ngIf='getIsShowOption(item)' class='item' [class.checked]='checkedResponse(item)'
-                (click)='filtersState.toggleResponse(filtersState.responsesMap[item.key])'
+                (click)='toggleResponse(filtersState.responsesMap[item.key], !checkedSituation(item))'
             >
                 <div class='checkbox'></div>
                 <span class='name'>{{filtersState.responsesMap[item.key].name}}</span>
@@ -23,7 +23,7 @@
     @for (response of filtersState.currentSearchParams?.filter_responses; track response) {
         @if (filtersState.staticFiltersIds.indexOf(response) === -1) {
             <div class='item checked'
-                (click)='filtersState.toggleResponse(filtersState.responsesMap[response])'
+                (click)='toggleResponse(filtersState.responsesMap[response])'
             >
                 <div class='checkbox checked'></div>
                 <span class='name'>{{filtersState.responsesMap[response].name}}</span>
@@ -33,7 +33,7 @@
     @for (situation of filtersState.allFilteredSituations; track situation) {
         @if (filtersState.staticFiltersIds.indexOf(situation) === -1) {
             <div class='item checked'
-                (click)='filtersState.toggleSituation(filtersState.situationsMap[situation])'
+                (click)='toggleSituation(filtersState.situationsMap[situation])'
             >
                 <div class='checkbox checked'></div>
                 <span class='name'>{{filtersState.situationsMap[situation].name}}</span>

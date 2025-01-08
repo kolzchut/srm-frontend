@@ -1,7 +1,8 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FiltersState } from '../../search-filters/filters-state';
-import { DistinctItem } from '../../consts';
+import { DistinctItem, SearchParams } from '../../consts';
 import { AreaSearchState } from '../../area-search-selector/area-search-state';
+import { AnalyticsService } from '../../analytics.service';
 
 @Component({
   selector: 'app-srp-static-filters',
@@ -9,6 +10,7 @@ import { AreaSearchState } from '../../area-search-selector/area-search-state';
   styleUrl: './srp-static-filters.component.less'
 })
 export class SrpStaticFiltersComponent implements OnChanges {
+  constructor(private analytics: AnalyticsService){}
 
   @Input() filtersState: FiltersState;
   @Input() areaSearchState: AreaSearchState;
@@ -37,5 +39,15 @@ export class SrpStaticFiltersComponent implements OnChanges {
     if (this.checkedSituation(item) || this.checkedResponse(item)) return true;
     const count = parseInt(this.count((this.filtersState.currentSearchParams?.filter_responses || []).indexOf(item.key) > -1 ? null : item));
     return count > 5 
+  }
+
+  toggleSituation(situation: any, isFilterOn = false) {
+    this.filtersState.toggleSituation(situation)
+    if (isFilterOn) this.analytics.quickFilterEvent(situation.id);
+  }
+
+  toggleResponse(response: any, isFilterOn = false) {
+    this.filtersState.toggleResponse(response)
+    if (isFilterOn) this.analytics.quickFilterEvent(response.id);
   }
 }
