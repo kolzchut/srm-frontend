@@ -72,9 +72,9 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     if (this.layout.desktop()) return this.hostHeight;
     const mobileDrawerHeightMap = {
       [DrawerState.Hidden]: this.hostHeight,
-      [DrawerState.Peek]: this.hostHeight - 56,
+      [DrawerState.Peek]: this.hostHeight - 66,
       [DrawerState.Half]: this.hostHeight * 0.33,
-      [DrawerState.Most]: 56,
+      [DrawerState.Most]: 66,
       [DrawerState.Full]: 0,
       [DrawerState.Minimal]: this.hostHeight / 2,
     };
