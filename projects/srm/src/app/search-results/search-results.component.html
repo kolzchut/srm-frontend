@@ -22,7 +22,7 @@
         <div class='placeholder loading'></div>
     </ng-container>
 </ng-container>
-<div class='more-results' *ngIf='hasMore'>
+<div class='more-results' *ngIf='hasMore && !loading'>
     <a (activated)='fetch()' clickOnReturn>עוד תוצאות...</a>
 </div>
 <div class='trigger' #trigger role="presentation"></div>
