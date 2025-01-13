@@ -206,4 +206,18 @@ export class AnalyticsService {
     }
     this.gtag(event);
   }
+
+  mapToggleEvent(isOpen: boolean) {
+    this.gtag({
+      event: 'srm:map',
+      map_state: isOpen ? 'open' : 'close',
+    });
+  }
+  
+  quickFilterEvent(filter: string) {
+    this.gtag({
+      event: 'srm:quick_filter',
+      quick_filter: filter,
+    });
+  }
 }

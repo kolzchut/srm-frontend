@@ -3,6 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ReplaySubject, timer } from 'rxjs';
 import { delay, filter, tap } from 'rxjs/operators';
+import { FiltersState } from '../search-filters/filters-state';
 
 
 @Injectable({
@@ -43,6 +44,7 @@ export class MenuService {
 export class MenuComponent implements AfterViewInit {
 
   @ViewChild('menu') menuEl: ElementRef;
+  @Input() filtersState: FiltersState;
 
   active = false;
   visible = false;
@@ -88,5 +90,9 @@ export class MenuComponent implements AfterViewInit {
 
   closeMe(selection: string | null) {
     this.menu.active = false;
+  }
+
+  clearFilters(){
+    this.filtersState.clearFilters();
   }
 }

@@ -33,6 +33,9 @@
 
         &.map {
             width: fit-content;
+            width: 320px;
+            padding-top: 0;
+            padding-bottom: 0;
         }
 
         .sidebar {
@@ -43,12 +46,28 @@
             justify-content: flex-start;
             align-items: stretch;
             gap: 8px;
+            background-color: @color-blue-8;
+            z-index: 15;
         }
-
+        
         .search-results {
             flex: 1 1 100%;
             overflow: scroll;
             .no-scrollbars;
+        }
+
+        .drawer-controller {
+            position: absolute;
+            display: none;
+            width: 24px;
+            height: 40px;
+            background-color: @color-blue-8;
+            box-shadow: -5px 2px 8px 0px #0012F01F;
+            clip-path: inset(-10px 0px -10px -10px);
+            z-index: 20;
+            border-radius: 4px 0px 0px 4px;
+            border: 1px solid @color-blue-8;
+            cursor: pointer;
         }
 
         .extra {
@@ -59,8 +78,55 @@
             }        
         }
 
+        .open-drawer {
+            right: 624px !important;
+        }
+
+        .flip{
+            transform: scaleX(-1);
+        }
+
         &.map {
-            .search-results, .extra {
+            .sidebar {
+                position: relative;
+                height: 100%;
+                padding-left: 16px; 
+                border-left: 1px solid @color-blue-6;
+            }
+
+            .drawer-controller {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                right: 338px;
+                top: calc(50vh - 40px);
+                transform: translate(-50% ,-50%);
+                transition: right 0.3s ease-in-out;
+                
+                & > img{
+                    transition: transform 0.3s ease-in-out;
+                }
+            }
+
+            .search-results{
+                position: absolute;
+                height: 100%;
+                width: 300px;
+                right: 50px;
+                padding: 0 16px; 
+                background-color: @color-blue-8;
+                box-shadow: -4px 2px 8px 0px #0012F01F;
+                min-height: 100%;
+                z-index: 11;
+                transition: right 0.3s ease-in-out;
+            }
+            
+            .open {
+                right: 336px;
+            }
+
+
+            .extra {
                 display: none;
             }
         }
@@ -78,7 +144,7 @@
             width: 100%;
             height: 100%;
             pointer-events: all;
-            z-index: 10;
+            z-index: 20;
 
             .modal {
                 min-width: 400px;

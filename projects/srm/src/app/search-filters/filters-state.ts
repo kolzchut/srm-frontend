@@ -3,10 +3,11 @@ import { DistinctItem, TaxonomyItem, SearchParams, QueryCardResult, SITUATION_FI
 import { ApiService } from "../api.service";
 import { untilDestroyed } from "@ngneat/until-destroy";
 import { PlatformService } from "../platform.service";
+import { AreaSearchState } from "../area-search-selector/area-search-state";
 
 export class FiltersState {
   constructor(private api: ApiService, private searchParamsQueue: Observable<SearchParams>, 
-      private attachedComponent: any, private platform: PlatformService) {
+      private attachedComponent: any, private platform: PlatformService,private areaSearchState: AreaSearchState) {
     forkJoin([this.api.getSituations(), this.api.getResponses()])
     .subscribe(([situationData, responseData]) => {
       this.situationsMap = {};
@@ -79,6 +80,9 @@ export class FiltersState {
       untilDestroyed(attachedComponent),
     ).subscribe((params) => {
       this.updateStaticFilterCounts(params);
+    });
+    this.areaSearchState.nationWide.pipe().subscribe((nationWide) => {
+      this.updateStaticFilterCounts(this.currentSearchParams);
     });
   }
 
@@ -523,7 +527,7 @@ export class FiltersState {
   }
   
   updateStaticFilterCounts(params: SearchParams, result: QueryCardResult | null = null): void {
-    (result ? from([result]) : this.api.getCounts(params)).pipe(
+    (result ? from([result]) : this.api.getCounts(params, !this.areaSearchState.nationWide_)).pipe(
       map((result) => {
         const count = result.search_counts._current.total_overall;
         return count;
@@ -537,7 +541,7 @@ export class FiltersState {
         }
         const paramsCopy = this._copySearchParams(params);
         this.toggleId({id: item.key}, paramsCopy);
-        this.api.getCounts(paramsCopy, true).subscribe((result) => {
+        this.api.getCounts(paramsCopy, !this.areaSearchState.nationWide_).subscribe((result) => {
           const new_doc_count = result.search_counts._current.total_overall;
           if (new_doc_count >= count) {
               item.doc_count = new_doc_count - count;
@@ -549,5 +553,10 @@ export class FiltersState {
         });
       });
     });
+  }
+
+  clearFilters() {
+    this.allFilteredResponses = [];
+    this.allFilteredSituations = [];
   }
 }

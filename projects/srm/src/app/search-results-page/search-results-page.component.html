@@ -11,10 +11,18 @@
             [state]='state'
         ></app-srp-map-toggle>
         <app-srp-static-filters
-            [filtersState]='filtersState'>
-        </app-srp-static-filters>
+            [areaSearchState]='areaSearchState'
+            [filtersState]='filtersState'
+        />
     </div>
-    <div class='search-results'>
+    <button 
+        [ngClass]="{ 'drawer-controller':true,'open-drawer':isDrawerOpen }"
+        (click)='toggleDrawer()'
+        aria-label="הצג/הסתר מגירת תוצאות"
+    >
+        <img src='../../assets/img/chevron-left-blue-1.svg' [ngClass]="{ 'flip':isDrawerOpen }"/>
+    </button>
+    <div class='search-results' [ngClass]="{ 'open':isDrawerOpen }">
         <app-search-results
             class='full'
             [searchParams]='searchParams'
@@ -25,30 +33,26 @@
             (visibleCount)='visibleCount.emit($event)'
             (nationalCount)='nationalCount.emit($event)'
             (hoverCard)='hoverCard.emit($event)'
+            [areaSearchState]='areaSearchState'
         ></app-search-results>
+
     </div>
     <div class='extra'>
     </div>
-    @if (filtersState.active || areaSearchState.searching_) {
-        <div class='overlay'>
-            @if (filtersState.active) {
-                <div class='modal'>
-                    <app-search-filters 
-                        [searchParams]='searchParams'
-                        [areaSearchState]='areaSearchState'
-                        [filtersState]='filtersState'
-                        [searchState]='searchState'
-                    ></app-search-filters>
-                </div>
-            }
-            @if (areaSearchState.searching_) {
-                <div class='modal' appArrowToTab>
-                    <div class='selection-widget' appArrowToTab>
-                        <app-area-search-selector [state]='areaSearchState'></app-area-search-selector>
-                        <app-area-search-selector-results [state]='areaSearchState'></app-area-search-selector-results>
-                    </div>
-                </div>
-            }
+    <div class='overlay' *ngIf='filtersState.active || areaSearchState.searching_'>
+        <div class='modal' *ngIf='filtersState.active'>
+            <app-search-filters 
+                [searchParams]='searchParams'
+                [areaSearchState]='areaSearchState'
+                [filtersState]='filtersState'
+                [searchState]='searchState'
+            ></app-search-filters>
         </div>
-    }
+        <div class='modal' appArrowToTab *ngIf='areaSearchState.searching_'>
+            <div class='selection-widget' appArrowToTab>
+                <app-area-search-selector [state]='areaSearchState'></app-area-search-selector>
+                <app-area-search-selector-results [state]='areaSearchState'></app-area-search-selector-results>
+            </div>
+        </div>
+    </div>
 </div>

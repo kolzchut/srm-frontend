@@ -10,13 +10,12 @@ import { LayoutService } from '../layout.service';
 @Component({
   selector: 'app-search-results-page',
   templateUrl: './search-results-page.component.html',
-  styleUrl: './search-results-page.component.less'
+  styleUrl: './search-results-page.component.less',
 })
 export class SearchResultsPageComponent {
-
   @Input() searchParams: SearchParams;
   @Input() serachResultsActive = false;
-  @Input() didYouMean: {display: string, link: string} | null = null;
+  @Input() didYouMean: { display: string; link: string } | null = null;
   @Input() searchState: SearchState;
   @Input() filtersState: FiltersState;
   @Input() areaSearchState: AreaSearchState;
@@ -27,6 +26,11 @@ export class SearchResultsPageComponent {
 
   state = new SearchResultsPageState();
 
-  constructor(public layout: LayoutService) { }
+  constructor(public layout: LayoutService) {}
 
+  isDrawerOpen = false;
+
+  toggleDrawer() {
+    this.isDrawerOpen = !this.isDrawerOpen;
+  }
 }

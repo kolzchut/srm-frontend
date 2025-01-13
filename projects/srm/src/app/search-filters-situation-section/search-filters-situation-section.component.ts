@@ -62,4 +62,17 @@ export class SearchFiltersSituationSectionComponent implements OnInit {
   get searchParams() {
     return this.filtersState.currentSearchParams as any;
   }
+
+  removeDuplicates(list:TaxonomyItem[]) {
+    const uniqueItems = [];
+    const seenKeys = new Set();
+  
+    for (const item of list) {
+      if (!seenKeys.has(item.id)) {
+        seenKeys.add(item.id);
+        uniqueItems.push(item);
+      }
+    }
+    return uniqueItems;
+  }
 }

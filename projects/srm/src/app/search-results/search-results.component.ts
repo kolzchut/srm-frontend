@@ -9,6 +9,7 @@ import { PlatformService } from '../platform.service';
 import { AnalyticsService } from '../analytics.service';
 import { SearchState } from './search-state';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AreaSearchState } from '../area-search-selector/area-search-state';
 
 
 export type SearchParamsOffset = {
@@ -36,6 +37,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   @Input() active = false;
   @Input() didYouMean: {display: string, link: string} | null = null;
   @Input() searchState: SearchState;
+  @Input() areaSearchState: AreaSearchState;
   @Output() zoomout = new EventEmitter<ViewPort>();
   @Output() nationalCount = new EventEmitter<number>();
   @Output() visibleCount = new EventEmitter<number>();
@@ -177,7 +179,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         tap((item) => {
           const from = this.route.snapshot.queryParams['from'] || this.source;
           this.source = 'internal';
-          console.log('GTAG-DBG FROM', from);
+          // console.log('GTAG-DBG FROM', from);
           this.analytics.interactionEvent('search', from);
           if (from) {
             this.router.navigate([], {relativeTo: this.route, queryParams: {from: null}, queryParamsHandling: 'merge', replaceUrl: true, preserveFragment: true});
