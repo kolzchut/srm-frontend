@@ -82,7 +82,6 @@ import { SrpStaticFiltersComponent } from './search-results-page/srp-static-filt
 import { SrpMapToggleComponent } from './search-results-page/srp-map-toggle/srp-map-toggle.component';
 import { SrpAreaSearchButtonsComponent } from './search-results-page/srp-area-search-buttons/srp-area-search-buttons.component';
 import { HomeLinksComponent } from './home-links/home-links.component';
-import { SearchItemComponent } from './search-item/search-item.component';
 
 @NgModule({
   declarations: [
@@ -159,7 +158,6 @@ import { SearchItemComponent } from './search-item/search-item.component';
     SrpMapToggleComponent,
     SrpAreaSearchButtonsComponent,
     HomeLinksComponent,
-    SearchItemComponent
   ],
   imports: [
     BrowserModule,
