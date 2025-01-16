@@ -69,11 +69,18 @@ export function app(): express.Express {
         return res.send(html);
       })
       .catch((err) => {
-        console.log(`${new Date().toISOString()} | ${res.statusCode} | ${err?.name || 'OK'} | ${req.url} | ${req.headers['user-agent']}}`);
+        console.log(`${new Date().toISOString()} | ${res.statusCode} | ${err?.name || 'ERROR'} | ${req.url} | ${req.headers['user-agent']}}`);
         return next(err);
       });
   });
 
+  server.use((err: any, res: express.Response) => {
+    console.error('Unhandled error:', err);
+    if (!res?.headersSent) {
+      res.status(500).send('An unexpected error occurred');
+    }
+  });
+  
   return server;
 }
 

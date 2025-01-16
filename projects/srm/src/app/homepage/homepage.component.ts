@@ -79,8 +79,10 @@ export class HomepageComponent implements AfterViewInit{
 
   resizeGroupItems() {
     this.platform.browser(() => {
+      if (typeof window === 'undefined' || typeof document === 'undefined') return;
       timer(0).subscribe(() => {
-        const el = this.homepageGroups.nativeElement as HTMLElement;
+        const el = this.homepageGroups?.nativeElement as HTMLElement;
+        if (!el) return;
         const items = el.querySelectorAll('.homepage-group') as NodeListOf<HTMLElement>;
         items.forEach((item: HTMLElement) => {
           const rowHeight = parseInt(getComputedStyle(el).getPropertyValue('grid-auto-rows'));
@@ -89,7 +91,7 @@ export class HomepageComponent implements AfterViewInit{
           item.style.gridRowEnd = 'span ' + rowSpan;
         });
       });
-    });
+    })
   }
 
   updateFocus(focus: boolean) {
