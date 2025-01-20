@@ -28,7 +28,7 @@ export class SearchResultsPageComponent {
 
   constructor(public layout: LayoutService) {}
 
-  isDrawerOpen = false;
+  isDrawerOpen = true;
 
   toggleDrawer() {
     this.isDrawerOpen = !this.isDrawerOpen;
