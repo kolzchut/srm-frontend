@@ -57,6 +57,7 @@
         ></span>
     </span>
     <span class='name'
+        *ngIf='isValid(response.name)'
         [class.small]='smaller'
         [style.font-weight]='fontWeight'
         [style.color]='textColor'
