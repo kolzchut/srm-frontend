@@ -162,8 +162,7 @@ export class AreaSearchState {
     this.searching_ = true;
     this.inputPlaceholder_ = 'ניתן לחפש ישוב או איזור מוגדר';
     this.selectorResize.next();
-    timer(500).subscribe(() => {
-      this.resultsWidth.next(this.areaInputEl.offsetWidth - 2);
+    timer(0).subscribe(() => {
       this.showResults_ = true;
     });
   }

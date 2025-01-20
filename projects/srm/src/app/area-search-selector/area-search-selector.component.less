@@ -26,13 +26,15 @@
             border: 1px solid black;
             background: transparent;
             transition-property: right opacity;
-            transition-duration: 0.15s;
-            transition-timing-function: ease-in-out;
             border-radius: 20px;
             border: 1px solid @color-blue-6;
             background: @color-white;
             box-shadow: 0px 0px 5px 0px rgba(31, 55, 246, 0.20);
             opacity: 1;
+            &.mobile {
+                transition-duration: 0.15s;
+                transition-timing-function: ease-in-out;
+            }
             &.hide {
                 opacity: 0;
             }
