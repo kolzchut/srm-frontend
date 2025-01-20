@@ -106,4 +106,8 @@ export class ResponseComponent extends ResponseBase implements OnChanges {
   get smaller() {
     return this.small || (!this.dynamic && this.layout.mobile());
   }
+
+  isValid(x = '') {
+    return x !== '<em>null</em>';
+  }
 }
