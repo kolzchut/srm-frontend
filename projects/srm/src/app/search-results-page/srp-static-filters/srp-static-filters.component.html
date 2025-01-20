@@ -2,7 +2,7 @@
 <div class='items'>
     @for (item of filtersState.staticFilters; track item.key) {
         @if (item.key?.indexOf('human_situation') === 0 && item.key && filtersState.situationsMap[item.key]) {
-            <div *ngIf='getIsShowOption(item)' class='item' [class.checked]='checkedSituation(item)'
+            <div class='item' [class.checked]='checkedSituation(item)'
                 (click)='toggleSituation(filtersState.situationsMap[item.key], !checkedSituation(item))'
             >
                 <div class='checkbox'></div>
@@ -10,7 +10,7 @@
                 <span class='count'>{{count((filtersState.allFilteredSituations || []).indexOf(item.key) > -1 ? null : item)}}</span>
             </div>
         } @else if (item.key?.indexOf('human_service') === 0 && item.key && filtersState.responsesMap[item.key]) {
-            <div *ngIf='getIsShowOption(item)' class='item' [class.checked]='checkedResponse(item)'
+            <div class='item' [class.checked]='checkedResponse(item)'
                 (click)='toggleResponse(filtersState.responsesMap[item.key], !checkedSituation(item))'
             >
                 <div class='checkbox'></div>

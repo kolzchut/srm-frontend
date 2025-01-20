@@ -34,13 +34,6 @@ export class SrpStaticFiltersComponent implements OnChanges {
     return (this.filtersState.currentSearchParams?.filter_responses || []).indexOf(item.key || '') > -1
   }
 
-  getIsShowOption(item: any): boolean {
-    if (!this.areaSearchState.nationWide_) return true;
-    if (this.checkedSituation(item) || this.checkedResponse(item)) return true;
-    const count = parseInt(this.count((this.filtersState.currentSearchParams?.filter_responses || []).indexOf(item.key) > -1 ? null : item));
-    return count > 5 
-  }
-
   toggleSituation(situation: any, isFilterOn = false) {
     this.filtersState.toggleSituation(situation)
     if (isFilterOn) this.analytics.quickFilterEvent(situation.id);

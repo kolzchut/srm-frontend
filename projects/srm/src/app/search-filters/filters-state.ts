@@ -514,6 +514,7 @@ export class FiltersState {
         .sort((a, b) => (b.doc_count || 0) - (a.doc_count || 0))
         .filter(x => x.key !== this.currentSearchParams.situation)
         .filter(x => x.key !== this.currentSearchParams.response)
+        .filter(x => !!x.doc_count && x.doc_count > 5)
         .slice(0, this.maxStaticFilters)
         .map(x => {
           return {
@@ -543,7 +544,7 @@ export class FiltersState {
         this.toggleId({id: item.key}, paramsCopy);
         this.api.getCounts(paramsCopy, !this.areaSearchState.nationWide_).subscribe((result) => {
           const new_doc_count = result.search_counts._current.total_overall;
-          if (new_doc_count >= count) {
+          if (new_doc_count > count) {
               item.doc_count = new_doc_count - count;
               item.plus = true;
           } else {
