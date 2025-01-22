@@ -188,6 +188,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         })
       ).subscribe();
     });
+    this.areaSearchState.selectNationWide()
   }
 
   ngOnChanges(): void {
