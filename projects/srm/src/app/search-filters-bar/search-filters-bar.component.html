@@ -12,7 +12,6 @@
         @for (item of filtersState.staticFilters; track item.key) {
             @if (item.key?.indexOf('human_situation') === 0 && item.key && filtersState.situationsMap[item.key]) {
                 <app-situation
-                    *ngIf='isShowFilter(item)'
                     [situation]='filtersState.situationsMap[item.key]'
                     [selected]='(filtersState.allFilteredSituations || []).indexOf(item.key) > -1'
                     [selectable]='true'
@@ -22,7 +21,6 @@
                 ></app-situation>
             } @else if (item.key?.indexOf('human_service') === 0 && item.key && filtersState.responsesMap[item.key]) {
                 <app-response
-                    *ngIf='isShowFilter(item)'
                     [response]='filtersState.responsesMap[item.key]'
                     [selected]='(filtersState.currentSearchParams.filter_responses || []).indexOf(item.key) > -1'
                     [dynamic]='true'
