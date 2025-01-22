@@ -18,7 +18,7 @@
                     </app-searchbox-header>
                 }
                 <app-results-drawer
-                    [state]='stage === "point" ? DrawerState.Hidden : (searchState.onlyNational() ? DrawerState.Most : drawerState)'
+                    [state]='stage === "point" ? DrawerState.Hidden : drawerState'
                     [nationalCount]='nationalCount'
                     [searchState]='searchState'
                     [areaSearchState]='areaSearchState'

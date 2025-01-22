@@ -74,7 +74,6 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
       [DrawerState.Hidden]: this.hostHeight,
       [DrawerState.Peek]: this.hostHeight - 66,
       [DrawerState.Half]: this.hostHeight * 0.33,
-      [DrawerState.Most]: 66,
       [DrawerState.Full]: 0,
       [DrawerState.Minimal]: this.hostHeight / 2,
     };
@@ -85,11 +84,6 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
     this.calcedHeight = drawerHeight;
     return this.calcedHeight;
   }
-
-  // calcTop(): number {
-  //   const hostHeight = this.hostHeight;
-  //   return hostHeight - this.calcHeight();
-  // }
 
   ngAfterViewInit(): void {
     const el = this.handleEl.nativeElement as HTMLDivElement;
@@ -240,10 +234,4 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
       }
     });
   }
-
-  // scrollToTop() {
-  //   if (this.layout.desktop()) {
-  //     (this.scrollable.nativeElement as HTMLDivElement)?.scrollTo({top: 0});
-  //   }
-  // }
 }

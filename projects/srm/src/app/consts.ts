@@ -4,7 +4,6 @@ export enum DrawerState {
     Hidden = 'hidden',
     Peek = 'peek',
     Half = 'half',
-    Most = 'most',
     Full = 'full',
     Minimal = 'minimal',
 };
