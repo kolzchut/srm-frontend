@@ -4,6 +4,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ReplaySubject, timer } from 'rxjs';
 import { delay, filter, tap } from 'rxjs/operators';
 import { FiltersState } from '../search-filters/filters-state';
+import { AreaSearchState } from '../area-search-selector/area-search-state';
 
 
 @Injectable({
@@ -45,6 +46,7 @@ export class MenuComponent implements AfterViewInit {
 
   @ViewChild('menu') menuEl: ElementRef;
   @Input() filtersState: FiltersState;
+  @Input() areaSearchState: AreaSearchState;
 
   active = false;
   visible = false;
@@ -94,5 +96,6 @@ export class MenuComponent implements AfterViewInit {
 
   clearFilters(){
     this.filtersState.clearFilters();
+    this.areaSearchState.selectNationWide(true)
   }
 }
