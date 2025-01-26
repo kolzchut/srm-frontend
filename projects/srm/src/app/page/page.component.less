@@ -22,9 +22,11 @@
         display: flex;
     }
     
-    .hide{
-        display: none !important;
-    }
+    @media (max-width: (@mobile-threshold - 1px)) {
+        .selected {
+            display: none;
+        }
+      }
 
     .page-container {
         position: absolute;
