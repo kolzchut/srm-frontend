@@ -66,21 +66,21 @@
                 </app-results-drawer>                
             </div>
         }
-        @if (layout.desktop() && searchParams) {
-            <app-search-results-page
-                [class.visible]='layout.desktop() && stage === "search-results"'
-                [searchParams]='searchParams'
-                [serachResultsActive]="stage === 'search-results'"
-                [didYouMean]='didYouMean'
-                [searchState]='searchState'
-                [filtersState]='filtersState'
-                [areaSearchState]='areaSearchState'
-                (zoomout)='zoomOutMap($event)'
-                (visibleCount)='visibleCount = $event'
-                (nationalCount)='nationalCount = $event'
-                (hoverCard)='hoverCard($event)'
-            ></app-search-results-page>
-        }
+
+        <app-search-results-page
+            *ngIf='layout.desktop() && searchParams'
+            [class.selected]='stage === "search-results"'
+            [searchParams]='searchParams'
+            [serachResultsActive]="stage === 'search-results'"
+            [didYouMean]='didYouMean'
+            [searchState]='searchState'
+            [filtersState]='filtersState'
+            [areaSearchState]='areaSearchState'
+            (zoomout)='zoomOutMap($event)'
+            (visibleCount)='visibleCount = $event'
+            (nationalCount)='nationalCount = $event'
+            (hoverCard)='hoverCard($event)'
+        />
         @if (stage === 'point') {
             <app-branch-container
                 [cardId]='card' 
