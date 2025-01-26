@@ -70,6 +70,7 @@
         <app-search-results-page
             *ngIf='layout.desktop() && searchParams'
             [class.selected]='stage === "search-results"'
+            [class.hide]='layout.mobile()'
             [searchParams]='searchParams'
             [serachResultsActive]="stage === 'search-results'"
             [didYouMean]='didYouMean'
