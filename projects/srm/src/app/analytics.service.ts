@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Card, SearchParams } from './consts';
 import { PlatformService } from './platform.service';
 import { WindowService } from './window.service';
+import { environment } from '../environments/environment';
 
 declare const window: {
   gtag: any
@@ -25,7 +26,8 @@ export class AnalyticsService {
   }
 
   gtag(...args: any[]) {
-    if (this.platform.browser() && window?.gtag) {
+    const isGtag = environment.production || !environment.isHideGtagLog;
+    if (isGtag && this.platform.browser() && window?.gtag) {
       window.gtag(...args);
     }
   }

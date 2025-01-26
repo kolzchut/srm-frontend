@@ -4,6 +4,7 @@
 
 export const devEnv: any = {
   production: false,
+  isHideGtagLog: true,
   cardsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/cards',
   // pointsURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/points',
   // countCategoriesURL: 'https://srm-staging-api.whiletrue.industries/api/idx/search/count',
