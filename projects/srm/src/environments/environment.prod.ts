@@ -4,6 +4,7 @@
 
 export const environment = {
   production: true,
+  isHideGtagLog: false,
   cardsURL: 'https://api.kolsherut.org.il/api/idx/search/cards',
   // pointsURL: 'https://api.kolsherut.org.il/api/idx/search/points',
   // countCategoriesURL: 'https://api.kolsherut.org.il/api/idx/search/count',

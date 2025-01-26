@@ -1,4 +1,4 @@
-<h3>סינון מהיר:</h3>
+<h3 *ngIf='filtersState.staticFilters.length'>סינון מהיר:</h3>
 <div class='items'>
     @for (item of filtersState.staticFilters; track item.key) {
         @if (item.key?.indexOf('human_situation') === 0 && item.key && filtersState.situationsMap[item.key]) {
