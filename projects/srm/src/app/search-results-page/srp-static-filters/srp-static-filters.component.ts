@@ -3,6 +3,7 @@ import { FiltersState } from '../../search-filters/filters-state';
 import { DistinctItem, SearchParams } from '../../consts';
 import { AreaSearchState } from '../../area-search-selector/area-search-state';
 import { AnalyticsService } from '../../analytics.service';
+import { SearchState } from '../../search-results/search-state';
 
 @Component({
   selector: 'app-srp-static-filters',
@@ -14,6 +15,7 @@ export class SrpStaticFiltersComponent implements OnChanges {
 
   @Input() filtersState: FiltersState;
   @Input() areaSearchState: AreaSearchState;
+  @Input() searchState: SearchState;
 
   count(di: DistinctItem | null): string {
     if (di?.plus) {

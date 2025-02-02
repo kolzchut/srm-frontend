@@ -3,6 +3,7 @@
     @for (item of filtersState.staticFilters; track item.key) {
         @if (item.key?.indexOf('human_situation') === 0 && item.key && filtersState.situationsMap[item.key]) {
             <div class='item' [class.checked]='checkedSituation(item)'
+                *ngIf='filtersState.maxStaticFilters >= filtersState.staticFilters.length'
                 (click)='toggleSituation(filtersState.situationsMap[item.key], !checkedSituation(item))'
             >
                 <div class='checkbox'></div>
@@ -11,6 +12,7 @@
             </div>
         } @else if (item.key?.indexOf('human_service') === 0 && item.key && filtersState.responsesMap[item.key]) {
             <div class='item' [class.checked]='checkedResponse(item)'
+                *ngIf='filtersState.maxStaticFilters >= filtersState.staticFilters.length'
                 (click)='toggleResponse(filtersState.responsesMap[item.key], !checkedSituation(item))'
             >
                 <div class='checkbox'></div>

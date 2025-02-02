@@ -1,4 +1,4 @@
-import { Subject, ReplaySubject, forkJoin, debounceTime, distinctUntilChanged, filter, switchMap, tap, merge, fromEvent, first, Observable, timer, from, map } from "rxjs";
+import { Subject, ReplaySubject, forkJoin, debounceTime, distinctUntilChanged, filter, switchMap, tap, merge, fromEvent, first, Observable, timer, from, map, finalize } from "rxjs";
 import { DistinctItem, TaxonomyItem, SearchParams, QueryCardResult, SITUATION_FILTERS } from "../consts";
 import { ApiService } from "../api.service";
 import { untilDestroyed } from "@ngneat/until-destroy";
@@ -26,18 +26,9 @@ export class FiltersState {
     })
     this.internalSearchParams.pipe(
       untilDestroyed(attachedComponent),
-      // distinctUntilChanged((a, b) => a.searchHash.localeCompare(b.searchHash) === 0),
       tap((params) => {
         this.params.next(this._copySearchParams(params));
       }),
-      // switchMap((params) => forkJoin([
-      //   this.api.getCounts(params),
-      //   this.api.getCounts(params, true),
-      // ]))
-    // ).subscribe(([data, dataBounded]) => {
-    //   this.resultCount = data.search_counts.cards.total_overall;
-    //   this.resultCountBounded = dataBounded.search_counts.cards.total_overall;
-    // });
     ).subscribe();
     this.incomingSearchParams.pipe(
       untilDestroyed(attachedComponent),
@@ -69,11 +60,12 @@ export class FiltersState {
       distinctUntilChanged((a, b) => a.simpleHash.localeCompare(b.simpleHash) === 0),
       switchMap((params) => this.api.getDistinct(params, false, 'static-filters')),
     ).subscribe((result) => {
-      this.updateStaticFilters(result);
+      this.createStaticFilters(result);
     });
     this.searchParamsQueue.pipe(
         untilDestroyed(attachedComponent),
     ).subscribe((params) => {
+      console.log("amir", params);
         this.updateParams(params);
     });
     this.params.pipe(
@@ -124,6 +116,7 @@ export class FiltersState {
   staticFiltersIds: string[] = [];
   allFilteredSituations: string[] = [];
   allFilteredResponses: string[] = [];
+  isNewSearch = false;
 
   updateParams(params: SearchParams) {
     this.searchParams = params;
@@ -509,26 +502,47 @@ export class FiltersState {
     }
   }
 
-  updateStaticFilters(result: QueryCardResult): void {
+  createStaticFilters(result: QueryCardResult): void {    
     this.staticFilters = [...(result.situations_exact || []), ...(result.responses_exact || [])]
-        .sort((a, b) => (b.doc_count || 0) - (a.doc_count || 0))
         .filter(x => x.key !== this.currentSearchParams.situation)
         .filter(x => x.key !== this.currentSearchParams.response)
-        .filter(x => !!x.doc_count && x.doc_count > 5)
+        .filter(x => x.doc_count && x.doc_count > 5)
         .slice(0, this.maxStaticFilters)
-        .map(x => {
-          return {
-            key: x.key,
-          }
-        });
-    this.staticFiltersIds = this.staticFilters
-        .map(x => x.key || '')
-        .filter(x => x.length);
-    this.updateStaticFilterCounts(this.currentSearchParams, result);
+        .map(x => ({key: x.key}));
+    this.recalculateFilterCounts(this.currentSearchParams, result);
   }
   
-  updateStaticFilterCounts(params: SearchParams, result: QueryCardResult | null = null): void {
+  recalculateFilterCounts(params: SearchParams, result: QueryCardResult | null = null): void {
     (result ? from([result]) : this.api.getCounts(params, !this.areaSearchState.nationWide_)).pipe(
+      map((result) => {
+        const count = result.search_counts._current.total_overall;
+        return count;
+      }),
+    ).subscribe((count) => {
+      let remainingOperations = this.staticFilters.length;
+      this.staticFilters.forEach((item) => {
+        item.doc_count = undefined;
+        if (this.isIdSelected(item.key || '')) return;
+        const paramsCopy = this._copySearchParams(params);
+        this.toggleId({id: item.key}, paramsCopy);
+        this.api.getCounts(paramsCopy, !this.areaSearchState.nationWide_).subscribe((result) => {
+          const new_doc_count = result.search_counts._current.total_overall;
+          item.plus = new_doc_count > count;
+          item.doc_count = item.plus ? (new_doc_count - count) : new_doc_count;
+          remainingOperations--; // Wait for all operations update
+          if (remainingOperations === 0) {
+            const isSelectedFilters = this.allFilteredResponses.length + this.allFilteredSituations.length;
+            this.staticFilters = this.staticFilters
+              .filter(x => isSelectedFilters || (x.doc_count && x.doc_count > 5 && x.doc_count < count))
+            this.staticFiltersIds = this.staticFilters.map(x => x.key || '').filter(x => x.length);
+          }
+        });
+      });
+    });
+  }
+
+  updateStaticFilterCounts(params: SearchParams): void {
+    (this.api.getCounts(params, !this.areaSearchState.nationWide_)).pipe(
       map((result) => {
         const count = result.search_counts._current.total_overall;
         return count;
@@ -536,21 +550,13 @@ export class FiltersState {
     ).subscribe((count) => {
       this.staticFilters.forEach((item) => {
         item.doc_count = undefined;
-        if (this.isIdSelected(item.key || '')) {
-          // No need to update count for selected items
-          return;
-        }
+        if (this.isIdSelected(item.key || '')) return; //No need to update the count for a selected item
         const paramsCopy = this._copySearchParams(params);
         this.toggleId({id: item.key}, paramsCopy);
         this.api.getCounts(paramsCopy, !this.areaSearchState.nationWide_).subscribe((result) => {
           const new_doc_count = result.search_counts._current.total_overall;
-          if (new_doc_count > count) {
-              item.doc_count = new_doc_count - count;
-              item.plus = true;
-          } else {
-              item.doc_count = new_doc_count;
-              item.plus = false;
-          }
+          item.plus = new_doc_count > count;
+          item.doc_count = item.plus ? (new_doc_count - count) : new_doc_count;
         });
       });
     });
