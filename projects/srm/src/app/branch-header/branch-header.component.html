@@ -9,6 +9,7 @@
     <button class='back-icon layout-desktop' [class.card]='!!cardId' [class.point]='!!pointId' *ngIf='!landingPage' aria-label="סגירת עמוד השירות וחזרה לעמוד הקודם"></button>
     <div class='spacer layout-desktop'></div>
     <app-branch-details [card]='card' [compact]='compact'></app-branch-details>
+    <img *ngIf='imageUrl' class='imageUrl' src='{{imageUrl}}' alt='לוגו {{card?.organization_name}}'>
     @if (!card.national_service) {
         <button class='control-icon layout-mobile' [class.card]='!!cardId' [class.point]='!!pointId' role="presentation" aria-hidden="true" tabindex="-1"></button>
     }

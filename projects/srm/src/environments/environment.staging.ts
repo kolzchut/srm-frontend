@@ -6,5 +6,8 @@ export const environment = Object.assign({}, devEnv, {
     // taxonomySituationsURL: '/situations.json',
     // taxonomyResponsesURL: '/responses.json'
     externalUrl: 'https://srm-staging.whiletrue.industries',
+    orgIdLogoMap: {
+        '500106406': 'logo_misrad_revaha.png',
+      }
 });
   

@@ -1,14 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { Card } from '../consts';
 import { LayoutService } from '../layout.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-branch-header',
   templateUrl: './branch-header.component.html',
   styleUrls: ['./branch-header.component.less']
 })
-export class BranchHeaderComponent implements OnInit {
+export class BranchHeaderComponent implements OnInit, OnChanges {
 
   @Input() card: Card | null;
   @Input() link: string[] | null;
@@ -17,9 +18,18 @@ export class BranchHeaderComponent implements OnInit {
   @Input() compact = true;
   @Input() landingPage = false;
 
+  imageUrl: string = '';
+  imageMap = environment.orgIdLogoMap || {};
+
   constructor(public layout: LayoutService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+  }
+
+  ngOnChanges(): void {
+    if(this.card?.organization_id && this.imageMap[this.card.organization_id]) {
+      this.imageUrl = `assets/img/${this.imageMap[this.card.organization_id] || ''}`;
+    }
   }
 
   navigate(): void {
