@@ -91,12 +91,12 @@ export class ApiService {
         filter['response_ids_parents#2'] = searchParams.filter_response_categories;
       }
       if (searchParams.situation) {
-        filter['situation_ids'] = searchParams.situation;
+        filter['situation_ids_parents'] = searchParams.situation;
       }
       let situationFilters = 0;
       SITUATION_FILTERS.forEach((f) => {
         if ((searchParams as any)['filter_' + f]?.length) {
-          filter['situation_ids#' + situationFilters] = (searchParams as any)['filter_' + f];
+          filter['situation_ids_parents#' + situationFilters] = (searchParams as any)['filter_' + f];
           situationFilters++;
         }
       });
