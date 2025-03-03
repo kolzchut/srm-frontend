@@ -8,6 +8,9 @@ export const environment = Object.assign({}, devEnv, {
     externalUrl: 'https://srm-staging.whiletrue.industries',
     orgIdLogoMap: {
         '500106406': 'logo_misrad_revaha.png',
-      }
+    },
+    orgNameToLogoMap: {
+      'meser': 'logo_misrad_revaha.png',
+    }
 });
   

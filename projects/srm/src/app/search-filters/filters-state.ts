@@ -67,7 +67,7 @@ export class FiltersState {
       untilDestroyed(attachedComponent),
       filter((params) => !!params),
       distinctUntilChanged((a, b) => a.simpleHash.localeCompare(b.simpleHash) === 0),
-      switchMap((params) => this.api.getDistinct(params, false, 'static-filters')),
+      switchMap((params) => this.api.getDistinct(params, false, 'static-filters')), //here
     ).subscribe((result) => {
       this.updateStaticFilters(result);
     });
@@ -179,43 +179,19 @@ export class FiltersState {
   }
 
   getKeyForSituation(key: string): string | null {
-    if (
-      key.indexOf('human_situations:armed_forces') === 0 ||
-      key.indexOf('human_situations:citizenship') === 0 ||
-      key.indexOf('human_situations:criminal_history') === 0 ||
-      key.indexOf('human_situations:deprivation') === 0 ||
-      key.indexOf('human_situations:education') === 0 ||
-      key.indexOf('human_situations:household') === 0 ||
-      key.indexOf('human_situations:housing') === 0 ||
-      key.indexOf('human_situations:income') === 0 ||
-      key.indexOf('human_situations:sectors') === 0 ||
-      key.indexOf('human_situations:sexuality') === 0 ||
-      key.indexOf('human_situations:survivors') === 0 ||
-      false
-    ) {
-      return 'audiences';
+    const keyParts = key.split(':');
+    if (keyParts[0] !== 'human_situations') return null;
+    const situationsMap = {
+      audiences: ['armed_forces', 'citizenship', 'criminal_history', 'deprivation', 'education', 'household', 'housing', 'income', 'sectors', 'sexuality', 'survivors'],
+      healthIssues: ['mental_health', 'substance_dependency', 'disability', 'health'],
+      ageGroups: ['age_group'],
+      languages: ['language'],
     }
-    if (
-      key.indexOf('human_situations:mental_health') === 0 ||
-      key.indexOf('human_situations:substance_dependency') === 0 ||
-      key.indexOf('human_situations:disability') === 0 ||
-      key.indexOf('human_situations:health') === 0 ||
-      false
-    ) {
-      return 'health_issues';
-    }
-    if (
-      key.indexOf('human_situations:age_group') === 0 ||
-      false
-    ) {
-      return 'age_groups';
-    }
-    if (
-      key.indexOf('human_situations:language') === 0 ||
-      false
-    ) {
-      return 'languages';
-    }
+    if (situationsMap.audiences.includes(keyParts[1])) return 'audiences';
+    if (situationsMap.healthIssues.includes(keyParts[1])) return 'health_issues';
+    if (situationsMap.ageGroups.includes(keyParts[1])) return 'age_groups';
+    if (situationsMap.languages.includes(keyParts[1])) return 'languages';
+
     for (const hsroot of ['employment', 'benefit_holders', 'life_events', 'urgency', 'gender', 'community', 'role']) {
       if (key.indexOf('human_situations:' + hsroot) === 0) {
         return `others.${hsroot}`;
@@ -511,16 +487,12 @@ export class FiltersState {
 
   updateStaticFilters(result: QueryCardResult): void {
     this.staticFilters = [...(result.situations_exact || []), ...(result.responses_exact || [])]
-        .sort((a, b) => (b.doc_count || 0) - (a.doc_count || 0))
         .filter(x => x.key !== this.currentSearchParams.situation)
         .filter(x => x.key !== this.currentSearchParams.response)
         .filter(x => !!x.doc_count && x.doc_count > 5)
+        .sort((a, b) => (b.doc_count || 0) - (a.doc_count || 0))
         .slice(0, this.maxStaticFilters)
-        .map(x => {
-          return {
-            key: x.key,
-          }
-        });
+        .map(x => ({ key: x.key }));
     this.staticFiltersIds = this.staticFilters
         .map(x => x.key || '')
         .filter(x => x.length);

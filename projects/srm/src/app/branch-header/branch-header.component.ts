@@ -20,6 +20,7 @@ export class BranchHeaderComponent implements OnInit, OnChanges {
 
   imageUrl: string = '';
   imageMap = environment.orgIdLogoMap || {};
+  orgNameToLogoMap = environment.orgNameToLogoMap || {};
 
   constructor(public layout: LayoutService, private router: Router, private route: ActivatedRoute) { }
 
@@ -27,9 +28,7 @@ export class BranchHeaderComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    if(this.card?.organization_id && this.imageMap[this.card.organization_id]) {
-      this.imageUrl = `assets/img/${this.imageMap[this.card.organization_id] || ''}`;
-    }
+    this.imageUrl = this.setLogo();
   }
 
   navigate(): void {
@@ -42,5 +41,20 @@ export class BranchHeaderComponent implements OnInit, OnChanges {
       }
       this.router.navigate(link, params);
     }
+  }
+
+  setLogo(): string {
+    const orgId = this.card?.organization_id;
+    if (orgId) {
+      const logo = this.imageMap[orgId];
+      if (logo) return `assets/img/${logo}`;
+    }
+  
+    const serviceId = this.card?.service_id?.split("-")[0];
+    if (serviceId) {
+      const logo = this.orgNameToLogoMap[serviceId];
+      if (logo) return `assets/img/${logo}`;
+    }
+    return "";
   }
 }

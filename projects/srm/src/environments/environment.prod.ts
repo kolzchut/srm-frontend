@@ -34,6 +34,9 @@ export const environment = {
   sitemapUrl1: 'https://srm.datacity.org.il/dataset/6fbf9571-b66e-4264-a4e6-605539517b22/resource/2fdf48e0-310a-4aa9-8278-7a76bcc8c6c0/download/sitemap_1.xml',
   orgIdLogoMap: {
     '500106406': 'logo_misrad_revaha.png',
+  },
+  orgNameToLogoMap: {
+    'meser': 'logo_misrad_revaha.png',
   }
 };
 
