@@ -19,8 +19,8 @@ export class BranchHeaderComponent implements OnInit, OnChanges {
   @Input() landingPage = false;
 
   imageUrl: string = '';
-  imageMap = environment.orgIdLogoMap || {};
-  orgNameToLogoMap = environment.orgNameToLogoMap || {};
+  imageMap: Record<string,string> = environment.orgIdLogoMap || {};
+  orgNameToLogoMap: Record<string,string> = environment.orgNameToLogoMap || {};
 
   constructor(public layout: LayoutService, private router: Router, private route: ActivatedRoute) { }
 
