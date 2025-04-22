@@ -9,7 +9,7 @@
         <span class='org' [innerHTML]='orgName(result)'></span>
         <span class='separator'>&nbsp;/&nbsp;</span>
         <img src='../../assets/img/icon-headset.svg'>
-        <span class='city'>{{cityName(result)}}</span>
+        <span class='city'>{{getBranchAddress(result)}}</span>
     </span>
 </a>
 
@@ -26,7 +26,7 @@
             <span class='org' [innerHTML]='orgName(extra)'></span>
             <span class='separator'>&nbsp;/&nbsp;</span>
             <img src='../../assets/img/icon-headset.svg'>
-            <span class='city'>{{cityName(extra)}}</span>
+            <span class='city'>{{getBranchAddress(extra)}}</span>
         </a>
     }
     @if (!!moreAvailable) {
