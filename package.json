@@ -1,6 +1,7 @@
 {
   "name": "srm",
   "version": "0.2.3",
+  "private": true,
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -14,7 +15,6 @@
     "prerender": "ng run srm:prerender",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org phonaris --project kolsherut ./dist/srm/browser && sentry-cli sourcemaps upload --org phonaris --project kolsherut ./dist/srm/browser"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^17.2.1",
     "@angular/common": "^17.2.1",
