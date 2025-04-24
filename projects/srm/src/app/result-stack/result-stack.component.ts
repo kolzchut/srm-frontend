@@ -71,7 +71,7 @@ export class ResultStackComponent implements OnInit {
     const primary = _h(card.address_parts, 'primary');
     const secondary = _h(card.address_parts, 'secondary');
     if (primary) {
-      if (secondary) return `${secondary}, ${primary}`;
+      if (secondary) return `${primary}, ${secondary}`;
       return primary;
     }
     return _h(card, 'branch_address');
