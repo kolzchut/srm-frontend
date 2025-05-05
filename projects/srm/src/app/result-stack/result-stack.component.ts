@@ -28,7 +28,7 @@ export class ResultStackComponent implements OnInit {
     if (this.result?.collapse_hits) {
       const cityNames: any = {};
       this.result.collapse_hits.forEach((h) => {
-        const cityName = this.getBranchAddress(h);
+        const cityName = this.branchInfo(h);
         if (cityName) {
           if (cityNames[cityName]) {
             cityNames[cityName] += 1;
@@ -66,7 +66,7 @@ export class ResultStackComponent implements OnInit {
     return c;
   }
 
-  getBranchAddress(card: Card) {
+  branchInfo(card: Card) {
     if (card.national_service) return 'שירות ארצי';
     const primary = _h(card.address_parts, 'primary');
     const secondary = _h(card.address_parts, 'secondary');
@@ -75,6 +75,11 @@ export class ResultStackComponent implements OnInit {
       return primary;
     }
     return _h(card, 'branch_address');
+  }
+  
+  branchName({branch_name}: Card) {
+    if (!branch_name) return "";
+    return ` / ${branch_name}`;
   }
 
   orgName(card: Card) {

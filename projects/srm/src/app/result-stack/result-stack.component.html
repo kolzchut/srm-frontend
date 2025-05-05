@@ -7,9 +7,10 @@
     <app-result-card [card]='result' [searchParams]='searchParams' [larger]='true'></app-result-card>
     <span [class.national]='result.national_service' class='bookend'>
         <span class='org' [innerHTML]='orgName(result)'></span>
+        <span class=''>{{branchName(result)}}</span>
         <span class='separator'>&nbsp;/&nbsp;</span>
         <img src='../../assets/img/icon-headset.svg'>
-        <span class='city'>{{getBranchAddress(result)}}</span>
+        <span class='city'>{{branchInfo(result)}}</span>
     </span>
 </a>
 
@@ -24,9 +25,10 @@
             [style.display]='i < showCount ? "block" : "none"'
             class='bookend' [style.zIndex]='1000 - i' clickOnReturn>
             <span class='org' [innerHTML]='orgName(extra)'></span>
+            <span class=''>{{branchName(result)}}</span>
             <span class='separator'>&nbsp;/&nbsp;</span>
             <img src='../../assets/img/icon-headset.svg'>
-            <span class='city'>{{getBranchAddress(extra)}}</span>
+            <span class='city'>{{branchInfo(extra)}}</span>
         </a>
     }
     @if (!!moreAvailable) {

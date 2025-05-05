@@ -47,7 +47,7 @@ export class Card {
     organization_branch_count: number;
 
     branch_id: string;
-    // branch_name: string;
+    branch_name: string;
     // branch_short_name: string;
     branch_operating_unit: string;
     branch_description: string;
