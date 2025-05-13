@@ -39,7 +39,7 @@ export class ResultStackComponent implements OnInit {
         (h as any)['__city_count'] = h.national_service ? 9999 : (cityNames[cityName] || 0);
       });
       // Sort collapse_hits by __city_count ascending
-      this.result.collapse_hits.sort((a, b) => (a as any)['__city_count'] - (b as any)['__city_count']);
+      this.result.collapse_hits.sort((a, b) => a.branch_city.localeCompare(b.branch_city, 'he-IL'));
       this.result.collapse_hits = this.result.collapse_hits.filter((h) => h.card_id !== this.result.card_id);
     }
     if (this.showCount === -1 && this.collapsibleCount > 0) {
@@ -76,7 +76,7 @@ export class ResultStackComponent implements OnInit {
     }
     return _h(card, 'branch_address');
   }
-  
+
   branchName({branch_name}: Card) {
     if (!branch_name) return "";
     return ` / ${branch_name}`;
