@@ -41,7 +41,6 @@ export class ResultStackComponent implements OnInit {
       this.result.collapse_hits = this.result.collapse_hits
         .sort((a, b) => !a.branch_city? 1 :-a.branch_city.localeCompare(b.branch_city, 'he-IL'))
         .sort((a,b)=>b.national_service? 1:-1);
-      console.log('[0]',this.result.collapse_hits[0])
     }
     if (this.showCount === -1 && this.collapsibleCount > 0) {
       this.showCount = Math.min(4, this.collapsibleCount);
