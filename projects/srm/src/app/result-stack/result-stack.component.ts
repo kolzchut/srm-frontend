@@ -4,6 +4,7 @@ import { LayoutService } from '../layout.service';
 import { AnalyticsService } from '../analytics.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlatformService } from '../platform.service';
+import {groupArrayByFeature, mapToArray} from "../../services/arrays";
 
 @Component({
   selector: 'app-result-stack',
@@ -41,6 +42,8 @@ export class ResultStackComponent implements OnInit {
       this.result.collapse_hits = this.result.collapse_hits
         .sort((a, b) => !a.branch_city? 1 :-a.branch_city.localeCompare(b.branch_city, 'he-IL'))
         .sort((a,b)=>b.national_service? 1:-1);
+      const groups = groupArrayByFeature({array: this.result.collapse_hits, field: 'organization_name'});
+      this.result.collapseHitsByGroups = mapToArray(groups).sort((a, b) => a.vals.length- b.vals.length);
     }
     if (this.showCount === -1 && this.collapsibleCount > 0) {
       this.showCount = Math.min(4, this.collapsibleCount);

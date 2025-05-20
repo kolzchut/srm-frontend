@@ -79,6 +79,7 @@ export class Card {
     // _collapse_count?: number;
     collapse_key: string;
     collapse_hits?: Card[];
+    collapseHitsByGroups?: Array<{key:string, vals:Array<Card>}>;
 
     __props: any;
 
@@ -250,8 +251,8 @@ export class SearchParams {
     }
 
     get hasFilters(): boolean {
-        return !!SITUATION_FILTERS.find((f) => (this as any)['filter_' + f]?.length) || 
-                !!this.filter_responses?.length || 
+        return !!SITUATION_FILTERS.find((f) => (this as any)['filter_' + f]?.length) ||
+                !!this.filter_responses?.length ||
                 !!this.filter_response_categories?.length;
     }
 
