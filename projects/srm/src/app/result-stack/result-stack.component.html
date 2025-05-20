@@ -9,21 +9,37 @@
 
 <!-- <pre>{{collapsible}} {{showCount}} {{result.collapse_hits?.slice(0, showCount)?.length}}</pre> -->
 <div class='bookends' *ngIf='(result.collapse_hits || []).length > 0'>
-    @for (extra of result.collapse_hits || []; track extra.card_id; let i = $index) {
-        <a (mouseover)='hover.next(extra)'
-            [attr.aria-label]='ariaLabel(extra)'
-            (activated)='selectedItem($event, result, "search-result-extras", extra)'
-            [href]='"/c/" + extra.card_id'
-            [class.national]='extra.national_service'
-            [style.display]='i < showCount ? "block" : "none"'
-            class='bookend' [style.zIndex]='1000 - i' clickOnReturn>
-            <span class='org' [innerHTML]='orgName(extra)'></span>
-            <span class='branchName'>{{branchName(extra)}}</span>
-            <span class='separator'>&nbsp;/&nbsp;</span>
-            <img src='../../assets/img/icon-headset.svg'>
-            <span class='city'>{{branchInfo(extra)}}</span>
-        </a>
-    }
+  @for (org of result.collapseHitsByGroups || []; track org.key) {
+    <a >
+<!--       [attr.aria-label]='ariaLabel(extra)'-->
+<!--       (activated)='selectedItem($event, result, "search-result-extras", extra)'-->
+<!--       [href]='"/c/" + extra.card_id'-->
+<!--       [class.national]='extra.national_service'-->
+<!--       [style.display]='i < showCount ? "block" : "none"'-->
+<!--       class='bookend' [style.zIndex]='1000 - i' clickOnReturn>-->
+<!--      <span class='org' [innerHTML]='orgName(extra)'></span>-->
+<!--      <span class='branchName'>{{branchName(extra)}}</span>-->
+<!--      <span class='separator'>&nbsp;/&nbsp;</span>-->
+<!--      <img src='../../assets/img/icon-headset.svg'>-->
+      <span class='city'>{{org.key}}</span>
+      <span class='city'>{{org.vals.length + 'סניפים'}}</span>
+    </a>
+  }
+<!--    @for (extra of result.collapse_hits || []; track extra.card_id; let i = $index) {-->
+<!--        <a (mouseover)='hover.next(extra)'-->
+<!--            [attr.aria-label]='ariaLabel(extra)'-->
+<!--            (activated)='selectedItem($event, result, "search-result-extras", extra)'-->
+<!--            [href]='"/c/" + extra.card_id'-->
+<!--            [class.national]='extra.national_service'-->
+<!--            [style.display]='i < showCount ? "block" : "none"'-->
+<!--            class='bookend' [style.zIndex]='1000 - i' clickOnReturn>-->
+<!--            <span class='org' [innerHTML]='orgName(extra)'></span>-->
+<!--            <span class='branchName'>{{branchName(extra)}}</span>-->
+<!--            <span class='separator'>&nbsp;/&nbsp;</span>-->
+<!--            <img src='../../assets/img/icon-headset.svg'>-->
+<!--            <span class='city'>{{branchInfo(extra)}}</span>-->
+<!--        </a>-->
+<!--    }-->
     @if (!!moreAvailable) {
         <a class='bookend more' (activated)='more()' role='button' aria-label='הצגת עוד 10 תוצאות דומות' clickOnReturn tabindex="0">
             <span class='bookend dummy no1'></span>
