@@ -79,7 +79,7 @@ export class Card {
     // _collapse_count?: number;
     collapse_key: string;
     collapse_hits?: Card[];
-    collapseHitsByGroups?: Array<{key:string, vals:Array<Card>}>;
+    collapseHitsByGroups?: Array<{key:string, vals:Array<Card>, isDisplayed: boolean}>;
 
     __props: any;
 

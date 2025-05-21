@@ -12,7 +12,7 @@ import {groupArrayByFeature, mapToArray} from "../../services/arrays";
   styleUrls: ['./result-stack.component.less'],
 })
 export class ResultStackComponent implements OnInit {
-
+  branchesToDisplay: Card[] = [];
   @Input() result: Card;
   @Input() searchParams: SearchParams;
   @Input() index = 0;
@@ -43,7 +43,13 @@ export class ResultStackComponent implements OnInit {
         .sort((a, b) => !a.branch_city? 1 :-a.branch_city.localeCompare(b.branch_city, 'he-IL'))
         .sort((a,b)=>b.national_service? 1:-1);
       const groups = groupArrayByFeature({array: this.result.collapse_hits, field: 'organization_name'});
-      this.result.collapseHitsByGroups = mapToArray(groups).sort((a, b) => a.vals.length- b.vals.length);
+      this.result.collapseHitsByGroups = mapToArray(groups)
+        .map(group => ({...group, isDisplayed:false}))
+        .sort((a, b) => a.vals.length- b.vals.length);
+      this.branchesToDisplay = this.result.collapseHitsByGroups
+        .filter(group => group.vals.length == 1)
+        .map(group => group.vals[0]);
+      this.result.collapseHitsByGroups = this.result.collapseHitsByGroups.filter((group) => group.vals.length > 1);
     }
     if (this.showCount === -1 && this.collapsibleCount > 0) {
       this.showCount = Math.min(4, this.collapsibleCount);
@@ -58,6 +64,12 @@ export class ResultStackComponent implements OnInit {
     if (this.showCount > this.collapsibleCount) {
       this.showCount = this.collapsibleCount;
     }
+  }
+
+  showBranches(key: string) {
+    const branch = this.result.collapseHitsByGroups?.find(group => group.key === key)
+    if(!branch) return;
+    branch.isDisplayed = !(!!branch.isDisplayed);
   }
 
   get moreAvailable() {
