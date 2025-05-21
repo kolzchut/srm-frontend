@@ -3,8 +3,8 @@
     [filtersState]='filtersState'
     (activate)='filtersState.toggle()'
     [count]='(filtersState.allFilteredSituations?.length || 0) + (filtersState.currentSearchParams?.filter_responses?.length || 0)'
-    interactionEvent='open-filters' 
-    [interactionEventWhere]='location.path(false)' 
+    interactionEvent='open-filters'
+    [interactionEventWhere]='location.path(false)'
     [searchParams]='filtersState.searchParams'
 ></app-search-filters-button>
 <ng-container *ngIf='filtersState.filtersBarOccupied'>
@@ -27,7 +27,7 @@
                     [active]='true'
                     [count]='(filtersState.currentSearchParams.filter_responses || []).indexOf(item.key) > -1 ? null : item.doc_count || 0'
                     [plus]='(filtersState.currentSearchParams.filter_responses || []).indexOf(item.key) > -1 ? false : item.plus || false'
-                    (clicked)='filtersState.toggleResponse(filtersState.responsesMap[item.key])'
+                    (clicked)='toggleResponse(item.key)'
                     [defaultColors]='true'
                 ></app-response>
 
