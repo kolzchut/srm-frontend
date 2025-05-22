@@ -7,27 +7,33 @@
     <app-result-card [card]='result' [searchParams]='searchParams' [larger]='true'></app-result-card>
 </a>
 
-<!-- <pre>{{collapsible}} {{showCount}} {{result.collapse_hits?.slice(0, showCount)?.length}}</pre> -->
-<div class='bookends' *ngIf='(result.collapse_hits || []).length > 0'>
+<div class='bookends-more' *ngIf='(result.collapse_hits || []).length > 0'>
   @for (org of result.collapseHitsByGroups || []; track org.key; let i = $index) {
-    <a [style.display]='"block"' class="bookend" (click)="showBranches(org.key)">
+    <a [style.display]='i < showCount ? "block" : "none"' class="bookend" (click)="showBranches(org.key)">
       <span class='org' [innerHTML]='org.key'></span>
-      <span class='city'> / {{org.vals.length + ' סניפים'}}</span>
+      <span class='more-branches'> / {{org.vals.length + ' סניפים'}}</span>
     </a>
     @if (org.isDisplayed) {
-      @for (branch of org.vals || []; track branch.card_id) {
+      @for (branch of org.vals || []; track branch.card_id; let j = $index) {
         <a (mouseover)='hover.next(branch)'
             [attr.aria-label]='ariaLabel(branch)'
             (activated)='selectedItem($event, result, "search-result-extras", branch)'
             [href]='"/c/" + branch.card_id'
             [class.national]='branch.national_service'
-           [style.display]='i < showCount ? "block" : "none"'
+           [style.display]='j <= org.maxDisplayCount ? "block" : "none"'
            class='bookend' clickOnReturn>
             <span class='org' [innerHTML]='orgName(branch)'></span>
             <span class='branchName'>{{branchName(branch)}}</span>
             <span class='separator'>&nbsp;/&nbsp;</span>
-            <img src='../../assets/img/icon-headset.svg'>
+            <img alt="national service image" src='../../assets/img/icon-headset.svg'>
             <span class='city'>{{branchInfo(branch)}}</span>
+        </a>
+      }
+      @if (org.vals.length > org.maxDisplayCount) {
+        <a class='bookend more' (activated)='moreOfGroup(org.key)' role='button' aria-label='הצגת עוד 4 תוצאות דומות' clickOnReturn tabindex="0">
+            <span class='bookend dummy no1'></span>
+            <span class='bookend dummy no2'></span>
+          <span class='more-count'>הצג עוד {{org.vals.length- org.maxDisplayCount}} סניפים נוספים של {{org.key}}</span>
         </a>
       }
     }
@@ -38,12 +44,12 @@
             (activated)='selectedItem($event, result, "search-result-extras", extra)'
             [href]='"/c/" + extra.card_id'
             [class.national]='extra.national_service'
-            [style.display]='i < showCount+ (result.collapseHitsByGroups?.length || 0 )? "block" : "none"'
+            [style.display]='i < showCount-(result.collapseHitsByGroups?.length || 0 )? "block" : "none"'
             class='bookend' [style.zIndex]='1000 - i' clickOnReturn>
             <span class='org' [innerHTML]='orgName(extra)'></span>
             <span class='branchName'>{{branchName(extra)}}</span>
             <span class='separator'>&nbsp;/&nbsp;</span>
-            <img src='../../assets/img/icon-headset.svg'>
+            <img alt="national service image" src='../../assets/img/icon-headset.svg'>
             <span class='city'>{{branchInfo(extra)}}</span>
         </a>
     }

@@ -13,6 +13,7 @@ import {groupArrayByFeature, mapToArray} from "../../services/arrays";
 })
 export class ResultStackComponent implements OnInit {
   branchesToDisplay: Card[] = [];
+  maxDisplayCount = 4;
   @Input() result: Card;
   @Input() searchParams: SearchParams;
   @Input() index = 0;
@@ -44,7 +45,7 @@ export class ResultStackComponent implements OnInit {
         .sort((a,b)=>b.national_service? 1:-1);
       const groups = groupArrayByFeature({array: this.result.collapse_hits, field: 'organization_name'});
       this.result.collapseHitsByGroups = mapToArray(groups)
-        .map(group => ({...group, isDisplayed:false}))
+        .map(group => ({...group, isDisplayed:false, maxDisplayCount:this.maxDisplayCount}))
         .sort((a, b) => a.vals.length- b.vals.length);
       this.branchesToDisplay = this.result.collapseHitsByGroups
         .filter(group => group.vals.length == 1)
@@ -56,6 +57,7 @@ export class ResultStackComponent implements OnInit {
       if (this.moreAvailable === 1) {
         this.showCount += 1;
       }
+      console.log('showcount:',this.showCount)
     }
   }
 
@@ -70,6 +72,7 @@ export class ResultStackComponent implements OnInit {
     const branch = this.result.collapseHitsByGroups?.find(group => group.key === key)
     if(!branch) return;
     branch.isDisplayed = !(!!branch.isDisplayed);
+    branch.maxDisplayCount =this.maxDisplayCount;
   }
 
   get moreAvailable() {
@@ -77,10 +80,16 @@ export class ResultStackComponent implements OnInit {
   }
 
   get collapsibleCount() {
-    const c = this.result.collapsed_count;
-    return c;
+    const branches = this.branchesToDisplay.length || 0;
+    const groups = this.result.collapseHitsByGroups?.length || 0;
+    return branches+ groups;
   }
-
+  moreOfGroup(key:string)
+  {
+    const group = this.result.collapseHitsByGroups?.find(group => group.key === key)
+    if(!group || !group.isDisplayed) return;
+    group.maxDisplayCount = group.maxDisplayCount + 4 > group.vals.length ? group.vals.length : group.maxDisplayCount + 4;
+  }
   branchInfo(card: Card) {
     if (card.national_service) return 'שירות ארצי';
     const primary = _h(card.address_parts, 'primary');
