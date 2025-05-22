@@ -2,7 +2,7 @@
 <app-search-filters-button
     [filtersState]='filtersState'
     (activate)='filtersState.toggle()'
-    [count]='(filtersState.allFilteredSituations?.length || 0) + (filtersState.currentSearchParams?.filter_responses?.length || 0)'
+    [count]='(filtersState.allFilteredSituations.length || 0) + (filtersState.currentSearchParams.filter_responses?.length || 0)'
     interactionEvent='open-filters'
     [interactionEventWhere]='location.path(false)'
     [searchParams]='filtersState.searchParams'

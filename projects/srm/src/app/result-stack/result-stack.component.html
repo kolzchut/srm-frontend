@@ -4,6 +4,7 @@
     <a [style.display]='i < showCount ? "block" : "none"' class="bookend" (click)="showBranches(org.key, index)">
       <span class='org' [innerHTML]='org.key'></span>
       <span class='more-branches'  [ngClass]="{'bold-underline': index == this.selectedGroup.index}"> / {{org.vals.length + ' סניפים'}}</span>
+      <img class='arrow' [src]="index == selectedGroup.index ? 'assets/img/blueLeftArrow.svg' : 'assets/img/grayLeftArrow.svg'" alt='חץ שמאלה' />
     </a>
   }
     @if (!!moreAvailable) {
