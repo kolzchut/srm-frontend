@@ -4,6 +4,7 @@ import { LayoutService } from '../layout.service';
 import { AnalyticsService } from '../analytics.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlatformService } from '../platform.service';
+import {groupArrayByFeature, mapToArray} from "../../services/arrays";
 
 @Component({
   selector: 'app-result-stack',
@@ -11,7 +12,8 @@ import { PlatformService } from '../platform.service';
   styleUrls: ['./result-stack.component.less'],
 })
 export class ResultStackComponent implements OnInit {
-
+  branchesToDisplay: Card[] = [];
+  maxDisplayCount = 4;
   @Input() result: Card;
   @Input() searchParams: SearchParams;
   @Input() index = 0;
@@ -41,12 +43,21 @@ export class ResultStackComponent implements OnInit {
       this.result.collapse_hits = this.result.collapse_hits
         .sort((a, b) => !a.branch_city? 1 :-a.branch_city.localeCompare(b.branch_city, 'he-IL'))
         .sort((a,b)=>b.national_service? 1:-1);
+      const groups = groupArrayByFeature({array: this.result.collapse_hits, field: 'organization_name'});
+      this.result.collapseHitsByGroups = mapToArray(groups)
+        .map(group => ({...group, isDisplayed:false, maxDisplayCount:this.maxDisplayCount}))
+        .sort((a, b) => a.vals.length- b.vals.length);
+      this.branchesToDisplay = this.result.collapseHitsByGroups
+        .filter(group => group.vals.length == 1)
+        .map(group => group.vals[0]);
+      this.result.collapseHitsByGroups = this.result.collapseHitsByGroups.filter((group) => group.vals.length > 1);
     }
     if (this.showCount === -1 && this.collapsibleCount > 0) {
       this.showCount = Math.min(4, this.collapsibleCount);
       if (this.moreAvailable === 1) {
         this.showCount += 1;
       }
+      console.log('showcount:',this.showCount)
     }
   }
 
@@ -57,15 +68,28 @@ export class ResultStackComponent implements OnInit {
     }
   }
 
+  showBranches(key: string) {
+    const branch = this.result.collapseHitsByGroups?.find(group => group.key === key)
+    if(!branch) return;
+    branch.isDisplayed = !(!!branch.isDisplayed);
+    branch.maxDisplayCount =this.maxDisplayCount;
+  }
+
   get moreAvailable() {
     return this.collapsibleCount - this.showCount;
   }
 
   get collapsibleCount() {
-    const c = this.result.collapsed_count;
-    return c;
+    const branches = this.branchesToDisplay.length || 0;
+    const groups = this.result.collapseHitsByGroups?.length || 0;
+    return branches+ groups;
   }
-
+  moreOfGroup(key:string)
+  {
+    const group = this.result.collapseHitsByGroups?.find(group => group.key === key)
+    if(!group || !group.isDisplayed) return;
+    group.maxDisplayCount = group.maxDisplayCount + 4 > group.vals.length ? group.vals.length : group.maxDisplayCount + 4;
+  }
   branchInfo(card: Card) {
     if (card.national_service) return 'שירות ארצי';
     const primary = _h(card.address_parts, 'primary');
