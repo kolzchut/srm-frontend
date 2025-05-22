@@ -15,12 +15,12 @@
             >
                 <div class='checkbox'></div>
                 <span class='name'>{{filtersState.responsesMap[item.key].name}}</span>
-                <span class='count'>{{count((filtersState.currentSearchParams?.filter_responses || []).indexOf(item.key) > -1 ? null : item)}}</span>
+                <span class='count'>{{count((filtersState.currentSearchParams.filter_responses || []).indexOf(item.key) > -1 ? null : item)}}</span>
             </div>
         }
     }
 
-    @for (response of filtersState.currentSearchParams?.filter_responses; track response) {
+    @for (response of filtersState.currentSearchParams.filter_responses; track response) {
         @if (filtersState.staticFiltersIds.indexOf(response) === -1) {
             <div class='item checked'
                 (click)='toggleResponse(filtersState.responsesMap[response])'

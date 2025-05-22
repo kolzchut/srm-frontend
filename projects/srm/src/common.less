@@ -4,8 +4,8 @@
 @color-gray-1: #333231; // neutral-700
 @color-gray-2: #555452; // neutral-600
 @color-gray-3: #767573; // neutral-500
-@color-gray-35: #989693; // neutral-400    
-@color-gray-4: #b9b7b4; // neutral-300    
+@color-gray-35: #989693; // neutral-400
+@color-gray-4: #b9b7b4; // neutral-300
 @color-gray-5: #E1DEDB; // neutral-200
 @color-gray-6: #F1EEEA; // neutral-150
 @color-gray-7: #FFFDF5; // neutral-100
@@ -70,7 +70,6 @@
     background-position: center;
     background-size: contain;
 }
-
 .hover-bg-image(@bg) when not (@bg = none) {
     &:hover {
         background-image: @bg;
@@ -190,7 +189,7 @@
 .contrast(@rules) {
     @media (prefers-contrast: more) {
         @rules();
-    }   
+    }
 }
 
 
@@ -204,23 +203,23 @@
 .loading {
     box-sizing: border-box;
     overflow: hidden;
-    position: relative;  
+    position: relative;
     background: rgb(239, 241, 246) no-repeat;
     display: inline-block;
     will-change: transform;
-  
+
     &:after,
     &:before {
       box-sizing: border-box;
     }
-  
+
     &:after,
     &:before {
         box-sizing: border-box;
     }
 
     transform: translate3d(0, 0, 0);
-  
+
     &:before {
         animation: progress 2s ease-in-out infinite;
         background-size: 200px 100%;
@@ -232,7 +231,7 @@
         height: 100%;
         content: '';
     }
-  
+
     &:before {
         background-image: linear-gradient(
           90deg,
@@ -241,7 +240,7 @@
           rgba(255, 255, 255, 0)
         );
     }
-}  
+}
 
 @keyframes progress {
     0% {
