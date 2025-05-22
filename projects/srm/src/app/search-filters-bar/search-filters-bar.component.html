@@ -17,7 +17,7 @@
                     [selectable]='true'
                     [count]='(filtersState.allFilteredSituations || []).indexOf(item.key) > -1 ? null : item.doc_count || 0'
                     [plus]='(filtersState.allFilteredSituations || []).indexOf(item.key) > -1 ? false : item.plus || false'
-                    (clicked)='filtersState.toggleSituation(filtersState.situationsMap[item.key])'
+                    (clicked)='toggleSituation(item.key)'
                 ></app-situation>
             } @else if (item.key?.indexOf('human_service') === 0 && item.key && filtersState.responsesMap[item.key]) {
                 <app-response
