@@ -29,11 +29,11 @@
             <span class='city'>{{branchInfo(branch)}}</span>
         </a>
       }
-      @if (org.vals.length > org.maxDisplayCount) {
+      @if (org.vals.length-1 > org.maxDisplayCount) {
         <a class='bookend more' (activated)='moreOfGroup(org.key)' role='button' aria-label='הצגת עוד 4 תוצאות דומות' clickOnReturn tabindex="0">
             <span class='bookend dummy no1'></span>
             <span class='bookend dummy no2'></span>
-          <span class='more-count'>הצג עוד {{org.vals.length- org.maxDisplayCount}} סניפים נוספים של {{org.key}}</span>
+          <span class='more-count'>הצג עוד {{org.vals.length-1- org.maxDisplayCount}} סניפים נוספים של {{org.key}}</span>
         </a>
       }
     }
@@ -45,7 +45,7 @@
             [href]='"/c/" + extra.card_id'
             [class.national]='extra.national_service'
             [style.display]='i < showCount-(result.collapseHitsByGroups?.length || 0 )? "block" : "none"'
-            class='bookend' [style.zIndex]='1000 - i' clickOnReturn>
+            class='bookend' clickOnReturn>
             <span class='org' [innerHTML]='orgName(extra)'></span>
             <span class='branchName'>{{branchName(extra)}}</span>
             <span class='separator'>&nbsp;/&nbsp;</span>
