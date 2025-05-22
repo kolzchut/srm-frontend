@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
-import { forkJoin, from, ReplaySubject, Subject, Subscription, throwError, timer } from 'rxjs';
+import { forkJoin, from, ReplaySubject, Subject, Subscription, timer } from 'rxjs';
 import { catchError, concatMap, debounceTime, delay, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { Card, SearchParams, ViewPort } from '../consts';
@@ -10,6 +10,7 @@ import { AnalyticsService } from '../analytics.service';
 import { SearchState } from './search-state';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
+import {LayoutService} from "../layout.service";
 
 
 export type SearchParamsOffset = {
@@ -42,7 +43,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   @Output() nationalCount = new EventEmitter<number>();
   @Output() visibleCount = new EventEmitter<number>();
   @Output() hoverCard = new EventEmitter<Card>();
-
+  selectedGroup: { card: Card[], index:number, result:Card, key: string} = { card: [], index: 0, result: {} as Card, key: "" };
   @ViewChild('trigger') trigger: ElementRef;
 
   offset = 0;
@@ -59,7 +60,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   resultsParamsQueue = new Subject<{params: SearchParams, totalCount: number, items: Card[], offset: number}>();
   resultsSubscription: Subscription | null = null;
   _triggerVisible = false;
-  
+
   hasCounts = false;
   hasMore = false;
   totalVisibleCount = 0;
@@ -68,14 +69,15 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   loading: boolean = true;
   viewport: ViewPort;
   source = 'external';
+  layout = { desktop: false };
 
   constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService,
-      private seo: SeoSocialShareService, private analytics: AnalyticsService, 
-      private route: ActivatedRoute, private router: Router) {
+      private seo: SeoSocialShareService, private analytics: AnalyticsService,
+      private route: ActivatedRoute, private router: Router, private layoutService: LayoutService) {
   }
 
   ngOnInit(): void {
-    const pending = true;
+    this.layout.desktop = this.layoutService.desktop();
 
     this.paramsQueue.pipe(
       filter((params) => !!params),
@@ -118,11 +120,12 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           );
         }
       }),
-    ).subscribe((params) => {
+    ).subscribe(() => {
       this.offset = 0;
       this.fetchedOffset = -1;
       this.results = [null, null, null];
       this.hasCounts = false;
+      this.removeSelectedGroup()
       if (this.resultsSubscription !== null) {
         this.resultsSubscription.unsubscribe();
         this.resultsSubscription = null;
@@ -149,7 +152,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
               })
             );
         }),
-        catchError((err) => {
+        catchError(() => {
           return from([]);
         }),
         tap(({params, results}) => {
@@ -175,7 +178,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         untilDestroyed(this),
         distinctUntilChanged((a, b) => {
           return a.params.original_query === b.params.original_query && a.params.ac_query === b.params.ac_query && a.offset === b.offset;
-        }),  
+        }),
         tap((item) => {
           const from = this.route.snapshot.queryParams['from'] || this.source;
           this.source = 'internal';
@@ -184,7 +187,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           if (from) {
             this.router.navigate([], {relativeTo: this.route, queryParams: {from: null}, queryParamsHandling: 'merge', replaceUrl: true, preserveFragment: true});
           }
-          this.analytics.searchEvent(item.params, item.totalCount, item.items, item.offset);  
+          this.analytics.searchEvent(item.params, item.totalCount, item.items, item.offset);
         })
       ).subscribe();
     });
@@ -205,22 +208,21 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   ngAfterViewInit(): void {
     this.platform.browser(() => {
       this.obs = new IntersectionObserver((entries) => {
-        if (this.searchParams && entries[0].isIntersecting) {
-          this.triggerVisible = true;
-        } else {
-          this.triggerVisible = false;
-        }
+        this.triggerVisible = this.searchParams && entries[0].isIntersecting;
       }, {});
       this.obs.observe(this.trigger.nativeElement);
     });
   }
-
+  removeSelectedGroup()
+  {
+    this.selectedGroup = { card: [], index: 0, result: {} as Card, key: "" };
+  }
   ngOnDestroy(): void {
     if (this.obs) {
       this.obs.disconnect();
     }
   }
-  
+
   expand(index: number) {
     const res = this.results[index];
     if (!!res) {
@@ -249,7 +251,6 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   identify(index: number, item: Card | null) {
     return item?.collapse_key || index;
   }
-
   set triggerVisible(value: boolean) {
     if (value && !this._triggerVisible) {
       this.fetch();

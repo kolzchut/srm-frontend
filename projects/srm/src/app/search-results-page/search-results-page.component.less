@@ -5,7 +5,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;    
+    height: 100%;
     display: flex;
     flex-flow: column;
     justify-content: center;
@@ -32,7 +32,6 @@
         }
 
         &.map {
-            width: fit-content;
             width: 320px;
             padding-top: 0;
             padding-bottom: 0;
@@ -49,7 +48,7 @@
             background-color: @color-blue-8;
             z-index: 15;
         }
-        
+
         .search-results {
             flex: 1 1 100%;
             overflow: scroll;
@@ -70,16 +69,8 @@
             cursor: pointer;
         }
 
-        .extra {
-            flex: 0 0 auto;
-            width: 364px;
-            @media only screen and (max-width: (1199px)) {
-                display: none;
-            }        
-        }
-
         .open-drawer {
-            right: 745px !important;
+            right: 924px !important;
         }
 
         .flip{
@@ -90,7 +81,7 @@
             .sidebar {
                 position: relative;
                 height: 100%;
-                padding-left: 16px; 
+                padding-left: 16px;
                 border-left: 1px solid @color-blue-6;
             }
 
@@ -102,7 +93,7 @@
                 top: calc(50vh - 40px);
                 transform: translate(-50% ,-50%);
                 transition: right 0.3s ease-in-out;
-                
+
                 & > img{
                     transition: transform 0.3s ease-in-out;
                 }
@@ -113,23 +104,20 @@
                 height: 100%;
                 width: 300px;
                 right: 50px;
-                padding: 0 16px; 
+                padding: 0 16px;
                 background-color: @color-blue-8;
                 box-shadow: -4px 2px 8px 0px #0012F01F;
                 min-height: 100%;
                 z-index: 11;
                 transition: right 0.3s ease-in-out;
             }
-            
+
             .open {
                 right: 336px;
-                width: 421px;
+                width: 600px;
             }
 
 
-            .extra {
-                display: none;
-            }
         }
 
         .overlay {

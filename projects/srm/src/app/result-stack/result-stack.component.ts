@@ -12,19 +12,15 @@ import {groupArrayByFeature, mapToArray} from "../../services/arrays";
   styleUrls: ['./result-stack.component.less'],
 })
 export class ResultStackComponent implements OnInit {
-  branchesToDisplay: Card[] = [];
-  maxDisplayCount = 4;
+  @Output() selectedGroupChange = new EventEmitter<{ card: Card[], index:number, result:Card, key: string }>();
+  @Input () selectedGroup: { card: Card[], index:number, result:Card, key: string };
   @Input() result: Card;
   @Input() searchParams: SearchParams;
   @Input() index = 0;
   @Output() hover = new EventEmitter<Card>();
-
-  _h = _h;
-
   showCount = -1;
-  // showOrgs = true;
 
-  constructor(public layout: LayoutService, private analytics: AnalyticsService, private router: Router, private route: ActivatedRoute, public platform: PlatformService) { }
+  constructor(public layout: LayoutService, public platform: PlatformService) { }
 
   ngOnInit(): void {
     if (this.result?.collapse_hits) {
@@ -45,13 +41,9 @@ export class ResultStackComponent implements OnInit {
         .sort((a,b)=>b.national_service? 1:-1);
       const groups = groupArrayByFeature({array: this.result.collapse_hits, field: 'organization_name'});
       this.result.collapseHitsByGroups = mapToArray(groups)
-        .map(group => ({...group, isDisplayed:false, maxDisplayCount:this.maxDisplayCount}))
+        .map(group => ({...group, isDisplayed:false}))
         .sort((a, b) => a.vals.length- b.vals.length);
-      this.branchesToDisplay = this.result.collapseHitsByGroups
-        .filter(group => group.vals.length == 1)
-        .map(group => group.vals[0]);
-      this.result.collapseHitsByGroups = this.result.collapseHitsByGroups.filter((group) => group.vals.length > 1);
-    }
+      }
     if (this.showCount === -1 && this.collapsibleCount > 0) {
       this.showCount = Math.min(4, this.collapsibleCount);
       if (this.moreAvailable === 1) {
@@ -68,11 +60,10 @@ export class ResultStackComponent implements OnInit {
     }
   }
 
-  showBranches(key: string) {
-    const branch = this.result.collapseHitsByGroups?.find(group => group.key === key)
-    if(!branch) return;
-    branch.isDisplayed = !(!!branch.isDisplayed);
-    branch.maxDisplayCount =this.maxDisplayCount;
+  showBranches(key: string, index: number) {
+     const group = this.result.collapseHitsByGroups?.find(group => group.key === key)
+    if(!group) return;
+    this.selectedGroupChange.emit({card:group.vals, index,result:this.result, key});
   }
 
   get moreAvailable() {
@@ -80,15 +71,7 @@ export class ResultStackComponent implements OnInit {
   }
 
   get collapsibleCount() {
-    const branches = this.branchesToDisplay.length || 0;
-    const groups = this.result.collapseHitsByGroups?.length || 0;
-    return branches+ groups;
-  }
-  moreOfGroup(key:string)
-  {
-    const group = this.result.collapseHitsByGroups?.find(group => group.key === key)
-    if(!group || !group.isDisplayed) return;
-    group.maxDisplayCount = group.maxDisplayCount + 4 > group.vals.length ? group.vals.length : group.maxDisplayCount + 4;
+    return this.result.collapseHitsByGroups?.length || 0;
   }
   branchInfo(card: Card) {
     if (card.national_service) return 'שירות ארצי';
@@ -101,42 +84,4 @@ export class ResultStackComponent implements OnInit {
     return _h(card, 'branch_address');
   }
 
-  branchName({branch_name}: Card) {
-    if (!branch_name) return "";
-    return ` / ${branch_name}`;
-  }
-
-  orgName(card: Card) {
-    return _h(card, 'branch_operating_unit') || _h(card.organization_name_parts, 'primary') || _h(card, 'organization_short_name') || _h(card, 'organization_name');
-  }
-
-  ariaLabel(card: Card) {
-    let ret = '';
-    if (card.national_service) {
-      ret += 'שירות ארצי: ';
-    } else if (card.branch_city) {
-      ret += card.branch_city + ' ';
-    }
-    ret += card.service_name;
-    if (card.branch_operating_unit) {
-      ret += ' של ' + card.branch_operating_unit;
-    } else if (card.organization_name_parts?.primary) {
-      ret += ' של ' + card.organization_name_parts.primary;
-    } else if (card.organization_short_name) {
-      ret += ' של ' + card.organization_short_name;
-    }
-    ret += ' - פתיחת עמוד השירות';
-    return ret;
-  }
-
-  selectedItem(event: Event, card: Card, from: string, extra?: any) {
-    event.preventDefault();
-    let card_ = card;
-    if (extra) {
-      card_ = Object.assign({}, card, extra);
-    }
-    this.analytics.cardEvent(card_, this.searchParams, this.index, true);
-    this.router.navigate(['c', card_.card_id], { relativeTo: this.route, queryParams: {li: this.index, from}, queryParamsHandling: 'merge', preserveFragment: true });
-    return false;
-  }
 }

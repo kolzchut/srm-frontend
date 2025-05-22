@@ -1,248 +1,261 @@
 @import '../../common.less';
 
 :host {
+  display: flex;
+  flex-flow: column;
+  position: relative;
+  border-radius: 6px;
+
+  a {
+    cursor: pointer;
+  }
+
+  .card {
     display: flex;
     flex-flow: column;
-    position: relative;
-    border-radius: 6px;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
 
-    a {
-        cursor: pointer;
-    }
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 1;
+    cursor: pointer;
 
-    .card {
-        display: flex;
-        flex-flow: column;
-        box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
+    .branch-headers {
+      display: block;
+      padding: 5px 10px;
 
-        border-radius: 8px;
-        overflow: hidden;
-        z-index: 1;
-        cursor: pointer;
-
-        .branch-headers {
-            display: block;
-            padding: 5px 10px;
-            .org, .city, .national-service {
-                display: inline;
-                .font-rag-sans;
-                font-weight: 400;
-                .mobile({
-                    font-size: 13px;
-                    line-height: 13px;
-                });
-                .desktop({
-                    font-size: 16px;
-                    line-height: 20px;
-                });
-                color: @color-gray-1;
-                ::ng-deep em {
-                    font-weight: 600;
-                }
-            }
-
-            .city {
-                color: @color-gray-3;
-            }
-
-            .national-service {
-                font-weight: 400;
-                color: @color-blue-1;
-            }
-        }
-        app-result-card {
-            width: 100%;
-        }
-
-
-        app-result-card {
-            border: 1px solid @color-gray-5;
-        }
-    }
-
-    .bookends {
-        display: flex;
-        flex-flow: column;
-        border-bottom-right-radius: 8px;
-        border-bottom-left-radius: 8px;
-        // overflow: hidden;
-        padding-top: 6px;
-        margin-top: -6px;
-        position: relative;
-        z-index: 0;
-    }
-
-    .bookend {
-        width: 100%;
-        .mobile({
-            min-height: 24px;
-        });
-        .desktop({
-            min-height: 28px;
-        });
-        padding: 12px;
-        flex: 0 0 auto;
-        background: @color-gray-7;
-        border-bottom-right-radius: 8px;
-        border-bottom-left-radius: 8px;
-        border: 1px solid @color-gray-5;
-        border-top: none;
-        display: flex;
-        flex-flow: row;
-        align-items: center;
-        position: relative;
-        overflow: hidden;
-
+      .org, .city, .national-service {
+        display: inline;
         .font-rag-sans;
-        font-weight: 300;
+        font-weight: 400;
         .mobile({
-            font-size: 13px;
-            line-height: 16px;
+          font-size: 13px;
+          line-height: 13px;
         });
         .desktop({
-            font-size: 16px;
-            line-height: 20px;
+          font-size: 16px;
+          line-height: 20px;
         });
+        color: @color-gray-1;
 
-        .org, .city, .separator {
-            color: @color-gray-3;
-            white-space: nowrap;
+        ::ng-deep em {
+          font-weight: 600;
         }
-
-        .org {
-            color: @color-gray-1;
-            .ellipsis;
-        }
-      .more-branches
-      {
-        color:  @color-blue-1
       }
 
-        .city {
-            .ellipsis;
-            max-width: 30%;
-        }
-
-        .separator {
-            flex: 0 0 auto;
-        }
-        .org {
-            max-width: none;
-            flex: 0 40 auto;
-        }
-        .city {
-            flex: 1 0 auto;
-        }
-
-
-        &.more {
-            color: @color-blue-2;
-            justify-content: center;
-            cursor: pointer;
-            border-color: @color-gray-6;
-
-            &:hover, &:focus {
-                text-decoration: underline;
-            }
-            .more-count {
-                z-index: 1;
-                .background-image;
-                background-image: url('../../assets/img/icon-chevron-down-blue-700.svg');
-                background-size: 16px;
-                background-position: left center;
-                padding-left: 20px;
-            }
-            .dummy {
-                position: absolute;
-                width: calc(100% ~'+' 2px);
-                right: 0;
-                z-index: 0;
-                margin: 0 -1px;
-                border-color: @color-gray-6;
-
-                .desktop({
-                    &.no1 {
-                        top: -7px;
-                    }
-                    &.no2 {
-                        top: -15px;
-                    }
-                });
-                .mobile({
-                    &.no1 {
-                        top: -6px;
-                    }
-                    &.no2 {
-                        top: -13px;
-                    }
-                });
-            }
-        }
-
-        img {
-            display: none;;
-            margin-left: 3px;
-        }
-
-        &.national {
-            img {
-                display: inline-block;
-            }
-            .city, .separator {
-                color: @color-blue-2;
-            }
-        }
-    }
-
-    .bookends {
-        .bookend {
-            box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
-            padding-left: 8px;
-            .mobile({
-                margin-top: -8px;
-                padding-top: 8px;
-                height: 28px;
-            });
-            .desktop({
-                margin-top: -8px;
-                padding-top: 8px;
-                height: 32px;
-            });
-        }
-    }
-
-    .count {
-        position: absolute;
-        bottom: -4px;
-        left: -4px;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: @color-white;
-        border: 1px solid @color-gray-4;
-        display: flex;
-        flex-flow: row;
-        justify-content: center;
-        align-items: center;
-        z-index: 2;
-        .font-rag-sans;
-        direction: ltr;
-        font-weight: 600;
-        font-size: 13px;
+      .city {
         color: @color-gray-3;
-        cursor: pointer;
+      }
+
+      .national-service {
+        font-weight: 400;
+        color: @color-blue-1;
+      }
     }
 
-    .card:hover, .bookends > .bookend:hover {
-        box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.16), 0px 4px 24px rgba(0, 0, 0, 0.08);
-        transform: translateY(1px);
+    app-result-card {
+      width: 100%;
     }
 
-    .branchName {
-        display: inline;
-        white-space: nowrap;
-        color: @color-gray-1;
-        max-width: 25%;
-        .ellipsis;
+
+    app-result-card {
+      border: 1px solid @color-gray-5;
     }
+  }
+
+  .bookends {
+    display: flex;
+    flex-flow: column;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    // overflow: hidden;
+    padding-top: 6px;
+    margin-top: -6px;
+    position: relative;
+    z-index: 0;
+  }
+
+  .bold-underline {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  .bookend {
+    width: 100%;
+    .mobile({
+      min-height: 24px;
+    });
+    .desktop({
+      min-height: 28px;
+    });
+    padding: 12px;
+    flex: 0 0 auto;
+    background: @color-gray-7;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border: 1px solid @color-gray-5;
+    border-top: none;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+
+    .font-rag-sans;
+    font-weight: 300;
+    .mobile({
+      font-size: 13px;
+      line-height: 16px;
+    });
+    .desktop({
+      font-size: 16px;
+      line-height: 20px;
+    });
+
+    .org, .city, .separator {
+      color: @color-gray-3;
+      white-space: nowrap;
+    }
+
+    .org {
+      color: @color-gray-1;
+      .ellipsis;
+    }
+
+    .more-branches {
+      color: @color-blue-1
+    }
+
+    .city {
+      .ellipsis;
+      max-width: 30%;
+    }
+
+    .separator {
+      flex: 0 0 auto;
+    }
+
+    .org {
+      max-width: none;
+      flex: 0 40 auto;
+    }
+
+    .city {
+      flex: 1 0 auto;
+    }
+
+
+    &.more {
+      color: @color-blue-2;
+      justify-content: center;
+      cursor: pointer;
+      border-color: @color-gray-6;
+
+      &:hover, &:focus {
+        text-decoration: underline;
+      }
+
+      .more-count {
+        z-index: 1;
+        .background-image;
+        background-image: url('../../assets/img/icon-chevron-down-blue-700.svg');
+        background-size: 16px;
+        background-position: left center;
+        padding-left: 20px;
+      }
+
+      .dummy {
+        position: absolute;
+        width: calc(100% ~'+' 2px);
+        right: 0;
+        z-index: 0;
+        margin: 0 -1px;
+        border-color: @color-gray-6;
+
+        .desktop({
+          &.no1 {
+            top: -7px;
+          }
+          &.no2 {
+            top: -15px;
+          }
+        });
+        .mobile({
+          &.no1 {
+            top: -6px;
+          }
+          &.no2 {
+            top: -13px;
+          }
+        });
+      }
+    }
+
+    img {
+      display: none;;
+      margin-left: 3px;
+    }
+
+    &.national {
+      img {
+        display: inline-block;
+      }
+
+      .city, .separator {
+        color: @color-blue-2;
+      }
+    }
+  }
+
+  .bookends {
+    .bookend {
+      box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
+      padding-left: 8px;
+      .mobile({
+        margin-top: -8px;
+        padding-top: 8px;
+        height: 28px;
+      });
+      .desktop({
+        margin-top: -8px;
+        padding-top: 8px;
+        height: 32px;
+      });
+    }
+  }
+
+  .count {
+    position: absolute;
+    bottom: -4px;
+    left: -4px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: @color-white;
+    border: 1px solid @color-gray-4;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    .font-rag-sans;
+    direction: ltr;
+    font-weight: 600;
+    font-size: 13px;
+    color: @color-gray-3;
+    cursor: pointer;
+  }
+
+  .card:hover, .bookends > .bookend:hover {
+    box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.16), 0px 4px 24px rgba(0, 0, 0, 0.08);
+    transform: translateY(1px);
+  }
+
+  .branchName {
+    display: inline;
+    white-space: nowrap;
+    color: @color-gray-1;
+    max-width: 25%;
+    .ellipsis;
+  }
 }

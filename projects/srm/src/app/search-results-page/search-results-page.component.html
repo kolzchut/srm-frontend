@@ -15,18 +15,18 @@
             [filtersState]='filtersState'
         />
     </div>
-    <button 
+    <button
         [ngClass]="{ 'drawer-controller':true,'open-drawer':isDrawerOpen }"
         (click)='toggleDrawer()'
         aria-label="הצג/הסתר מגירת תוצאות"
     >
-        <img src='../../assets/img/chevron-left-blue-1.svg' [ngClass]="{ 'flip':isDrawerOpen }"/>
+        <img alt="חץ שמאלה כחול" src='../../assets/img/chevron-left-blue-1.svg' [ngClass]="{ 'flip':isDrawerOpen }"/>
     </button>
     <div class='search-results' [ngClass]="{ 'open':isDrawerOpen }">
         <app-search-results
             class='full'
             [searchParams]='searchParams'
-            [active]="serachResultsActive" 
+            [active]="serachResultsActive"
             [didYouMean]='didYouMean'
             [searchState]='searchState'
             (zoomout)='zoomout.emit($event)'
@@ -37,11 +37,9 @@
         ></app-search-results>
 
     </div>
-    <div class='extra'>
-    </div>
     <div class='overlay' *ngIf='filtersState.active || areaSearchState.searching_'>
         <div class='modal' *ngIf='filtersState.active'>
-            <app-search-filters 
+            <app-search-filters
                 [searchParams]='searchParams'
                 [areaSearchState]='areaSearchState'
                 [filtersState]='filtersState'
