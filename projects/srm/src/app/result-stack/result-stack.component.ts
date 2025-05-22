@@ -63,7 +63,7 @@ export class ResultStackComponent implements OnInit {
   showBranches(key: string, index: number) {
      const group = this.result.collapseHitsByGroups?.find(group => group.key === key)
     if(!group) return;
-    if(this.selectedGroup.key == key) return this.selectedGroupChange.emit({card:[], index:0,result: {} as Card, key:''});
+    if(this.selectedGroup.index == index && this.selectedGroup.key == key) return this.selectedGroupChange.emit({card:[], index:0,result: {} as Card, key:''});
     this.selectedGroupChange.emit({card:group.vals, index,result:this.result, key});
   }
 

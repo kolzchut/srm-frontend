@@ -66,6 +66,7 @@
   .bookends {
     display: flex;
     flex-flow: column;
+    align-items: center;
     border-bottom-right-radius: 8px;
     border-bottom-left-radius: 8px;
     // overflow: hidden;
@@ -115,6 +116,7 @@
     .org, .city, .separator {
       color: @color-gray-3;
       white-space: nowrap;
+      width: 60%;
     }
 
     .org {
@@ -123,9 +125,13 @@
     }
 
     .more-branches {
-      color: @color-blue-1
+      color: @color-blue-1;
+      width: 30%;
     }
-
+    .grayLeftArrowImg{
+      height: 80%;
+      display: inline-block;
+    }
     .city {
       .ellipsis;
       max-width: 30%;

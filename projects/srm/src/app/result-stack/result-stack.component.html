@@ -1,17 +1,21 @@
 <app-result-card [card]='result' [searchParams]='searchParams' [larger]='true'></app-result-card>
 <div class='bookends-more' *ngIf='(result.collapse_hits || []).length > 0'>
   @for (org of result.collapseHitsByGroups || []; track org.key; let i = $index) {
-    <a [style.display]='i < showCount ? "block" : "none"' class="bookend" (click)="showBranches(org.key, index)">
+    <a [style.display]='i < showCount ? "flex" : "none"' class="bookend" (click)="showBranches(org.key, index)"
+       style="display: block;">
       <span class='org' [innerHTML]='org.key'></span>
-      <span class='more-branches'  [ngClass]="{'bold-underline': index == this.selectedGroup.index}"> / {{org.vals.length + ' סניפים'}}</span>
-      <img class='arrow' [src]="index == selectedGroup.index ? 'assets/img/blueLeftArrow.svg' : 'assets/img/grayLeftArrow.svg'" alt='חץ שמאלה' />
+      <span class='more-branches'
+            [ngClass]="{'bold-underline': index == selectedGroup.index && org.key == selectedGroup.key}"> {{ org.vals.length + ' סניפים' }}</span>
+      <img class="grayLeftArrowImg"
+           [src]="index == selectedGroup.index && org.key == selectedGroup.key ?  'assets/img/blackLeftArrow.svg' : 'assets/img/grayLeftArrow.svg'"
+           alt="חץ שמאלה"/> </a>
+  }
+  @if (!!moreAvailable) {
+    <a class='bookend more' (activated)='more()' role='button' aria-label='הצגת עוד 10 תוצאות דומות' clickOnReturn
+       tabindex="0">
+      <span class='bookend dummy no1'></span>
+      <span class='bookend dummy no2'></span>
+      <span class='more-count'>+{{ moreAvailable }} מיקומים נוספים</span>
     </a>
   }
-    @if (!!moreAvailable) {
-        <a class='bookend more' (activated)='more()' role='button' aria-label='הצגת עוד 10 תוצאות דומות' clickOnReturn tabindex="0">
-            <span class='bookend dummy no1'></span>
-            <span class='bookend dummy no2'></span>
-            <span class='more-count'>+{{moreAvailable}} מיקומים נוספים</span>
-        </a>
-    }
 </div>

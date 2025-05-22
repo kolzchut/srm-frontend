@@ -82,6 +82,7 @@ import { SrpStaticFiltersComponent } from './search-results-page/srp-static-filt
 import { SrpMapToggleComponent } from './search-results-page/srp-map-toggle/srp-map-toggle.component';
 import { SrpAreaSearchButtonsComponent } from './search-results-page/srp-area-search-buttons/srp-area-search-buttons.component';
 import { SearchResultsBranchesListComponent } from './search-results-branches-list/search-results-branches-list.component';
+import {NgOptimizedImage} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -164,7 +165,8 @@ import { SearchResultsBranchesListComponent } from './search-results-branches-li
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgOptimizedImage
   ],
   providers: [
     provideClientHydration(),
