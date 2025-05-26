@@ -44,6 +44,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   @Output() visibleCount = new EventEmitter<number>();
   @Output() hoverCard = new EventEmitter<Card>();
   selectedGroup: { card: Card[], index:number, result:Card, key: string} = { card: [], index: 0, result: {} as Card, key: "" };
+  @Output() selectedGroupChange = new EventEmitter<{ card: Card[], index:number, result:Card, key: string}>();
   @ViewChild('trigger') trigger: ElementRef;
 
   offset = 0;
@@ -216,6 +217,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   removeSelectedGroup()
   {
     this.selectedGroup = { card: [], index: 0, result: {} as Card, key: "" };
+    this.selectedGroupChange.emit(this.selectedGroup)
   }
   ngOnDestroy(): void {
     if (this.obs) {

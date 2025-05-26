@@ -16,13 +16,13 @@
         />
     </div>
     <button
-        [ngClass]="{ 'drawer-controller':true,'open-drawer':isDrawerOpen }"
+        [ngClass]="{ 'drawer-controller':true,'open-drawer':isDrawerOpen && selectedGroup.card.length > 0, 'open-drawer-half': isDrawerOpen && selectedGroup.card.length === 0 }"
         (click)='toggleDrawer()'
         aria-label="הצג/הסתר מגירת תוצאות"
     >
         <img alt="חץ שמאלה כחול" src='../../assets/img/chevron-left-blue-1.svg' [ngClass]="{ 'flip':isDrawerOpen }"/>
     </button>
-    <div class='search-results' [ngClass]="{ 'open':isDrawerOpen }">
+    <div class='search-results' [ngClass]="{ 'open':isDrawerOpen && selectedGroup.card.length > 0, 'open-half': isDrawerOpen && selectedGroup.card.length === 0 }">
         <app-search-results
             class='full'
             [searchParams]='searchParams'
@@ -34,6 +34,7 @@
             (nationalCount)='nationalCount.emit($event)'
             (hoverCard)='hoverCard.emit($event)'
             [areaSearchState]='areaSearchState'
+            (selectedGroupChange)="selectedGroup = $event"
         ></app-search-results>
 
     </div>

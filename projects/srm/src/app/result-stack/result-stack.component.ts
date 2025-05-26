@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Card, SearchParams, _h } from '../consts';
 import { LayoutService } from '../layout.service';
-import { AnalyticsService } from '../analytics.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { PlatformService } from '../platform.service';
 import {groupArrayByFeature, mapToArray} from "../../services/arrays";
 
@@ -42,7 +40,7 @@ export class ResultStackComponent implements OnInit {
       const groups = groupArrayByFeature({array: this.result.collapse_hits, field: 'organization_name'});
       this.result.collapseHitsByGroups = mapToArray(groups)
         .map(group => ({...group, isDisplayed:false}))
-        .sort((a, b) => a.vals.length- b.vals.length);
+        .sort((a, b) =>  b.vals.length- a.vals.length);
       }
     if (this.showCount === -1 && this.collapsibleCount > 0) {
       this.showCount = Math.min(4, this.collapsibleCount);

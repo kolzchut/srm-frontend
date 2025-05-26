@@ -21,6 +21,7 @@ import { PlatformService } from '../platform.service';
 })
 export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit {
 
+  @Input() selectedGroup: { card: any[], index: number, result: any, key: string };
   @Input() state: DrawerState = DrawerState.Full;
   @Input() scrollAll = false;
   @Input() nationalCount = 0;
@@ -33,7 +34,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
   @ViewChild('handleEl') handleEl: ElementRef;
   @ViewChild('mapWindow') mapWindow: ElementRef;
   @ViewChild('scrollable') scrollable: ElementRef;
-  
+
   startY: number;
   startTime: number;
   currentHeight = -1;
@@ -108,7 +109,7 @@ export class ResultsDrawerComponent implements OnInit, OnChanges, AfterViewInit 
             fromEvent(window, 'mouseup').pipe(first()).subscribe((ev) => {
               this.handleGestureEnd(ev as MouseEvent);
             });
-          });  
+          });
         }
       }
       const mapWindowEl: HTMLElement = this.mapWindow.nativeElement;
