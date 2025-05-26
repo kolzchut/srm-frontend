@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Card, CARD_SNIPPET_FIELDS, SearchParams, TaxonomyItem, _h } from '../consts';
 
@@ -11,10 +11,10 @@ import { Card, CARD_SNIPPET_FIELDS, SearchParams, TaxonomyItem, _h } from '../co
 // - Search results
 //    - desktop:
 //        padding: 4px 8px
-//        font size: 24px        
+//        font size: 24px
 //    - mobile:
 //        padding: 4px 8px
-//        font size: 20px        
+//        font size: 20px
 // - Map popup
 //    - Single
 //        font-size: 20px
@@ -35,7 +35,7 @@ import { Card, CARD_SNIPPET_FIELDS, SearchParams, TaxonomyItem, _h } from '../co
     '[class.stacked]' : 'stacked',
   }
 })
-export class ResultCardComponent implements OnChanges {
+export class ResultCardComponent implements OnChanges, AfterViewInit {
 
   @Input() card: Card;
   @Input() searchParams: SearchParams;
@@ -51,6 +51,22 @@ export class ResultCardComponent implements OnChanges {
   selectedSituations: TaxonomyItem[] = [];
   deselectedResponses: TaxonomyItem[] = [];
   deselectedSituations: TaxonomyItem[] = [];
+  showFull = false;
+  @ViewChild('descRef') descRef!: ElementRef;
+  isOverflowing = false;
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      const el = this.descRef?.nativeElement;
+      if (el) {
+        const lineHeightStr = getComputedStyle(el).lineHeight;
+        const lineHeight = lineHeightStr === 'normal' ? 16 : parseFloat(lineHeightStr) || 10;
+        const maxLines = 2;
+        const maxHeight = lineHeight * maxLines;
+        this.isOverflowing = el.scrollHeight > maxHeight;
+      }
+    });
+  }
 
   constructor(private sanitizer: DomSanitizer) { }
 
@@ -67,7 +83,7 @@ export class ResultCardComponent implements OnChanges {
             break;
           }
         }
-      }  
+      }
     }
 
     const cardSituations = this.card.situations?.map((s) => Object.assign({}, s)) || [];
@@ -122,8 +138,8 @@ export class ResultCardComponent implements OnChanges {
       cardResponses.forEach((r) => {
         r.category = r.id?.split(':')[1];
       });
-      const requiredCategory = this.searchParams?.filter_response_categories?.length === 1 ? 
-          this.searchParams.filter_response_categories[0].slice('human_services:'.length) : 
+      const requiredCategory = this.searchParams?.filter_response_categories?.length === 1 ?
+          this.searchParams.filter_response_categories[0].slice('human_services:'.length) :
           this.card.response_category;
       if ((this.selectedResponses.length > 0 && requiredCategory !== this.selectedResponses[0].category) || this.selectedResponses.length === 0) {
         for (const r of cardResponses) {
@@ -175,7 +191,7 @@ export class ResultCardComponent implements OnChanges {
           });
           deselectedCount++;
         }
-      });  
+      });
     }
   }
 

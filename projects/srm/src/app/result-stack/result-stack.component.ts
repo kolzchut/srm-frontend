@@ -49,7 +49,6 @@ export class ResultStackComponent implements OnInit {
       if (this.moreAvailable === 1) {
         this.showCount += 1;
       }
-      console.log('showcount:',this.showCount)
     }
   }
 
