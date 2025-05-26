@@ -1,12 +1,11 @@
 import { Location } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, NavigationStart, Params, Router } from '@angular/router';
+import { Component, ElementRef, Input, OnChanges,ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
-import { Subject, fromEvent, merge, timer } from 'rxjs';
-import { filter, first, take, tap } from 'rxjs/operators';
+import {fromEvent, timer } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 import { ApiService } from '../api.service';
-import { prepareQuery, _h } from '../consts';
 import { LayoutService } from '../layout.service';
 import { PlatformService } from '../platform.service';
 import { A11yService } from '../a11y.service';

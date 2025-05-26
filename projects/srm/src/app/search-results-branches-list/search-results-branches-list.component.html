@@ -1,0 +1,20 @@
+<section [ngClass]="{'search-result-desktop': layout.desktop, 'search-result-mobile': !layout.desktop, 'desktop-height' : layout.desktop}" class="main-div-search-results-branches-list">  <div class="header-div-search-results-branches-list">
+  <button class='back-icon' (click)="close.emit()" aria-label="חזרה לבחירת ארגונים"></button>
+    <h3>{{orgName(selectedGroup.card[0])}}</h3>
+  </div>
+
+  <a *ngFor="let branch of selectedGroup.card; trackBy: trackByCardId"
+     (mouseover)="hover.next(branch)"
+     [attr.aria-label]="ariaLabel(branch)"
+     (activated)="selectedItem($event, this.selectedGroup.result ,'search-result-extras', branch)"
+     [href]="'/c/' + branch.card_id"
+     [class.national]="branch.national_service"
+     class="bookend" clickOnReturn>
+    <span class="branchName">{{ branchName(branch) || orgName(branch) }}</span>
+    <span class="separator">&nbsp;/&nbsp;</span>
+    @if (branch.national_service) {
+    <img alt="national service image" src="../../assets/img/icon-headset.svg">
+    }
+    <span class="city">{{ branchInfo(branch) }}</span>
+  </a>
+</section>
