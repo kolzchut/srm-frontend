@@ -22,7 +22,10 @@ export class SearchFiltersBarComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  toggleSituation(itemKey:any):void{
+    this.filtersState.toggleSituation(this.filtersState.situationsMap[itemKey]);
+    if(this.filtersState?.situationsMap && this.filtersState?.situationsMap[itemKey]) this.analytics.quickFilterEvent(this.filtersState.situationsMap[itemKey].id as string);
+  }
   toggleResponse(itemKey:any):void{
     this.filtersState.toggleResponse(this.filtersState.responsesMap[itemKey]);
     if(this.filtersState?.responsesMap && this.filtersState?.responsesMap[itemKey]) this.analytics.quickFilterEvent(this.filtersState.responsesMap[itemKey].id as string);
