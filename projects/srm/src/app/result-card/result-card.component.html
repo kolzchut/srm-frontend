@@ -1,25 +1,5 @@
 <div class='title' [class.bold]='bold'>
     <h2 [class.larger]='larger' [class.smaller]='smaller' [class.compact]='compact' [innerHtml]='_h(card, "service_name")'></h2>
-    <ng-container *ngIf='compact || stacked'>
-        <ng-container *ngFor='let r of selectedResponses; let idx=index'>
-            <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'  *ngIf='idx<selectedResponses.length-1'/>
-            <span class='last' [style.zIndex]='100-idx' *ngIf='idx===selectedResponses.length-1'>
-                <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'/>
-                <app-tag-ending *ngIf='deselectedResponses.length' [tags]='deselectedResponses' [count]='card.responses.length - selectedResponses.length' [small]='smaller' [style.zIndex]='49'/>
-            </span>
-        </ng-container>
-        <ng-container *ngFor='let s of selectedSituations; let idx=index'>
-            <ng-container *ngIf='idx<selectedSituations.length-1'>
-                <app-situation [situation]='s' [small]='smaller' [style.zIndex]='100-idx'/>
-            </ng-container>
-            <ng-container *ngIf='idx===selectedSituations.length-1'>
-                <span class='last' [style.zIndex]='100-idx'>
-                    <app-situation [situation]='s' [small]='smaller' [style.zIndex]='50'/>
-                    <app-tag-ending *ngIf='deselectedSituations.length' [tags]='deselectedSituations' [count]='card.situations.length - selectedSituations.length' [small]='smaller' [style.zIndex]='49'/>
-                </span>
-            </ng-container>
-        </ng-container>
-    </ng-container>
 </div>
 <div class='snippet' [innerHtml]='snippet' *ngIf='showSnippet' [class.larger]='larger'></div>
 <ng-container *ngIf='!compact && !stacked'>
@@ -40,7 +20,7 @@
       </span>
     </div>
 </ng-container>
-<div class='title' *ngIf="showFull">
+<div class='title' *ngIf="showFull || !isOverflowing">
   <ng-container *ngFor='let r of selectedResponses; let idx=index'>
     <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx' *ngIf='idx<selectedResponses.length-1'/>
     <span class='last' [style.zIndex]='100-idx' *ngIf='idx===selectedResponses.length-1'>
