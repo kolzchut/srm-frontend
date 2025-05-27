@@ -2,24 +2,20 @@
     <h2 [class.larger]='larger' [class.smaller]='smaller' [class.compact]='compact' [innerHtml]='_h(card, "service_name")'></h2>
     <ng-container *ngIf='compact || stacked'>
         <ng-container *ngFor='let r of selectedResponses; let idx=index'>
-            <ng-container *ngIf='idx<selectedResponses.length-1'>
-                <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'></app-response>
-            </ng-container>
-            <ng-container *ngIf='idx===selectedResponses.length-1'>
-                <span class='last' [style.zIndex]='100-idx'>
-                    <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'></app-response>
-                    <app-tag-ending *ngIf='deselectedResponses.length' [tags]='deselectedResponses' [count]='card.responses.length - selectedResponses.length' [small]='smaller' [style.zIndex]='49'></app-tag-ending>
-                </span>
-            </ng-container>
+            <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'  *ngIf='idx<selectedResponses.length-1'/>
+            <span class='last' [style.zIndex]='100-idx' *ngIf='idx===selectedResponses.length-1'>
+                <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'/>
+                <app-tag-ending *ngIf='deselectedResponses.length' [tags]='deselectedResponses' [count]='card.responses.length - selectedResponses.length' [small]='smaller' [style.zIndex]='49'/>
+            </span>
         </ng-container>
         <ng-container *ngFor='let s of selectedSituations; let idx=index'>
             <ng-container *ngIf='idx<selectedSituations.length-1'>
-                <app-situation [situation]='s' [small]='smaller' [style.zIndex]='100-idx'></app-situation>
+                <app-situation [situation]='s' [small]='smaller' [style.zIndex]='100-idx'/>
             </ng-container>
             <ng-container *ngIf='idx===selectedSituations.length-1'>
                 <span class='last' [style.zIndex]='100-idx'>
-                    <app-situation [situation]='s' [small]='smaller' [style.zIndex]='50'></app-situation>
-                    <app-tag-ending *ngIf='deselectedSituations.length' [tags]='deselectedSituations' [count]='card.situations.length - selectedSituations.length' [small]='smaller' [style.zIndex]='49'></app-tag-ending>
+                    <app-situation [situation]='s' [small]='smaller' [style.zIndex]='50'/>
+                    <app-tag-ending *ngIf='deselectedSituations.length' [tags]='deselectedSituations' [count]='card.situations.length - selectedSituations.length' [small]='smaller' [style.zIndex]='49'/>
                 </span>
             </ng-container>
         </ng-container>
@@ -27,43 +23,36 @@
 </div>
 <div class='snippet' [innerHtml]='snippet' *ngIf='showSnippet' [class.larger]='larger'></div>
 <ng-container *ngIf='!compact && !stacked'>
-    <div class='title'>
-        <ng-container *ngFor='let r of selectedResponses; let idx=index'>
-            <ng-container *ngIf='idx<selectedResponses.length-1'>
-                <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'></app-response>
-            </ng-container>
-            <ng-container *ngIf='idx===selectedResponses.length-1'>
-                <span class='last' [style.zIndex]='100-idx'>
-                    <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'></app-response>
-                    <app-tag-ending *ngIf='deselectedResponses.length' [tags]='deselectedResponses' [count]='card.responses.length - selectedResponses.length' [small]='smaller' [style.zIndex]='49'></app-tag-ending>
-                </span>
-            </ng-container>
-        </ng-container>
-        <ng-container *ngFor='let s of selectedSituations; let idx=index'>
-            <ng-container *ngIf='idx<selectedSituations.length-1'>
-                <app-situation [situation]='s' [small]='smaller' [style.zIndex]='100-idx'></app-situation>
-            </ng-container>
-            <ng-container *ngIf='idx===selectedSituations.length-1'>
-                <span class='last' [style.zIndex]='100-idx'>
-                    <app-situation [situation]='s' [small]='smaller' [style.zIndex]='50'></app-situation>
-                    <app-tag-ending *ngIf='deselectedSituations.length' [tags]='deselectedSituations' [count]='card.situations.length - selectedSituations.length' [small]='smaller' [style.zIndex]='49'></app-tag-ending>
-                </span>
-            </ng-container>
-        </ng-container>
+  <div class="description-container">
+    <span #descRef *ngIf="!showFull" class="description-span show-less-span">
+      {{ card.service_description }}
+    </span>
+
+      <span *ngIf="showFull" class="description-span">
+      {{ card.service_description }}
+        <span *ngIf="isOverflowing && showFull" class="extend-text" (click)="showFull = !showFull">
+          מזער
+        </span>
+      </span>
+
+      <span *ngIf="isOverflowing && !showFull" class="extend-text" (click)="showFull = !showFull">
+        הרחב
+      </span>
     </div>
-<div class="description-container">
-<span #descRef *ngIf="!showFull" class="description-span show-less-span">
-  {{ card.service_description }}
-</span>
-
-  <span *ngIf="showFull" class="description-span">
-  {{ card.service_description }}
-    <span *ngIf="isOverflowing && showFull" class="extend-text" (click)="showFull = !showFull">מזער
-</span>
-</span>
-
-  <span *ngIf="isOverflowing && !showFull" class="extend-text" (click)="showFull = !showFull">
-  הרחב
-</span>
-</div>
 </ng-container>
+<div class='title' *ngIf="showFull">
+  <ng-container *ngFor='let r of selectedResponses; let idx=index'>
+    <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx' *ngIf='idx<selectedResponses.length-1'/>
+    <span class='last' [style.zIndex]='100-idx' *ngIf='idx===selectedResponses.length-1'>
+                  <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'/>
+                  <app-tag-ending *ngIf='deselectedResponses.length' [tags]='deselectedResponses' [count]='card.responses.length - selectedResponses.length' [small]='smaller' [style.zIndex]='49'/>
+              </span>
+  </ng-container>
+  <ng-container *ngFor='let s of selectedSituations; let idx=index'>
+    <app-situation [situation]='s' [small]='smaller' [style.zIndex]='100-idx'  *ngIf='idx<selectedSituations.length-1'/>
+    <span class='last' [style.zIndex]='100-idx'  *ngIf='idx===selectedSituations.length-1'>
+                  <app-situation [situation]='s' [small]='smaller' [style.zIndex]='50'/>
+                  <app-tag-ending *ngIf='deselectedSituations.length' [tags]='deselectedSituations' [count]='card.situations.length - selectedSituations.length' [small]='smaller' [style.zIndex]='49'/>
+              </span>
+  </ng-container>
+</div>
