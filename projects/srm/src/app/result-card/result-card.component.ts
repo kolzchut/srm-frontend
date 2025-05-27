@@ -60,8 +60,8 @@ export class ResultCardComponent implements OnChanges, AfterViewInit {
       const el = this.descRef?.nativeElement;
       if (el) {
         const lineHeightStr = getComputedStyle(el).lineHeight;
-        const lineHeight = lineHeightStr === 'normal' ? 16 : parseFloat(lineHeightStr) || 10;
-        const maxLines = 2;
+        const lineHeight = lineHeightStr === 'normal' ? 16 : parseFloat(lineHeightStr) || 16;
+        const maxLines = 3;
         const maxHeight = lineHeight * maxLines;
         this.isOverflowing = el.scrollHeight > maxHeight;
       }
