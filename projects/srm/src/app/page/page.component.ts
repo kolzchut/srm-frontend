@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LngLatLike } from 'mapbox-gl';
@@ -45,17 +45,16 @@ class SearchParamCalc {
   geoValues: number[] = [];
   bounds: number[][] = [];
   national: boolean;
-
   get geoHash(): string {
     return this.bounds.map(b => b.map(bb => bb + '').join('|')).join('|')
   }
 
   get searchHash(): string {
-    return [this.resolvedQuery, this.acId, this.ftQuery, this.fs, this.fag, this.fl, 
+    return [this.resolvedQuery, this.acId, this.ftQuery, this.fs, this.fag, this.fl,
       this.fbh, this.fc, this.fe, this.fg, this.fh, this.fle, this.frl, this.fu,
       this.fr, this.frc, this.national].map(x => x || '').join('|');
   }
-  
+
   get cardsHash(): string {
     return this.geoHash + this.searchHash
   }
@@ -85,13 +84,14 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('searchFilters') searchFilters: SearchFiltersComponent;
   filtersVisible: boolean | null = null;
   markerProps: any;
-  
-  searchParamsCalc = new Subject<SearchParamCalc>(); 
+  selectedGroup: { card: Card[], index:number, result:Card, key: string} = { card: [], index: 0, result: {} as Card, key: "" };
+
+  searchParamsCalc = new Subject<SearchParamCalc>();
   currentSearchParamCalc: SearchParamCalc = new SearchParamCalc();
   // mapNeedsCentering = false;
   easeToProps: any = {};
   easeToQueue = new Subject<any>();
-  
+
   branchSize_ = 0;
   drawerSize_ = 0;
   padding = -1;
@@ -130,7 +130,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       debounceTime(this.platform.browser() ? 1000 : 0),
     ).subscribe((spc) => {
       if (spc.bounds?.length === 2) {
-        this.areaSearchState.checkNationWideByBounds(spc.bounds)  
+        this.areaSearchState.checkNationWideByBounds(spc.bounds)
       }
     });
 
@@ -221,7 +221,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
             filter_community: fc,
             filter_role: frl,
             filter_gender: fg,
-        
+
             filter_responses: fr,
             filter_response_categories: frc,
 
@@ -304,7 +304,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         } else if (params.requiredCenter && params.requiredCenter.length === 3) {
           const rc = params.requiredCenter;
           this.easeTo({center: [rc[0], rc[1]], zoom: rc[2], duration: 0});
-        }      
+        }
       }),
     ).subscribe();
     route.params.pipe(
@@ -336,7 +336,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
             console.log('ACTION - restore-map-state');
             this.easeTo({center: this.savedState.center, zoom: this.savedState.zoom});
             this.savedState = null;
-          }    
+          }
         // this.queueMapAction((map) => {
         //   if (this.savedState) {
         //     map.easeTo({center: this.savedState.center, zoom: this.savedState.zoom});
@@ -373,7 +373,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.platform.browser(() => {
         timer(100).subscribe(() => {
           this.setPadding();
-        });  
+        });
       });
       this.map?.setPopup(false, null);
       if (environment.production && this.stage !== 'point') {
@@ -508,9 +508,9 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   needsDidYouMean(searchParams: SearchParams) {
-    return !!searchParams?.query && 
-            !searchParams?.filter_responses?.length && 
-            !searchParams?.filter_response_categories?.length && 
+    return !!searchParams?.query &&
+            !searchParams?.filter_responses?.length &&
+            !searchParams?.filter_response_categories?.length &&
             !SITUATION_FILTERS.some((f) => !!((searchParams as any)['filter_' + f]?.length)) &&
             !searchParams?.org_id;
   }
@@ -585,7 +585,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         first(),
       ).subscribe((fragment) => {
         // this.mapNeedsCentering = true;
-      });  
+      });
     }
     this.map_ = map;
     // this.setPadding();
@@ -615,7 +615,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.easeTo(params);
         this.padding = padding;
-      }  
+      }
     } else {
       const padding = this.stage === 'search-results' || this.stage === 'card' ?  (this.window._?.innerWidth || 1000) / 2 : 0;
       // if (padding !== this.padding) {
@@ -626,7 +626,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.padding = padding > 640 ? 640 : padding;
       params.padding = {top: 0, right: this.padding, left: 0, bottom: 0};
       this.easeTo(params);
-      // }  
+      // }
     }
   }
 
@@ -656,7 +656,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   set bounds(bounds: number[][]) {
     if (this.padding !== -1 && this.drawerState !== DrawerState.Full) {
-      this.currentSearchParamCalc.bounds = bounds;      
+      this.currentSearchParamCalc.bounds = bounds;
       this.pushSearchParamsCalc();
     }
   }
@@ -670,7 +670,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
         obs = this.api.getAutocompleteEntry(spc.acId);
       } else {
         obs = from([this.acResult]);
-      }  
+      }
     }
     return obs
       .pipe(
@@ -693,14 +693,14 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filtersVisible = visible;
     if (visible && this.point && this.platform.browser()) {
       timer(0).pipe(
-        switchMap(() => 
+        switchMap(() =>
           from(this.router.navigate(['/s', this.searchParams.ac_query], {queryParamsHandling: 'preserve', queryParams: {from: 'point-open-filters'}}))),
         filter((x) => !!x),
         delay(100),
       ).subscribe(() => {
         this.filtersState.active = true;
       });
-    }  
+    }
   }
 
   queueMapAction(action: (map: mapboxgl.Map) => void, description: string) {
@@ -727,7 +727,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   zoomOutMap(viewport: ViewPort, delay=0) {
     this.savedState = null;
     console.log('ZOOM OUT MAP', viewport.zoom, viewport.top_left.lat, viewport.top_left.lon, viewport.bottom_right.lat, viewport.bottom_right.lon)
-    if (viewport && viewport.top_left && viewport.bottom_right && 
+    if (viewport && viewport.top_left && viewport.bottom_right &&
         !Number.isNaN(viewport.top_left.lat) && !Number.isNaN(viewport.top_left.lon) &&
         !Number.isNaN(viewport.bottom_right.lat) && !Number.isNaN(viewport.bottom_right.lon)) {
       if (!viewport.zoom) {
@@ -759,7 +759,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnDestroy {
   hoverCard(card: Card) {
     if (card?.branch_geometry && this.layout.desktop()) {
       this.map?.pointsHover.next({
-        point_id: card.point_id,      
+        point_id: card.point_id,
       });
     }
   }

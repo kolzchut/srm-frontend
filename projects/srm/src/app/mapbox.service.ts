@@ -16,7 +16,6 @@ export class MapboxService {
     this.platform.browser(() => {
       console.log('MAPBOX SERVICE INIT');
       this.loadScript().then(() => {
-        console.log('MAPBOX SERVICE ACCESS TOKEN', this.ACCESS_TOKEN);
         (mapboxgl.accessToken as any) = this.ACCESS_TOKEN;
         mapboxgl.setRTLTextPlugin(
           'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
@@ -24,12 +23,12 @@ export class MapboxService {
             console.log('FAILED TO LOAD PLUGIN', error);
           },
           true // Lazy load the plugin
-        );  
+        );
         this.init.next();
         this.init.complete();
       });
     });
-  } 
+  }
 
   loadScript() {
     return Promise.resolve();

@@ -8,17 +8,17 @@
     <app-area-search-national-services-count [areaSearchState]='areaSearchState'></app-area-search-national-services-count>
     <app-area-search-national-services-notification [areaSearchState]='areaSearchState'></app-area-search-national-services-notification>
 </div>
+
 <div class='content' #handleEl role="presentation">
     <div class='non-scrollable' [class.scrollable-anyway]='scrollAll'>
         <div class='handle layout-mobile' (click)='$event.stopPropagation()' role='presentation'>
             <app-image-button imageUrl='assets/img/drawer-handle.svg'></app-image-button>
         </div>
-        <app-area-search [areaSearchState]='areaSearchState' *ngIf='layout.mobile()' class='layout-mobile' [isHideMapIcon]='isHideMapIcon'
+        <app-area-search [areaSearchState]='areaSearchState' *ngIf='layout.mobile() && selectedGroup.card.length === 0' class='layout-mobile' [isHideMapIcon]='isHideMapIcon'
         ></app-area-search>
         <ng-content select='content-header'></ng-content>
     </div>
-    <div class='scrollable' #scrollable>
-        <ng-content select='content'></ng-content>
+  <div #scrollable [ngClass]="{'non-scrollable': selectedGroup.card.length != 0, 'scrollable': selectedGroup.card.length === 0}">        <ng-content select='content'></ng-content>
     </div>
     <!-- <div class='non-scrollable' *ngIf='layout.desktop()'>
         <ng-content select='content-footer'></ng-content>

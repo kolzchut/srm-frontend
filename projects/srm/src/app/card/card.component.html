@@ -38,26 +38,25 @@
         <h2>השירות ניתן ע״י:</h2>
         <div class='org-container' [class.open]='orgOpen' aria-label='הרחבת פרטי הארגון' clickOnReturn (activated)='orgOpen = !orgOpen && hasOrgActions()'>
             @if (card.organization_name_parts) {
-                <div class='org-name'>                   
-                    @if (card.organization_urls?.[0]?.href) {
-                        <a [href]='card.organization_urls[0].href' target='_blank'>{{card.organization_name_parts.primary}}</a>
+                <div class='org-name'>
+                  @if (card.organization_urls && card.organization_urls.length > 0 && card.organization_urls[0].href) {                        <a [href]='card.organization_urls[0].href' target='_blank'>{{card.organization_name_parts.primary}}</a>
                     } @else {
                         <span>{{card.organization_name_parts.primary}}</span>
                     }
                     @if (card.organization_name_parts.secondary) {
                         <span> - {{card.organization_name_parts.secondary}}</span>
                     }
-                </div>    
+                </div>
             }
             <span class='opener' [class.open]='orgOpen' *ngIf='hasOrgActions()'></span>
             @if (!card.organization_name_parts) {
                 <div class='org-name'>
-                    @if (card.organization_urls?.[0]?.href) {
-                        <a [href]='card.organization_urls[0].href' target='_blank'>{{card.organization_name}}</a>
+                  @if (card.organization_urls && card.organization_urls.length > 0 && card.organization_urls[0].href) {
+                    <a [href]='card.organization_urls[0].href' target='_blank'>{{card.organization_name}}</a>
                     } @else {
                         <span>{{card.organization_name}}</span>
                     }
-                </div>    
+                </div>
             }
             <div class='actions' *ngIf='orgOpen'>
                 <app-card-action-phone [card]='card' [org]='true' [compact]='true'></app-card-action-phone>
@@ -94,4 +93,4 @@
 </div>
 <div class='quick-actions' [class.visible]='quickActionsVisible'>
     <app-quick-actions [card]='card'></app-quick-actions>
-</div>    
+</div>

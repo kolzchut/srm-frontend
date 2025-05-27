@@ -1,28 +1,40 @@
-<div *ngIf='didYouMean' class='did-you-mean'>
-    <span>האם התכוונת&nbsp;</span>
-    <a [routerLink]='["/s", didYouMean.link]' [queryParams]='{from: "did-you-mean"}' clickOnReturn
-        [attr.aria-label]='"שינוי החיפוש לחיפוש מובנה של " + didYouMean.display'>
-        {{didYouMean.display}}
-    </a><span>?</span>
-</div>
+<div class="main-div-search-results">
+  @if (selectedGroup.card.length < 1 || layout.desktop) {
+    <section class="div-search-results" [ngClass]="{'half-width' : selectedGroup.card.length != 0, 'seventy-five-percent-width' : selectedGroup.card.length == 0}">
+      <div *ngIf='didYouMean' class='did-you-mean'>
+        <span>האם התכוונת&nbsp;</span>
+        <a [routerLink]='["/s", didYouMean.link]' [queryParams]='{from: "did-you-mean"}' clickOnReturn
+           [attr.aria-label]='"שינוי החיפוש לחיפוש מובנה של " + didYouMean.display'>
+          {{ didYouMean.display }}
+        </a><span>?</span>
+      </div>
 
-@for (result of results; let index=$index; track result?.collapse_key || index) {
-    <ng-container *ngIf='!!result'>
-        <app-result-stack [result]='result' [searchParams]='searchParams' [index]='index + 1' (hover)='hoverCard.next($event)'></app-result-stack>
-    </ng-container>
-    <div class='placeholder loading' *ngIf='!result'></div>
-}
-<ng-container *ngIf='loading'>
-    <ng-container *ngIf='!results.length'>
-        <div class='placeholder loading'></div>
-        <div class='placeholder loading'></div>
-        <div class='placeholder loading'></div>
-    </ng-container>
-    <ng-container *ngIf='results.length'>
-        <div class='placeholder loading'></div>
-    </ng-container>
-</ng-container>
-<div class='more-results' *ngIf='hasMore && !loading'>
-    <a (activated)='fetch()' clickOnReturn>עוד תוצאות...</a>
+      @for (result of results; let index = $index; track result?.collapse_key || index) {
+        <ng-container *ngIf='!!result'>
+          <app-result-stack [result]='result' [searchParams]='searchParams' [index]='index + 1'
+                            [selectedGroup]="selectedGroup" (hover)='hoverCard.next($event)' (selectedGroupChange)="selectedGroup = $event; selectedGroupChange.emit($event)">
+            >
+          </app-result-stack>
+        </ng-container>
+        <div class='placeholder loading' *ngIf='!result'></div>
+      }
+      <ng-container *ngIf='loading'>
+        <ng-container *ngIf='!results.length'>
+          <div class='placeholder loading'></div>
+          <div class='placeholder loading'></div>
+          <div class='placeholder loading'></div>
+        </ng-container>
+        <ng-container *ngIf='results.length'>
+          <div class='placeholder loading'></div>
+        </ng-container>
+      </ng-container>
+      <div class='more-results' *ngIf='hasMore && !loading'>
+        <a (activated)='fetch()' clickOnReturn>עוד תוצאות...</a>
+      </div>
+      <div class='trigger' #trigger role="presentation"></div>
+    </section>
+  } @if(selectedGroup.card.length >0) {
+  <app-search-results-branches-list class="app-search-results-branch-list-main" (close)="removeSelectedGroup()" [searchParams]='searchParams' (hover)='hoverCard.next($event)' [selectedGroup]="selectedGroup"></app-search-results-branches-list>
+  }
+
 </div>
-<div class='trigger' #trigger role="presentation"></div>

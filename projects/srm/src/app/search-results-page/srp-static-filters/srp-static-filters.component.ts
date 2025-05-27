@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FiltersState } from '../../search-filters/filters-state';
-import { DistinctItem, SearchParams } from '../../consts';
+import { DistinctItem} from '../../consts';
 import { AreaSearchState } from '../../area-search-selector/area-search-state';
 import { AnalyticsService } from '../../analytics.service';
 
@@ -33,7 +33,7 @@ export class SrpStaticFiltersComponent implements OnChanges {
   checkedResponse(item: DistinctItem) {
     return (this.filtersState.currentSearchParams?.filter_responses || []).indexOf(item.key || '') > -1
   }
-
+//TODO: copy logic into search-filter-bar-component.html
   toggleSituation(situation: any, isFilterOn = false) {
     this.filtersState.toggleSituation(situation)
     if (isFilterOn) this.analytics.quickFilterEvent(situation.id);

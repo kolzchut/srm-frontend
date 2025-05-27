@@ -28,6 +28,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "memory-cache",
+              "mapbox-gl"
+            ],
             "outputPath": "dist/srm/browser",
             "index": "projects/srm/src/index.html",
             "main": "projects/srm/src/main.ts",
@@ -54,7 +58,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kb",
+                  "maximumWarning": "8kb",
                   "maximumError": "16kb"
                 }
               ],

@@ -23,7 +23,7 @@ export class SearchResultsPageComponent {
   @Output() nationalCount = new EventEmitter<number>();
   @Output() visibleCount = new EventEmitter<number>();
   @Output() hoverCard = new EventEmitter<Card>();
-
+  selectedGroup: { card: Card[]; index: number; result: Card; key: string } = { card: [], index: 0, result: {} as Card, key: '' };
   state = new SearchResultsPageState();
 
   constructor(public layout: LayoutService) {}

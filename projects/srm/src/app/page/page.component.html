@@ -9,7 +9,7 @@
     <div class='main-content' *ngIf='stage === "search-results" || stage === "card" || stage === "point"'>
         @if (layout.mobile()) {
             <div class='search-results'>
-                @if (stage === 'search-results') {
+                @if (stage === 'search-results' && selectedGroup.card.length == 0) {
                     <app-searchbox-header class='layout-mobile'
                         [query]='query'
                         [searchParams]='searchParams'
@@ -27,13 +27,14 @@
                     (handle)='handleDrawer($event)'
                     (size)='drawerSize = $event'
                     [isHideMapIcon]='isHideMapIcon'
+                    [selectedGroup]="selectedGroup"
                 >
-                    <div class='content search-filters' ngProjectAs='content-header' 
+                    <div class='content search-filters' ngProjectAs='content-header'
                         [class.visible]='stage === "search-results" || (stage === "point" && !card)'
                         [class.filters]='filtersVisible'
                     >
                         <app-search-filters-bar class='layout-desktop' [filtersState]='filtersState' *ngIf='layout.desktop()'></app-search-filters-bar>
-                        <app-search-filters 
+                        <app-search-filters
                             *ngIf='filtersVisible'
                             [searchParams]='searchParams'
                             [areaSearchState]='areaSearchState'
@@ -42,13 +43,13 @@
                             #searchFilters
                         ></app-search-filters>
                     </div>
-                    <div class='content main' ngProjectAs='content' 
+                    <div class='content main' ngProjectAs='content'
                         [class.visible]='stage === "search-results" && !filtersVisible'
                         [class.filters]='filtersVisible'
                     >
                         <app-search-results
-                            [class.hidden]='filtersVisible === true' 
-                            [class.shown]='filtersVisible === false' 
+                            [class.hidden]='filtersVisible === true'
+                            [class.shown]='filtersVisible === false'
                             [searchParams]='searchParams'
                             [active]="stage === 'search-results'"
                             [didYouMean]='didYouMean'
@@ -58,12 +59,13 @@
                             (nationalCount)='nationalCount = $event'
                             (hoverCard)='hoverCard($event)'
                             [areaSearchState]='areaSearchState'
+                            (selectedGroupChange)="selectedGroup = $event"
                         ></app-search-results>
                         <app-disclaimer-footer [homepage]='true'></app-disclaimer-footer>
                     </div>
             <!-- (handle)='handleEvent($event)' (height)='updateDrawerHeight($event)' (scrollTop)='drawerScrolled = !$event'
                                 [class.away]='disclaimerVisible || infoPage'> -->
-                </app-results-drawer>                
+                </app-results-drawer>
             </div>
         }
 
@@ -83,17 +85,17 @@
         />
         @if (stage === 'point') {
             <app-branch-container
-                [cardId]='card' 
-                [pointId]='point' 
+                [cardId]='card'
+                [pointId]='point'
                 [searchParams]='searchParams'
                 (size)='branchSize = $event'
                 (markerProps)='markerProps = $event'
             >
-            </app-branch-container>            
+            </app-branch-container>
         }
         @if (stage === 'card') {
             <app-card-container
-                [cardId]='card' 
+                [cardId]='card'
                 [searchParams]='searchParams'
                 (center)='centerMap($event)'
                 (size)='branchSize = $event'
@@ -108,7 +110,7 @@
             <app-landing-page-overlay
                 [style.display]='showLandingPageOverlay ? "flex" : "none"'
                 [landingPage]='analytics.currentPageLanding'
-                [searchParams]='searchParams' 
+                [searchParams]='searchParams'
                 [cardId]='card'
                 [visibleCount]='visibleCount'
                 (open)='showLandingPageOverlay = $event'
@@ -116,15 +118,15 @@
         }
     </div>
     <app-menu [filtersState]='filtersState' [areaSearchState]='areaSearchState'></app-menu>
-    
+
     <app-menu-popup-contact *ngIf='stage === "about:contact"'></app-menu-popup-contact>
     <app-menu-popup-partners *ngIf='stage === "about:partners"'></app-menu-popup-partners>
     <app-menu-popup-about *ngIf='stage === "about:about"'></app-menu-popup-about>
     <app-menu-popup-missing *ngIf='stage === "about:missing"'></app-menu-popup-missing>
     <app-menu-popup-index *ngIf='stage === "about:index"'></app-menu-popup-index>
 </div>
-<app-map *ngIf='stage !== "homepage"' 
-        [searchParams]='searchParams' 
+<app-map *ngIf='stage !== "homepage"'
+        [searchParams]='searchParams'
         [cardId]='card'
         [pointId]='point'
         [markerProps]='markerProps'

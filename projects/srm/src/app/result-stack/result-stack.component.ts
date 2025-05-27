@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Card, SearchParams, _h } from '../consts';
 import { LayoutService } from '../layout.service';
-import { AnalyticsService } from '../analytics.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { PlatformService } from '../platform.service';
+import {groupArrayByFeature, mapToArray} from "../../services/arrays";
 
 @Component({
   selector: 'app-result-stack',
@@ -11,18 +10,15 @@ import { PlatformService } from '../platform.service';
   styleUrls: ['./result-stack.component.less'],
 })
 export class ResultStackComponent implements OnInit {
-
+  @Output() selectedGroupChange = new EventEmitter<{ card: Card[], index:number, result:Card, key: string }>();
+  @Input () selectedGroup: { card: Card[], index:number, result:Card, key: string };
   @Input() result: Card;
   @Input() searchParams: SearchParams;
   @Input() index = 0;
   @Output() hover = new EventEmitter<Card>();
-
-  _h = _h;
-
   showCount = -1;
-  // showOrgs = true;
 
-  constructor(public layout: LayoutService, private analytics: AnalyticsService, private router: Router, private route: ActivatedRoute, public platform: PlatformService) { }
+  constructor(public layout: LayoutService, public platform: PlatformService) { }
 
   ngOnInit(): void {
     if (this.result?.collapse_hits) {
@@ -41,7 +37,11 @@ export class ResultStackComponent implements OnInit {
       this.result.collapse_hits = this.result.collapse_hits
         .sort((a, b) => !a.branch_city? 1 :-a.branch_city.localeCompare(b.branch_city, 'he-IL'))
         .sort((a,b)=>b.national_service? 1:-1);
-    }
+      const groups = groupArrayByFeature({array: this.result.collapse_hits, field: 'organization_name'});
+      this.result.collapseHitsByGroups = mapToArray(groups)
+        .map(group => ({...group, isDisplayed:false}))
+        .sort((a, b) =>  b.vals.length- a.vals.length);
+      }
     if (this.showCount === -1 && this.collapsibleCount > 0) {
       this.showCount = Math.min(4, this.collapsibleCount);
       if (this.moreAvailable === 1) {
@@ -57,15 +57,20 @@ export class ResultStackComponent implements OnInit {
     }
   }
 
+  showBranches(key: string, index: number) {
+     const group = this.result.collapseHitsByGroups?.find(group => group.key === key)
+    if(!group) return;
+    if(this.selectedGroup.index == index && this.selectedGroup.key == key) return this.selectedGroupChange.emit({card:[], index:0,result: {} as Card, key:''});
+    this.selectedGroupChange.emit({card:group.vals, index,result:this.result, key});
+  }
+
   get moreAvailable() {
     return this.collapsibleCount - this.showCount;
   }
 
   get collapsibleCount() {
-    const c = this.result.collapsed_count;
-    return c;
+    return this.result.collapseHitsByGroups?.length || 0;
   }
-
   branchInfo(card: Card) {
     if (card.national_service) return 'שירות ארצי';
     const primary = _h(card.address_parts, 'primary');
@@ -77,42 +82,4 @@ export class ResultStackComponent implements OnInit {
     return _h(card, 'branch_address');
   }
 
-  branchName({branch_name}: Card) {
-    if (!branch_name) return "";
-    return ` / ${branch_name}`;
-  }
-
-  orgName(card: Card) {
-    return _h(card, 'branch_operating_unit') || _h(card.organization_name_parts, 'primary') || _h(card, 'organization_short_name') || _h(card, 'organization_name');
-  }
-
-  ariaLabel(card: Card) {
-    let ret = '';
-    if (card.national_service) {
-      ret += 'שירות ארצי: ';
-    } else if (card.branch_city) {
-      ret += card.branch_city + ' ';
-    }
-    ret += card.service_name;
-    if (card.branch_operating_unit) {
-      ret += ' של ' + card.branch_operating_unit;
-    } else if (card.organization_name_parts?.primary) {
-      ret += ' של ' + card.organization_name_parts.primary;
-    } else if (card.organization_short_name) {
-      ret += ' של ' + card.organization_short_name;
-    }
-    ret += ' - פתיחת עמוד השירות';
-    return ret;
-  }
-
-  selectedItem(event: Event, card: Card, from: string, extra?: any) {
-    event.preventDefault();
-    let card_ = card;
-    if (extra) {
-      card_ = Object.assign({}, card, extra);
-    }
-    this.analytics.cardEvent(card_, this.searchParams, this.index, true);
-    this.router.navigate(['c', card_.card_id], { relativeTo: this.route, queryParams: {li: this.index, from}, queryParamsHandling: 'merge', preserveFragment: true });
-    return false;
-  }
 }

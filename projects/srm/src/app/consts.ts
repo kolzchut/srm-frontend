@@ -6,7 +6,7 @@ export enum DrawerState {
     Half = 'half',
     Full = 'full',
     Minimal = 'minimal',
-};
+}
 
 export class TaxonomyItem {
     id?: string;
@@ -14,13 +14,13 @@ export class TaxonomyItem {
     synonyms?: string[];
     category?: string;
     __selected?: boolean;
-};
+}
 export class DistinctItem {
     key?: string;
     doc_count?: number;
     max_score?: { value: number };
     plus? = false;
-};
+}
 
 
 export class Card {
@@ -79,6 +79,7 @@ export class Card {
     // _collapse_count?: number;
     collapse_key: string;
     collapse_hits?: Card[];
+    collapseHitsByGroups?: Array<{key:string, vals:Array<Card>, isDisplayed: boolean, maxDisplayCount:number}>;
 
     __props: any;
 
@@ -89,7 +90,7 @@ export class Card {
     get collapsed_count(): number {
         return this.collapse_hits?.length || 0;
     }
-};
+}
 
 export const CARD_SNIPPET_FIELDS = [
     'service_description.hebrew',
@@ -250,8 +251,8 @@ export class SearchParams {
     }
 
     get hasFilters(): boolean {
-        return !!SITUATION_FILTERS.find((f) => (this as any)['filter_' + f]?.length) || 
-                !!this.filter_responses?.length || 
+        return !!SITUATION_FILTERS.find((f) => (this as any)['filter_' + f]?.length) ||
+                !!this.filter_responses?.length ||
                 !!this.filter_response_categories?.length;
     }
 
@@ -291,4 +292,4 @@ export class SearchParams {
         this.selectedTaxonomyIds = null;
         this.filteredSituationIds = null;
     }
-};
+}
