@@ -24,15 +24,15 @@
   <ng-container *ngFor='let r of selectedResponses; let idx=index'>
     <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx' *ngIf='idx<selectedResponses.length-1'/>
     <span class='last' [style.zIndex]='100-idx' *ngIf='idx===selectedResponses.length-1'>
-        <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'/>
-        <app-tag-ending *ngIf='deselectedResponses.length' [tags]='deselectedResponses' [count]='card.responses.length - selectedResponses.length' [small]='smaller' [style.zIndex]='49'/>
-    </span>
+                  <app-response [response]='r' [small]='smaller' [style.zIndex]='100-idx'/>
+                  <app-tag-ending *ngIf='deselectedResponses.length' [tags]='deselectedResponses' [count]='card.responses.length - selectedResponses.length' [small]='smaller' [style.zIndex]='49'/>
+              </span>
   </ng-container>
   <ng-container *ngFor='let s of selectedSituations; let idx=index'>
     <app-situation [situation]='s' [small]='smaller' [style.zIndex]='100-idx'  *ngIf='idx<selectedSituations.length-1'/>
     <span class='last' [style.zIndex]='100-idx'  *ngIf='idx===selectedSituations.length-1'>
-        <app-situation [situation]='s' [small]='smaller' [style.zIndex]='50'/>
-        <app-tag-ending *ngIf='deselectedSituations.length' [tags]='deselectedSituations' [count]='card.situations.length - selectedSituations.length' [small]='smaller' [style.zIndex]='49'/>
-    </span>
+                  <app-situation [situation]='s' [small]='smaller' [style.zIndex]='50'/>
+                  <app-tag-ending *ngIf='deselectedSituations.length' [tags]='deselectedSituations' [count]='card.situations.length - selectedSituations.length' [small]='smaller' [style.zIndex]='49'/>
+              </span>
   </ng-container>
 </div>
