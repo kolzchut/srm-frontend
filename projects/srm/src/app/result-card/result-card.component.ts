@@ -36,7 +36,6 @@ import { Card, CARD_SNIPPET_FIELDS, SearchParams, TaxonomyItem, _h } from '../co
   }
 })
 export class ResultCardComponent implements OnChanges, AfterViewInit {
-
   @Input() card: Card;
   @Input() searchParams: SearchParams;
   @Input() compact = false;
@@ -197,5 +196,11 @@ export class ResultCardComponent implements OnChanges, AfterViewInit {
 
   get showSnippet() {
     return this.snippet && !this.compact && !this.stacked;
+  }
+  onSelectExpendOrMinimize($event: MouseEvent) {
+    $event.stopPropagation();
+    $event.preventDefault();
+    this.showFull = !this.showFull;
+
   }
 }

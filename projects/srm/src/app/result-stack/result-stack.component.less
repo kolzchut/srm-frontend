@@ -9,7 +9,12 @@
   a {
     cursor: pointer;
   }
-
+  .headset-img{
+    display: flex;
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+  }
   .card {
     display: flex;
     flex-flow: column;
@@ -23,6 +28,7 @@
     .branch-headers {
       display: block;
       padding: 5px 10px;
+
 
       .org, .city, .national-service {
         display: inline;
@@ -213,7 +219,10 @@
       }
     }
   }
-
+  .darker-bookend{
+    background: @color-blue-7;
+    border-color: @color-gray-5;
+  }
   .bookends {
     .bookend {
       box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.10);
