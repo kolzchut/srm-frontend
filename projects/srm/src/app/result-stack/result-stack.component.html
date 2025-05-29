@@ -1,9 +1,11 @@
 <a      (mouseover)="hover.next(firstBranch)"
         [attr.aria-label]="ariaLabel(firstBranch)"
         (activated)="selectedItem($event, this.selectedGroup.result ,'search-result-extras', firstBranch)"
-        [href]="'/c/' + firstBranch.card_id" clickOnReturn>
-  <app-result-card [card]='result' [searchParams]='searchParams' [larger]='true'/>
+        [href]="'/c/' + firstBranch.card_id" clickOnReturn *ngIf="isSingleBranch">
+  <app-result-card  [card]='result' [searchParams]='searchParams' [larger]='true'/>
 </a>
+<app-result-card *ngIf="!isSingleBranch" [card]='result' [searchParams]='searchParams' [larger]='true'/>
+
 <div class='bookends-more' *ngIf='(result.collapse_hits || []).length > 0'>
   <ng-container *ngIf="isSingleBranch">
     <a class="bookend darker-bookend" (mouseover)="hover.next(firstBranch)"
