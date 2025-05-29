@@ -10,13 +10,10 @@
 
       <span *ngIf="showFull" class="description-span">
       {{ card.service_description }}
-        <span *ngIf="isOverflowing && showFull" class="extend-text" (click)="showFull = !showFull">
-          מזער
-        </span>
       </span>
 
-      <span *ngIf="isOverflowing && !showFull" class="extend-text" (click)="showFull = !showFull">
-        הרחב
+      <span *ngIf="isOverflowing" class="extend-text" (click)="showFull = !showFull">
+        {{ showFull ? 'מזער' : 'הרחב' }}
       </span>
     </div>
 </ng-container>

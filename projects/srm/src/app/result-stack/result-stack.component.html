@@ -1,5 +1,30 @@
-<app-result-card [card]='result' [searchParams]='searchParams' [larger]='true'></app-result-card>
+<a      (mouseover)="hover.next(firstBranch)"
+        [attr.aria-label]="ariaLabel(firstBranch)"
+        (activated)="selectedItem($event, this.selectedGroup.result ,'search-result-extras', firstBranch)"
+        [href]="'/c/' + firstBranch.card_id" clickOnReturn>
+  <app-result-card [card]='result' [searchParams]='searchParams' [larger]='true'/>
+</a>
 <div class='bookends-more' *ngIf='(result.collapse_hits || []).length > 0'>
+  <ng-container *ngIf="isSingleBranch">
+    <a class="bookend darker-bookend" (mouseover)="hover.next(firstBranch)"
+       [attr.aria-label]="ariaLabel(firstBranch)"
+       (activated)="selectedItem($event, this.selectedGroup.result ,'search-result-extras', firstBranch)"
+       [href]="'/c/' + firstBranch.card_id" clickOnReturn
+       style="display: flex; flex-direction: row">
+      <div style="width: 80%">
+      <span class="branchName">{{ firstBranch.branch_name || firstBranch.organization_name }}</span>
+      <span class="separator" style="width: 4px">&nbsp;/&nbsp;</span>
+      @if (firstBranch.national_service) {
+        <img class="national-service headset-img" style="display: inline" alt="national service image" src="../../assets/img/icon-headset.svg">
+      }
+      <span class="city">{{ branchInfo(firstBranch) }}</span>
+    </div>
+      <img class="grayLeftArrowImg"
+           src="assets/img/grayLeftArrow.svg"
+           alt="חץ שמאלה"/>
+      </a>
+  </ng-container>
+  <ng-container *ngIf="!isSingleBranch">
   @for (org of result.collapseHitsByGroups || []; track org.key; let i = $index) {
     <a [style.display]='i < showCount ? "flex" : "none"' class="bookend" (click)="showBranches(org.key, index)"
        style="display: block;">
@@ -18,4 +43,5 @@
       <span class='more-count'>+{{ moreAvailable }} ארגונים נוספים</span>
     </a>
   }
+  </ng-container>
 </div>
