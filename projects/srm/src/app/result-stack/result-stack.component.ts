@@ -3,6 +3,7 @@ import { Card, SearchParams, _h } from '../consts';
 import { LayoutService } from '../layout.service';
 import { PlatformService } from '../platform.service';
 import {groupArrayByFeature, mapToArray} from "../../services/arrays";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-result-stack',
@@ -16,11 +17,14 @@ export class ResultStackComponent implements OnInit {
   @Input() searchParams: SearchParams;
   @Input() index = 0;
   @Output() hover = new EventEmitter<Card>();
-  showCount = -1;
 
-  constructor(public layout: LayoutService, public platform: PlatformService) { }
+  showCount = -1;
+  isSingleBranch = false;
+  firstBranch = {card_id: ""} as Card;
+  constructor(public layout: LayoutService, public platform: PlatformService, private router: Router,private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+
     if (this.result?.collapse_hits) {
       const cityNames: any = {};
       this.result.collapse_hits.forEach((h) => {
@@ -48,6 +52,8 @@ export class ResultStackComponent implements OnInit {
         this.showCount += 1;
       }
     }
+    this.isSingleBranch = this.checkIfSingleBranchByResult(this.result);
+    if (this.isSingleBranch) this.firstBranch = this.getFirstBranch();
   }
 
   more() {
@@ -56,18 +62,21 @@ export class ResultStackComponent implements OnInit {
       this.showCount = this.collapsibleCount;
     }
   }
-
+    getFirstBranch(): Card{
+    return this.result.collapseHitsByGroups?.[0]?.vals[0]|| this.firstBranch;
+  }
   showBranches(key: string, index: number) {
      const group = this.result.collapseHitsByGroups?.find(group => group.key === key)
     if(!group) return;
     if(this.selectedGroup.index == index && this.selectedGroup.key == key) return this.selectedGroupChange.emit({card:[], index:0,result: {} as Card, key:''});
     this.selectedGroupChange.emit({card:group.vals, index,result:this.result, key});
   }
-
+  checkIfSingleBranchByResult(result: Card): boolean {
+    return !!(result && result.collapse_hits && result.collapse_hits.length === 1);
+  }
   get moreAvailable() {
     return this.collapsibleCount - this.showCount;
   }
-
   get collapsibleCount() {
     return this.result.collapseHitsByGroups?.length || 0;
   }
@@ -81,5 +90,38 @@ export class ResultStackComponent implements OnInit {
     }
     return _h(card, 'branch_address');
   }
+  selectedItem(event: Event, card: Card, from: string, extra?: any) {
+    event.preventDefault();
+    let card_ = card;
+    if (extra) {
+      card_ = Object.assign({}, card, extra);
+    }
+    this.router.navigate(['c', card_.card_id], {
+      relativeTo: this.route,
+      queryParams: {li: this.selectedGroup?.index  || 0, from},
+      queryParamsHandling: 'merge',
+      preserveFragment: true
+    });
+    return false;
+  }
+  ariaLabel(card: Card) {
+    let ret = '';
+    if (card.national_service) {
+      ret += 'שירות ארצי: ';
+    } else if (card.branch_city) {
+      ret += card.branch_city + ' ';
+    }
+    ret += card.service_name;
+    if (card.branch_operating_unit) {
+      ret += ' של ' + card.branch_operating_unit;
+    } else if (card.organization_name_parts?.primary) {
+      ret += ' של ' + card.organization_name_parts.primary;
+    } else if (card.organization_short_name) {
+      ret += ' של ' + card.organization_short_name;
+    }
+    ret += ' - פתיחת עמוד השירות';
+    return ret;
+  }
+
 
 }

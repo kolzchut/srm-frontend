@@ -1,6 +1,7 @@
-<section [ngClass]="{'search-result-desktop': layout.desktop, 'search-result-mobile': !layout.desktop, 'desktop-height' : layout.desktop}" class="main-div-search-results-branches-list">  <div class="header-div-search-results-branches-list">
-  <button class='back-icon' (click)="close.emit()" aria-label="חזרה לבחירת ארגונים"></button>
-    <h3>{{orgName(selectedGroup.card[0])}}</h3>
+<section [ngClass]="{'search-result-desktop': layout.desktop, 'search-result-mobile': !layout.desktop, 'desktop-height' : layout.desktop}" class="main-div-search-results-branches-list">
+  <div class="header-div-search-results-branches-list">
+    <h3>{{selectedGroup.key}}</h3>
+  <div class='search-results-branches-list-close-icon' (click)="close.emit()" aria-label="חזרה לבחירת ארגונים"><img src="../../assets/img/icon-close-black.svg"></div>
   </div>
 
   <a *ngFor="let branch of selectedGroup.card; trackBy: trackByCardId"
@@ -9,12 +10,15 @@
      (activated)="selectedItem($event, this.selectedGroup.result ,'search-result-extras', branch)"
      [href]="'/c/' + branch.card_id"
      [class.national]="branch.national_service"
-     class="bookend" clickOnReturn>
-    <span class="branchName">{{ branchName(branch) || orgName(branch) }}</span>
-    <span class="separator">&nbsp;/&nbsp;</span>
+     class="bookend gray-background" clickOnReturn>
+    <div class="content-div">
+    <div class="inner-content-div"><span class="branchName">{{ branchName(branch) || orgName(branch)}}</span>
+    <span class="city">{{ branchInfo(branch) }}</span>
+    </div>
     @if (branch.national_service) {
     <img alt="national service image" src="../../assets/img/icon-headset.svg">
     }
-    <span class="city">{{ branchInfo(branch) }}</span>
+    </div>
+    <img class="arrow-top-right-img" alt="arrow top right" src="../../assets/img/icon-arrow-top-right-gray-4.svg">
   </a>
 </section>
