@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { getPointCards, PointCards } from '../branch-container/branch-card-utils';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AnalyticsService } from '../analytics.service';
+import {MapWidthService} from "../../services/map-width.service";
 // declare var mapboxgl: any;
 
 export type CenterZoomType = [number, number, number];
@@ -126,7 +127,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Output('map') newMap = new EventEmitter<MapComponent | null>();
   @Output('mapBounds') mapBounds = new EventEmitter<number[][]>();
   @Output('focusOn') focusOn = new EventEmitter<FocusOnRequest>();
-  
+
   @ViewChild('map') mapEl: ElementRef;
   @ViewChild('stablePopup') stablePopupEl: ElementRef;
   @ViewChild('hoverPopup') hoverPopupEl: ElementRef;
@@ -142,7 +143,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
   lastProps: any = {};
 
   ZOOM_THRESHOLD = 10;
-  ALL_CATEGORIES = ALL_CATEGORIES; 
+  ALL_CATEGORIES = ALL_CATEGORIES;
   savedChanges: SimpleChanges = {};
   pointIdsFilter: any[] = [];
   activePointFilter: any[] = [];
@@ -157,18 +158,17 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
 
   mapImgCopy: SafeResourceUrl | null = null;
   mapImgCopyQueue = new Subject<void>();
-  
-  constructor(private mapboxService: MapboxService, 
+  constructor(private mapboxService: MapboxService,
               private api: ApiService,
               private platform: PlatformService,
               private layout: LayoutService,
               private router: Router,
               private sanitizer: DomSanitizer,
-              private analytics: AnalyticsService
+              private analytics: AnalyticsService,
+              public mapWidth: MapWidthService
   ) {
-      
-  }
 
+  }
   getTitle(card: Card, branch_count: number) {
     if (!card.branch_location_accurate && branch_count > 1) {
       return 'במיקום לא מדויק';
@@ -217,7 +217,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
             branch_count: branchIds.length,
             branch_location_accurate: cards[0].branch_location_accurate,
             coordinates: cards[0].branch_geometry
-          });  
+          });
         }
       });
     } else if ((this.changed(changes, 'cardId') || this.changed(changes, 'pointId')) && !this.pointId?.length && this.cardId?.length) {
@@ -233,7 +233,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
           //         if (branchIds.indexOf(card.branch_id) === -1) {
           //           branchIds.push(card.branch_id);
           //         }
-          //       });      
+          //       });
           //       return {card, service_count: branchIds.length};
           //     })
           //   );
@@ -396,7 +396,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
                   }
                   if (!dontRoute) {
                     route[0] = '/' + route[0];
-                    this.router.navigate(route, {queryParamsHandling: 'merge', queryParams});  
+                    this.router.navigate(route, {queryParamsHandling: 'merge', queryParams});
                   }
                 });
                   // this.points.next(props as SRMPoint);
@@ -427,7 +427,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
             //   this.map.getCanvas().style.cursor = '';
             // });
           });
-          this.map.getStyle().layers?.filter((l) => LAYER_POINTS_STROKE_ON.indexOf(l.id) >= 0).forEach((layer: mapboxgl.Layer) => { 
+          this.map.getStyle().layers?.filter((l) => LAYER_POINTS_STROKE_ON.indexOf(l.id) >= 0).forEach((layer: mapboxgl.Layer) => {
             const layerName = layer.id;
             this.map.on('mousemove', layerName, (e) => {
               const features = e.features || [];
@@ -465,8 +465,8 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
             });
 
           });
-          this.mapEl.nativeElement.querySelectorAll('a, button').forEach(function(item: HTMLElement) { 
-            item.setAttribute('tabindex', '-1'); 
+          this.mapEl.nativeElement.querySelectorAll('a, button').forEach(function(item: HTMLElement) {
+            item.setAttribute('tabindex', '-1');
           });
           this.map.on('mousemove', (e: mapboxgl.MapLayerMouseEvent) => {
             if (e.defaultPrevented || this.layout.mobile()) {
@@ -606,7 +606,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
       }
     }
   }
-  
+
   updateBounds() {
     this.bounds = this.map.getBounds();
     this.mapBounds.next([
@@ -626,7 +626,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
       const {action, description} = this.moveQueue.shift() as MoveQueueItem;
       if (!!action) {
         console.log('ACTION-QQ', description);
-        action(this.map);  
+        action(this.map);
       }
     }
   }
@@ -771,7 +771,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   applyFilters() {
-    this.ready.pipe(first()).subscribe(() => {      
+    this.ready.pipe(first()).subscribe(() => {
       const filters: any[] = [];
       if (this.activePointFilter && this.activePointFilter.length) {
         filters.push(this.activePointFilter);
@@ -921,8 +921,8 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
           this.hoverPopupProps = props;
         }),
         delay(10)
-      );  
-    }    
+      );
+    }
     obs?.subscribe(({props, stable}) => {
       const el = (stable ? this.stablePopupEl : this.hoverPopupEl)?.nativeElement as HTMLElement;
       let popup: mapboxgl.Popup | null = null;
@@ -943,13 +943,13 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
         if (this.stablePopup) {
           this.stablePopup.remove();
         }
-        this.stablePopup = popup;        
+        this.stablePopup = popup;
       } else {
         if (this.hoverPopup) {
           this.hoverPopup.remove();
         }
         this.hoverPopup = popup;
-      }    
+      }
     });
   }
 }

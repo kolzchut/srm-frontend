@@ -1,4 +1,4 @@
-<div class='map-container'>
+<div class='map-container' [ngStyle]="{width: this.mapWidth.getMapWidth()}">
     <img class='map-hotjar' aria-hidden="true" role='presentation' [src]='mapImgCopy'/>
     <div class='map data-hj-suppress' #map aria-hidden="true" role='presentation'></div>
 </div>
