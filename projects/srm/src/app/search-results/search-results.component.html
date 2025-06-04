@@ -12,7 +12,7 @@
       @for (result of results; let index = $index; track result?.collapse_key || index) {
         <ng-container *ngIf='!!result'>
           <app-result-stack [result]='result' [searchParams]='searchParams' [index]='index + 1'
-                            [selectedGroup]="selectedGroup" (hover)='hoverCard.next($event)' (selectedGroupChange)="selectedGroup = $event; selectedGroupChange.emit($event)">
+                            [selectedGroup]="selectedGroup" (hover)='hoverCard.next($event)' (selectedGroupChange)="selectedGroup = $event; selectedGroupChange.emit($event); reSortResultStack($event)">
             >
           </app-result-stack>
         </ng-container>

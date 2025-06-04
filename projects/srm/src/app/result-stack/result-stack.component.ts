@@ -68,6 +68,15 @@ export class ResultStackComponent implements OnInit {
     getFirstBranch(): Card{
     return this.result.collapseHitsByGroups?.[0]?.vals[0]|| this.firstBranch;
   }
+  clickedBranches(key: string, index: number) {
+    const mainDiv = document.querySelector('section');
+    console.log(mainDiv)
+    if (mainDiv) {
+      mainDiv.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    this.showBranches(key, index);
+  }
   showBranches(key: string, index: number) {
      const group = this.result.collapseHitsByGroups?.find(group => group.key === key)
     if(!group) return;
