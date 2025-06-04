@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Card, SearchParams, _h } from '../consts';
+import { Card, SearchParams } from '../consts';
 import { LayoutService } from '../layout.service';
 import { PlatformService } from '../platform.service';
 import {groupArrayByFeature, mapToArray} from "../../services/arrays";
 import {ActivatedRoute, Router} from "@angular/router";
+import ariaLabel from "../../services/result-stack-utilities/ariaLabelBuilder";
+import StringsBuilder from "../../services/result-stack-utilities/stringsBuilder";
+import stringsBuilder from "../../services/result-stack-utilities/stringsBuilder";
 
 @Component({
   selector: 'app-result-stack',
@@ -28,7 +31,7 @@ export class ResultStackComponent implements OnInit {
     if (this.result?.collapse_hits) {
       const cityNames: any = {};
       this.result.collapse_hits.forEach((h) => {
-        const cityName = this.branchInfo(h);
+        const cityName = stringsBuilder.branchInfo(h);
         if (cityName) {
           if (cityNames[cityName]) {
             cityNames[cityName] += 1;
@@ -80,16 +83,6 @@ export class ResultStackComponent implements OnInit {
   get collapsibleCount() {
     return this.result.collapseHitsByGroups?.length || 0;
   }
-  branchInfo(card: Card) {
-    if (card.national_service) return 'שירות ארצי';
-    const primary = _h(card.address_parts, 'primary');
-    const secondary = _h(card.address_parts, 'secondary');
-    if (primary) {
-      if (secondary) return `${primary}, ${secondary}`;
-      return primary;
-    }
-    return _h(card, 'branch_address');
-  }
   selectedItem(event: Event, card: Card, from: string, extra?: any) {
     event.preventDefault();
     let card_ = card;
@@ -104,24 +97,7 @@ export class ResultStackComponent implements OnInit {
     });
     return false;
   }
-  ariaLabel(card: Card) {
-    let ret = '';
-    if (card.national_service) {
-      ret += 'שירות ארצי: ';
-    } else if (card.branch_city) {
-      ret += card.branch_city + ' ';
-    }
-    ret += card.service_name;
-    if (card.branch_operating_unit) {
-      ret += ' של ' + card.branch_operating_unit;
-    } else if (card.organization_name_parts?.primary) {
-      ret += ' של ' + card.organization_name_parts.primary;
-    } else if (card.organization_short_name) {
-      ret += ' של ' + card.organization_short_name;
-    }
-    ret += ' - פתיחת עמוד השירות';
-    return ret;
-  }
 
-
+  protected readonly ariaLabel = ariaLabel;
+  protected readonly stringsBuilder = StringsBuilder;
 }

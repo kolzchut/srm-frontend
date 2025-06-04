@@ -1,0 +1,19 @@
+<ng-container>
+  <a class="single-branch-bookend single-branch-darker-bookend" (mouseover)="hoverCard.next(singleBranch)"
+     [attr.aria-label]="ariaLabel(singleBranch)"
+     (activated)="selectedItem($event, this.org.vals[0] ,'search-result-extras', singleBranch)"
+     [href]="'/c/' + singleBranch.card_id" clickOnReturn
+     style="display: flex; flex-direction: row">
+    <div style="width: 80%">
+      <span class="single-branch-name">{{ singleBranch.branch_name || singleBranch.organization_name }}</span>
+      <span class="single-branch-separator" style="width: 4px">&nbsp;/&nbsp;</span>
+      @if (singleBranch.national_service) {
+        <img class="single-branch-national-service single-branch-headset-img" style="display: inline" alt="national service image" src="../../assets/img/icon-headset.svg">
+      }
+      <span class="single-branch-city">{{ stringsBuilder.branchInfo(singleBranch) }}</span>
+    </div>
+    <img class="single-branch-gray-left-arrow-img"
+         src="assets/img/grayLeftArrow.svg"
+         alt="חץ שמאלה"/>
+  </a>
+</ng-container>
