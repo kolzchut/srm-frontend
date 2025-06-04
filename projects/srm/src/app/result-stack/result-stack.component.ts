@@ -69,10 +69,10 @@ export class ResultStackComponent implements OnInit {
     return this.result.collapseHitsByGroups?.[0]?.vals[0]|| this.firstBranch;
   }
   clickedBranches(key: string, index: number) {
-    const mainDiv = document.querySelector('section');
-    console.log(mainDiv)
-    if (mainDiv) {
-      mainDiv.scrollTo({ top: 0, behavior: 'smooth' });
+    const section = document.querySelector('section');
+    console.log(section)
+    if (section) {
+      section.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     this.showBranches(key, index);
