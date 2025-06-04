@@ -1,0 +1,62 @@
+@import '../../common.less';
+
+.single-branch-bookend {
+  width: 100%;
+  padding: 12px;
+  flex: 0 0 auto;
+  background: @color-gray-7;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border: 1px solid @color-gray-5;
+  border-top: none;
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  font-family: 'RAG Sans', 'Arial', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 20px;
+
+  .single-branch-name {
+    display: inline;
+    white-space: nowrap;
+    color: #555452;
+    max-width: 25%;
+    .ellipsis;
+  }
+
+  .single-branch-city {
+    color: @color-gray-3;
+    .ellipsis;
+    max-width: 30%;
+  }
+
+  .single-branch-separator {
+    flex: 0 0 auto;
+  }
+
+  &.single-branch-darker-bookend {
+    background: @color-blue-7;
+    border-color: @color-gray-5;
+  }
+}
+
+.single-branch-national-service {
+  font-weight: 400;
+  color: @color-blue-1;
+}
+
+.single-branch-headset-img {
+  display: flex;
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+
+.single-branch-gray-left-arrow-img {
+  height: 80%;
+  display: inline-block;
+}
