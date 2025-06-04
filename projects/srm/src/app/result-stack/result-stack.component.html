@@ -11,7 +11,7 @@
   @for (org of result.collapseHitsByGroups || []; track org.key; let i = $index) {
     <ng-container *ngIf="org.vals.length > 1 &&   i < showCount">
     <a class="bookend" (click)="showBranches(org.key, index)"
-       style="display: block;">
+       style="display: flex;">
       <span class='org' [innerHTML]='org.key'></span>
       <span class='more-branches'
             [ngClass]="{'bold-underline': index == selectedGroup.index && org.key == selectedGroup.key}"> {{ org.vals.length + ' סניפים' }}</span>
