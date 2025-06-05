@@ -12,7 +12,7 @@
       {{ card.service_description }}
       </span>
 
-      <span *ngIf="isOverflowing" class="extend-text" (click)="onSelectExpendOrMinimize($event)">
+      <span *ngIf="isOverflowing" class="extend-text" (click)="onSelectExpendOrMinimizeAndTag($event)">
         {{ showFull ? 'מזער' : 'הרחב' }}
       </span>
     </div>

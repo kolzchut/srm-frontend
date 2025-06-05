@@ -44,7 +44,7 @@ export class AnalyticsService {
   }
 
   cardToItem(card: Card, idx: number, item_list_name?: string | null): any {
-    const address = card.address_parts ? 
+    const address = card.address_parts ?
       (card.address_parts.primary + (card.address_parts.secondary ? ', ' + card.address_parts.secondary : '')) :
       card.branch_address;
     const categories: string[] = [];
@@ -143,7 +143,7 @@ export class AnalyticsService {
           item_list_name: params?.original_query,
           items: [this.cardToItem(card, index)]
         }
-      });  
+      });
     } else {
       const eventParams = {
         card_id: card.card_id,
@@ -163,7 +163,7 @@ export class AnalyticsService {
           items: [this.cardToItem(card, index, params?.original_query)]
         },
         ...eventParams
-      });  
+      });
 
       this.interactionEvent('card', from || 'unknown', undefined, params);
     }
@@ -215,7 +215,19 @@ export class AnalyticsService {
       map_state: isOpen ? 'open' : 'close',
     });
   }
-  
+  extendDescriptionEvent(card_id: string){
+    this.gtag({
+      event: 'srm:extend_description',
+      card_id: card_id,
+    });
+  }
+  shrinkRDescriptionEvent(card_id: string){
+    this.gtag({
+      event: 'srm:shrink_description',
+      card_id: card_id,
+    });
+  }
+
   quickFilterEvent(filter: string) {
     this.gtag({
       event: 'srm:quick_filter',
