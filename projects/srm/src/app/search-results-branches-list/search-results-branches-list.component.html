@@ -10,9 +10,9 @@
      (activated)="selectedItem($event, this.selectedGroup.result ,'search-result-extras', branch)"
      [href]="'/c/' + branch.card_id"
      [class.national]="branch.national_service"
-     class="bookend gray-background" clickOnReturn>
+     class="bookend branch-list-card" clickOnReturn>
     <div class="content-div">
-    <div class="inner-content-div"><span class="branchName">{{ stringsBuilder.branchName(branch) || stringsBuilder.orgName(branch)}}</span>
+    <div class="inner-content-div"><span class="branchName">{{ stringsBuilder.branchName(branch) }}</span>
     <span class="city">{{ stringsBuilder.branchInfo(branch) }}</span>
     </div>
     @if (branch.national_service) {

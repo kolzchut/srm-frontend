@@ -193,10 +193,6 @@ export class ResultCardComponent implements OnChanges, AfterViewInit {
       });
     }
   }
-
-  get showSnippet() {
-    return this.snippet && !this.compact && !this.stacked;
-  }
   onSelectExpendOrMinimize($event: MouseEvent) {
     $event.stopPropagation();
     $event.preventDefault();
