@@ -227,7 +227,12 @@ export class AnalyticsService {
       card_id: card_id,
     });
   }
-
+  openBranchesEvent(card_id: string){
+    this.gtag({
+      event: 'srm:open_branches',
+      card_id: card_id,
+    });
+  }
   quickFilterEvent(filter: string) {
     this.gtag({
       event: 'srm:quick_filter',
