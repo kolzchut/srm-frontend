@@ -314,10 +314,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
 
   reSizeMap(newWidth: number) {
     setTimeout(() => {
-      this.map.resize();
-      this.setCenter(this.map.getCenter(), this.map.getZoom());
       this.updateBounds();
-      console.log("Resizing map to ", newWidth, "center: ", this.map.getCenter(), "bounding box: ", this.map.getBounds());
     }, 0);
   }
 
