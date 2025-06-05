@@ -284,6 +284,6 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
     }
   }
   reSizeMap(selectedGroup: { card: Card[], index:number, result:Card, key: string}): void {
-     selectedGroup.card.length > 0 ? this.mapWidthService.setMapWidth('400px') : this.mapWidthService.setMapWidth('900px');
+     selectedGroup.card.length > 0 ? this.mapWidthService.setMapFullOpenWidth() : this.mapWidthService.setMapHalfOpenWidth();
   }
 }

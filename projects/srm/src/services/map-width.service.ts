@@ -10,6 +10,15 @@ export class MapWidthService {
   constructor(private layout: LayoutService) {
     layout.desktop() ? this.mapWidth = 'calc(100vw - 280px)' : this.mapWidth = '100vw';
   }
+  setMapFullViewWidth(){
+   this.layout.desktop() ? this.mapWidth = 'calc(100vw - 280px)' : this.mapWidth = '100vw';
+  }
+  setMapHalfOpenWidth(){
+    this.layout.desktop() ? this.mapWidth = 'calc(100vw - 704px)' : this.mapWidth = '100vw';
+  }
+  setMapFullOpenWidth(){
+    this.layout.desktop() ? this.mapWidth = 'calc(100vw - 1144px)': this.mapWidth = '100vw';
+  }
   setMapWidth(width: string) {
     if(this.layout.mobile()) return;
     this.mapWidth = width;
