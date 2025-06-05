@@ -1,4 +1,15 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SeoSocialShareService } from 'ngx-seo';
 import { forkJoin, from, ReplaySubject, Subject, Subscription, timer } from 'rxjs';
@@ -11,6 +22,7 @@ import { SearchState } from './search-state';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import {LayoutService} from "../layout.service";
+import {MapWidthService} from "../../services/map-width.service";
 
 
 export type SearchParamsOffset = {
@@ -74,7 +86,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
 
   constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService,
       private seo: SeoSocialShareService, private analytics: AnalyticsService,
-      private route: ActivatedRoute, private router: Router, private layoutService: LayoutService) {
+      private route: ActivatedRoute, private router: Router, private layoutService: LayoutService, private mapWidthService: MapWidthService) {
   }
 
   ngOnInit(): void {
@@ -195,7 +207,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
     this.areaSearchState.selectNationWide()
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes:SimpleChanges): void {
     this.paramsQueue.next(this.searchParams);
   }
 
@@ -262,5 +274,16 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
 
   get triggerVisible() {
     return this._triggerVisible;
+  }
+  reSortResultStack(selectedGroup: { card: Card[], index:number, result:Card, key: string}): void {
+    const cardIndex = this.results.findIndex((card) => card?.card_id === selectedGroup.result.card_id);
+    if (cardIndex !== -1) {
+      const card = this.results[cardIndex];
+      this.results.splice(cardIndex, 1);
+      this.results.unshift(card);
+    }
+  }
+  reSizeMap(selectedGroup: { card: Card[], index:number, result:Card, key: string}): void {
+     selectedGroup.card.length > 0 ? this.mapWidthService.setMapFullOpenWidth() : this.mapWidthService.setMapHalfOpenWidth();
   }
 }

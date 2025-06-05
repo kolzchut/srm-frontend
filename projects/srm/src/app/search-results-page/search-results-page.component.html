@@ -17,7 +17,7 @@
     </div>
     <button
         [ngClass]="{ 'drawer-controller':true,'open-drawer':isDrawerOpen && selectedGroup.card.length > 0, 'open-drawer-half': isDrawerOpen && selectedGroup.card.length === 0 }"
-        (click)='toggleDrawer()'
+        (click)='toggleDrawer();'
         aria-label="הצג/הסתר מגירת תוצאות"
     >
         <img alt="חץ שמאלה כחול" src='../../assets/img/chevron-left-blue-1.svg' [ngClass]="{ 'flip':isDrawerOpen }"/>

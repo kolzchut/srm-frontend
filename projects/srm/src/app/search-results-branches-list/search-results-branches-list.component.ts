@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {LayoutService} from "../layout.service";
 import ariaLabel from "../../services/result-stack-utilities/ariaLabelBuilder";
 import stringsBuilder from "../../services/result-stack-utilities/stringsBuilder";
+import {MapWidthService} from "../../services/map-width.service";
 
 
 @Component({
@@ -19,7 +20,7 @@ export class SearchResultsBranchesListComponent {
   @Output() hover = new EventEmitter<Card>();
   layout = { desktop: false };
 
-  constructor( private analytics: AnalyticsService, private router: Router, private route: ActivatedRoute, private layoutService: LayoutService) {}
+  constructor( private analytics: AnalyticsService, private router: Router, private route: ActivatedRoute, private layoutService: LayoutService, private mapWidthService: MapWidthService) {}
   ngOnInit(): void {
     this.layout.desktop = this.layoutService.desktop();
   }
@@ -27,6 +28,7 @@ export class SearchResultsBranchesListComponent {
   protected readonly stringsBuilder = stringsBuilder;
 
   selectedItem(event: Event, card: Card, from: string, extra?: any) {
+    this.mapWidthService.setMapFullViewWidth()
     event.preventDefault();
     let card_ = card;
     if (extra) {
