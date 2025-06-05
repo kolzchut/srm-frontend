@@ -34,7 +34,7 @@
       <div class='trigger' #trigger role="presentation"></div>
     </section>
   } @if(selectedGroup.card.length >0) {
-  <app-search-results-branches-list class="app-search-results-branch-list-main" (close)="removeSelectedGroup()" [searchParams]='searchParams' (hover)='hoverCard.next($event)' [selectedGroup]="selectedGroup"></app-search-results-branches-list>
+  <app-search-results-branches-list class="app-search-results-branch-list-main" (close)="removeSelectedGroup(); reSizeMap(selectedGroup);" [searchParams]='searchParams' (hover)='hoverCard.next($event)' [selectedGroup]="selectedGroup"></app-search-results-branches-list>
   }
 
 </div>
