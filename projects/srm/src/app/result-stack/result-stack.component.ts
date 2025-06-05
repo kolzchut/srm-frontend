@@ -68,13 +68,11 @@ export class ResultStackComponent implements OnInit {
     getFirstBranch(): Card{
     return this.result.collapseHitsByGroups?.[0]?.vals[0]|| this.firstBranch;
   }
+  scrollToTop() {
+    (document.getElementById('topOfSearchResults') as HTMLSpanElement)?.scrollIntoView({ behavior: 'smooth' });
+  }
   clickedBranches(key: string, index: number) {
-    const section = document.querySelector('section');
-    console.log(section)
-    if (section) {
-      section.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
+    this.scrollToTop();
     this.showBranches(key, index);
   }
   showBranches(key: string, index: number) {
