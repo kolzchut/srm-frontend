@@ -17,6 +17,7 @@ import { DOCUMENT } from '@angular/common';
 import { AnalyticsService } from '../analytics.service';
 import { A11yService } from '../a11y.service';
 import { SearchService } from '../search.service';
+import {MapWidthService} from "../../services/map-width.service";
 
 
 type BranchCards = {cards: Card[], hidden: Card[]};
@@ -66,7 +67,7 @@ type AuxParams = {
         //     300, style({ transform: 'translateY(100%)' })
         //   )
         // ])
-      ])      
+      ])
     ])
   ]
 })
@@ -84,9 +85,9 @@ export class CardContainerComponent implements OnInit, OnChanges {
   branchLink: string[] | null = null;
 
   card: Card | null = null;
-  
+
   parametersQueue = new ReplaySubject<AuxParams>(1);
-  
+
   MWM = MapWindowMode;
 
   showQuickActions = false;
@@ -94,13 +95,14 @@ export class CardContainerComponent implements OnInit, OnChanges {
   constructor(private api: ApiService, public location: Location, private router: Router, private route: ActivatedRoute,
               private el: ElementRef, private seo: SeoSocialShareService, public platform: PlatformService,
               private analytics: AnalyticsService, private a11y: A11yService, public searchSvc: SearchService,
-              @Inject(DOCUMENT) private document: Document) {
+              @Inject(DOCUMENT) private document: Document, private mapWidthService: MapWidthService) {
     if (platform.safari) {
       this.showQuickActions = true;
     }
   }
 
   ngOnInit(): void {
+    this.mapWidthService.setMapFullViewWidth()
     this.parametersQueue.pipe(
       untilDestroyed(this),
       tap((p) => {
@@ -117,7 +119,7 @@ export class CardContainerComponent implements OnInit, OnChanges {
         this.card = card;
         console.log('ACTION CARD', this.card?.branch_geometry);
         if (this.card?.branch_geometry) {
-          const geom: [number, number] = this.card.branch_geometry;        
+          const geom: [number, number] = this.card.branch_geometry;
           this.center.emit(geom);
         }
         if (this.card) {
