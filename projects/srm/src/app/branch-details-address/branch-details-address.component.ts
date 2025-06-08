@@ -11,10 +11,11 @@ export class BranchDetailsAddressComponent implements OnInit {
   @Input() card: Card;
 
   @Input() compact = true;
-
+  public addressToDisplay: string;
   constructor() { }
 
   ngOnInit(): void {
+    this.addressToDisplay = this.card?.address_parts?.primary.replace(',', '') || "";
   }
 
 }
