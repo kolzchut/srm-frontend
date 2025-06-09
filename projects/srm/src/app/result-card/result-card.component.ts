@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnChanges, ViewChild} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Card, CARD_SNIPPET_FIELDS, SearchParams, TaxonomyItem, _h} from '../consts';
 import {AnalyticsService} from "../analytics.service";

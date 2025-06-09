@@ -1,5 +1,5 @@
 <ng-container>
-  <a class="single-branch-bookend single-branch-darker-bookend" (mouseover)="hoverCard.next(singleBranch)"
+  <a class="single-branch-bookend" (mouseover)="hoverCard.next(singleBranch)"
      [attr.aria-label]="ariaLabel(singleBranch)"
      (activated)="selectedItem($event, this.org.vals[0] ,'search-result-extras', singleBranch)"
      [href]="'/c/' + singleBranch.card_id" clickOnReturn
@@ -13,7 +13,7 @@
       <span class="single-branch-city">{{ stringsBuilder.branchInfo(singleBranch) }}</span>
     </div>
     <img class="single-branch-gray-left-arrow-img"
-         src="assets/img/grayLeftArrow.svg"
+         src="assets/img/icon-arrow-top-right-gray-4.svg"
          alt="חץ שמאלה"/>
   </a>
 </ng-container>

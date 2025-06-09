@@ -1,7 +1,6 @@
 <div class='title' [class.bold]='bold'>
     <h2 [class.larger]='larger' [class.smaller]='smaller' [class.compact]='compact' [innerHtml]='_h(card, "service_name")'></h2>
 </div>
-<div class='snippet' [innerHtml]='snippet' *ngIf='showSnippet' [class.larger]='larger'></div>
 <ng-container *ngIf='!compact && !stacked'>
   <div class="description-container">
     <span #descRef *ngIf="!showFull" class="description-span show-less-span">
@@ -13,7 +12,7 @@
       </span>
 
       <span *ngIf="isOverflowing" class="extend-text" (click)="onSelectExpendOrMinimizeAndTag($event)">
-        {{ showFull ? 'מזער' : 'הרחב' }}
+        {{ showFull ? 'פחות' : 'עוד' }}
       </span>
     </div>
 </ng-container>

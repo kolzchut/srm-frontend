@@ -11,7 +11,7 @@
   z-index: 100000;
 }
 .desktop-height {
-  height: 100%;
+  height: 86vh
 }
 .search-results-branches-list-close-icon{
   width: 32px;
@@ -23,8 +23,9 @@
 .arrow-top-right-img{
   height: 100%;
 }
-.gray-background{
-  background-color: @color-gray-7;
+.branch-list-card{
+  background: @color-white;
+  border-bottom: 1px solid @color-gray-5;
 }
 .content-div{
   width: 100%;
@@ -41,13 +42,11 @@
   font-family: 'RAG Sans', 'Arial', sans-serif;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  border-radius: 7%;
   overflow-y: auto;
-  .header-div-search-results-branches-list{
+  .header-div-search-results-branches-list {
     display: flex;
     justify-content: space-between;
-    background-color: @color-yellow-4;
+    background-color: @color-white;
     border-bottom: 3px solid @color-gray-5;
     flex-direction: row;
     align-items: center;
@@ -70,9 +69,9 @@
     flex-direction: row;
     align-items: center;
     padding: 12px;
+    border: 1px solid @color-gray-6;
     text-decoration: none;
     color: inherit;
-    border: 1px solid transparent;
     border-radius: 4px;
     transition: background-color 0.3s, border-color 0.3s;
     &:hover {
