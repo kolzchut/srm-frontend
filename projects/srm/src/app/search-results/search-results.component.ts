@@ -22,6 +22,7 @@ import { SearchState } from './search-state';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import {LayoutService} from "../layout.service";
+import {MapWidthService} from "../../services/map-width.service";
 
 
 export type SearchParamsOffset = {
@@ -85,7 +86,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
 
   constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService,
       private seo: SeoSocialShareService, private analytics: AnalyticsService,
-      private route: ActivatedRoute, private router: Router, private layoutService: LayoutService) {
+      private route: ActivatedRoute, private router: Router, private layoutService: LayoutService, private mapWidthService: MapWidthService) {
   }
 
   ngOnInit(): void {
@@ -281,5 +282,8 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       this.results.splice(cardIndex, 1);
       this.results.unshift(card);
     }
+  }
+  reSizeMap(selectedGroup: { card: Card[], index:number, result:Card, key: string}): void {
+     selectedGroup.card.length > 0 ? this.mapWidthService.setMapFullOpenWidth() : this.mapWidthService.setMapHalfOpenWidth();
   }
 }

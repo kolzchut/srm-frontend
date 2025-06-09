@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import { Card, SearchParams } from '../consts';
 import { LayoutService } from '../layout.service';
 import { PlatformService } from '../platform.service';
 import {groupArrayByFeature, mapToArray} from "../../services/arrays";
 import {ActivatedRoute, Router} from "@angular/router";
 import ariaLabel from "../../services/result-stack-utilities/ariaLabelBuilder";
-import StringsBuilder from "../../services/result-stack-utilities/stringsBuilder";
 import stringsBuilder from "../../services/result-stack-utilities/stringsBuilder";
+import {MapWidthService} from "../../services/map-width.service";
 import {AnalyticsService} from "../analytics.service";
 
 @Component({
@@ -14,7 +14,7 @@ import {AnalyticsService} from "../analytics.service";
   templateUrl: './result-stack.component.html',
   styleUrls: ['./result-stack.component.less'],
 })
-export class ResultStackComponent implements OnInit {
+export class ResultStackComponent implements OnInit, OnDestroy {
   @Output() selectedGroupChange = new EventEmitter<{ card: Card[], index:number, result:Card, key: string }>();
   @Input () selectedGroup: { card: Card[], index:number, result:Card, key: string };
   @Input() result: Card;
@@ -25,7 +25,7 @@ export class ResultStackComponent implements OnInit {
   showCount = -1;
   isSingleBranch = false;
   firstBranch = {card_id: ""} as Card;
-  constructor(public layout: LayoutService, public platform: PlatformService, private router: Router,private route: ActivatedRoute,private analyticsService: AnalyticsService) { }
+  constructor(public layout: LayoutService, public platform: PlatformService, private router: Router,private route: ActivatedRoute,private analyticsService: AnalyticsService, private mapWidthService: MapWidthService) { }
 
   ngOnInit(): void {
 
@@ -93,6 +93,7 @@ export class ResultStackComponent implements OnInit {
     return this.result.collapseHitsByGroups?.length || 0;
   }
   selectedItem(event: Event, card: Card, from: string, extra?: any) {
+    this.mapWidthService.setMapFullViewWidth()
     event.preventDefault();
     let card_ = card;
     if (extra) {
@@ -108,5 +109,7 @@ export class ResultStackComponent implements OnInit {
   }
 
   protected readonly ariaLabel = ariaLabel;
-  protected readonly stringsBuilder = StringsBuilder;
+  ngOnDestroy(): void {
+    this.mapWidthService.setMapFullViewWidth()
+  }
 }

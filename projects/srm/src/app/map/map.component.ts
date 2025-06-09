@@ -1,21 +1,45 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
-import { MapboxService } from '../mapbox.service';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChange,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
+import {MapboxService} from '../mapbox.service';
 
-import { from, Observable, ReplaySubject, Subject, timer } from 'rxjs';
-import { throttleTime, filter, distinctUntilChanged, switchMap, debounceTime, first, delay, tap, map } from 'rxjs/operators';
-import { ALL_CATEGORIES, CATEGORY_COLORS } from '../colors';
-import { Card, Point as SRMPoint, SearchParams } from '../consts';
-import { environment } from '../../environments/environment';
-import { PlatformService } from '../platform.service';
-import { LayoutService } from '../layout.service';
+import {from, Observable, ReplaySubject, Subject, timer} from 'rxjs';
+import {
+  throttleTime,
+  filter,
+  distinctUntilChanged,
+  switchMap,
+  debounceTime,
+  first,
+  delay,
+  tap,
+  map
+} from 'rxjs/operators';
+import {ALL_CATEGORIES, CATEGORY_COLORS} from '../colors';
+import {Card, Point as SRMPoint, SearchParams} from '../consts';
+import {environment} from '../../environments/environment';
+import {PlatformService} from '../platform.service';
+import {LayoutService} from '../layout.service';
 
 import * as mapboxgl from 'mapbox-gl';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ApiService } from '../api.service';
-import { Router } from '@angular/router';
-import { getPointCards, PointCards } from '../branch-container/branch-card-utils';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { AnalyticsService } from '../analytics.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {ApiService} from '../api.service';
+import {Router} from '@angular/router';
+import {getPointCards, PointCards} from '../branch-container/branch-card-utils';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {AnalyticsService} from '../analytics.service';
+import {MapWidthService} from "../../services/map-width.service";
 // declare var mapboxgl: any;
 
 export type CenterZoomType = [number, number, number];
@@ -114,7 +138,8 @@ BASE_FILTERS[LAYER_CLUSTERS_INACCURATE_ON] = ['>', ['get', 'branch_count'], ['nu
   styleUrls: ['./map.component.less']
 })
 export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
-
+  @ViewChild('mapContainer', {static: false}) mapContainer: ElementRef;
+  private resizeObserver: ResizeObserver;
   STYLE = environment.mapStyle;
 
   @Input() searchParams: SearchParams | null;
@@ -126,14 +151,14 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Output('map') newMap = new EventEmitter<MapComponent | null>();
   @Output('mapBounds') mapBounds = new EventEmitter<number[][]>();
   @Output('focusOn') focusOn = new EventEmitter<FocusOnRequest>();
-  
+
   @ViewChild('map') mapEl: ElementRef;
   @ViewChild('stablePopup') stablePopupEl: ElementRef;
   @ViewChild('hoverPopup') hoverPopupEl: ElementRef;
 
   ready = new ReplaySubject<boolean>(1);
   map: mapboxgl.Map;
-  addedImages: {[key: string]: boolean} = {};
+  addedImages: { [key: string]: boolean } = {};
 
   moveQueue: MoveQueueItem[] = [];
   geoChanges = new Subject<GeoType>();
@@ -142,7 +167,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
   lastProps: any = {};
 
   ZOOM_THRESHOLD = 10;
-  ALL_CATEGORIES = ALL_CATEGORIES; 
+  ALL_CATEGORIES = ALL_CATEGORIES;
   savedChanges: SimpleChanges = {};
   pointIdsFilter: any[] = [];
   activePointFilter: any[] = [];
@@ -157,16 +182,17 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
 
   mapImgCopy: SafeResourceUrl | null = null;
   mapImgCopyQueue = new Subject<void>();
-  
-  constructor(private mapboxService: MapboxService, 
+
+  constructor(private mapboxService: MapboxService,
               private api: ApiService,
               private platform: PlatformService,
               private layout: LayoutService,
               private router: Router,
               private sanitizer: DomSanitizer,
-              private analytics: AnalyticsService
+              private analytics: AnalyticsService,
+              public mapWidth: MapWidthService
   ) {
-      
+
   }
 
   getTitle(card: Card, branch_count: number) {
@@ -217,7 +243,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
             branch_count: branchIds.length,
             branch_location_accurate: cards[0].branch_location_accurate,
             coordinates: cards[0].branch_geometry
-          });  
+          });
         }
       });
     } else if ((this.changed(changes, 'cardId') || this.changed(changes, 'pointId')) && !this.pointId?.length && this.cardId?.length) {
@@ -233,7 +259,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
           //         if (branchIds.indexOf(card.branch_id) === -1) {
           //           branchIds.push(card.branch_id);
           //         }
-          //       });      
+          //       });
           //       return {card, service_count: branchIds.length};
           //     })
           //   );
@@ -269,11 +295,27 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
         this.initialize();
       });
     });
+    if (this.mapContainer) {
+      this.resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const newWidth = entry.contentRect.width;
+          this.reSizeMap(newWidth)
+        }
+      });
+      this.resizeObserver.observe(this.mapContainer.nativeElement);
+    }
   }
 
   ngOnDestroy(): void {
-      console.log('DESTROY MAP');
-      this.newMap.emit(null);
+    console.log('DESTROY MAP');
+    this.newMap.emit(null);
+    if (this.resizeObserver) this.resizeObserver.disconnect();
+  }
+
+  reSizeMap(newWidth: number) {
+    setTimeout(() => {
+      this.updateBounds();
+    }, 0);
   }
 
   initialize() {
@@ -308,7 +350,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
           }
           this.addedImages[id] = true;
           this.map.addImage(id, {width: 0, height: 0, data: new Uint8Array()});
-          const toAdd: {img: HTMLImageElement | null, options: any} = this.createLabelBg(id);
+          const toAdd: { img: HTMLImageElement | null, options: any } = this.createLabelBg(id);
           if (toAdd.img !== null) {
             toAdd.img.onload = () => {
               this.map.setLayoutProperty(LAYER_LABELS_ACTIVE, 'visibility', 'none');
@@ -396,10 +438,10 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
                   }
                   if (!dontRoute) {
                     route[0] = '/' + route[0];
-                    this.router.navigate(route, {queryParamsHandling: 'merge', queryParams});  
+                    this.router.navigate(route, {queryParamsHandling: 'merge', queryParams});
                   }
                 });
-                  // this.points.next(props as SRMPoint);
+                // this.points.next(props as SRMPoint);
               }
               e.preventDefault();
             });
@@ -427,7 +469,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
             //   this.map.getCanvas().style.cursor = '';
             // });
           });
-          this.map.getStyle().layers?.filter((l) => LAYER_POINTS_STROKE_ON.indexOf(l.id) >= 0).forEach((layer: mapboxgl.Layer) => { 
+          this.map.getStyle().layers?.filter((l) => LAYER_POINTS_STROKE_ON.indexOf(l.id) >= 0).forEach((layer: mapboxgl.Layer) => {
             const layerName = layer.id;
             this.map.on('mousemove', layerName, (e) => {
               const features = e.features || [];
@@ -438,7 +480,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
                       source: this.hoveredPoint.source,
                       id: this.hoveredPoint.id
                     },
-                    { hover: false }
+                    {hover: false}
                   );
                 }
                 this.hoveredPoint = features[0];
@@ -447,7 +489,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
                     source: this.hoveredPoint.source,
                     id: this.hoveredPoint.id
                   },
-                  { hover: true }
+                  {hover: true}
                 );
               }
             });
@@ -458,15 +500,15 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
                     source: this.hoveredPoint.source,
                     id: this.hoveredPoint.id
                   },
-                  { hover: false }
+                  {hover: false}
                 );
               }
               this.hoveredPoint = null;
             });
 
           });
-          this.mapEl.nativeElement.querySelectorAll('a, button').forEach(function(item: HTMLElement) { 
-            item.setAttribute('tabindex', '-1'); 
+          this.mapEl.nativeElement.querySelectorAll('a, button').forEach(function (item: HTMLElement) {
+            item.setAttribute('tabindex', '-1');
           });
           this.map.on('mousemove', (e: mapboxgl.MapLayerMouseEvent) => {
             if (e.defaultPrevented || this.layout.mobile()) {
@@ -606,7 +648,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
       }
     }
   }
-  
+
   updateBounds() {
     this.bounds = this.map.getBounds();
     this.mapBounds.next([
@@ -626,12 +668,12 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
       const {action, description} = this.moveQueue.shift() as MoveQueueItem;
       if (!!action) {
         console.log('ACTION-QQ', description);
-        action(this.map);  
+        action(this.map);
       }
     }
   }
 
-  setStagingLayerSource(map: mapboxgl.Map, layerId: string, accurate=true) {
+  setStagingLayerSource(map: mapboxgl.Map, layerId: string, accurate = true) {
     const oldLayers = map.getStyle().layers || [];
     const layerIndex = oldLayers.findIndex(l => l.id === layerId);
     const layerDef: any = oldLayers[layerIndex];
@@ -731,7 +773,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
     }
   }
 
-  createLabelBg(id: string): {img: HTMLImageElement | null, options: any} {
+  createLabelBg(id: string): { img: HTMLImageElement | null, options: any } {
     let src: string | null = null;
     let img: any = null;
     let options: any = {};
@@ -771,7 +813,7 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   applyFilters() {
-    this.ready.pipe(first()).subscribe(() => {      
+    this.ready.pipe(first()).subscribe(() => {
       const filters: any[] = [];
       if (this.activePointFilter && this.activePointFilter.length) {
         filters.push(this.activePointFilter);
@@ -921,8 +963,8 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
           this.hoverPopupProps = props;
         }),
         delay(10)
-      );  
-    }    
+      );
+    }
     obs?.subscribe(({props, stable}) => {
       const el = (stable ? this.stablePopupEl : this.hoverPopupEl)?.nativeElement as HTMLElement;
       let popup: mapboxgl.Popup | null = null;
@@ -943,13 +985,13 @@ export class MapComponent implements OnChanges, AfterViewInit, OnDestroy {
         if (this.stablePopup) {
           this.stablePopup.remove();
         }
-        this.stablePopup = popup;        
+        this.stablePopup = popup;
       } else {
         if (this.hoverPopup) {
           this.hoverPopup.remove();
         }
         this.hoverPopup = popup;
-      }    
+      }
     });
   }
 }
