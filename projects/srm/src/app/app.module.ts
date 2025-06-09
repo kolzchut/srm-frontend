@@ -84,6 +84,7 @@ import { SrpAreaSearchButtonsComponent } from './search-results-page/srp-area-se
 import { SearchResultsBranchesListComponent } from './search-results-branches-list/search-results-branches-list.component';
 import {NgOptimizedImage} from "@angular/common";
 import { SingleBranchComponent } from './single-branch/single-branch.component';
+import { MapWidthService} from "../services/map-width.service";
 
 @NgModule({
   declarations: [
@@ -189,6 +190,7 @@ import { SingleBranchComponent } from './single-branch/single-branch.component';
       deps: [Sentry.TraceService],
       multi: true,
     },
+    MapWidthService,
   ],
   bootstrap: [AppComponent]
 })
