@@ -7,6 +7,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import ariaLabel from "../../services/result-stack-utilities/ariaLabelBuilder";
 import StringsBuilder from "../../services/result-stack-utilities/stringsBuilder";
 import stringsBuilder from "../../services/result-stack-utilities/stringsBuilder";
+import {AnalyticsService} from "../analytics.service";
 
 @Component({
   selector: 'app-result-stack',
@@ -24,7 +25,7 @@ export class ResultStackComponent implements OnInit {
   showCount = -1;
   isSingleBranch = false;
   firstBranch = {card_id: ""} as Card;
-  constructor(public layout: LayoutService, public platform: PlatformService, private router: Router,private route: ActivatedRoute) { }
+  constructor(public layout: LayoutService, public platform: PlatformService, private router: Router,private route: ActivatedRoute,private analyticsService: AnalyticsService) { }
 
   ngOnInit(): void {
 
@@ -72,6 +73,7 @@ export class ResultStackComponent implements OnInit {
      const group = this.result.collapseHitsByGroups?.find(group => group.key === key)
     if(!group) return;
     if(this.selectedGroup.index == index && this.selectedGroup.key == key) return this.selectedGroupChange.emit({card:[], index:0,result: {} as Card, key:''});
+    this.analyticsService.openBranchesEvent(this.selectedGroup.result.card_id)
     this.selectedGroupChange.emit({card:group.vals, index,result:this.result, key});
   }
   checkIfSingleBranchByResult(result: Card): boolean {
