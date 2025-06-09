@@ -7,6 +7,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import ariaLabel from "../../services/result-stack-utilities/ariaLabelBuilder";
 import stringsBuilder from "../../services/result-stack-utilities/stringsBuilder";
 import {MapWidthService} from "../../services/map-width.service";
+import {AnalyticsService} from "../analytics.service";
 
 @Component({
   selector: 'app-result-stack',
@@ -24,7 +25,7 @@ export class ResultStackComponent implements OnInit, OnDestroy {
   showCount = -1;
   isSingleBranch = false;
   firstBranch = {card_id: ""} as Card;
-  constructor(public layout: LayoutService, public platform: PlatformService, private router: Router,private route: ActivatedRoute, private mapWidthService: MapWidthService) { }
+  constructor(public layout: LayoutService, public platform: PlatformService, private router: Router,private route: ActivatedRoute,private analyticsService: AnalyticsService, private mapWidthService: MapWidthService) { }
 
   ngOnInit(): void {
 
@@ -68,19 +69,18 @@ export class ResultStackComponent implements OnInit, OnDestroy {
     getFirstBranch(): Card{
     return this.result.collapseHitsByGroups?.[0]?.vals[0]|| this.firstBranch;
   }
+  scrollToTop() {
+    (document.getElementById('topOfSearchResults') as HTMLSpanElement)?.scrollIntoView({ behavior: 'smooth' });
+  }
   clickedBranches(key: string, index: number) {
-    const section = document.querySelector('section');
-    console.log(section)
-    if (section) {
-      section.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
+    this.scrollToTop();
     this.showBranches(key, index);
   }
   showBranches(key: string, index: number) {
      const group = this.result.collapseHitsByGroups?.find(group => group.key === key)
     if(!group) return;
     if(this.selectedGroup.index == index && this.selectedGroup.key == key) return this.selectedGroupChange.emit({card:[], index:0,result: {} as Card, key:''});
+    this.analyticsService.openBranchesEvent(this.selectedGroup.result.card_id)
     this.selectedGroupChange.emit({card:group.vals, index,result:this.result, key});
   }
   checkIfSingleBranchByResult(result: Card): boolean {

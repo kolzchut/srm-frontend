@@ -1,6 +1,7 @@
-import {AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Card, CARD_SNIPPET_FIELDS, SearchParams, TaxonomyItem, _h } from '../consts';
+import {AfterViewInit, Component, ElementRef, Input, OnChanges, ViewChild} from '@angular/core';
+import {DomSanitizer} from '@angular/platform-browser';
+import {Card, CARD_SNIPPET_FIELDS, SearchParams, TaxonomyItem, _h} from '../consts';
+import {AnalyticsService} from "../analytics.service";
 
 // MODES:
 // - Branch services (desktop & mobile):
@@ -28,11 +29,11 @@ import { Card, CARD_SNIPPET_FIELDS, SearchParams, TaxonomyItem, _h } from '../co
   templateUrl: './result-card.component.html',
   styleUrls: ['./result-card.component.less'],
   host: {
-    '[class.compact]' : 'compact',
-    '[class.smaller]' : 'smaller',
-    '[class.larger]' : 'larger',
-    '[class.padded]' : 'padded',
-    '[class.stacked]' : 'stacked',
+    '[class.compact]': 'compact',
+    '[class.smaller]': 'smaller',
+    '[class.larger]': 'larger',
+    '[class.padded]': 'padded',
+    '[class.stacked]': 'stacked',
   }
 })
 export class ResultCardComponent implements OnChanges, AfterViewInit {
@@ -67,7 +68,8 @@ export class ResultCardComponent implements OnChanges, AfterViewInit {
     });
   }
 
-  constructor(private sanitizer: DomSanitizer) { }
+  constructor(private sanitizer: DomSanitizer, private analyticsService: AnalyticsService) {
+  }
 
   ngOnChanges(): void {
     this.snippet = null;
@@ -138,8 +140,8 @@ export class ResultCardComponent implements OnChanges, AfterViewInit {
         r.category = r.id?.split(':')[1];
       });
       const requiredCategory = this.searchParams?.filter_response_categories?.length === 1 ?
-          this.searchParams.filter_response_categories[0].slice('human_services:'.length) :
-          this.card.response_category;
+        this.searchParams.filter_response_categories[0].slice('human_services:'.length) :
+        this.card.response_category;
       if ((this.selectedResponses.length > 0 && requiredCategory !== this.selectedResponses[0].category) || this.selectedResponses.length === 0) {
         for (const r of cardResponses) {
           if (r.category === requiredCategory) {
@@ -193,10 +195,15 @@ export class ResultCardComponent implements OnChanges, AfterViewInit {
       });
     }
   }
-  onSelectExpendOrMinimize($event: MouseEvent) {
+
+  get showSnippet() {
+    return this.snippet && !this.compact && !this.stacked;
+  }
+
+  onSelectExpendOrMinimizeAndTag($event: MouseEvent) {
     $event.stopPropagation();
     $event.preventDefault();
+    this.showFull ?  this.analyticsService.shrinkRDescriptionEvent(this.card.card_id) : this.analyticsService.extendDescriptionEvent(this.card.card_id);
     this.showFull = !this.showFull;
-
   }
 }
