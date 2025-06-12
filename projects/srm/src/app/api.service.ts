@@ -50,7 +50,7 @@ export class ApiService {
         this.waiting[key].next(val);
         this.waiting[key].complete();
       }),
-      delay(this.platform.server() ? 0 : 5000),
+      delay(this.platform.server() ? 0 : 5000),      
     ).subscribe(() => {
       delete this.waiting[key];
     });
@@ -68,7 +68,7 @@ export class ApiService {
     if (!options.no_highlight) {
       params.highlight = 'service_name,service_name.hebrew,organization_name,organization_short_name,branch_operating_unit,situations.name.hebrew,responses.name.hebrew';
       params.snippets = CARD_SNIPPET_FIELDS.join(',');
-    }
+    }  
     if (!options.no_minscore) {
       params.minscore = this.MIN_SCORE;
     }
@@ -76,7 +76,7 @@ export class ApiService {
 
   _filter(searchParams?: SearchParams | null, bound=true): any | null {
     let filter: any | null = null;
-    if (searchParams && (searchParams.response || searchParams.situation || searchParams.filter_responses ||
+    if (searchParams && (searchParams.response || searchParams.situation || searchParams.filter_responses || 
         SITUATION_FILTERS.some(f => (searchParams as any)['filter_' + f]) || searchParams.filter_response_categories ||
         searchParams.org_id
       )) {
@@ -154,8 +154,8 @@ export class ApiService {
     ).pipe(
       map((presets) => presets.filter((r: Preset) => r.example))
     );
-  }
-
+  }  
+  
   getEmergencies(): Observable<Preset[]> {
     const params = {size: 99, order: 'score'};
     return this.innerCache(
@@ -260,7 +260,7 @@ export class ApiService {
     const filter = this._filter(searchParams);
     if (filter) {
       filters.push(filter);
-    }
+    }  
     const filter2 = this._filter(searchParams, false);
     if (filter2) {
       filter2.national_service = true;
@@ -269,9 +269,6 @@ export class ApiService {
     params.filter = JSON.stringify(filters);
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
-        console.log('Ariel = search params - get Cards', searchParams)
-        console.log('Ariel - get Cards', res)
-
         const qcr = res as QueryCardResult;
         // if (qcr.collapse_key) {
         //   this.collapseCount = {};
@@ -333,7 +330,7 @@ export class ApiService {
             }
             return null;
           }),
-        );
+        );    
       }),
       switchMap((suggestion) => {
         if (suggestion) {
@@ -385,7 +382,7 @@ export class ApiService {
       })
     );
   }
-
+  
   getCounts(searchParams: SearchParams, withBounds=false): Observable<QueryCardResult> {
     const params: any = {
       size: 2,
@@ -609,13 +606,13 @@ export class ApiService {
 
   getAllPoints(searchParams: SearchParams): Observable<any> {
     const params: any = {
-      size: 30,
+      size: 1,
     };
     if (searchParams.query) {
       params.q = searchParams.query;
       this.fullTextParams(params, {no_highlight: true});
     }
-    params.extra = 'point-ids-extended|collapse';
+    params.extra = 'point-ids-extended';
     const filter = this._filter(searchParams, false) || {};
     if (filter) {
       params.filter = JSON.stringify(filter);
@@ -634,8 +631,6 @@ export class ApiService {
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         const results = res as QueryCardResult;
-        console.log('Ariel = search params - get all points', searchParams)
-        console.log('Ariel -results', res)
         const allPoints = results.point_id.map((r: any) => {
           return {
             point_id: r.key,
@@ -645,7 +640,6 @@ export class ApiService {
             branch_count: r.branch_id?.buckets.length || 1,
           };
         }).filter((r: any) => r.point_id !== 'national_service');
-        console.log('Ariel - all points', allPoints);
         return {
           inaccurate: allPoints.filter((p: any) => !p.branch_location_accurate),
           accurate: allPoints.filter((p: any) => !!p.branch_location_accurate),
