@@ -10,11 +10,11 @@
   <ng-container>
   @for (org of result.collapseHitsByGroups || []; track org.key; let i = $index) {
     <ng-container *ngIf="org.vals.length > 1 &&   i < showCount">
-    <a class="bookend" [ngClass]="{'selected-branch-mark':  index == 1 && org.key == selectedGroup.key}" (click)="clickedBranches(org.key, index)"
+    <a class="bookend" [ngClass]="{'selected-branch-mark':  index ==  selectedGroup.index && org.key == selectedGroup.key}" (click)="clickedBranches(org.key, index)"
        style="display: flex;">
       <span class='org' [innerHTML]='org.key'></span>
       <span class='more-branches'
-            [ngClass]="{'underline': index == 1 && org.key == selectedGroup.key}"> {{ org.vals.length + ' סניפים' }}</span>
+            [ngClass]="{'underline': index == selectedGroup.index && org.key == selectedGroup.key}"> {{ org.vals.length + ' סניפים' }}</span>
       <img class="grayLeftArrowImg"
            [src]="index == 1 && org.key == selectedGroup.key ?  'assets/img/blackLeftArrow.svg' : 'assets/img/grayLeftArrow.svg'"
            alt="חץ שמאלה"/> </a>

@@ -1,9 +1,12 @@
-<section [ngClass]="{'search-result-desktop': layout.desktop, 'search-result-mobile': !layout.desktop, 'desktop-height' : layout.desktop}" class="main-div-search-results-branches-list">
+<section [ngClass]="{'search-result-desktop': layout.desktop, 'search-result-mobile': !layout.desktop, 'desktop-height' : layout.desktop}"
+         [ngStyle]="{top: (branchListTopOffset - 8)+ 'px'}" class="main-div-search-results-branches-list"> <!--  branchListTopOffset -8 px due 8 pixels of paddingTop in result stack-->
   <div class="header-div-search-results-branches-list">
     <h3>{{selectedGroup.key}}</h3>
-  <div class='search-results-branches-list-close-icon' (click)="close.emit()" aria-label="חזרה לבחירת ארגונים"><img alt="close" src="../../assets/img/icon-close-black.svg"></div>
+    <div class='search-results-branches-list-close-icon' (click)="close.emit()" aria-label="חזרה לבחירת ארגונים">
+      <img alt="close" src="../../assets/img/icon-close-black.svg">
+    </div>
   </div>
-
+  <div class="list-of-branches">
   <a *ngFor="let branch of selectedGroup.card; trackBy: trackByCardId"
      (mouseover)="hover.next(branch)"
      [attr.aria-label]="ariaLabel(branch)"
@@ -21,4 +24,5 @@
     </div>
     <img class="arrow-top-right-img" alt="arrow top right" src="../../assets/img/icon-arrow-top-right-gray-4.svg">
   </a>
+  </div>
 </section>

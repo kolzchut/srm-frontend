@@ -16,6 +16,7 @@ import {MapWidthService} from "../../services/map-width.service";
 export class SearchResultsBranchesListComponent {
   @Input() selectedGroup: { card: Card[], index:number,result: Card, key: string };
   @Input() searchParams: SearchParams;
+  @Input() branchListTopOffset = 0;
   @Output() close = new EventEmitter<void>();
   @Output() hover = new EventEmitter<Card>();
   layout = { desktop: false };
