@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ApiService } from '../api.service';
-import { HomepageEntry, Preset, TaxonomyItem, prepareQuery } from '../consts';
+import { HomepageEntry } from '../consts';
 import { PlatformService } from '../platform.service';
 import { SearchConfig } from '../search/search-config';
 import { Router } from '@angular/router';
@@ -9,7 +9,8 @@ import { fromEvent, timer } from 'rxjs';
 import { LayoutService } from '../layout.service';
 import { SearchService } from '../search.service';
 import { AnalyticsService } from '../analytics.service';
-
+// @ts-ignore
+import homepage from '../../configurations/homepage.json';
 @UntilDestroy()
 @Component({
   selector: 'app-homepage',
@@ -33,11 +34,10 @@ export class HomepageComponent implements AfterViewInit{
   @ViewChild('homepageGroups') homepageGroups: ElementRef;
   searchVisibleObserver: IntersectionObserver;
   searchVisible = true;
-  
+
   constructor(private api: ApiService, private platform: PlatformService, private router: Router, private layout: LayoutService, private searchSvc: SearchService, private analytics: AnalyticsService) {
     this.searchConfig = new SearchConfig(this, this.router, this.api, this.platform, () => {});
     this.searchConfig.autoFocus = false;
-    api.getHomepage().subscribe((homepage) => {
       const groups: any = [];
       homepage.forEach((entry: HomepageEntry) => {
         if (!entry.title && !groups[entry.group]) {
@@ -52,7 +52,6 @@ export class HomepageComponent implements AfterViewInit{
         }
       });
       this.resizeGroupItems();
-    });
   }
 
   ngAfterViewInit(): void {
@@ -113,7 +112,7 @@ export class HomepageComponent implements AfterViewInit{
     } else {
       this.analytics.interactionEvent('homepage-searchbar', 'homepage');
       this.searchSvc.search(query);
-    }  
+    }
   }
 
   keydown(event: KeyboardEvent) {
