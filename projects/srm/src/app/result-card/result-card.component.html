@@ -1,7 +1,7 @@
 <div class='title' [class.bold]='bold'>
     <h2 [class.larger]='larger' [class.smaller]='smaller' [class.compact]='compact'>
       {{card.service_name}}
-      <img class="service-name-img" *ngIf="isEmergency" alt="emergency icon" src="../../assets/img/emergency-icon.png"/>
+      <img class="service-name-img" *ngIf="isEmergency" alt="emergency icon" src="../../assets/img/emergency-icon.svg"/>
     </h2>
 </div>
 <ng-container *ngIf='!compact && !stacked'>

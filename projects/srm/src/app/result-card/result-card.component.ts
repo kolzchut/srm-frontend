@@ -68,10 +68,11 @@ export class ResultCardComponent implements OnChanges, AfterViewInit {
         this.isOverflowing = el.scrollHeight > maxHeight;
       }
     });
-    this.selectedResponses.forEach((response: TaxonomyItem) => {
-      if (isEmergency(response.id || "")) this.isEmergency = true;
+    this.card.responses.forEach((response: TaxonomyItem) => {
+      if (isEmergency(response.id || "")) {
+        this.isEmergency = true;
+      }
     })
-    console.log('Ariel- isEmergency',this.isEmergency);
   }
 
   constructor(private sanitizer: DomSanitizer, private analyticsService: AnalyticsService) {
