@@ -1,4 +1,4 @@
-<div class="main-div-search-results">
+<div class="main-div-search-results" [ngClass]="{'search-result-mobile': !layout.desktop}">
   <span id="topOfSearchResults"></span>
   @if (selectedGroup.card.length < 1 || layout.desktop) {
     <section class="div-search-results" [ngClass]="{'half-width' : selectedGroup.card.length != 0, 'seventy-five-percent-width' : selectedGroup.card.length == 0}">

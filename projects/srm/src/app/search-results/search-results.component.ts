@@ -42,6 +42,7 @@ export type SearchParamsOffset = {
     '[attr.aria-busy]': 'loading ? "true" : "false"',
     'aria-label': 'רשימת תוצאות החיפוש, כוללת את המידע על כלל הנקודות המופיעות על גבי המפה',
     'ngSkipHydration': 'true',
+    '[style.padding]': '!layout.desktop ? "0" : null',
   }
 })
 export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit {
