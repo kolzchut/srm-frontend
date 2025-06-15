@@ -11,6 +11,7 @@ import { SearchService } from '../search.service';
 import { AnalyticsService } from '../analytics.service';
 // @ts-ignore
 import homepage from '../../configurations/homepage.json';
+import {group} from "@angular/animations";
 @UntilDestroy()
 @Component({
   selector: 'app-homepage',
@@ -27,6 +28,7 @@ export class HomepageComponent implements AfterViewInit{
     title: string,
     query: string,
     group_link: string,
+    isEmergency: boolean,
     items: HomepageEntry[]
   }[] = [];
 
@@ -43,7 +45,7 @@ export class HomepageComponent implements AfterViewInit{
         if (!entry.title && !groups[entry.group]) {
           const entries: HomepageEntry[] = [];
           groups[entry.group] = entries;
-          this.groups.push({ title: entry.group, query: entry.query, group_link: entry.group_link, items: entries});
+          this.groups.push({ title: entry.group, query: entry.query, group_link: entry.group_link, items: entries, isEmergency: entry.isEmergency });
         }
       });
       homepage.forEach((entry: HomepageEntry) => {
@@ -52,6 +54,7 @@ export class HomepageComponent implements AfterViewInit{
         }
       });
       this.resizeGroupItems();
+      console.log('Ariel - Homepage groups:', this.groups);
   }
 
   ngAfterViewInit(): void {
@@ -120,4 +123,6 @@ export class HomepageComponent implements AfterViewInit{
       this.updateFocus(false);
     }
   }
+
+  protected readonly group = group;
 }

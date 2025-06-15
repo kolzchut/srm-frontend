@@ -6,7 +6,8 @@
     "response_id": "human_services:legal:advocacy_legal_aid:understand_government_programs",
     "score": 0,
     "situation_id": null,
-    "title": null
+    "title": null,
+    "isEmergency": true
   },
   {
     "group": "מיצוי זכויות",
@@ -15,7 +16,8 @@
     "response_id": "human_services:legal:advocacy_legal_aid:understand_government_programs",
     "score": 1,
     "situation_id": "human_situations:health",
-    "title": "חולים"
+    "title": "חולים",
+    "isEmergency":false
   },
   {
     "group": "מיצוי זכויות",
@@ -24,7 +26,8 @@
     "response_id": "human_services:legal:advocacy_legal_aid:understand_government_programs",
     "score": 2,
     "situation_id": "human_situations:deprivation:low_income",
-    "title": "הכנסה נמוכה וקשיים כלכליים "
+    "title": "הכנסה נמוכה וקשיים כלכליים ",
+    "isEmergency": false
   },
   {
     "group": "מיצוי זכויות",
@@ -33,7 +36,8 @@
     "response_id": "human_services:legal:advocacy_legal_aid:understand_government_programs",
     "score": 3,
     "situation_id": "human_situations:survivors:victims_of_terror",
-    "title": "נפגעי פעולות איבה"
+    "title": "נפגעי פעולות איבה",
+    "isEmergency": false
   },
   {
     "group": "סיוע משפטי",
@@ -42,7 +46,8 @@
     "response_id": "human_services:legal:advocacy_legal_aid",
     "score": 4,
     "situation_id": null,
-    "title": null
+    "title": null,
+    "isEmergency": false
   },
   {
     "group": "סיוע משפטי",
@@ -51,7 +56,8 @@
     "response_id": "human_services:legal:advocacy_legal_aid",
     "score": 5,
     "situation_id": "human_situations:survivors:families_of_missing_persons",
-    "title": "משפחות של נעדרים"
+    "title": "משפחות של נעדרים",
+    "isEmergency": false
   },
   {
     "group": "סיוע משפטי",
@@ -60,7 +66,8 @@
     "response_id": "human_services:legal:advocacy_legal_aid",
     "score": 6,
     "situation_id": "human_situations:survivors:victims_of_terror",
-    "title": "נפגעי פעולות איבה"
+    "title": "נפגעי פעולות איבה",
+    "isEmergency": false
   },
   {
     "group": "מלחמת חרבות ברזל",
@@ -69,7 +76,8 @@
     "response_id": "human_services:internal_emergency_services",
     "score": 7,
     "situation_id": null,
-    "title": null
+    "title": null,
+    "isEmergency": false
   },
   {
     "group": "מלחמת חרבות ברזל",
@@ -78,7 +86,8 @@
     "response_id": "human_services:internal_emergency_services",
     "score": 8,
     "situation_id": "human_situations:survivors:evacuees",
-    "title": "מפונים"
+    "title": "מפונים",
+    "isEmergency": false
   },
   {
     "group": "מלחמת חרבות ברזל",
@@ -87,7 +96,8 @@
     "response_id": "human_services:internal_emergency_services",
     "score": 9,
     "situation_id": "human_situations:armed_forces:bereaved_families",
-    "title": "משפחות שכולות"
+    "title": "משפחות שכולות",
+    "isEmergency": false
   },
   {
     "group": "מלחמת חרבות ברזל",
@@ -96,7 +106,8 @@
     "response_id": "human_services:internal_emergency_services",
     "score": 10,
     "situation_id": "human_situations:armed_forces",
-    "title": "אנשי צבא וביטחון"
+    "title": "אנשי צבא וביטחון",
+    "isEmergency": false
   },
   {
     "group": "מלחמת חרבות ברזל",
@@ -105,7 +116,8 @@
     "response_id": "human_services:emergency:emergency_mental_assistance",
     "score": 11,
     "situation_id": null,
-    "title": "סיוע נפשי"
+    "title": "סיוע נפשי",
+    "isEmergency": false
   },
   {
     "group": "מלחמת חרבות ברזל",
@@ -114,7 +126,8 @@
     "response_id": "human_services:emergency:financial_aid_in_emergencies",
     "score": 12,
     "situation_id": null,
-    "title": "סיוע כלכלי"
+    "title": "סיוע כלכלי",
+    "isEmergency": false
   },
   {
     "group": "דיור",
@@ -123,7 +136,8 @@
     "response_id": "human_services:housing",
     "score": 13,
     "situation_id": null,
-    "title": null
+    "title": null,
+    "isEmergency": false
   },
   {
     "group": "דיור",
@@ -132,7 +146,8 @@
     "response_id": "human_services:housing",
     "score": 14,
     "situation_id": "human_situations:survivors:violence_survivors:domestic_violence_survivors",
-    "title": "נשים נפגעות אלימות "
+    "title": "נשים נפגעות אלימות ",
+    "isEmergency": false
   },
   {
     "group": "דיור",
@@ -141,7 +156,8 @@
     "response_id": "human_services:housing",
     "score": 15,
     "situation_id": "human_situations:deprivation:at_risk:at_risk_youth",
-    "title": "צעירים בסיכון"
+    "title": "צעירים בסיכון",
+    "isEmergency": false
   },
   {
     "group": "דיור",
@@ -150,7 +166,8 @@
     "response_id": "human_services:housing",
     "score": 16,
     "situation_id": "human_situations:housing:homeless",
-    "title": "דרי רחוב"
+    "title": "דרי רחוב",
+    "isEmergency": false
   },
   {
     "group": "דיור",
@@ -159,7 +176,8 @@
     "response_id": "human_services:housing",
     "score": 17,
     "situation_id": "human_situations:disability:mental_illness",
-    "title": "מתמודדי נפש"
+    "title": "מתמודדי נפש",
+    "isEmergency": false
   },
   {
     "group": "שירותי בריאות",
@@ -168,7 +186,8 @@
     "response_id": "human_services:health",
     "score": 18,
     "situation_id": null,
-    "title": null
+    "title": null,
+    "isEmergency": false
   },
   {
     "group": "שירותי בריאות",
@@ -177,7 +196,8 @@
     "response_id": "human_services:health",
     "score": 19,
     "situation_id": "human_situations:disability:visual_impairment",
-    "title": "בעלי ליקוי ראיה"
+    "title": "בעלי ליקוי ראיה",
+    "isEmergency": false
   },
   {
     "group": "שירותי בריאות",
@@ -186,7 +206,8 @@
     "response_id": "human_services:health",
     "score": 20,
     "situation_id": "human_situations:substance_dependency",
-    "title": "התמכרויות"
+    "title": "התמכרויות",
+    "isEmergency": false
   },
   {
     "group": "שירותי בריאות",
@@ -195,7 +216,8 @@
     "response_id": "human_services:emergency:emergency_mental_assistance",
     "score": 21,
     "situation_id": null,
-    "title": "סיוע נפשי מיידי"
+    "title": "סיוע נפשי מיידי",
+    "isEmergency": false
   },
   {
     "group": "שירותי בריאות",
@@ -204,7 +226,8 @@
     "response_id": "human_services:health:medical_supplies",
     "score": 22,
     "situation_id": null,
-    "title": "ציוד רפואי"
+    "title": "ציוד רפואי",
+    "isEmergency": false
   },
   {
     "group": "מתמודדי נפש",
@@ -213,7 +236,8 @@
     "response_id": null,
     "score": 23,
     "situation_id": "human_situations:disability:mental_illness",
-    "title": null
+    "title": null,
+    "isEmergency": false
   },
   {
     "group": "מתמודדי נפש",
@@ -222,7 +246,8 @@
     "response_id": "human_services:health",
     "score": 24,
     "situation_id": "human_situations:disability:mental_illness",
-    "title": "שירותי בריאות"
+    "title": "שירותי בריאות",
+    "isEmergency": false
   },
   {
     "group": "מתמודדי נפש",
@@ -231,7 +256,8 @@
     "response_id": "human_services:health:mental_health_care:hospitalization:hospitalization_alternative:balancing_house",
     "score": 25,
     "situation_id": "human_situations:disability:mental_illness",
-    "title": "בתים מאזנים"
+    "title": "בתים מאזנים",
+    "isEmergency": false
   },
   {
     "group": "מתמודדי נפש",
@@ -240,7 +266,8 @@
     "response_id": "human_services:care:guidance",
     "score": 26,
     "situation_id": "human_situations:disability:mental_illness",
-    "title": "ייעוץ הדרכה וליווי"
+    "title": "ייעוץ הדרכה וליווי",
+    "isEmergency": false
   },
   {
     "group": "מתמודדי נפש",
@@ -249,7 +276,8 @@
     "response_id": "human_services:housing",
     "score": 27,
     "situation_id": "human_situations:disability:mental_illness",
-    "title": "דיור"
+    "title": "דיור",
+    "isEmergency": false
   },
   {
     "group": "מתמודדי נפש",
@@ -258,7 +286,8 @@
     "response_id": "human_services:work",
     "score": 28,
     "situation_id": "human_situations:disability:mental_illness",
-    "title": "תעסוקה"
+    "title": "תעסוקה",
+    "isEmergency": false
   },
   {
     "group": "מתמודדי נפש",
@@ -267,7 +296,8 @@
     "response_id": null,
     "score": 29,
     "situation_id": "human_situations:benefit_holders:ministry_of_health:rehabilitation_basket",
-    "title": "סל שיקום"
+    "title": "סל שיקום",
+    "isEmergency": false
   },
   {
     "group": "אזרחים ותיקים",
@@ -276,7 +306,8 @@
     "response_id": null,
     "score": 30,
     "situation_id": "human_situations:age_group:seniors",
-    "title": null
+    "title": null,
+    "isEmergency": false
   },
   {
     "group": "אזרחים ותיקים",
@@ -285,7 +316,8 @@
     "response_id": "human_services:health",
     "score": 31,
     "situation_id": "human_situations:age_group:seniors",
-    "title": "שירותי בריאות"
+    "title": "שירותי בריאות",
+    "isEmergency": false
   },
   {
     "group": "אזרחים ותיקים",
@@ -294,7 +326,8 @@
     "response_id": "human_services:community_services:social_club",
     "score": 32,
     "situation_id": "human_situations:age_group:seniors",
-    "title": "מועדון ופנאי"
+    "title": "מועדון ופנאי",
+    "isEmergency": false
   },
   {
     "group": "אזרחים ותיקים",
@@ -303,7 +336,8 @@
     "response_id": "human_services:housing",
     "score": 33,
     "situation_id": "human_situations:age_group:seniors",
-    "title": "דיור"
+    "title": "דיור",
+    "isEmergency": false
   },
   {
     "group": "הכנסה נמוכה וקשיים כלכליים ",
@@ -312,7 +346,8 @@
     "response_id": null,
     "score": 34,
     "situation_id": "human_situations:deprivation:low_income",
-    "title": null
+    "title": null,
+    "isEmergency": false
   },
   {
     "group": "הכנסה נמוכה וקשיים כלכליים ",
@@ -321,7 +356,8 @@
     "response_id": "human_services:food",
     "score": 35,
     "situation_id": "human_situations:deprivation:low_income",
-    "title": "מזון"
+    "title": "מזון",
+    "isEmergency": false
   },
   {
     "group": "הכנסה נמוכה וקשיים כלכליים ",
@@ -330,7 +366,8 @@
     "response_id": "human_services:legal:advocacy_legal_aid:understand_government_programs",
     "score": 36,
     "situation_id": "human_situations:deprivation:low_income",
-    "title": "מיצוי זכויות"
+    "title": "מיצוי זכויות",
+    "isEmergency": false
   },
   {
     "group": "הכנסה נמוכה וקשיים כלכליים ",
@@ -339,7 +376,8 @@
     "response_id": "human_services:money",
     "score": 37,
     "situation_id": "human_situations:deprivation:low_income",
-    "title": "סיוע כספי"
+    "title": "סיוע כספי",
+    "isEmergency": false
   },
   {
     "group": "הכנסה נמוכה וקשיים כלכליים ",
@@ -348,7 +386,8 @@
     "response_id": "human_services:goods",
     "score": 38,
     "situation_id": "human_situations:deprivation:low_income",
-    "title": "ביגוד והנעלה"
+    "title": "ביגוד והנעלה",
+    "isEmergency": false
   },
   {
     "group": "ניצולי שואה",
@@ -357,7 +396,8 @@
     "response_id": null,
     "score": 39,
     "situation_id": "human_situations:benefit_holders:holocaust_survivors",
-    "title": null
+    "title": null,
+    "isEmergency": false
   },
   {
     "group": "ניצולי שואה",
@@ -366,7 +406,8 @@
     "response_id": "human_services:legal",
     "score": 40,
     "situation_id": "human_situations:benefit_holders:holocaust_survivors",
-    "title": "מיצוי זכויות"
+    "title": "מיצוי זכויות",
+    "isEmergency": false
   },
   {
     "group": "ניצולי שואה",
@@ -375,7 +416,8 @@
     "response_id": "human_services:community_services:social_club",
     "score": 41,
     "situation_id": "human_situations:benefit_holders:holocaust_survivors",
-    "title": "מועדון חברתי"
+    "title": "מועדון חברתי",
+    "isEmergency": false
   },
   {
     "group": "ניצולי שואה",
@@ -384,7 +426,8 @@
     "response_id": "human_services:health",
     "score": 42,
     "situation_id": "human_situations:benefit_holders:holocaust_survivors",
-    "title": "שירותי בריאות"
+    "title": "שירותי בריאות",
+    "isEmergency": false
   },
   {
     "group": "צעירים וצעירות",
@@ -393,7 +436,8 @@
     "response_id": null,
     "score": 43,
     "situation_id": "human_situations:age_group:young_adults",
-    "title": null
+    "title": null,
+    "isEmergency": false
   },
   {
     "group": "צעירים וצעירות",
@@ -402,7 +446,8 @@
     "response_id": "human_services:care:mentoring",
     "score": 44,
     "situation_id": "human_situations:age_group:young_adults",
-    "title": "מנטורינג לצעירים וצעירות"
+    "title": "מנטורינג לצעירים וצעירות",
+    "isEmergency": false
   },
   {
     "group": "צעירים וצעירות",
@@ -411,7 +456,8 @@
     "response_id": null,
     "score": 45,
     "situation_id": "human_situations:deprivation:at_risk:at_risk_youth",
-    "title": "צעירים וצעירות בסיכון"
+    "title": "צעירים וצעירות בסיכון",
+    "isEmergency": false
   },
   {
     "group": "خدمات للمجتمع العربي",
@@ -420,7 +466,8 @@
     "response_id": null,
     "score": 46,
     "situation_id": "human_situations:language:arabic_speaking",
-    "title": null
+    "title": null,
+    "isEmergency": false
   },
   {
     "group": "خدمات للمجتمع العربي",
@@ -429,7 +476,8 @@
     "response_id": "human_services:legal",
     "score": 47,
     "situation_id": "human_situations:language:arabic_speaking",
-    "title": "مساعدة قانونية"
+    "title": "مساعدة قانونية",
+    "isEmergency": false
   },
   {
     "group": "خدمات للمجتمع العربي",
@@ -438,7 +486,8 @@
     "response_id": "human_services:emergency",
     "score": 48,
     "situation_id": "human_situations:language:arabic_speaking",
-    "title": "خدمات طوارئ"
+    "title": "خدمات طوارئ",
+    "isEmergency": false
   },
   {
     "group": "خدمات للمجتمع العربي",
@@ -447,7 +496,8 @@
     "response_id": "human_services:emergency:emergency_mental_assistance",
     "score": 49,
     "situation_id": "human_situations:language:arabic_speaking",
-    "title": "مساعدة نفسية خلال الطوارئ"
+    "title": "مساعدة نفسية خلال الطوارئ",
+    "isEmergency": false
   },
   {
     "group": "אוכלוסיות נוספות",
@@ -456,7 +506,8 @@
     "response_id": null,
     "score": 50,
     "situation_id": null,
-    "title": null
+    "title": null,
+    "isEmergency": false
   },
   {
     "group": "אוכלוסיות נוספות",
@@ -465,7 +516,8 @@
     "response_id": null,
     "score": 51,
     "situation_id": "human_situations:survivors:prostition_survivors",
-    "title": "שורדות זנות"
+    "title": "שורדות זנות",
+    "isEmergency": false
   },
   {
     "group": "אוכלוסיות נוספות",
@@ -474,7 +526,8 @@
     "response_id": null,
     "score": 52,
     "situation_id": "human_situations:disability:autistic_spectrum",
-    "title": "אוטיזם"
+    "title": "אוטיזם",
+    "isEmergency": false
   },
   {
     "group": "אוכלוסיות נוספות",
@@ -483,15 +536,16 @@
     "response_id": null,
     "score": 53,
     "situation_id": "human_situations:survivors:violence_survivors:domestic_violence_survivors",
-    "title": "נשים נפגעות אלימות"
+    "title": "נשים נפגעות אלימות",
+    "isEmergency": false
   },
   {
     "group": "אוכלוסיות נוספות",
     "group_link": null,
-    "id": 53,
     "response_id": null,
     "score": 54,
     "situation_id": "human_situations:education:students",
-    "title": "סטודנטים"
+    "title": "סטודנטים",
+    "isEmergency": false
   }
 ]

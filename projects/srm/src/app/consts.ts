@@ -129,6 +129,7 @@ export type HomepageEntry = {
     situation_id: string,
     response_id: string,
     query: string,
+    isEmergency: boolean,
 };
 
 export type AutoComplete = {
