@@ -23,7 +23,6 @@ export class SearchResultsBranchesListComponent {
 
   constructor( private analytics: AnalyticsService, private router: Router, private route: ActivatedRoute, private layoutService: LayoutService, private mapWidthService: MapWidthService) {
     this.layout.desktop = this.layoutService.desktop();
-    // console.log('Ariel - layout', this.layout.desktop)
   }
   protected readonly ariaLabel = ariaLabel;
   protected readonly stringsBuilder = stringsBuilder;
