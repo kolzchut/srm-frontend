@@ -269,8 +269,8 @@ export class ApiService {
     params.filter = JSON.stringify(filters);
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
-        console.log('Ariel = search params - get Cards', searchParams)
-        console.log('Ariel - get Cards', res)
+        // console.log('Ariel = search params - get Cards', searchParams)
+        // console.log('Ariel - get Cards', res)
 
         const qcr = res as QueryCardResult;
         // if (qcr.collapse_key) {
@@ -634,8 +634,8 @@ export class ApiService {
     return this.http.get(environment.cardsURL, {params}).pipe(
       map((res: any) => {
         const results = res as QueryCardResult;
-        console.log('Ariel = search params - get all points', searchParams)
-        console.log('Ariel -results', res)
+        // console.log('Ariel = search params - get all points', searchParams)
+        // console.log('Ariel -results', res)
         const allPoints = results.point_id.map((r: any) => {
           return {
             point_id: r.key,
@@ -645,7 +645,7 @@ export class ApiService {
             branch_count: r.branch_id?.buckets.length || 1,
           };
         }).filter((r: any) => r.point_id !== 'national_service');
-        console.log('Ariel - all points', allPoints);
+        // console.log('Ariel - all points', allPoints);
         return {
           inaccurate: allPoints.filter((p: any) => !p.branch_location_accurate),
           accurate: allPoints.filter((p: any) => !!p.branch_location_accurate),
