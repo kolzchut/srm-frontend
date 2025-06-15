@@ -23,6 +23,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import {LayoutService} from "../layout.service";
 import {MapWidthService} from "../../services/map-width.service";
+import {sortResultsAsEmergencyFirst} from "../../services/emergencyUtilities";
 
 
 export type SearchParamsOffset = {
@@ -171,6 +172,9 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         tap(({params, results}) => {
           this.loading = false;
           this.results = this.results.filter(x => !!x).concat(results);
+          console.log('Ariel results', this.results)
+          if(this.results) this.results = sortResultsAsEmergencyFirst(this.results as Card[]);
+          console.log('Ariel sorted results', this.results)
           this.offset = this.results.length;
           this.hasMore = this.offset > this.fetchedOffset;
           this.hasCounts = true;
