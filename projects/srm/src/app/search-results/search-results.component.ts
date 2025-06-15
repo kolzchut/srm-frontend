@@ -43,6 +43,7 @@ export type SearchParamsOffset = {
     '[attr.aria-busy]': 'loading ? "true" : "false"',
     'aria-label': 'רשימת תוצאות החיפוש, כוללת את המידע על כלל הנקודות המופיעות על גבי המפה',
     'ngSkipHydration': 'true',
+    '[style.padding]': '!layout.desktop ? "0" : null',
   }
 })
 export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit {
@@ -56,9 +57,10 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   @Output() nationalCount = new EventEmitter<number>();
   @Output() visibleCount = new EventEmitter<number>();
   @Output() hoverCard = new EventEmitter<Card>();
-  selectedGroup: { card: Card[], index:number, result:Card, key: string} = { card: [], index: 0, result: {} as Card, key: "" };
   @Output() selectedGroupChange = new EventEmitter<{ card: Card[], index:number, result:Card, key: string}>();
   @ViewChild('trigger') trigger: ElementRef;
+  selectedGroup: { card: Card[], index:number, result:Card, key: string} = { card: [], index: 0, result: {} as Card, key: "" };
+  branchListTopOffset = 0;
 
   offset = 0;
   fetchedOffset = -1;
@@ -85,10 +87,9 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   source = 'external';
   layout = { desktop: false };
 
-  constructor(private api: ApiService, private el: ElementRef, private platform: PlatformService,
+  constructor(private api: ApiService, private platform: PlatformService,
       private seo: SeoSocialShareService, private analytics: AnalyticsService,
-      private route: ActivatedRoute, private router: Router, private layoutService: LayoutService, private mapWidthService: MapWidthService) {
-  }
+      private route: ActivatedRoute, private router: Router, private layoutService: LayoutService, private mapWidthService: MapWidthService) {}
 
   ngOnInit(): void {
     this.layout.desktop = this.layoutService.desktop();
@@ -199,7 +200,6 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         tap((item) => {
           const from = this.route.snapshot.queryParams['from'] || this.source;
           this.source = 'internal';
-          // console.log('GTAG-DBG FROM', from);
           this.analytics.interactionEvent('search', from);
           if (from) {
             this.router.navigate([], {relativeTo: this.route, queryParams: {from: null}, queryParamsHandling: 'merge', replaceUrl: true, preserveFragment: true});
@@ -279,13 +279,20 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   get triggerVisible() {
     return this._triggerVisible;
   }
-  reSortResultStack(selectedGroup: { card: Card[], index:number, result:Card, key: string}): void {
+  reSortResultStack(selectedGroup: { card: Card[], index:number, result:Card, key: string}): void { // Re-sort the results to move the selected card to the top of the list
     const cardIndex = this.results.findIndex((card) => card?.card_id === selectedGroup.result.card_id);
     if (cardIndex !== -1) {
       const card = this.results[cardIndex];
       this.results.splice(cardIndex, 1);
       this.results.unshift(card);
     }
+  }
+  setTopOfBranchList(selectedGroup: { card: Card[], index:number, result:Card, key: string}): void {
+      const topOfSearchResults = document.getElementById(`resultStack_${selectedGroup.index}`);
+      if (!topOfSearchResults) return;
+      console.log('topOfSearchResults', topOfSearchResults.offsetTop);
+      this.branchListTopOffset = topOfSearchResults.offsetTop;
+      topOfSearchResults.scrollIntoView({ behavior: 'smooth', block: 'start'  });
   }
   reSizeMap(selectedGroup: { card: Card[], index:number, result:Card, key: string}): void {
      selectedGroup.card.length > 0 ? this.mapWidthService.setMapFullOpenWidth() : this.mapWidthService.setMapHalfOpenWidth();

@@ -73,7 +73,7 @@ export class ResultStackComponent implements OnInit, OnDestroy {
     (document.getElementById('topOfSearchResults') as HTMLSpanElement)?.scrollIntoView({ behavior: 'smooth' });
   }
   clickedBranches(key: string, index: number) {
-    this.scrollToTop();
+    // this.scrollToTop();
     this.showBranches(key, index);
   }
   showBranches(key: string, index: number) {

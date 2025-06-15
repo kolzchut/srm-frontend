@@ -16,12 +16,12 @@ import {MapWidthService} from "../../services/map-width.service";
 export class SearchResultsBranchesListComponent {
   @Input() selectedGroup: { card: Card[], index:number,result: Card, key: string };
   @Input() searchParams: SearchParams;
+  @Input() branchListTopOffset = 0;
   @Output() close = new EventEmitter<void>();
   @Output() hover = new EventEmitter<Card>();
   layout = { desktop: false };
 
-  constructor( private analytics: AnalyticsService, private router: Router, private route: ActivatedRoute, private layoutService: LayoutService, private mapWidthService: MapWidthService) {}
-  ngOnInit(): void {
+  constructor( private analytics: AnalyticsService, private router: Router, private route: ActivatedRoute, private layoutService: LayoutService, private mapWidthService: MapWidthService) {
     this.layout.desktop = this.layoutService.desktop();
   }
   protected readonly ariaLabel = ariaLabel;
