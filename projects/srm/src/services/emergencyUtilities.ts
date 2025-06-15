@@ -12,5 +12,4 @@ export const sortResultsAsEmergencyFirst = (results: Array<Card>) => {
   });
 }
 
-const arr = ["emergency", "urgent", "crisis", "critical", "disaster"];
 export const isEmergency = (str: string) => str.includes("emergency") // They will need to give us condition.
