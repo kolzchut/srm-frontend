@@ -9,7 +9,7 @@ import { fromEvent, timer } from 'rxjs';
 import { LayoutService } from '../layout.service';
 import { SearchService } from '../search.service';
 import { AnalyticsService } from '../analytics.service';
-import {checkIfIsEmergencyByTitle} from "../../services/emergencyUtilities";
+import {checkIfIsEmergencyByTitle, sortGroupsAsEmergencyFirst} from "../../services/emergencyUtilities";
 
 @UntilDestroy()
 @Component({
@@ -53,6 +53,7 @@ export class HomepageComponent implements AfterViewInit{
         }
       });
       this.resizeGroupItems();
+      this.groups = sortGroupsAsEmergencyFirst(this.groups);
     });
   }
 
