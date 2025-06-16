@@ -173,9 +173,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         tap(({params, results}) => {
           this.loading = false;
           this.results = this.results.filter(x => !!x).concat(results);
-          console.log('Ariel results', this.results)
           if(this.results) this.results = sortResultsAsEmergencyFirst(this.results as Card[]);
-          console.log('Ariel sorted results', this.results)
           this.offset = this.results.length;
           this.hasMore = this.offset > this.fetchedOffset;
           this.hasCounts = true;
