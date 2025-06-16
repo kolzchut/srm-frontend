@@ -23,7 +23,7 @@
                 <div class='search' role="main" #search [class.searching]='searchConfig.searching' >
                     <div class='searchbox-container layout-desktop' appArrowToTab (keydown)='keydown($event)'>
                         <app-search-bar [config]='searchConfig' (focus)='$event ? updateFocus($event) : null' [homepage]='true'
-                                        interactionEvent='homepage-searchbar' interactionEventWhere='homepage'        
+                                        interactionEvent='homepage-searchbar' interactionEventWhere='homepage'
                         ></app-search-bar>
                         <app-autocomplete-results [config]='searchConfig'></app-autocomplete-results>
                     </div>
@@ -36,7 +36,7 @@
                     <div class='logo-block'>
                         <a class='kolzchut' aria-label='מעבר לאתר של כל זכות בטאב חדש' href='https://www.kolzchut.org.il/he/%D7%A2%D7%9E%D7%95%D7%93_%D7%A8%D7%90%D7%A9%D7%99' target="_blank"></a>
                         <a class='moj' aria-label='מעבר לאתר של משרד המשפטים בטאב חדש' href='https://www.gov.il/he/departments/ministry_of_justice/govil-landing-page' target="_blank"></a>
-                        <a class='digital-israel' aria-label='מעבר לאתר של מערך הדיגיטל הלאומי בטאב חדש' href='https://www.gov.il/he/departments/national-digital-agency/govil-landing-page' target="_blank"></a>    
+                        <a class='digital-israel' aria-label='מעבר לאתר של מערך הדיגיטל הלאומי בטאב חדש' href='https://www.gov.il/he/departments/national-digital-agency/govil-landing-page' target="_blank"></a>
                     </div>
                 </div>
             </div>
@@ -44,34 +44,26 @@
                 <div class='header layout-desktop'>
                     <app-desktop-menu-links [homepage]='true'></app-desktop-menu-links>
                 </div>
-            
+
                 <div class='homepage-groups' #homepageGroups>
                     @for (group of groups; track group.title) {
-                        <div class='homepage-group' [style.gridRowEnd]='"span 15"'>
-                            @if (!!group.query) {
+                        <div class='homepage-group' [ngClass]="{'home-emergency-group': checkIfIsEmergencyByTitle(group.title)}" [style.gridRowEnd]='"span 15"'>
                                 <div class='homepage-group-title'>
                                     <h3>
-                                        <span>{{group.title}}</span>
+                                        <span>{{group.title}} <img *ngIf="checkIfIsEmergencyByTitle(group.title)" alt="emergency icon" src="assets/img/emergency-icon.svg"/></span>
                                         <span class='arrow-left'></span>
                                     </h3>
                                 </div>
-                            } @else {
-                                <div class='homepage-group-title'>
-                                    <h3>
-                                        <span>{{group.title}}</span>
-                                    </h3>
-                                </div>
-                            }
                             <div class='homepage-group-items'>
                                 @for (item of group.items; track item.query) {
-                                    <a class='homepage-group-item' [routerLink]='["/s", item.query]' 
+                                    <a class='homepage-group-item' [routerLink]='["/s", item.query]'
                                         [queryParams]="{from: 'homepage-group-item'}"
                                         interactionEvent='homepage-link' interactionEventWhere='homepage' [interactionEventContent]='item.title'
                                         clickOnReturn>{{item.title}}</a>
                                 }
                             </div>
                             @if (!!group.query && !!group.group_link) {
-                                <a [routerLink]='["/s", group.query]' 
+                                <a [routerLink]='["/s", group.query]'
                                     [queryParams]="{from: 'homepage-group-more'}"
                                     class='homepage-group-more'
                                     interactionEvent='homepage-link-group' interactionEventWhere='homepage' [interactionEventContent]='group.title'
