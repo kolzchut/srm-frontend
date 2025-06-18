@@ -389,7 +389,7 @@ export class ApiService {
       size: 2,
       offset: 0,
     };
-    if (searchParams.query) {
+    if (searchParams && searchParams?.query) {
       params.q = searchParams.query;
       this.fullTextParams(params, {no_highlight: true});
     }
@@ -410,7 +410,7 @@ export class ApiService {
       size: 2,
       offset: 0,
     };
-    if (searchParams.query) {
+    if (searchParams && searchParams?.query) {
       params.q = searchParams.query;
       this.fullTextParams(params, {no_highlight: true});
     }
@@ -429,7 +429,7 @@ export class ApiService {
       size: 1,
       offset: 0,
     };
-    if (searchParams.query) {
+    if (searchParams && searchParams?.query) {
       params.q = searchParams.query;
       this.fullTextParams(params, {no_highlight: true});
     }
@@ -587,7 +587,7 @@ export class ApiService {
     const params: any = {
       size: 1,
     };
-    if (searchParams.query) {
+    if (searchParams?.query) {
       params.q = searchParams.query;
       this.fullTextParams(params, {no_highlight: true});
     }
@@ -609,7 +609,7 @@ export class ApiService {
     const params: any = {
       size: 30,
     };
-    if (searchParams.query) {
+    if (searchParams?.query) {
       params.q = searchParams.query;
       this.fullTextParams(params, {no_highlight: true});
     }
