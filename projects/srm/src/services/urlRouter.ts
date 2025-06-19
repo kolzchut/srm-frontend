@@ -2,14 +2,16 @@
 import inactiveCardIdToServiceName from '../configurations/inactiveCardIdToServiceName.json';
 
 const getEndOfCardId = (urlPart: string) => {
+  console.log('Ariel -> getEndOfCardId', urlPart);
   const hashIndex = urlPart.indexOf('#');
   const questionIndex = urlPart.indexOf('?');
-
+  console.log('Ariel -> hashIndex questionIndex', hashIndex, questionIndex);
   let indexOfEndCardIdValue: number;
   if (hashIndex === -1) indexOfEndCardIdValue = questionIndex;
   else if (questionIndex === -1) indexOfEndCardIdValue = hashIndex;
   else indexOfEndCardIdValue = Math.min(hashIndex, questionIndex);
 
+  console.log('Ariel -> indexOfEndCardIdValue', indexOfEndCardIdValue);
   return indexOfEndCardIdValue;
 }
 
@@ -20,11 +22,11 @@ const checkInactiveCardId = () => {
   if (cardIdIndex === 0) return false;
   const rawCardIdValue: string = urlParts[cardIdIndex];
   const indexOfEndCardIdValue = getEndOfCardId(rawCardIdValue)
-  if (indexOfEndCardIdValue === -1) return false;
-  const cardIdValue = rawCardIdValue.slice(0, indexOfEndCardIdValue);
+
+  const cardIdValue = indexOfEndCardIdValue === -1 ? rawCardIdValue : rawCardIdValue.slice(0, indexOfEndCardIdValue);
   if (!inactiveCardIdToServiceName[cardIdValue]) return false;
   const serviceName = inactiveCardIdToServiceName[cardIdValue];
-  const newUrl = urlParts.slice(0, cardIdIndex - 2).join('/') + '/' + serviceName;
+  const newUrl = urlParts.slice(0, 3).join('/') + '/s/' + serviceName;
   window.location.replace(newUrl);
   return true;
 }
