@@ -41,12 +41,11 @@ const checkOldUrl = () => {
 }
 const notFoundToHomePage = () => {
   const urlParts = window.location.href.split('/');
-  const isNotFound = urlParts[urlParts.length - 1] === 'not-found';
+  const isNotFound = urlParts[urlParts.length - 1].includes('not-found');
   if (!isNotFound) return false;
   const newUrl = urlParts.slice(0, -1).join('/');
   window.location.replace(newUrl);
   return true;
-
 }
 
 export const urlRouter = () => {
