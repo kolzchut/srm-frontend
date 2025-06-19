@@ -43,7 +43,7 @@ const notFoundToHomePage = () => {
   const urlParts = window.location.href.split('/');
   const isNotFound = urlParts.some(part => part.includes('not-found'));
   if (!isNotFound) return false;
-  console.log('Redirecting to home page from not-found URL');
+  console.log('Redirecting to home page from not-found URL ');
   const newUrl = urlParts.slice(0, 3).join('/');
   window.location.replace(newUrl);
   return true;
