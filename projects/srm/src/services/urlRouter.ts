@@ -2,16 +2,12 @@
 import inactiveCardIdToServiceName from '../configurations/inactiveCardIdToServiceName.json';
 
 const getEndOfCardId = (urlPart: string) => {
-  console.log('Ariel -> getEndOfCardId', urlPart);
   const hashIndex = urlPart.indexOf('#');
   const questionIndex = urlPart.indexOf('?');
-  console.log('Ariel -> hashIndex questionIndex', hashIndex, questionIndex);
   let indexOfEndCardIdValue: number;
   if (hashIndex === -1) indexOfEndCardIdValue = questionIndex;
   else if (questionIndex === -1) indexOfEndCardIdValue = hashIndex;
   else indexOfEndCardIdValue = Math.min(hashIndex, questionIndex);
-
-  console.log('Ariel -> indexOfEndCardIdValue', indexOfEndCardIdValue);
   return indexOfEndCardIdValue;
 }
 
