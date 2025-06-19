@@ -20,11 +20,11 @@ const checkInactiveCardId = () => {
   if (cardIdIndex === 0) return false;
   const rawCardIdValue: string = urlParts[cardIdIndex];
   const indexOfEndCardIdValue = getEndOfCardId(rawCardIdValue)
-  if (indexOfEndCardIdValue === -1) return false;
-  const cardIdValue = rawCardIdValue.slice(0, indexOfEndCardIdValue);
+
+  const cardIdValue = indexOfEndCardIdValue === -1 ? rawCardIdValue : rawCardIdValue.slice(0, indexOfEndCardIdValue);
   if (!inactiveCardIdToServiceName[cardIdValue]) return false;
   const serviceName = inactiveCardIdToServiceName[cardIdValue];
-  const newUrl = urlParts.slice(0, cardIdIndex - 2).join('/') + '/' + serviceName;
+  const newUrl = urlParts.slice(0, 3).join('/') + '/s/' + serviceName;
   window.location.replace(newUrl);
   return true;
 }
