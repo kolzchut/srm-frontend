@@ -4,10 +4,12 @@ import inactiveCardIdToServiceName from '../configurations/inactiveCardIdToServi
 const getEndOfCardId = (urlPart: string) => {
   const hashIndex = urlPart.indexOf('#');
   const questionIndex = urlPart.indexOf('?');
+
   let indexOfEndCardIdValue: number;
   if (hashIndex === -1) indexOfEndCardIdValue = questionIndex;
   else if (questionIndex === -1) indexOfEndCardIdValue = hashIndex;
   else indexOfEndCardIdValue = Math.min(hashIndex, questionIndex);
+
   return indexOfEndCardIdValue;
 }
 
