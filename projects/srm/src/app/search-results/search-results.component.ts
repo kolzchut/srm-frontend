@@ -147,12 +147,9 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       }
       this.fetchQueue = new ReplaySubject<SearchParamsOffset>(1);
       this.resultsSubscription = timer(1).pipe(
-        switchMap(() => {
-          console.log('Ariel => SUBSCRIBE TO FETCH QUEUE', this.fetchQueue);
-          return this.fetchQueue
-        }),
+        switchMap(() =>  this.fetchQueue),
         filter((params) => {
-          console.log('Ariel => FILTER', params.p, params.offset, this.fetchedOffset);
+          console.log('Ariel => FILTER', params.offset > this.fetchedOffset);
           return params.offset > this.fetchedOffset;
         }),
         tap((params) => {
@@ -218,7 +215,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
     this.areaSearchState.selectNationWide()
   }
 
-  ngOnChanges(changes:SimpleChanges): void {
+  ngOnChanges(): void {
     this.paramsQueue.next(this.searchParams);
   }
 
