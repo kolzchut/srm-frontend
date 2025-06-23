@@ -7,7 +7,6 @@ import {
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
   ViewChild
 } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -23,7 +22,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AreaSearchState } from '../area-search-selector/area-search-state';
 import {LayoutService} from "../layout.service";
 import {MapWidthService} from "../../services/map-width.service";
-import {sortResultsAsEmergencyFirst} from "../../services/emergencyUtilities";
 
 
 export type SearchParamsOffset = {
@@ -148,24 +146,17 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       this.fetchQueue = new ReplaySubject<SearchParamsOffset>(1);
       this.resultsSubscription = timer(1).pipe(
         switchMap(() =>  this.fetchQueue),
-        filter((params) => {
-          console.log('Ariel => FILTER', params.offset > this.fetchedOffset);
-          return params.offset > this.fetchedOffset;
-        }),
+        filter((params) => params.offset > this.fetchedOffset),
         tap((params) => {
           this.fetchedOffset = params.offset;
         }),
         concatMap((params) => {
           this.loading = true;
           const zoomedIn = this.searchParams.requiredCenter && this.searchParams.requiredCenter[2] > 9;
-          console.log('Ariel => SEARCHING', params.p, params.offset, zoomedIn);
           return this.api.getCards(params.p, params.offset, zoomedIn)
             .pipe(
               map((results) => {
-                // if (params.offset === 0) {
-                console.log('Ariel => SEARCH RESULTS', params.p, params.offset, results);
                 this.resultsParamsQueue.next({params: params.p, totalCount: this.totalCount, items: results, offset: params.offset});
-                // }
                 return {params, results};
               })
             );
@@ -175,12 +166,9 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         }),
         tap(({params, results}) => {
           this.loading = false;
-          console.log('Ariel => NEW RESULTS', results)
           this.results = this.results.filter(x => !!x).concat(results);
-          if(this.results) this.results = sortResultsAsEmergencyFirst(this.results as Card[]);
           this.offset = this.results.length;
           this.hasMore = this.offset > this.fetchedOffset;
-          console.log('Ariel=> results.length',this.results.length, 'fetchedOffset', this.fetchedOffset, 'offset', this.offset);
           this.hasCounts = true;
           if (this.results.length > 0) {
             this.totalVisibleCount =  ((this.results[0] as any)['__counts']['total_overall'] - this.totalNationalCount) || 0;
@@ -193,7 +181,6 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       ).subscribe(() => {
       });
       this.fetch();
-          console.log('Ariel => Result Subscription', this.resultsSubscription)
     });
     this.platform.browser(() => {
       this.resultsParamsQueue.pipe(
@@ -220,7 +207,6 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   fetch() {
-    console.log('Ariel => FETCHING', this.searchParams,'offset',this.offset, 'fetchedOffset',this.fetchedOffset, 'hasmore', this.hasMore);
     this.fetchQueue.next({
       p: this.searchParams,
       offset: this.offset,
