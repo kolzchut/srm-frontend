@@ -135,7 +135,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
           );
         }
       }),
-    ).subscribe(() => {
+    ).subscribe((params) => {
       this.offset = 0;
       this.fetchedOffset = -1;
       this.results = [null, null, null];
@@ -147,8 +147,12 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       }
       this.fetchQueue = new ReplaySubject<SearchParamsOffset>(1);
       this.resultsSubscription = timer(1).pipe(
-        switchMap(() => this.fetchQueue),
+        switchMap(() => {
+          console.log('Ariel => SUBSCRIBE TO FETCH QUEUE', this.fetchQueue);
+          return this.fetchQueue
+        }),
         filter((params) => {
+          console.log('Ariel => FILTER', params.p, params.offset, this.fetchedOffset);
           return params.offset > this.fetchedOffset;
         }),
         tap((params) => {
@@ -157,10 +161,12 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         concatMap((params) => {
           this.loading = true;
           const zoomedIn = this.searchParams.requiredCenter && this.searchParams.requiredCenter[2] > 9;
+          console.log('Ariel => SEARCHING', params.p, params.offset, zoomedIn);
           return this.api.getCards(params.p, params.offset, zoomedIn)
             .pipe(
               map((results) => {
                 // if (params.offset === 0) {
+                console.log('Ariel => SEARCH RESULTS', params.p, params.offset, results);
                 this.resultsParamsQueue.next({params: params.p, totalCount: this.totalCount, items: results, offset: params.offset});
                 // }
                 return {params, results};
@@ -172,10 +178,12 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
         }),
         tap(({params, results}) => {
           this.loading = false;
+          console.log('Ariel => NEW RESULTS', results)
           this.results = this.results.filter(x => !!x).concat(results);
           if(this.results) this.results = sortResultsAsEmergencyFirst(this.results as Card[]);
           this.offset = this.results.length;
           this.hasMore = this.offset > this.fetchedOffset;
+          console.log('Ariel=> results.length',this.results.length, 'fetchedOffset', this.fetchedOffset, 'offset', this.offset);
           this.hasCounts = true;
           if (this.results.length > 0) {
             this.totalVisibleCount =  ((this.results[0] as any)['__counts']['total_overall'] - this.totalNationalCount) || 0;
@@ -188,6 +196,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       ).subscribe(() => {
       });
       this.fetch();
+          console.log('Ariel => Result Subscription', this.resultsSubscription)
     });
     this.platform.browser(() => {
       this.resultsParamsQueue.pipe(
@@ -214,6 +223,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   }
 
   fetch() {
+    console.log('Ariel => FETCHING', this.searchParams,'offset',this.offset, 'fetchedOffset',this.fetchedOffset, 'hasmore', this.hasMore);
     this.fetchQueue.next({
       p: this.searchParams,
       offset: this.offset,
@@ -237,35 +247,6 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
     if (this.obs) {
       this.obs.disconnect();
     }
-  }
-
-  expand(index: number) {
-    const res = this.results[index];
-    if (!!res) {
-      this.api.getCardsForCollapseKey(this.searchParams, res.collapse_key).subscribe((cards) => {
-        cards.forEach((card, idx) => {
-          card.__props = card.__props || {};
-          if (idx > 0) {
-            card.__props.slide = idx > 20 ? 20 : idx;
-          }
-          card.__props.z = cards.length - idx;
-        });
-        this.results = this.results.slice(0, index).concat(cards).concat(this.results.slice(index + 2));
-        timer(1).subscribe(() => {
-          cards.forEach((card, idx) => {
-            if (idx > 0) {
-              card.__props.slide_now = true;
-            }
-          });
-        });
-      });
-      // res._collapse_count = 0;
-      this.results = this.results.slice(0, index + 1).concat(null).concat(this.results.slice(index + 1));
-    }
-  }
-
-  identify(index: number, item: Card | null) {
-    return item?.collapse_key || index;
   }
   set triggerVisible(value: boolean) {
     if (value && !this._triggerVisible) {
