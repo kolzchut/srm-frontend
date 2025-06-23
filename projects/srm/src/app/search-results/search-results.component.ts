@@ -182,6 +182,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
       });
       this.fetch();
     });
+
     this.platform.browser(() => {
       this.resultsParamsQueue.pipe(
         untilDestroyed(this),
@@ -241,14 +242,7 @@ export class SearchResultsComponent implements OnInit, OnChanges, AfterViewInit 
   get triggerVisible() {
     return this._triggerVisible;
   }
-  reSortResultStack(selectedGroup: { card: Card[], index:number, result:Card, key: string}): void { // Re-sort the results to move the selected card to the top of the list
-    const cardIndex = this.results.findIndex((card) => card?.card_id === selectedGroup.result.card_id);
-    if (cardIndex !== -1) {
-      const card = this.results[cardIndex];
-      this.results.splice(cardIndex, 1);
-      this.results.unshift(card);
-    }
-  }
+
   setTopOfBranchList(selectedGroup: { card: Card[], index:number, result:Card, key: string}): void {
       const topOfSearchResults = document.getElementById(`resultStack_${selectedGroup.index}`);
       if (!topOfSearchResults) return;
