@@ -49,10 +49,36 @@ const notFoundToHomePage = () => {
   return true;
 }
 
-export const urlRouter = () => {
-  if(checkOldUrl()) return;
-  if(checkInactiveCardId()) return;
+const checkDoubleC = () => {
+  const urlParts = window.location.href.split('/');
+  const indicesOfC = urlParts
+    .map((part, index) => (part === 'c' ? index : -1))
+    .filter(index => index !== -1);
 
+  if (indicesOfC.length < 2) return false;
+  let foundServiceName: string | undefined = undefined;
+  for (const cardId of indicesOfC) {
+    const rawCardIdValue = urlParts[cardId + 1];
+
+    const indexOfEndCardIdValue = getEndOfCardId(rawCardIdValue)
+    const cardIdValue = indexOfEndCardIdValue === -1 ? rawCardIdValue : rawCardIdValue.slice(0, indexOfEndCardIdValue);
+    const serviceName = inactiveCardIdToServiceName[cardIdValue];
+    if (serviceName) {
+      foundServiceName = serviceName
+      break;
+    }
+  }
+  let additionOfServiceName = '';
+  if (foundServiceName) additionOfServiceName = '/s/' + foundServiceName
+  const newUrl = urlParts.slice(0, 3).join('/') + additionOfServiceName;
+  window.location.replace(newUrl);
+  return true;
+};
+
+export const urlRouter = () => {
+  if (checkDoubleC()) return;
+  if (checkOldUrl()) return;
+  if (checkInactiveCardId()) return;
   notFoundToHomePage();
 };
 
