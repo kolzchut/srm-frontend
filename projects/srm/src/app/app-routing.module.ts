@@ -44,7 +44,7 @@ const routes: Routes = [
     path: '', component: PageComponent, data: {group: 'flow', stage: 'homepage'},
   },
   {
-    path: '**', component: PageNotFoundComponent,
+    path: '**', component: PageComponent, data: {group: 'flow', stage: 'homepage'},
   }
 
 ];
