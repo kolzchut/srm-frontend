@@ -3,7 +3,7 @@
         <a class='logo layout-desktop' [routerLink]='["/"]' aria-label='חזרה לעמוד הבית'></a>
         <button class='back-button layout-mobile' (activated)='closeSearch()' clickOnReturn aria-label="סגירת תיבת החיפוש וחזרה לעמוד הקודם"></button>
         <app-search-bar [config]='searchConfig' [desktopStyle]='layout.desktop()'></app-search-bar>
-        <app-desktop-menu-links></app-desktop-menu-links>
+        <app-desktop-menu-links/>
     </div>
     <div class='overlay layout-desktop' (click)='closeSearch()' tabindex="-1" role="presentation">
         <div class='closer-text' role='button' aria-label='סגירת תיבת החיפוש וחזרה לעמוד הקודם' clickOnReturn tabindex="0" (activated)='closeSearch()'><img src='../../assets/img/icon-close-black.svg'></div>
