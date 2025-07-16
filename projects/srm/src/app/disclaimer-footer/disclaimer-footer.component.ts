@@ -6,7 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./disclaimer-footer.component.less']
 })
 export class DisclaimerFooterComponent implements OnInit {
-
+  @Input() card = false;
   @Input() homepage = false;
 
   constructor() { }
