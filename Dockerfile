@@ -1,4 +1,4 @@
-FROM node:lts-buster-slim as build
+FROM node:18-slim as build
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ ARG SENTRY_AUTH_TOKEN
 RUN test -z "${SENTRY_AUTH_TOKEN}" || SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} npm run sentry:sourcemaps
 
 
-FROM node:lts-buster-slim
+FROM node:18-slim
 
 WORKDIR /app
 
