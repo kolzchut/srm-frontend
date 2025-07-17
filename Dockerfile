@@ -16,7 +16,7 @@ ARG SENTRY_AUTH_TOKEN
 RUN test -z "${SENTRY_AUTH_TOKEN}" || SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} npm run sentry:sourcemaps
 
 
-FROM node:18-slim
+FROM 24-alpine3.21
 
 WORKDIR /app
 
