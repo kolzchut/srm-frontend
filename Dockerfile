@@ -1,4 +1,4 @@
-FROM node:24-alpine3.21 as build
+FROM node:20-bookworm-slim as build
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ ARG SENTRY_AUTH_TOKEN
 RUN test -z "${SENTRY_AUTH_TOKEN}" || SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} npm run sentry:sourcemaps
 
 
-FROM node:24-alpine3.21
+FROM node:20-bookworm-slim
 
 WORKDIR /app
 
